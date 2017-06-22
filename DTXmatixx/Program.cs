@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using FDK;
 
 namespace DTXmatixx
 {
@@ -16,7 +17,16 @@ namespace DTXmatixx
 		{
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault( false );
-			Application.Run( new Form1() );
+
+			Log.現在のスレッドに名前をつける( "描画" );
+			Log.Header( "アプリケーションを起動します。" );
+
+			using( var app = new App() )
+			{
+				app.Run();
+				Log.Header( "アプリケーションを終了します。" );
+			}
+			Log.Header( "アプリケーションを終了しました。" );
 		}
 	}
 }

@@ -5,16 +5,27 @@ VisualStudioVersion = 15.0.26430.13
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DTXmatixx", "DTXmatixx\DTXmatixx.csproj", "{736BE388-5EC5-4BF9-838B-8580C9A8DA9C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FDK", "..\..\@StrokeStyleT\リポジトリ (CsWin10Desktop3)\FDK\FDK.csproj", "{0E35C4AC-6E28-4A09-A6CE-05D177800051}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
+		RemoteDebug|Any CPU = RemoteDebug|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{736BE388-5EC5-4BF9-838B-8580C9A8DA9C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{736BE388-5EC5-4BF9-838B-8580C9A8DA9C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{736BE388-5EC5-4BF9-838B-8580C9A8DA9C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{736BE388-5EC5-4BF9-838B-8580C9A8DA9C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{736BE388-5EC5-4BF9-838B-8580C9A8DA9C}.RemoteDebug|Any CPU.ActiveCfg = Debug|Any CPU
+		{736BE388-5EC5-4BF9-838B-8580C9A8DA9C}.RemoteDebug|Any CPU.Build.0 = Debug|Any CPU
+		{0E35C4AC-6E28-4A09-A6CE-05D177800051}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0E35C4AC-6E28-4A09-A6CE-05D177800051}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0E35C4AC-6E28-4A09-A6CE-05D177800051}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0E35C4AC-6E28-4A09-A6CE-05D177800051}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0E35C4AC-6E28-4A09-A6CE-05D177800051}.RemoteDebug|Any CPU.ActiveCfg = RemoteDebug|Any CPU
+		{0E35C4AC-6E28-4A09-A6CE-05D177800051}.RemoteDebug|Any CPU.Build.0 = RemoteDebug|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

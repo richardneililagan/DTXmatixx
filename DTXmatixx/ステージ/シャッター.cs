@@ -1,0 +1,342 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+using SharpDX;
+using SharpDX.Animation;
+using SharpDX.Direct2D1;
+using FDK;
+using FDK.メディア;
+
+namespace DTXmatixx.ステージ
+{
+	class シャッター : Activity
+	{
+		public シャッター()
+		{
+			this.子リスト.Add( this._ロゴ = new 画像( @"D:\作業場\開発\@DTXMania\DTXmatixx\タイトルロゴ.png" ) );
+		}
+
+		protected override void On活性化( グラフィックデバイス gd )
+		{
+			this._明るいブラシ = new SolidColorBrush( gd.D2DDeviceContext, new Color4( 83f / 255f, 210f / 255f, 255f / 255f, 1f ) );
+			this._ふつうのブラシ = new SolidColorBrush( gd.D2DDeviceContext, new Color4( 46f / 255f, 117f / 255f, 182f / 255f, 1f ) );
+			this._濃いブラシ = new SolidColorBrush( gd.D2DDeviceContext, new Color4( 0f / 255f, 32f / 255f, 96f / 255f, 1f ) );
+			this._黒ブラシ = new SolidColorBrush( gd.D2DDeviceContext, Color4.Black );
+			this._白ブラシ = new SolidColorBrush( gd.D2DDeviceContext, Color4.White );
+
+			this._シャッター情報 = new シャッター情報[ シャッター枚数 ] {
+				#region " *** "
+				//----------------
+				new シャッター情報() {		// 1
+					ブラシ = this._明るいブラシ,
+					矩形サイズ = new Size2F( 910f, 908f ),
+					角度rad = (float) Math.PI / 4f,
+					閉じ中心位置 = new Vector2( 0f, 1080f ),
+					開き中心位置 = new Vector2( 0f-450, 1080f+450f ),
+					完全開き時刻sec = 0.0,
+					開閉時間sec = 0.2,
+				},
+				new シャッター情報() {		// 2
+					ブラシ = this._濃いブラシ,
+					矩形サイズ = new Size2F( 1000f, 992f ),
+					角度rad = (float) Math.PI / 4f,
+					閉じ中心位置 = new Vector2( 1920f, 0f ),
+					開き中心位置 = new Vector2( 1920f+500f, 0f-500f ),
+					完全開き時刻sec = 0.03,
+					開閉時間sec = 0.2,
+				},
+				new シャッター情報() {		// 3
+					ブラシ = this._黒ブラシ,
+					矩形サイズ = new Size2F( 915f, 911f ),
+					角度rad = (float) Math.PI / -4f,
+					閉じ中心位置 = new Vector2( 0f, 0f ),
+					開き中心位置 = new Vector2( 0f-450f, 0f-450f ),
+					完全開き時刻sec = 0.075,
+					開閉時間sec = 0.2,
+				},
+				new シャッター情報() {		// 4
+					ブラシ = this._ふつうのブラシ,
+					矩形サイズ = new Size2F( 884, 885f ),
+					角度rad = (float) Math.PI / -4f,
+					閉じ中心位置 = new Vector2( 1920f, 1080f ),
+					開き中心位置 = new Vector2( 1920f+450f, 1080f+450f ),
+					完全開き時刻sec = 0.06,
+					開閉時間sec = 0.2,
+				},
+				new シャッター情報() {		// 5
+					ブラシ = this._濃いブラシ,
+					矩形サイズ = new Size2F( 370f, 740f ),
+					角度rad = (float) 0f,
+					閉じ中心位置 = new Vector2( 104f+185f, 541f ),
+					開き中心位置 = new Vector2( 104f+185f-500f, 541f ),
+					完全開き時刻sec = 0.16,
+					開閉時間sec = 0.2,
+				},
+				new シャッター情報() {		// 6
+					ブラシ = this._黒ブラシ,
+					矩形サイズ = new Size2F( 280f, 560f ),
+					角度rad = (float) 0f,
+					閉じ中心位置 = new Vector2( 1519+140f, 570f ),
+					開き中心位置 = new Vector2( 1519+140f+400f, 570f ),
+					完全開き時刻sec = 0.2,
+					開閉時間sec = 0.2,
+				},
+				new シャッター情報() {		// 7
+					ブラシ = this._明るいブラシ,
+					矩形サイズ = new Size2F( 780f, 788f ),
+					角度rad = (float) Math.PI / 4f,
+					閉じ中心位置 = new Vector2( 1521f, 1080f ),
+					開き中心位置 = new Vector2( 1521f+390f, 1080f+390f ),
+					完全開き時刻sec = 0.2,
+					開閉時間sec = 0.2,
+				},
+				new シャッター情報() {		// 8
+					ブラシ = this._黒ブラシ,
+					矩形サイズ = new Size2F( 1114f, 495f ),
+					角度rad = (float) Math.PI / 4f,
+					閉じ中心位置 = new Vector2( 1236f, 178f ),
+					開き中心位置 = new Vector2( 1236f+400f, 178f-400f ),
+					完全開き時刻sec = 0.23,
+					開閉時間sec = 0.2,
+				},
+				new シャッター情報() {		// 9
+					ブラシ = this._黒ブラシ,
+					矩形サイズ = new Size2F( 652f, 312f ),
+					角度rad = (float) 0f,
+					閉じ中心位置 = new Vector2( 479f+323f, 1080f ),
+					開き中心位置 = new Vector2( 479f+323f, 1080f+160f ),
+					完全開き時刻sec = 0.3,
+					開閉時間sec = 0.2,
+				},
+				new シャッター情報() {		// 10
+					ブラシ = this._ふつうのブラシ,
+					矩形サイズ = new Size2F( 412f, 288f ),
+					角度rad = (float) 0f,
+					閉じ中心位置 = new Vector2( 666f, 0f ),
+					開き中心位置 = new Vector2( 666f, 0f-200f ),
+					完全開き時刻sec = 0.33,
+					開閉時間sec = 0.2,
+				},
+				new シャッター情報() {		// 11
+					ブラシ = this._黒ブラシ,
+					矩形サイズ = new Size2F( 630f, 630f ),
+					角度rad = (float) Math.PI / 4f,
+					閉じ中心位置 = new Vector2( 460f, 930f ),
+					開き中心位置 = new Vector2( 460f-330f, 930f+330f ),
+					完全開き時刻sec = 0.36,
+					開閉時間sec = 0.2,
+				},
+				new シャッター情報() {		// 12
+					ブラシ = this._明るいブラシ,
+					矩形サイズ = new Size2F( 875f, 884f ),
+					角度rad = (float) Math.PI / -4f,
+					閉じ中心位置 = new Vector2( 461f, 138f ),
+					開き中心位置 = new Vector2( 461f-438f, 138f-438f ),
+					完全開き時刻sec = 0.36,
+					開閉時間sec = 0.2,
+				},
+				new シャッター情報() {		// 13
+					ブラシ = this._濃いブラシ,
+					矩形サイズ = new Size2F( 460f, 690f ),
+					角度rad = (float) 0f,
+					閉じ中心位置 = new Vector2( 915f+230f, 253f+325f ),
+					開き中心位置 = new Vector2( 915f+230f+480f, 253f+325f ),
+					完全開き時刻sec = 0.4,
+					開閉時間sec = 0.2,
+				},
+				new シャッター情報() {		// 14
+					ブラシ = this._ふつうのブラシ,
+					矩形サイズ = new Size2F( 340f, 620f ),
+					角度rad = (float) 0f,
+					閉じ中心位置 = new Vector2( 614f+150f, 620f ),
+					開き中心位置 = new Vector2( 614f+150f-670f, 620f ),
+					完全開き時刻sec = 0.40,
+					開閉時間sec = 0.2,
+				},
+				//----------------
+				#endregion
+			};
+
+			for( int i = 0; i < シャッター枚数; i++ )
+				this._シャッター情報[ i ].開to閉割合 = new Variable( gd.Animation.Manager, initialValue: 0.0 );    // 初期値 0.0(完全開き)
+
+			this._ロゴ不透明度 = new Variable( gd.Animation.Manager, initialValue: 0.0 ); // 初期値 0.0(完全透明)
+
+			this._遷移状態 = 遷移状態.未定;
+		}
+
+		protected override void On非活性化( グラフィックデバイス gd )
+		{
+			FDKUtilities.解放する( ref this._白ブラシ );
+			FDKUtilities.解放する( ref this._黒ブラシ );
+			FDKUtilities.解放する( ref this._濃いブラシ );
+			FDKUtilities.解放する( ref this._ふつうのブラシ );
+			FDKUtilities.解放する( ref this._明るいブラシ );
+
+			foreach( var s in this._シャッター情報 )
+				s.Dispose();
+
+			this._シャッター情報 = null;
+		}
+
+		public void クローズする( グラフィックデバイス gd, float 速度倍率 = 1.0f )
+		{
+			var start = gd.Animation.Timer.Time;
+
+			for( int i = 0; i < シャッター枚数; i++ )
+			{
+				this._シャッター情報[ i ].開閉遷移?.Dispose();
+				this._シャッター情報[ i ].開閉遷移 = gd.Animation.TrasitionLibrary.SmoothStop( this._シャッター情報[ i ].開閉時間sec / 速度倍率, finalValue: 1.0 );   // 終了値 1.0(完全閉じ)
+
+				this._シャッター情報[ i ].ストーリーボード?.Abandon();
+				this._シャッター情報[ i ].ストーリーボード?.Dispose();
+				this._シャッター情報[ i ].ストーリーボード = new Storyboard( gd.Animation.Manager );
+				this._シャッター情報[ i ].ストーリーボード.AddTransition( this._シャッター情報[ i ].開to閉割合, this._シャッター情報[ i ].開閉遷移 );
+
+				this._シャッター情報[ i ].ストーリーボード.Schedule( start + this._シャッター情報[ i ].完全開き時刻sec / 速度倍率 );    // 開始時刻: 完全開き時刻
+			}
+
+			this._ロゴ不透明度遷移 = gd.Animation.TrasitionLibrary.Linear( duration: 0.75f / 速度倍率, finalValue: 1.0 );    // 終了値 1.0(完全不透明)
+			this._ロゴボード = new Storyboard( gd.Animation.Manager );
+			this._ロゴボード.AddTransition( this._ロゴ不透明度, this._ロゴ不透明度遷移 );
+			this._ロゴボード.Schedule( start );
+
+			this._遷移状態 = 遷移状態.クローズ;
+		}
+
+		public void オープンする( グラフィックデバイス gd, float 速度倍率 = 1.0f )
+		{
+			double 最も遅い時刻sec = 0.0;
+			foreach( var s in this._シャッター情報 )
+			{
+				if( 最も遅い時刻sec < s.完全閉じ時刻sec )
+					最も遅い時刻sec = s.完全閉じ時刻sec;
+			}
+			var start = gd.Animation.Timer.Time;
+			var end = start + 最も遅い時刻sec / 速度倍率;
+
+			for( int i = 0; i < シャッター枚数; i++ )
+			{
+				this._シャッター情報[ i ].開閉遷移?.Dispose();
+				this._シャッター情報[ i ].開閉遷移 = gd.Animation.TrasitionLibrary.SmoothStop( this._シャッター情報[ i ].開閉時間sec / 速度倍率, finalValue: 0.0 );  // 終了値: 0.0
+
+				this._シャッター情報[ i ].ストーリーボード?.Abandon();
+				this._シャッター情報[ i ].ストーリーボード?.Dispose();
+				this._シャッター情報[ i ].ストーリーボード = new Storyboard( gd.Animation.Manager );
+				this._シャッター情報[ i ].ストーリーボード.AddTransition( this._シャッター情報[ i ].開to閉割合, this._シャッター情報[ i ].開閉遷移 );
+
+				this._シャッター情報[ i ].ストーリーボード.Schedule( end - ( this._シャッター情報[ i ].完全閉じ時刻sec / 速度倍率 ) );   // 開始時刻: 完全閉じ時刻
+			}
+
+			this._ロゴ不透明度遷移 = gd.Animation.TrasitionLibrary.Linear( duration: 0.75f / 速度倍率, finalValue: 0.0 );    // 終了値 0.0(完全透明)
+			this._ロゴボード = new Storyboard( gd.Animation.Manager );
+			this._ロゴボード.AddTransition( this._ロゴ不透明度, this._ロゴ不透明度遷移 );
+			this._ロゴボード.Schedule( start );
+
+			this._遷移状態 = 遷移状態.オープン;
+		}
+
+		public void 進行描画する( グラフィックデバイス gd )
+		{
+			switch( this._遷移状態 )
+			{
+				case 遷移状態.未定:
+					break;
+
+				case 遷移状態.クローズ:
+					this.進行描画する( gd, StoryboardStatus.Scheduled );
+					break;
+
+				case 遷移状態.オープン:
+					this.進行描画する( gd, StoryboardStatus.Ready );
+					break;
+			}
+		}
+
+
+		protected enum 遷移状態 { 未定, クローズ, オープン }
+		protected 遷移状態 _遷移状態;
+
+		protected void 進行描画する( グラフィックデバイス gd, StoryboardStatus 描画しないStatus )
+		{
+			gd.D2DBatchDraw( ( dc ) => {
+
+				var pretrans = dc.Transform;
+
+				for( int i = シャッター枚数 - 1; i >= 0; i-- )
+				{
+					if( this._シャッター情報[ i ].ストーリーボード.Status == 描画しないStatus )
+						continue;
+
+					dc.Transform =
+						Matrix3x2.Rotation( this._シャッター情報[ i ].角度rad )
+						* Matrix3x2.Translation(
+							this._シャッター情報[ i ].開き中心位置 + ( this._シャッター情報[ i ].閉じ中心位置 - this._シャッター情報[ i ].開き中心位置 ) * new Vector2( (float) this._シャッター情報[ i ].開to閉割合.Value ) )
+						* pretrans;
+					float w = this._シャッター情報[ i ].矩形サイズ.Width;
+					float h = this._シャッター情報[ i ].矩形サイズ.Height;
+					var rc = new RectangleF( -w / 2f, -h / 2f, w, h );
+					dc.FillRectangle( rc, this._シャッター情報[ i ].ブラシ );
+					dc.DrawRectangle( rc, this._白ブラシ, 3.0f );
+				}
+
+			} );
+
+			if( null != this._ロゴ不透明度 )
+			{
+				this._ロゴ.描画する(
+					gd,
+					this._ロゴ表示領域.Left,
+					this._ロゴ表示領域.Top,
+					不透明度0to1: (float) this._ロゴ不透明度.Value,
+					X方向拡大率: ( this._ロゴ表示領域.Width / this._ロゴ.サイズ.Width ),
+					Y方向拡大率: ( this._ロゴ表示領域.Height / this._ロゴ.サイズ.Height ) );
+			}
+		}
+
+		protected class シャッター情報 : IDisposable
+		{
+			public シャッター情報()
+			{
+			}
+			public void Dispose()
+			{
+				FDKUtilities.解放する( ref this.ストーリーボード );
+				FDKUtilities.解放する( ref this.開閉遷移 );
+				FDKUtilities.解放する( ref this.開to閉割合 );
+			}
+
+			public Brush ブラシ = null;
+			public Size2F 矩形サイズ;
+			public float 角度rad;
+			public Vector2 閉じ中心位置;
+			public Vector2 開き中心位置;
+
+			/// <summary>
+			///		開き: 0.0 → 1.0: 閉じ
+			/// </summary>
+			public Variable 開to閉割合 = null;
+			public Transition 開閉遷移 = null;
+			public double 完全開き時刻sec = 0.0;
+			public double 開閉時間sec = 1.0;
+			public double 完全閉じ時刻sec => this.完全開き時刻sec + 開閉時間sec;
+			public Storyboard ストーリーボード = null;
+		}
+
+		protected const int シャッター枚数 = 14;
+		protected シャッター情報[] _シャッター情報 = null;
+
+		protected Brush _明るいブラシ = null;
+		protected Brush _ふつうのブラシ = null;
+		protected Brush _濃いブラシ = null;
+		protected Brush _黒ブラシ = null;
+		protected Brush _白ブラシ = null;
+
+		protected 画像 _ロゴ = null;
+		protected Variable _ロゴ不透明度 = null;
+		protected Transition _ロゴ不透明度遷移 = null;
+		protected Storyboard _ロゴボード = null;
+		protected readonly RectangleF _ロゴ表示領域 = new RectangleF( 1200f, 650f, 600f, 350f );
+	}
+}
