@@ -12,29 +12,41 @@ namespace DTXmatixx.ステージ.アイキャッチ
 {
 	class 回転幕 : Activity
 	{
+		public enum フェーズ
+		{
+			未定,
+			クローズ,
+			オープン,
+			クローズ完了,
+			オープン完了
+		}
+		public フェーズ 現在のフェーズ { get; protected set; }
+
 		public 回転幕()
 		{
-			this.子リスト.Add( this._ロゴ = new 画像( @"D:\作業場\開発\@DTXMania\DTXmatixx\タイトルロゴ.png" ) );
+			this.子リスト.Add( this._ロゴ = new 画像( @"$(System)images\タイトルロゴ.png" ) );
 		}
 
 		protected override void On活性化( グラフィックデバイス gd )
 		{
-			this._フェーズ = フェーズ.未定;
+			this.現在のフェーズ = フェーズ.未定;
 		}
 
 		protected override void On非活性化( グラフィックデバイス gd )
 		{
-			FDKUtilities.解放する( ref this._ロゴ不透明度 );
+			//FDKUtilities.解放する( ref this._ロゴ不透明度 );
 
 			foreach( var b in this._黒幕 )
 				b.Dispose();
-
 			this._黒幕 = null;
+
+			this._ロゴ不透明度?.Dispose();
+			this._ロゴ不透明度 = null;
 		}
 
 		public void クローズする( グラフィックデバイス gd, float 速度倍率 = 1.0f )
 		{
-			this._フェーズ = フェーズ.クローズ;
+			this.現在のフェーズ = フェーズ.クローズ;
 
 			if( null != this._黒幕 )
 			{
@@ -70,7 +82,7 @@ namespace DTXmatixx.ステージ.アイキャッチ
 			double シーン2期間 = 0.4;
 			double シーン3期間 = 0.2;
 
-			#region " ストーリーボードの構築(1) 上＆左の黒幕 + ロゴ "
+			#region " ストーリーボードの構築(1) 上→左の黒幕 + ロゴ "
 			//----------------
 			var 幕 = this._黒幕[ 0 ];
 
@@ -92,10 +104,10 @@ namespace DTXmatixx.ステージ.アイキャッチ
 				幕.ストーリーボード.AddTransition( this._ロゴ不透明度, ロゴの不透明度の遷移 );	// 便乗
 			}
 
-			// シーン2 270°回転。
+			// シーン2 回転。
 			using( var 中心位置Xの遷移 = gd.Animation.TrasitionLibrary.Constant( duration: ( シーン2期間 - 0.18 ) / 速度倍率 ) )
 			using( var 中心位置Yの遷移 = gd.Animation.TrasitionLibrary.Constant( duration: ( シーン2期間 - 0.18 ) / 速度倍率 ) )
-			using( var 回転radの遷移 = gd.Animation.TrasitionLibrary.AccelerateDecelerate( duration: シーン2期間 / 速度倍率, finalValue: Math.PI * 1.75, accelerationRatio: 0.5, decelerationRatio: 0.5 ) )
+			using( var 回転radの遷移 = gd.Animation.TrasitionLibrary.AccelerateDecelerate( duration: シーン2期間 / 速度倍率, finalValue: Math.PI * 1.6, accelerationRatio: 0.5, decelerationRatio: 0.5 ) )
 			using( var 太さの遷移 = gd.Animation.TrasitionLibrary.Constant( duration: ( シーン2期間 - 0.18 ) / 速度倍率 ) )
 			using( var 不透明度の遷移 = gd.Animation.TrasitionLibrary.Constant( duration: ( シーン2期間 - 0.18 ) / 速度倍率 ) )
 			{
@@ -107,7 +119,7 @@ namespace DTXmatixx.ステージ.アイキャッチ
 			}
 
 			// シーン3 太くなりつつ画面左へ移動。
-			using( var 中心位置Xの遷移 = gd.Animation.TrasitionLibrary.AccelerateDecelerate( duration: シーン3期間 / 速度倍率, finalValue: 0.0 - 200.0, accelerationRatio: 0.1, decelerationRatio: 0.9 ) )
+			using( var 中心位置Xの遷移 = gd.Animation.TrasitionLibrary.AccelerateDecelerate( duration: シーン3期間 / 速度倍率, finalValue: 0.0, accelerationRatio: 0.1, decelerationRatio: 0.9 ) )
 			using( var 中心位置Yの遷移 = gd.Animation.TrasitionLibrary.Constant( duration: シーン3期間 / 速度倍率 ) )
 			using( var 回転radの遷移 = gd.Animation.TrasitionLibrary.Constant( duration: シーン3期間 / 速度倍率 ) )
 			using( var 太さの遷移 = gd.Animation.TrasitionLibrary.AccelerateDecelerate( duration: ( シーン3期間 + 0.05 ) / 速度倍率, finalValue: 800.0, accelerationRatio: 0.1, decelerationRatio: 0.9 ) )
@@ -122,7 +134,7 @@ namespace DTXmatixx.ステージ.アイキャッチ
 			//----------------
 			#endregion
 
-			#region " ストーリーボードの構築(2) 下＆右の黒幕 "
+			#region " ストーリーボードの構築(2) 下→右の黒幕 "
 			//----------------
 			幕 = this._黒幕[ 1 ];
 
@@ -145,11 +157,11 @@ namespace DTXmatixx.ステージ.アイキャッチ
 				幕.ストーリーボード.AddTransition( 幕.不透明度, 不透明度の遷移2 );
 			}
 
-			// シーン2 270°回転。
+			// シーン2 回転。
 			期間 = シーン2期間 + ずれ;
 			using( var 中心位置Xの遷移 = gd.Animation.TrasitionLibrary.Constant( duration: ( 期間 - 0.18 ) / 速度倍率 ) )
 			using( var 中心位置Yの遷移 = gd.Animation.TrasitionLibrary.Constant( duration: ( 期間 - 0.18 ) / 速度倍率 ) )
-			using( var 回転radの遷移 = gd.Animation.TrasitionLibrary.AccelerateDecelerate( duration: 期間 / 速度倍率, finalValue: Math.PI * 1.75, accelerationRatio: 0.5, decelerationRatio: 0.5 ) )
+			using( var 回転radの遷移 = gd.Animation.TrasitionLibrary.AccelerateDecelerate( duration: 期間 / 速度倍率, finalValue: Math.PI * 1.6, accelerationRatio: 0.5, decelerationRatio: 0.5 ) )
 			using( var 太さの遷移 = gd.Animation.TrasitionLibrary.Constant( duration: ( 期間 - 0.18 ) / 速度倍率 ) )
 			using( var 不透明度の遷移 = gd.Animation.TrasitionLibrary.Constant( duration: ( 期間 - 0.18 ) / 速度倍率 ) )
 			{
@@ -161,7 +173,7 @@ namespace DTXmatixx.ステージ.アイキャッチ
 			}
 
 			// シーン3 太くなりつつ画面右へ移動。
-			using( var 中心位置Xの遷移 = gd.Animation.TrasitionLibrary.AccelerateDecelerate( duration: シーン3期間 / 速度倍率, finalValue: 1920.0 + 200.0, accelerationRatio: 0.1, decelerationRatio: 0.9 ) )
+			using( var 中心位置Xの遷移 = gd.Animation.TrasitionLibrary.AccelerateDecelerate( duration: シーン3期間 / 速度倍率, finalValue: 1920.0, accelerationRatio: 0.1, decelerationRatio: 0.9 ) )
 			using( var 中心位置Yの遷移 = gd.Animation.TrasitionLibrary.Constant( duration: シーン3期間 / 速度倍率 ) )
 			using( var 回転radの遷移 = gd.Animation.TrasitionLibrary.Constant( duration: シーン3期間 / 速度倍率 ) )
 			using( var 太さの遷移 = gd.Animation.TrasitionLibrary.AccelerateDecelerate( duration: ( シーン3期間 + 0.05 ) / 速度倍率, finalValue: 800.0, accelerationRatio: 0.1, decelerationRatio: 0.9 ) )
@@ -184,7 +196,7 @@ namespace DTXmatixx.ステージ.アイキャッチ
 
 		public void オープンする( グラフィックデバイス gd, float 速度倍率 = 1.0f )
 		{
-			this._フェーズ = フェーズ.オープン;
+			this.現在のフェーズ = フェーズ.オープン;
 
 			if( null != this._黒幕 )
 			{
@@ -333,27 +345,27 @@ namespace DTXmatixx.ステージ.アイキャッチ
 
 		public void 進行描画する( グラフィックデバイス gd )
 		{
-			switch( this._フェーズ )
+			switch( this.現在のフェーズ )
 			{
 				case フェーズ.未定:
 					break;
 
 				case フェーズ.クローズ:
+				case フェーズ.クローズ完了:
 					this.進行描画する( gd, StoryboardStatus.Scheduled );
 					break;
 
 				case フェーズ.オープン:
+				case フェーズ.オープン完了:
 					this.進行描画する( gd, StoryboardStatus.Ready );
 					break;
 			}
 		}
 
-
-		protected enum フェーズ { 未定, クローズ, オープン }
-		protected フェーズ _フェーズ;
-
 		protected void 進行描画する( グラフィックデバイス gd, StoryboardStatus 描画しないStatus )
 		{
+			bool すべて完了 = true;
+
 			this._ロゴ.描画する(
 				gd,
 				this._ロゴ表示領域.Left,
@@ -369,6 +381,10 @@ namespace DTXmatixx.ステージ.アイキャッチ
 				for( int i = 0; i < 2; i++ )
 				{
 					var context = this._黒幕[ i ];
+
+					if( context.ストーリーボード.Status != StoryboardStatus.Ready )
+						すべて完了 = false;
+
 					if( context.ストーリーボード.Status == 描画しないStatus )
 						continue;
 
@@ -387,6 +403,15 @@ namespace DTXmatixx.ステージ.アイキャッチ
 				}
 
 			} );
+
+			if( すべて完了 )
+			{
+				if( this.現在のフェーズ == フェーズ.クローズ )
+					this.現在のフェーズ = フェーズ.クローズ完了;
+
+				if( this.現在のフェーズ == フェーズ.オープン )
+					this.現在のフェーズ = フェーズ.オープン完了;
+			}
 		}
 
 		protected class 黒幕 : IDisposable

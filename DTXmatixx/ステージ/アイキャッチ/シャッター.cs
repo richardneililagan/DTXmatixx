@@ -189,7 +189,9 @@ namespace DTXmatixx.ステージ.アイキャッチ
 			this._シャッター情報 = null;
 
 			this._ロゴボード.Dispose();
+			this._ロゴボード = null;
 			this._ロゴ不透明度?.Dispose();
+			this._ロゴ不透明度 = null;
 		}
 
 		public void クローズする( グラフィックデバイス gd, float 速度倍率 = 1.0f )
