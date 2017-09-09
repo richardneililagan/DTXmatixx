@@ -27,8 +27,8 @@ namespace DTXmatixx.ステージ
 		/// </summary>
 		public Dictionary<string, ステージ> ステージリスト = new Dictionary<string, ステージ>() {
 			{ nameof( タイトル.タイトルステージ ), new タイトル.タイトルステージ() },
+			{ nameof( 選曲.選曲ステージ ), new 選曲.選曲ステージ() },
 		};
-
 
 		public ステージ管理()
 		{

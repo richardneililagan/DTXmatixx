@@ -8,13 +8,22 @@ using SharpDX.Direct2D1;
 using FDK;
 using FDK.メディア;
 
-namespace DTXmatixx.ステージ
+namespace DTXmatixx.ステージ.アイキャッチ
 {
 	class シャッター : Activity
 	{
+		public enum フェーズ {
+			未定,
+			クローズ,
+			オープン,
+			クローズ完了,
+			オープン完了
+		}
+		public フェーズ 現在のフェーズ { get; protected set; }
+
 		public シャッター()
 		{
-			this.子リスト.Add( this._ロゴ = new 画像( @"D:\作業場\開発\@DTXMania\DTXmatixx\タイトルロゴ.png" ) );
+			this.子リスト.Add( this._ロゴ = new 画像( @"$(System)images\タイトルロゴ.png" ) );
 		}
 
 		protected override void On活性化( グラフィックデバイス gd )
@@ -163,7 +172,7 @@ namespace DTXmatixx.ステージ
 
 			this._ロゴ不透明度 = new Variable( gd.Animation.Manager, initialValue: 0.0 ); // 初期値 0.0(完全透明)
 
-			this._遷移状態 = 遷移状態.未定;
+			this.現在のフェーズ = フェーズ.未定;
 		}
 
 		protected override void On非活性化( グラフィックデバイス gd )
@@ -186,15 +195,14 @@ namespace DTXmatixx.ステージ
 
 			for( int i = 0; i < シャッター枚数; i++ )
 			{
-				this._シャッター情報[ i ].開閉遷移?.Dispose();
-				this._シャッター情報[ i ].開閉遷移 = gd.Animation.TrasitionLibrary.SmoothStop( this._シャッター情報[ i ].開閉時間sec / 速度倍率, finalValue: 1.0 );   // 終了値 1.0(完全閉じ)
-
-				this._シャッター情報[ i ].ストーリーボード?.Abandon();
-				this._シャッター情報[ i ].ストーリーボード?.Dispose();
-				this._シャッター情報[ i ].ストーリーボード = new Storyboard( gd.Animation.Manager );
-				this._シャッター情報[ i ].ストーリーボード.AddTransition( this._シャッター情報[ i ].開to閉割合, this._シャッター情報[ i ].開閉遷移 );
-
-				this._シャッター情報[ i ].ストーリーボード.Schedule( start + this._シャッター情報[ i ].完全開き時刻sec / 速度倍率 );    // 開始時刻: 完全開き時刻
+				using( var 開閉遷移 = gd.Animation.TrasitionLibrary.SmoothStop( this._シャッター情報[ i ].開閉時間sec / 速度倍率, finalValue: 1.0 ) )   // 終了値 1.0(完全閉じ)
+				{
+					this._シャッター情報[ i ].ストーリーボード?.Abandon();
+					this._シャッター情報[ i ].ストーリーボード?.Dispose();
+					this._シャッター情報[ i ].ストーリーボード = new Storyboard( gd.Animation.Manager );
+					this._シャッター情報[ i ].ストーリーボード.AddTransition( this._シャッター情報[ i ].開to閉割合, 開閉遷移 );
+					this._シャッター情報[ i ].ストーリーボード.Schedule( start + this._シャッター情報[ i ].完全開き時刻sec / 速度倍率 );    // 開始時刻: 完全開き時刻
+				}
 			}
 
 			this._ロゴ不透明度遷移 = gd.Animation.TrasitionLibrary.Linear( duration: 0.75f / 速度倍率, finalValue: 1.0 );    // 終了値 1.0(完全不透明)
@@ -202,7 +210,7 @@ namespace DTXmatixx.ステージ
 			this._ロゴボード.AddTransition( this._ロゴ不透明度, this._ロゴ不透明度遷移 );
 			this._ロゴボード.Schedule( start );
 
-			this._遷移状態 = 遷移状態.クローズ;
+			this.現在のフェーズ = フェーズ.クローズ;
 		}
 
 		public void オープンする( グラフィックデバイス gd, float 速度倍率 = 1.0f )
@@ -218,15 +226,14 @@ namespace DTXmatixx.ステージ
 
 			for( int i = 0; i < シャッター枚数; i++ )
 			{
-				this._シャッター情報[ i ].開閉遷移?.Dispose();
-				this._シャッター情報[ i ].開閉遷移 = gd.Animation.TrasitionLibrary.SmoothStop( this._シャッター情報[ i ].開閉時間sec / 速度倍率, finalValue: 0.0 );  // 終了値: 0.0
-
-				this._シャッター情報[ i ].ストーリーボード?.Abandon();
-				this._シャッター情報[ i ].ストーリーボード?.Dispose();
-				this._シャッター情報[ i ].ストーリーボード = new Storyboard( gd.Animation.Manager );
-				this._シャッター情報[ i ].ストーリーボード.AddTransition( this._シャッター情報[ i ].開to閉割合, this._シャッター情報[ i ].開閉遷移 );
-
-				this._シャッター情報[ i ].ストーリーボード.Schedule( end - ( this._シャッター情報[ i ].完全閉じ時刻sec / 速度倍率 ) );   // 開始時刻: 完全閉じ時刻
+				using( var 開閉遷移 = gd.Animation.TrasitionLibrary.SmoothStop( this._シャッター情報[ i ].開閉時間sec / 速度倍率, finalValue: 0.0 ) )  // 終了値: 0.0
+				{
+					this._シャッター情報[ i ].ストーリーボード?.Abandon();
+					this._シャッター情報[ i ].ストーリーボード?.Dispose();
+					this._シャッター情報[ i ].ストーリーボード = new Storyboard( gd.Animation.Manager );
+					this._シャッター情報[ i ].ストーリーボード.AddTransition( this._シャッター情報[ i ].開to閉割合, 開閉遷移 );
+					this._シャッター情報[ i ].ストーリーボード.Schedule( end - ( this._シャッター情報[ i ].完全閉じ時刻sec / 速度倍率 ) );   // 開始時刻: 完全閉じ時刻
+				}
 			}
 
 			this._ロゴ不透明度遷移 = gd.Animation.TrasitionLibrary.Linear( duration: 0.75f / 速度倍率, finalValue: 0.0 );    // 終了値 0.0(完全透明)
@@ -234,50 +241,55 @@ namespace DTXmatixx.ステージ
 			this._ロゴボード.AddTransition( this._ロゴ不透明度, this._ロゴ不透明度遷移 );
 			this._ロゴボード.Schedule( start );
 
-			this._遷移状態 = 遷移状態.オープン;
+			this.現在のフェーズ = フェーズ.オープン;
 		}
 
 		public void 進行描画する( グラフィックデバイス gd )
 		{
-			switch( this._遷移状態 )
+			switch( this.現在のフェーズ )
 			{
-				case 遷移状態.未定:
+				case フェーズ.未定:
 					break;
 
-				case 遷移状態.クローズ:
+				case フェーズ.クローズ:
+				case フェーズ.クローズ完了:
 					this.進行描画する( gd, StoryboardStatus.Scheduled );
 					break;
 
-				case 遷移状態.オープン:
+				case フェーズ.オープン:
+				case フェーズ.オープン完了:
 					this.進行描画する( gd, StoryboardStatus.Ready );
 					break;
 			}
 		}
 
 
-		protected enum 遷移状態 { 未定, クローズ, オープン }
-		protected 遷移状態 _遷移状態;
-
 		protected void 進行描画する( グラフィックデバイス gd, StoryboardStatus 描画しないStatus )
 		{
+			bool すべて完了 = true;
+
 			gd.D2DBatchDraw( ( dc ) => {
 
 				var pretrans = dc.Transform;
 
 				for( int i = シャッター枚数 - 1; i >= 0; i-- )
 				{
-					if( this._シャッター情報[ i ].ストーリーボード.Status == 描画しないStatus )
+					var context = this._シャッター情報[ i ];
+
+					if( context.ストーリーボード.Status != StoryboardStatus.Ready )
+						すべて完了 = false;
+
+					if( context.ストーリーボード.Status == 描画しないStatus )
 						continue;
 
 					dc.Transform =
-						Matrix3x2.Rotation( this._シャッター情報[ i ].角度rad )
-						* Matrix3x2.Translation(
-							this._シャッター情報[ i ].開き中心位置 + ( this._シャッター情報[ i ].閉じ中心位置 - this._シャッター情報[ i ].開き中心位置 ) * new Vector2( (float) this._シャッター情報[ i ].開to閉割合.Value ) )
+						Matrix3x2.Rotation( context.角度rad )
+						* Matrix3x2.Translation( context.開き中心位置 + ( context.閉じ中心位置 - context.開き中心位置 ) * new Vector2( (float) context.開to閉割合.Value ) )
 						* pretrans;
-					float w = this._シャッター情報[ i ].矩形サイズ.Width;
-					float h = this._シャッター情報[ i ].矩形サイズ.Height;
+					float w = context.矩形サイズ.Width;
+					float h = context.矩形サイズ.Height;
 					var rc = new RectangleF( -w / 2f, -h / 2f, w, h );
-					dc.FillRectangle( rc, this._シャッター情報[ i ].ブラシ );
+					dc.FillRectangle( rc, context.ブラシ );
 					dc.DrawRectangle( rc, this._白ブラシ, 3.0f );
 				}
 
@@ -285,6 +297,9 @@ namespace DTXmatixx.ステージ
 
 			if( null != this._ロゴ不透明度 )
 			{
+				if( this._ロゴボード.Status != StoryboardStatus.Ready )
+					すべて完了 = false;
+
 				this._ロゴ.描画する(
 					gd,
 					this._ロゴ表示領域.Left,
@@ -292,6 +307,15 @@ namespace DTXmatixx.ステージ
 					不透明度0to1: (float) this._ロゴ不透明度.Value,
 					X方向拡大率: ( this._ロゴ表示領域.Width / this._ロゴ.サイズ.Width ),
 					Y方向拡大率: ( this._ロゴ表示領域.Height / this._ロゴ.サイズ.Height ) );
+			}
+
+			if( すべて完了 )
+			{
+				if( this.現在のフェーズ == フェーズ.クローズ )
+					this.現在のフェーズ = フェーズ.クローズ完了;
+
+				if( this.現在のフェーズ == フェーズ.オープン )
+					this.現在のフェーズ = フェーズ.オープン完了;
 			}
 		}
 
@@ -303,7 +327,6 @@ namespace DTXmatixx.ステージ
 			public void Dispose()
 			{
 				FDKUtilities.解放する( ref this.ストーリーボード );
-				FDKUtilities.解放する( ref this.開閉遷移 );
 				FDKUtilities.解放する( ref this.開to閉割合 );
 			}
 
@@ -317,7 +340,6 @@ namespace DTXmatixx.ステージ
 			///		開き: 0.0 → 1.0: 閉じ
 			/// </summary>
 			public Variable 開to閉割合 = null;
-			public Transition 開閉遷移 = null;
 			public double 完全開き時刻sec = 0.0;
 			public double 開閉時間sec = 1.0;
 			public double 完全閉じ時刻sec => this.完全開き時刻sec + 開閉時間sec;

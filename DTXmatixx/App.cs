@@ -1,16 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Drawing;
+using System.IO;
 using System.Linq;
-using System.Text;
+using System.Reflection;
 using System.Threading;
 using System.Windows.Forms;
 using SharpDX;
-using SharpDX.DirectComposition;
 using SharpDX.Windows;
 using FDK;
-using FDK.メディア;
 using FDK.入力;
 using DTXmatixx.ステージ;
 
@@ -35,6 +35,11 @@ namespace DTXmatixx
 			: base( 設計画面サイズ: new SizeF( 1920f, 1080f ), 物理画面サイズ: new SizeF( 960f, 540f ) )
 		{
 			this.Text = $"{Application.ProductName} {Application.ProductVersion}";
+
+			var exePath = Path.GetDirectoryName( Assembly.GetExecutingAssembly().Location );
+			Folder.フォルダ変数を追加または更新する( "Exe", exePath );
+			Folder.フォルダ変数を追加または更新する( "System", Path.Combine( exePath, @"System\" ) );
+			Folder.フォルダ変数を追加または更新する( "AppData", Path.Combine( Environment.GetFolderPath( Environment.SpecialFolder.ApplicationData, Environment.SpecialFolderOption.Create ), @"DTXMatixx\" ) );
 
 			App.Keyboard = new Keyboard( this.Handle );
 			App.ステージ管理 = new ステージ管理();
@@ -186,6 +191,17 @@ namespace DTXmatixx
 						}
 						//----------------
 						#endregion
+						#region " 確定 → 選曲ステージへ "
+						//----------------
+						if( stage.現在のフェーズ == ステージ.タイトル.タイトルステージ.フェーズ.確定 )
+						{
+							App.ステージ管理.ステージを遷移する( gd, nameof( ステージ.選曲.選曲ステージ ) );
+						}
+						//----------------
+						#endregion
+						break;
+
+					case ステージ.選曲.選曲ステージ stage:
 						break;
 				}
 
