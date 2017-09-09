@@ -167,10 +167,11 @@ namespace DTXmatixx.ステージ.アイキャッチ
 				#endregion
 			};
 
-			for( int i = 0; i < シャッター枚数; i++ )
-				this._シャッター情報[ i ].開to閉割合 = new Variable( gd.Animation.Manager, initialValue: 0.0 );    // 初期値 0.0(完全開き)
-
-			this._ロゴ不透明度 = new Variable( gd.Animation.Manager, initialValue: 0.0 ); // 初期値 0.0(完全透明)
+			//for( int i = 0; i < シャッター枚数; i++ )
+			//	this._シャッター情報[ i ].開to閉割合 = new Variable( gd.Animation.Manager, initialValue: 0.0 );
+			//this._ロゴ不透明度 = new Variable( gd.Animation.Manager, initialValue: 0.0 );
+			// 
+			// --> クローズかオープンかで初期値が変わるので、ここでは設定しない。
 
 			this.現在のフェーズ = フェーズ.未定;
 		}
@@ -185,8 +186,10 @@ namespace DTXmatixx.ステージ.アイキャッチ
 
 			foreach( var s in this._シャッター情報 )
 				s.Dispose();
-
 			this._シャッター情報 = null;
+
+			this._ロゴボード.Dispose();
+			this._ロゴ不透明度?.Dispose();
 		}
 
 		public void クローズする( グラフィックデバイス gd, float 速度倍率 = 1.0f )
@@ -197,6 +200,8 @@ namespace DTXmatixx.ステージ.アイキャッチ
 			{
 				using( var 開閉遷移 = gd.Animation.TrasitionLibrary.SmoothStop( this._シャッター情報[ i ].開閉時間sec / 速度倍率, finalValue: 1.0 ) )   // 終了値 1.0(完全閉じ)
 				{
+					this._シャッター情報[ i ].開to閉割合?.Dispose();
+					this._シャッター情報[ i ].開to閉割合 = new Variable( gd.Animation.Manager, initialValue: 0.0 );    // 初期値 0.0(完全開き)
 					this._シャッター情報[ i ].ストーリーボード?.Abandon();
 					this._シャッター情報[ i ].ストーリーボード?.Dispose();
 					this._シャッター情報[ i ].ストーリーボード = new Storyboard( gd.Animation.Manager );
@@ -205,10 +210,14 @@ namespace DTXmatixx.ステージ.アイキャッチ
 				}
 			}
 
-			this._ロゴ不透明度遷移 = gd.Animation.TrasitionLibrary.Linear( duration: 0.75f / 速度倍率, finalValue: 1.0 );    // 終了値 1.0(完全不透明)
-			this._ロゴボード = new Storyboard( gd.Animation.Manager );
-			this._ロゴボード.AddTransition( this._ロゴ不透明度, this._ロゴ不透明度遷移 );
-			this._ロゴボード.Schedule( start );
+			using( var _不透明度遷移 = gd.Animation.TrasitionLibrary.Linear( duration: 0.75f / 速度倍率, finalValue: 1.0 ) )    // 終了値 1.0(完全不透明)
+			{
+				this._ロゴ不透明度?.Dispose();
+				this._ロゴ不透明度 = new Variable( gd.Animation.Manager, initialValue: 0.0 ); // 初期値 0.0(完全透明)
+				this._ロゴボード = new Storyboard( gd.Animation.Manager );
+				this._ロゴボード.AddTransition( this._ロゴ不透明度, _不透明度遷移 );
+				this._ロゴボード.Schedule( start );
+			}
 
 			this.現在のフェーズ = フェーズ.クローズ;
 		}
@@ -226,8 +235,10 @@ namespace DTXmatixx.ステージ.アイキャッチ
 
 			for( int i = 0; i < シャッター枚数; i++ )
 			{
-				using( var 開閉遷移 = gd.Animation.TrasitionLibrary.SmoothStop( this._シャッター情報[ i ].開閉時間sec / 速度倍率, finalValue: 0.0 ) )  // 終了値: 0.0
+				using( var 開閉遷移 = gd.Animation.TrasitionLibrary.SmoothStop( this._シャッター情報[ i ].開閉時間sec / 速度倍率, finalValue: 0.0 ) )  // 終了値: 0.0(完全開き)
 				{
+					this._シャッター情報[ i ].開to閉割合?.Dispose();
+					this._シャッター情報[ i ].開to閉割合 = new Variable( gd.Animation.Manager, initialValue: 1.0 );    // 初期値 1.0(完全閉じ)
 					this._シャッター情報[ i ].ストーリーボード?.Abandon();
 					this._シャッター情報[ i ].ストーリーボード?.Dispose();
 					this._シャッター情報[ i ].ストーリーボード = new Storyboard( gd.Animation.Manager );
@@ -236,10 +247,14 @@ namespace DTXmatixx.ステージ.アイキャッチ
 				}
 			}
 
-			this._ロゴ不透明度遷移 = gd.Animation.TrasitionLibrary.Linear( duration: 0.75f / 速度倍率, finalValue: 0.0 );    // 終了値 0.0(完全透明)
-			this._ロゴボード = new Storyboard( gd.Animation.Manager );
-			this._ロゴボード.AddTransition( this._ロゴ不透明度, this._ロゴ不透明度遷移 );
-			this._ロゴボード.Schedule( start );
+			this._ロゴ不透明度?.Dispose();
+			this._ロゴ不透明度 = new Variable( gd.Animation.Manager, initialValue: 1.0 ); // 初期値 0.0(完全不透明)
+			using( var _不透明度遷移 = gd.Animation.TrasitionLibrary.Linear( duration: 0.75f / 速度倍率, finalValue: 0.0 ) )    // 終了値 0.0(完全透明)
+			{
+				this._ロゴボード = new Storyboard( gd.Animation.Manager );
+				this._ロゴボード.AddTransition( this._ロゴ不透明度, _不透明度遷移 );
+				this._ロゴボード.Schedule( start );
+			}
 
 			this.現在のフェーズ = フェーズ.オープン;
 		}
@@ -357,7 +372,6 @@ namespace DTXmatixx.ステージ.アイキャッチ
 
 		protected 画像 _ロゴ = null;
 		protected Variable _ロゴ不透明度 = null;
-		protected Transition _ロゴ不透明度遷移 = null;
 		protected Storyboard _ロゴボード = null;
 		protected readonly RectangleF _ロゴ表示領域 = new RectangleF( 1200f, 650f, 600f, 350f );
 	}
