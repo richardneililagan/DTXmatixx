@@ -12,16 +12,26 @@ namespace DTXmatixx.ステージ.アイキャッチ
 {
 	class GO : Activity
 	{
+		public enum フェーズ
+		{
+			未定,
+			クローズ,
+			オープン,
+			クローズ完了,
+			オープン完了,
+		}
+		public フェーズ 現在のフェーズ { get; protected set; }
+
 		protected override void On活性化( グラフィックデバイス gd )
 		{
-			this._フェーズ = フェーズ.未定;
+			this.現在のフェーズ = フェーズ.未定;
 
 			#region " Go! "
 			//----------------
 			this._文字 = new 文字[ 3 ] {
-				new 文字() { 画像 = new 画像( @"D:\作業場\開発\@DTXMania\DTXmatixx\DTXmatixx\System\images\G.png" ) },
-				new 文字() { 画像 = new 画像( @"D:\作業場\開発\@DTXMania\DTXmatixx\DTXmatixx\System\images\O.png" ) },
-				new 文字() { 画像 = new 画像( @"D:\作業場\開発\@DTXMania\DTXmatixx\DTXmatixx\System\images\!.png" ) },
+				new 文字() { 画像 = new 画像( @"$(System)images\G.png" ) },
+				new 文字() { 画像 = new 画像( @"$(System)images\O.png" ) },
+				new 文字() { 画像 = new 画像( @"$(System)images\!.png" ) },
 			};
 			foreach( var s in this._文字 )
 			{
@@ -94,7 +104,7 @@ namespace DTXmatixx.ステージ.アイキャッチ
 
 		public void クローズする( グラフィックデバイス gd, float 速度倍率 = 1.0f )
 		{
-			this._フェーズ = フェーズ.クローズ;
+			this.現在のフェーズ = フェーズ.クローズ;
 
 			// Go!
 			var basetime = gd.Animation.Timer.Time;
@@ -762,7 +772,7 @@ namespace DTXmatixx.ステージ.アイキャッチ
 
 		public void オープンする( グラフィックデバイス gd, float 速度倍率 = 1.0f )
 		{
-			this._フェーズ = フェーズ.オープン;
+			this.現在のフェーズ = フェーズ.オープン;
 			var basetime = gd.Animation.Timer.Time;
 
 			// Go! → 未使用
@@ -793,26 +803,27 @@ namespace DTXmatixx.ステージ.アイキャッチ
 
 		public void 進行描画する( グラフィックデバイス gd )
 		{
-			switch( this._フェーズ )
+			switch( this.現在のフェーズ )
 			{
 				case フェーズ.未定:
 					break;
 
 				case フェーズ.クローズ:
+				case フェーズ.クローズ完了:
 					this.進行描画する( gd, StoryboardStatus.Scheduled );
 					break;
 
 				case フェーズ.オープン:
+				case フェーズ.オープン完了:
 					this.進行描画する( gd, StoryboardStatus.Ready );
 					break;
 			}
 		}
 
-		protected enum フェーズ { 未定, クローズ, オープン }
-		protected フェーズ _フェーズ;
-
 		protected void 進行描画する( グラフィックデバイス gd, StoryboardStatus 描画しないStatus )
 		{
+			bool すべて完了 = true;
+
 			gd.D2DBatchDraw( ( dc ) => {
 
 				var pretrans = dc.Transform;
@@ -822,7 +833,14 @@ namespace DTXmatixx.ステージ.アイキャッチ
 				for( int i = 0; i < this._ぐるぐる棒s.Length; i++ )
 				{
 					var context = this._ぐるぐる棒s[ i ];
-					if( null == context.ストーリーボード || context.ストーリーボード.Status == 描画しないStatus )
+
+					if( null == context )
+						continue;
+
+					if( context.ストーリーボード.Status != StoryboardStatus.Ready )
+						すべて完了 = false;
+
+					if( context.ストーリーボード.Status == 描画しないStatus )
 						continue;
 
 					dc.Transform =
@@ -847,7 +865,14 @@ namespace DTXmatixx.ステージ.アイキャッチ
 				for( int i = 0; i <= 4; i++ )
 				{
 					var context = this._フラッシュオーバー棒s[ i ];
-					if( null == context.ストーリーボード || context.ストーリーボード.Status == 描画しないStatus )
+
+					if( null == context.ストーリーボード )
+						continue;
+
+					if( context.ストーリーボード.Status != StoryboardStatus.Ready )
+						すべて完了 = false;
+
+					if( context.ストーリーボード.Status == 描画しないStatus )
 						continue;
 
 					dc.Transform =
@@ -873,7 +898,13 @@ namespace DTXmatixx.ステージ.アイキャッチ
 			//----------------
 			foreach( var context in this._文字 )
 			{
-				if( null == context.ストーリーボード || context.ストーリーボード.Status == 描画しないStatus )
+				if( null == context.ストーリーボード )
+					continue;
+
+				if( context.ストーリーボード.Status != StoryboardStatus.Ready )
+					すべて完了 = false;
+
+				if( context.ストーリーボード.Status == 描画しないStatus )
 					continue;
 
 				var 変換行列2D =
@@ -893,8 +924,12 @@ namespace DTXmatixx.ステージ.アイキャッチ
 				//----------------
 				{
 					var context = this._フラッシュオーバー棒s[ 5 ];
+
 					if( null != context.ストーリーボード && context.ストーリーボード.Status != 描画しないStatus )
 					{
+						if( context.ストーリーボード.Status != StoryboardStatus.Ready )
+							すべて完了 = false;
+
 						dc.Transform =
 							Matrix3x2.Rotation( (float) context.回転角rad )
 							* Matrix3x2.Translation( (float) context.中心位置X, (float) context.中心位置Y )
@@ -917,8 +952,12 @@ namespace DTXmatixx.ステージ.アイキャッチ
 				//----------------
 				{
 					var context = this._フェードイン;
+
 					if( null != context && null != context.ストーリーボード && context.ストーリーボード.Status != 描画しないStatus )
 					{
+						if( context.ストーリーボード.Status != StoryboardStatus.Ready )
+							すべて完了 = false;
+
 						dc.Transform = pretrans;
 
 						using( var ブラシ = new SolidColorBrush( dc, new Color4( 0.5f, 0.5f, 1f, (float) context.不透明度.Value ) ) )
@@ -931,6 +970,15 @@ namespace DTXmatixx.ステージ.アイキャッチ
 				#endregion
 
 			} );
+
+			if( すべて完了 )
+			{
+				if( this.現在のフェーズ == フェーズ.クローズ )
+					this.現在のフェーズ = フェーズ.クローズ完了;
+
+				if( this.現在のフェーズ == フェーズ.オープン )
+					this.現在のフェーズ = フェーズ.オープン完了;
+			}
 		}
 
 		protected class 文字 : IDisposable
