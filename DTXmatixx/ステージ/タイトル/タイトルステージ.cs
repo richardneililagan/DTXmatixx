@@ -9,7 +9,7 @@ using SharpDX.Direct2D1;
 using SharpDX.Direct2D1.Effects;
 using FDK;
 using FDK.メディア;
-using DTXmatixx.ステージ.アイキャッチ;
+using DTXmatixx.画面遷移.AB遷移;
 
 namespace DTXmatixx.ステージ.タイトル
 {
@@ -30,7 +30,7 @@ namespace DTXmatixx.ステージ.タイトル
 
 		public タイトルステージ()
 		{
-			this.子リスト.Add( this._背景画像 = new 画像( @"$(System)images\舞台.jpg" ) );
+			this.子リスト.Add( this._舞台画像 = new 舞台画像() );
 			this.子リスト.Add( this._タイトルロゴ = new 画像( @"$(System)images\タイトルロゴ（読みあり）.png" ) );
 			this.子リスト.Add( this._パッドを叩いてください = new 文字列画像( "パッドを叩いてください", 40f ) );
 			this.子リスト.Add( this._フェードアウト = new シャッター() );
@@ -58,7 +58,7 @@ namespace DTXmatixx.ステージ.タイトル
 			{
 				case フェーズ.表示:
 
-					this._背景を描画する( gd, null );
+					this._舞台画像.進行描画する( gd );
 					this._タイトルロゴ.描画する( gd, ( gd.設計画面サイズ.Width - this._タイトルロゴ.サイズ.Width ) / 2f, ( gd.設計画面サイズ.Height - this._タイトルロゴ.サイズ.Height ) / 2f - 100f );
 					this._帯メッセージを描画する( gd );
 
@@ -75,7 +75,7 @@ namespace DTXmatixx.ステージ.タイトル
 
 				case フェーズ.フェードアウト:
 
-					this._背景を描画する( gd, null );
+					this._舞台画像.進行描画する( gd );
 					this._タイトルロゴ.描画する( gd, ( gd.設計画面サイズ.Width - this._タイトルロゴ.サイズ.Width ) / 2f, ( gd.設計画面サイズ.Height - this._タイトルロゴ.サイズ.Height ) / 2f - 100f );
 					this._帯メッセージを描画する( gd );
 
@@ -91,25 +91,12 @@ namespace DTXmatixx.ステージ.タイトル
 			}
 		}
 
-		private 画像 _背景画像 = null;
+		private 舞台画像 _舞台画像 = null;
 		private 画像 _タイトルロゴ = null;
 		private Brush _帯ブラシ = null;
 		private 文字列画像 _パッドを叩いてください = null;
 		private シャッター _フェードアウト = null;
 
-		private void _背景を描画する( グラフィックデバイス gd, SharpDX.Direct2D1.Effect effect = null )
-		{
-			if( effect is null )
-			{
-				this._背景画像.描画する( gd, 0f, 0f );
-			}
-			else
-			{
-				gd.D2DBatchDraw( ( dc ) => {
-					dc.DrawImage( effect, new Vector2( 0f, 0f ) );
-				} );
-			}
-		}
 		private void _帯メッセージを描画する( グラフィックデバイス gd )
 		{
 			var 領域 = new RectangleF( 0f, 800f, gd.設計画面サイズ.Width, 80f );

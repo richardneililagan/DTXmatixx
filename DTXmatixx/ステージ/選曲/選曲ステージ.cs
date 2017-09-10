@@ -3,9 +3,10 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using SharpDX;
+using SharpDX.DirectInput;
 using FDK;
 using FDK.メディア;
-using DTXmatixx.ステージ.アイキャッチ;
+using DTXmatixx.画面遷移.ABC遷移;
 
 namespace DTXmatixx.ステージ.選曲
 {
@@ -26,7 +27,8 @@ namespace DTXmatixx.ステージ.選曲
 
 		public 選曲ステージ()
 		{
-			this.子リスト.Add( this._フェードイン = new シャッター() );
+			this.子リスト.Add( this._舞台画像 = new 舞台画像() );
+			this.子リスト.Add( this._フェードイン = new 回転幕() );
 		}
 		protected override void On活性化( グラフィックデバイス gd )
 		{
@@ -56,6 +58,11 @@ namespace DTXmatixx.ステージ.選曲
 			{
 				case フェーズ.フェードイン:
 					this._フェードイン.進行描画する( gd );
+
+					if( this._フェードイン.現在のフェーズ == 回転幕.フェーズ.オープン完了 )
+					{
+						this.現在のフェーズ = フェーズ.表示;
+					}
 					break;
 
 				case フェーズ.表示:
@@ -68,6 +75,7 @@ namespace DTXmatixx.ステージ.選曲
 		}
 
 		private bool _初めての進行描画 = true;
-		private シャッター _フェードイン = null;
+		private 舞台画像 _舞台画像 = null;
+		private 回転幕 _フェードイン = null;
 	}
 }

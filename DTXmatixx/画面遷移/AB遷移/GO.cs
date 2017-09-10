@@ -8,7 +8,7 @@ using SharpDX.Direct2D1;
 using FDK;
 using FDK.メディア;
 
-namespace DTXmatixx.ステージ.アイキャッチ
+namespace DTXmatixx.画面遷移.AB遷移
 {
 	class GO : Activity
 	{
@@ -70,28 +70,37 @@ namespace DTXmatixx.ステージ.アイキャッチ
 		{
 			#region " Go! "
 			//----------------
-			foreach( var s in this._文字 )
+			if( null != this._文字 )
 			{
-				this.子リスト.Remove( s.画像 );
-				s.Dispose();
+				foreach( var s in this._文字 )
+				{
+					this.子リスト.Remove( s.画像 );
+					s.Dispose();
+				}
+				this._文字 = null;
 			}
-			this._文字 = null;
 			//----------------
 			#endregion
 
 			#region " ぐるぐる棒 "
 			//----------------
-			foreach( var b in this._ぐるぐる棒s )
-				b.Dispose();
-			this._ぐるぐる棒s = null;
+			if( null != this._ぐるぐる棒s )
+			{
+				foreach( var b in this._ぐるぐる棒s )
+					b.Dispose();
+				this._ぐるぐる棒s = null;
+			}
 			//----------------
 			#endregion
 
 			#region " フラッシュオーバー棒 "
 			//----------------
-			foreach( var b in this._フラッシュオーバー棒s )
-				b.Dispose();
-			this._フラッシュオーバー棒s = null;
+			if( null != this._フラッシュオーバー棒s )
+			{
+				foreach( var b in this._フラッシュオーバー棒s )
+					b.Dispose();
+				this._フラッシュオーバー棒s = null;
+			}
 			//----------------
 			#endregion
 

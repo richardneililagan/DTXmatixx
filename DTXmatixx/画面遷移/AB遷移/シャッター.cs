@@ -8,7 +8,8 @@ using SharpDX.Direct2D1;
 using FDK;
 using FDK.メディア;
 
-namespace DTXmatixx.ステージ.アイキャッチ
+namespace DTXmatixx.画面遷移.AB遷移
+
 {
 	class シャッター : Activity
 	{
@@ -184,14 +185,14 @@ namespace DTXmatixx.ステージ.アイキャッチ
 			FDKUtilities.解放する( ref this._ふつうのブラシ );
 			FDKUtilities.解放する( ref this._明るいブラシ );
 
-			foreach( var s in this._シャッター情報 )
-				s.Dispose();
-			this._シャッター情報 = null;
-
-			this._ロゴボード.Dispose();
-			this._ロゴボード = null;
-			this._ロゴ不透明度?.Dispose();
-			this._ロゴ不透明度 = null;
+			if( null != this._シャッター情報 )
+			{
+				foreach( var s in this._シャッター情報 )
+					s.Dispose();
+				this._シャッター情報 = null;
+			}
+			FDKUtilities.解放する( ref this._ロゴボード );
+			FDKUtilities.解放する( ref this._ロゴ不透明度 );
 		}
 
 		public void クローズする( グラフィックデバイス gd, float 速度倍率 = 1.0f )

@@ -78,12 +78,14 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ステージ\アイキャッチ\GO.cs" />
-    <Compile Include="ステージ\アイキャッチ\シャッター.cs" />
+    <Compile Include="画面遷移\AB遷移\GO.cs" />
+    <Compile Include="画面遷移\AB遷移\シャッター.cs" />
     <Compile Include="ステージ\ステージ.cs" />
     <Compile Include="ステージ\ステージ管理.cs" />
     <Compile Include="ステージ\タイトル\タイトルステージ.cs" />
-    <Compile Include="ステージ\アイキャッチ\回転幕.cs" />
+    <Compile Include="画面遷移\ABC遷移\回転幕.cs" />
+    <Compile Include="ステージ\舞台画像.cs" />
+    <Compile Include="ステージ\認証\認証ステージ.cs" />
     <Compile Include="ステージ\選曲\選曲ステージ.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -133,6 +135,16 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="System\Images\タイトルロゴ（読みあり）.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="System\Images\舞台黒幕付き.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="System\Images\タッチアイコン.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
