@@ -8,7 +8,7 @@ using SharpDX.Direct2D1;
 using FDK;
 using FDK.メディア;
 
-namespace DTXmatixx.画面遷移.ABC遷移
+namespace DTXmatixx.アイキャッチ
 {
 	class 回転幕 : Activity
 	{
@@ -16,8 +16,8 @@ namespace DTXmatixx.画面遷移.ABC遷移
 		{
 			未定,
 			クローズ,
-			オープン,
 			クローズ完了,
+			オープン,
 			オープン完了
 		}
 		public フェーズ 現在のフェーズ { get; protected set; }

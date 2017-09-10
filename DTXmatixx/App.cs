@@ -13,8 +13,7 @@ using SharpDX.Windows;
 using FDK;
 using FDK.入力;
 using DTXmatixx.ステージ;
-using DTXmatixx.画面遷移.AB遷移;
-using DTXmatixx.画面遷移.ABC遷移;
+using DTXmatixx.アイキャッチ;
 
 namespace DTXmatixx
 {

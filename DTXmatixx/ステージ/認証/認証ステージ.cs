@@ -7,8 +7,7 @@ using SharpDX.Direct2D1.Effects;
 using FDK;
 using FDK.メディア;
 using FDK.カウンタ;
-using DTXmatixx.画面遷移.AB遷移;
-using DTXmatixx.画面遷移.ABC遷移;
+using DTXmatixx.アイキャッチ;
 
 namespace DTXmatixx.ステージ.認証
 {

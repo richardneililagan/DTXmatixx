@@ -6,7 +6,7 @@ using SharpDX;
 using SharpDX.DirectInput;
 using FDK;
 using FDK.メディア;
-using DTXmatixx.画面遷移.ABC遷移;
+using DTXmatixx.アイキャッチ;
 
 namespace DTXmatixx.ステージ.選曲
 {

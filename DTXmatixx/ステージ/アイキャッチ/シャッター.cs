@@ -8,7 +8,7 @@ using SharpDX.Direct2D1;
 using FDK;
 using FDK.メディア;
 
-namespace DTXmatixx.画面遷移.AB遷移
+namespace DTXmatixx.アイキャッチ
 
 {
 	class シャッター : Activity
