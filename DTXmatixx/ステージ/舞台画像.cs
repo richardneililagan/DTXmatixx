@@ -31,36 +31,52 @@ namespace DTXmatixx.ステージ
 			this.子リスト.Add( this._背景黒幕付き画像 = new 画像( @"$(System)images\舞台黒幕付き.jpg" ) );
 		}
 
-		public void ぼかしと縮小を適用する( グラフィックデバイス gd )
+		public void ぼかしと縮小を適用する( グラフィックデバイス gd, double 完了までの最大時間sec = 1.0 )
 		{
 			Debug.Assert( this.活性化している );
 
 			if( !( this.ぼかしと縮小を適用中 ) )
 			{
-				using( var 割合遷移 = gd.Animation.TrasitionLibrary.SmoothStop( 1, finalValue: 1.0 ) )	// 1秒以内に1.0へ遷移せよ
+				if( 0.0 == 完了までの最大時間sec )
 				{
-					this._ストーリーボード?.Abandon();
-					this._ストーリーボード?.Dispose();
-					this._ストーリーボード = new Storyboard( gd.Animation.Manager );
-					this._ストーリーボード.AddTransition( this._ぼかしと縮小割合, 割合遷移 );
-					this._ストーリーボード.Schedule( gd.Animation.Timer.Time );    // 今すぐ開始
+					this._ぼかしと縮小割合?.Dispose();
+					this._ぼかしと縮小割合 = new Variable( gd.Animation.Manager, initialValue: 1.0 );
+				}
+				else
+				{
+					using( var 割合遷移 = gd.Animation.TrasitionLibrary.SmoothStop( 完了までの最大時間sec, finalValue: 1.0 ) )
+					{
+						this._ストーリーボード?.Abandon();
+						this._ストーリーボード?.Dispose();
+						this._ストーリーボード = new Storyboard( gd.Animation.Manager );
+						this._ストーリーボード.AddTransition( this._ぼかしと縮小割合, 割合遷移 );
+						this._ストーリーボード.Schedule( gd.Animation.Timer.Time );    // 今すぐ開始
+					}
 				}
 				this.ぼかしと縮小を適用中 = true;
 			}
 		}
-		public void ぼかしと縮小を解除する( グラフィックデバイス gd )
+		public void ぼかしと縮小を解除する( グラフィックデバイス gd, double 完了までの最大時間sec = 1.0 )
 		{
 			Debug.Assert( this.活性化している );
 
 			if( this.ぼかしと縮小を適用中 )
 			{
-				using( var 割合遷移 = gd.Animation.TrasitionLibrary.SmoothStop( 1, finalValue: 0.0 ) )  // 1秒以内に0.0へ遷移せよ
+				if( 0.0 == 完了までの最大時間sec )
 				{
-					this._ストーリーボード?.Abandon();
-					this._ストーリーボード?.Dispose();
-					this._ストーリーボード = new Storyboard( gd.Animation.Manager );
-					this._ストーリーボード.AddTransition( this._ぼかしと縮小割合, 割合遷移 );
-					this._ストーリーボード.Schedule( gd.Animation.Timer.Time );    // 今すぐ開始
+					this._ぼかしと縮小割合?.Dispose();
+					this._ぼかしと縮小割合 = new Variable( gd.Animation.Manager, initialValue: 0.0 );
+				}
+				else
+				{
+					using( var 割合遷移 = gd.Animation.TrasitionLibrary.SmoothStop( 完了までの最大時間sec, finalValue: 0.0 ) )
+					{
+						this._ストーリーボード?.Abandon();
+						this._ストーリーボード?.Dispose();
+						this._ストーリーボード = new Storyboard( gd.Animation.Manager );
+						this._ストーリーボード.AddTransition( this._ぼかしと縮小割合, 割合遷移 );
+						this._ストーリーボード.Schedule( gd.Animation.Timer.Time );    // 今すぐ開始
+					}
 				}
 				this.ぼかしと縮小を適用中 = false;
 			}

@@ -57,6 +57,7 @@ namespace DTXmatixx.ステージ.選曲
 			switch( this.現在のフェーズ )
 			{
 				case フェーズ.フェードイン:
+					this._舞台画像.進行描画する( gd );
 					this._フェードイン.進行描画する( gd );
 
 					if( this._フェードイン.現在のフェーズ == 回転幕.フェーズ.オープン完了 )
@@ -66,6 +67,7 @@ namespace DTXmatixx.ステージ.選曲
 					break;
 
 				case フェーズ.表示:
+					this._舞台画像.進行描画する( gd );
 					break;
 
 				case フェーズ.確定:

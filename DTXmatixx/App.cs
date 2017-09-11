@@ -45,9 +45,6 @@ namespace DTXmatixx
 			App.Keyboard = new Keyboard( this.Handle );
 			App.ステージ管理 = new ステージ管理();
 
-			this._シャッター = new シャッター();
-			this._回転幕 = new 回転幕();
-
 			this._活性化する();
 
 			// 最初のステージへ遷移する。
@@ -129,9 +126,6 @@ namespace DTXmatixx
 		{
 			using( Log.Block( FDKUtilities.現在のメソッド名 ) )
 			{
-				this._シャッター.活性化する( App.グラフィックデバイス );
-				this._回転幕.活性化する( App.グラフィックデバイス );
-
 				if( App.ステージ管理.現在のステージ?.活性化していない ?? false )
 					App.ステージ管理.現在のステージ?.活性化する( App.グラフィックデバイス );
 			}
@@ -146,9 +140,6 @@ namespace DTXmatixx
 			{
 				if( App.ステージ管理.現在のステージ?.活性化している ?? false )
 					App.ステージ管理.現在のステージ?.非活性化する( App.グラフィックデバイス );
-
-				this._シャッター.非活性化する( App.グラフィックデバイス );
-				this._回転幕.非活性化する( App.グラフィックデバイス );
 			}
 		}
 
@@ -188,13 +179,6 @@ namespace DTXmatixx
 				// UIFramework を描画。
 				gd.UIFramework.Render( gd );
 
-				// アイキャッチを進行描画。
-				if( this._シャッター.現在のフェーズ != シャッター.フェーズ.未定 )
-					this._シャッター.進行描画する( gd );
-
-				if( this._回転幕.現在のフェーズ != 回転幕.フェーズ.未定 )
-					this._回転幕.進行描画する( gd );
-
 				// ステージの進行描画の結果（フェーズの状態など）を受けての後処理。
 				switch( App.ステージ管理.現在のステージ )
 				{
@@ -232,7 +216,7 @@ namespace DTXmatixx
 						//----------------
 						if( stage.現在のフェーズ == ステージ.認証.認証ステージ.フェーズ.確定 )
 						{
-//							App.ステージ管理.ステージを遷移する( gd, nameof( ステージ.選曲.選曲ステージ ) );
+							App.ステージ管理.ステージを遷移する( gd, nameof( ステージ.選曲.選曲ステージ ) );
 						}
 						//----------------
 						#endregion
@@ -267,8 +251,5 @@ namespace DTXmatixx
 				}
 			}
 		}
-
-		private シャッター _シャッター = null;
-		private 回転幕 _回転幕 = null;
 	}
 }
