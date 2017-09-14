@@ -8,6 +8,7 @@ using SharpDX.DirectInput;
 using FDK;
 using FDK.メディア;
 using DTXmatixx.アイキャッチ;
+using DTXmatixx.曲;
 
 namespace DTXmatixx.ステージ.選曲
 {
@@ -61,6 +62,8 @@ namespace DTXmatixx.ステージ.選曲
 		}
 		public override void 進行描画する( グラフィックデバイス gd )
 		{
+			// 進行描画
+
 			var fadeIn = App.ステージ管理.回転幕;
 
 			if( this._初めての進行描画 )
@@ -69,31 +72,38 @@ namespace DTXmatixx.ステージ.選曲
 				this._初めての進行描画 = false;
 			}
 
-			App.Keyboard.ポーリングする();
+			this._舞台画像.進行描画する( gd );
+			this._曲リスト.進行描画する( gd );
+			this._その他パネルを描画する( gd );
+			this._プレビュー画像を描画する( gd, App.曲ツリー.フォーカスノード );
 
 			switch( this.現在のフェーズ )
 			{
 				case フェーズ.フェードイン:
-					this._舞台画像.進行描画する( gd );
-					this._曲リスト.進行描画する( gd );
-					this._その他パネルを描画する( gd );
 					fadeIn.進行描画する( gd );
-
 					if( fadeIn.現在のフェーズ == 回転幕.フェーズ.オープン完了 )
-					{
 						this.現在のフェーズ = フェーズ.表示;
-					}
 					break;
 
 				case フェーズ.表示:
-					this._舞台画像.進行描画する( gd );
-					this._曲リスト.進行描画する( gd );
-					this._その他パネルを描画する( gd );
 					break;
 
 				case フェーズ.確定:
 				case フェーズ.キャンセル:
 					break;
+			}
+
+			// 入力
+
+			App.Keyboard.ポーリングする();
+
+			if( App.Keyboard.キーが押された( 0, Key.Up ) )
+			{
+				App.曲ツリー.前のノードをフォーカスする();
+			}
+			else if( App.Keyboard.キーが押された( 0, Key.Down ) )
+			{
+				App.曲ツリー.次のノードをフォーカスする();
 			}
 		}
 
@@ -125,6 +135,24 @@ namespace DTXmatixx.ステージ.選曲
 
 			this._ステージタイマー.描画する( gd, 1689f, 37f );
 		}
+		private void _プレビュー画像を描画する( グラフィックデバイス gd, Node ノード )
+		{
+			var 画像 = ノード?.ノード画像 ?? Node.既定のノード画像;
+
+			var 画面左上dpx = new Vector3(
+				-gd.設計画面サイズ.Width / 2f,
+				+gd.設計画面サイズ.Height / 2f,
+				0f );
+
+			var 変換行列 =
+				Matrix.Scaling( this._プレビュー画像表示サイズdpx ) *
+				Matrix.Translation(
+					画面左上dpx.X + this._プレビュー画像表示サイズdpx.X / 2f + 471f,
+					画面左上dpx.Y - this._プレビュー画像表示サイズdpx.Y / 2f - 61f,
+					0f );
+
+			画像.描画する( gd, 変換行列 );
+		}
 
 		private SolidColorBrush _白 = null;
 		private SolidColorBrush _黒 = null;
@@ -133,5 +161,6 @@ namespace DTXmatixx.ステージ.選曲
 		private SolidColorBrush _黒透過 = null;
 		private SolidColorBrush _灰透過 = null;
 		private 画像 _ステージタイマー = null;
+		private readonly Vector3 _プレビュー画像表示サイズdpx = new Vector3( 444f, 444f, 0f );
 	}
 }
