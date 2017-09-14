@@ -46,10 +46,21 @@ namespace DTXmatixx.ステージ.曲ツリー構築
 			switch( this.現在のフェーズ )
 			{
 				case フェーズ.開始:
+
+					// 状態チェック； ここの時点で曲ツリーが初期状態であること。
+					Debug.Assert( null != App.曲ツリー.ルートノード );
+					Debug.Assert( null == App.曲ツリー.フォーカスノード );
+					Debug.Assert( null == App.曲ツリー.フォーカスリスト );
+
+					// OK なら構築へ
 					this.現在のフェーズ = フェーズ.構築中;
 					break;
 
 				case フェーズ.構築中:
+
+#warning ここでは、暫定的に固定パスを使用する。
+					App.曲ツリー.曲を検索して親ノードに追加する( App.曲ツリー.ルートノード, @"D:\作業場\開発\@StrokeStyleT\曲データ" );
+
 					this.現在のフェーズ = フェーズ.確定;
 					break;
 

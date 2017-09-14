@@ -25,10 +25,10 @@ namespace DTXmatixx.ステージ
 			protected set;
 		} = false;
 
-		public 舞台画像()
+		public 舞台画像( string 背景画像ファイル名 = null, string 背景黒幕付き画像ファイル名 = null )
 		{
-			this.子リスト.Add( this._背景画像 = new 画像( @"$(System)images\舞台.jpg" ) );
-			this.子リスト.Add( this._背景黒幕付き画像 = new 画像( @"$(System)images\舞台黒幕付き.jpg" ) );
+			this.子リスト.Add( this._背景画像 = new 画像( 背景画像ファイル名 ?? @"$(System)images\舞台.jpg" ) );
+			this.子リスト.Add( this._背景黒幕付き画像 = new 画像( 背景黒幕付き画像ファイル名 ?? @"$(System)images\舞台黒幕付き.jpg" ) );
 		}
 
 		public void ぼかしと縮小を適用する( グラフィックデバイス gd, double 完了までの最大時間sec = 1.0 )

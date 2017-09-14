@@ -27,7 +27,7 @@ namespace DTXmatixx.ステージ.選曲
 
 		public 選曲ステージ()
 		{
-			this.子リスト.Add( this._舞台画像 = new 舞台画像() );
+			this.子リスト.Add( this._舞台画像 = new 舞台画像( @"$(System)images\選曲舞台.jpg" ) );
 			this.子リスト.Add( this._フェードイン = new 回転幕() );
 		}
 		protected override void On活性化( グラフィックデバイス gd )

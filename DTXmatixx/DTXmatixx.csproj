@@ -162,6 +162,9 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <None Include="System\Images\選曲舞台.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <Content Include="曲\%40README.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
