@@ -1,11 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26430.13
+VisualStudioVersion = 15.0.26730.15
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DTXmatixx", "DTXmatixx\DTXmatixx.csproj", "{736BE388-5EC5-4BF9-838B-8580C9A8DA9C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FDK", "..\..\@StrokeStyleT\リポジトリ (CsWin10Desktop3)\FDK\FDK.csproj", "{0E35C4AC-6E28-4A09-A6CE-05D177800051}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SSTFormat", "..\..\@StrokeStyleT\リポジトリ (CsWin10Desktop3)\SSTFormat\SSTFormat.csproj", "{93B53767-A0A5-431C-9EC7-B23DBFFB10EC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -26,8 +28,17 @@ Global
 		{0E35C4AC-6E28-4A09-A6CE-05D177800051}.Release|Any CPU.Build.0 = Release|Any CPU
 		{0E35C4AC-6E28-4A09-A6CE-05D177800051}.RemoteDebug|Any CPU.ActiveCfg = RemoteDebug|Any CPU
 		{0E35C4AC-6E28-4A09-A6CE-05D177800051}.RemoteDebug|Any CPU.Build.0 = RemoteDebug|Any CPU
+		{93B53767-A0A5-431C-9EC7-B23DBFFB10EC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{93B53767-A0A5-431C-9EC7-B23DBFFB10EC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{93B53767-A0A5-431C-9EC7-B23DBFFB10EC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{93B53767-A0A5-431C-9EC7-B23DBFFB10EC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{93B53767-A0A5-431C-9EC7-B23DBFFB10EC}.RemoteDebug|Any CPU.ActiveCfg = RemoteDebug|Any CPU
+		{93B53767-A0A5-431C-9EC7-B23DBFFB10EC}.RemoteDebug|Any CPU.Build.0 = RemoteDebug|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {5F112F71-CD17-4B0E-8866-400C65EB3D24}
 	EndGlobalSection
 EndGlobal

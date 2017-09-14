@@ -84,9 +84,18 @@
     <Compile Include="ステージ\ステージ管理.cs" />
     <Compile Include="ステージ\タイトル\タイトルステージ.cs" />
     <Compile Include="ステージ\アイキャッチ\回転幕.cs" />
+    <Compile Include="ステージ\曲ツリー構築\曲ツリー構築ステージ.cs" />
     <Compile Include="ステージ\舞台画像.cs" />
     <Compile Include="ステージ\認証\認証ステージ.cs" />
     <Compile Include="ステージ\選曲\選曲ステージ.cs" />
+    <Compile Include="曲\BackNode.cs" />
+    <Compile Include="曲\BoxDef.cs" />
+    <Compile Include="曲\BoxNode.cs" />
+    <Compile Include="曲\MusicNode.cs" />
+    <Compile Include="曲\Node.cs" />
+    <Compile Include="曲\RootNode.cs" />
+    <Compile Include="曲\キャプションテクスチャ.cs" />
+    <Compile Include="曲\曲ツリー.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -114,6 +123,10 @@
     <ProjectReference Include="..\..\..\%40StrokeStyleT\リポジトリ %28CsWin10Desktop3%29\FDK\FDK.csproj">
       <Project>{0e35c4ac-6e28-4a09-a6ce-05d177800051}</Project>
       <Name>FDK</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\%40StrokeStyleT\リポジトリ %28CsWin10Desktop3%29\SSTFormat\SSTFormat.csproj">
+      <Project>{93b53767-a0a5-431c-9ec7-b23dbffb10ec}</Project>
+      <Name>SSTFormat</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
@@ -147,6 +160,9 @@
     <None Include="System\Images\タッチアイコン.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="曲\%40README.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

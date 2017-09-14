@@ -14,12 +14,19 @@ using FDK;
 using FDK.入力;
 using DTXmatixx.ステージ;
 using DTXmatixx.アイキャッチ;
+using SST.曲;
 
 namespace DTXmatixx
 {
 	class App : ApplicationForm, IDisposable
 	{
 		public static ステージ管理 ステージ管理
+		{
+			get;
+			protected set;
+		} = null;
+
+		public static 曲ツリー 曲ツリー
 		{
 			get;
 			protected set;
@@ -44,6 +51,7 @@ namespace DTXmatixx
 
 			App.Keyboard = new Keyboard( this.Handle );
 			App.ステージ管理 = new ステージ管理();
+			App.曲ツリー = new 曲ツリー();
 
 			this._活性化する();
 
@@ -59,6 +67,9 @@ namespace DTXmatixx
 
 				App.Keyboard.Dispose();
 				App.Keyboard = null;
+
+				App.曲ツリー.Dispose();
+				App.曲ツリー = null;
 
 				App.ステージ管理.Dispose( App.グラフィックデバイス );
 				App.ステージ管理 = null;
@@ -124,10 +135,14 @@ namespace DTXmatixx
 		/// </summary>
 		private void _活性化する()
 		{
+			var gd = App.グラフィックデバイス;
+
 			using( Log.Block( FDKUtilities.現在のメソッド名 ) )
 			{
 				if( App.ステージ管理.現在のステージ?.活性化していない ?? false )
-					App.ステージ管理.現在のステージ?.活性化する( App.グラフィックデバイス );
+					App.ステージ管理.現在のステージ?.活性化する( gd );
+
+				App.曲ツリー.活性化する( gd );
 			}
 		}
 
@@ -136,10 +151,14 @@ namespace DTXmatixx
 		/// </summary>
 		private void _非活性化する()
 		{
+			var gd = App.グラフィックデバイス;
+
 			using( Log.Block( FDKUtilities.現在のメソッド名 ) )
 			{
 				if( App.ステージ管理.現在のステージ?.活性化している ?? false )
-					App.ステージ管理.現在のステージ?.非活性化する( App.グラフィックデバイス );
+					App.ステージ管理.現在のステージ?.非活性化する( gd );
+
+				App.曲ツリー.非活性化する( gd );
 			}
 		}
 
@@ -182,6 +201,17 @@ namespace DTXmatixx
 				// ステージの進行描画の結果（フェーズの状態など）を受けての後処理。
 				switch( App.ステージ管理.現在のステージ )
 				{
+					case ステージ.曲ツリー構築.曲ツリー構築ステージ stage:
+						#region " 確定 → タイトルステージへ "
+						//----------------
+						if( stage.現在のフェーズ == ステージ.曲ツリー構築.曲ツリー構築ステージ.フェーズ.確定 )
+						{
+							App.ステージ管理.ステージを遷移する( gd, nameof( ステージ.タイトル.タイトルステージ ) );
+						}
+						//----------------
+						#endregion
+						break;
+
 					case ステージ.タイトル.タイトルステージ stage:
 						#region " キャンセル → アプリを終了する。"
 						//----------------
