@@ -33,7 +33,6 @@ namespace DTXmatixx.ステージ.タイトル
 			this.子リスト.Add( this._舞台画像 = new 舞台画像() );
 			this.子リスト.Add( this._タイトルロゴ = new 画像( @"$(System)images\タイトルロゴ（読みあり）.png" ) );
 			this.子リスト.Add( this._パッドを叩いてください = new 文字列画像( "パッドを叩いてください", 40f ) );
-			this.子リスト.Add( this._フェードアウト = new シャッター() );
 		}
 		protected override void On活性化( グラフィックデバイス gd )
 		{
@@ -52,6 +51,8 @@ namespace DTXmatixx.ステージ.タイトル
 		}
 		public override void 進行描画する( グラフィックデバイス gd )
 		{
+			var fadeOut = App.ステージ管理.シャッター;
+
 			App.Keyboard.ポーリングする();
 
 			switch( this.現在のフェーズ )
@@ -64,7 +65,7 @@ namespace DTXmatixx.ステージ.タイトル
 
 					if( App.Keyboard.キーが押された( 0, Key.Return ) )
 					{
-						this._フェードアウト.クローズする( gd );
+						fadeOut.クローズする( gd );
 						this.現在のフェーズ = フェーズ.フェードアウト;
 					}
 					else if( App.Keyboard.キーが押された( 0, Key.Escape ) )
@@ -79,9 +80,9 @@ namespace DTXmatixx.ステージ.タイトル
 					this._タイトルロゴ.描画する( gd, ( gd.設計画面サイズ.Width - this._タイトルロゴ.サイズ.Width ) / 2f, ( gd.設計画面サイズ.Height - this._タイトルロゴ.サイズ.Height ) / 2f - 100f );
 					this._帯メッセージを描画する( gd );
 
-					this._フェードアウト.進行描画する( gd );
+					fadeOut.進行描画する( gd );
 
-					if( this._フェードアウト.現在のフェーズ == シャッター.フェーズ.クローズ完了 )
+					if( fadeOut.現在のフェーズ == シャッター.フェーズ.クローズ完了 )
 						this.現在のフェーズ = フェーズ.確定;
 					break;
 
@@ -95,7 +96,6 @@ namespace DTXmatixx.ステージ.タイトル
 		private 画像 _タイトルロゴ = null;
 		private Brush _帯ブラシ = null;
 		private 文字列画像 _パッドを叩いてください = null;
-		private シャッター _フェードアウト = null;
 
 		private void _帯メッセージを描画する( グラフィックデバイス gd )
 		{

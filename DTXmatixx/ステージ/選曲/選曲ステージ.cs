@@ -28,7 +28,6 @@ namespace DTXmatixx.ステージ.選曲
 		public 選曲ステージ()
 		{
 			this.子リスト.Add( this._舞台画像 = new 舞台画像( @"$(System)images\選曲舞台.jpg" ) );
-			this.子リスト.Add( this._フェードイン = new 回転幕() );
 		}
 		protected override void On活性化( グラフィックデバイス gd )
 		{
@@ -46,9 +45,11 @@ namespace DTXmatixx.ステージ.選曲
 		}
 		public override void 進行描画する( グラフィックデバイス gd )
 		{
+			var fadeIn = App.ステージ管理.回転幕;
+
 			if( this._初めての進行描画 )
 			{
-				this._フェードイン.オープンする( gd );
+				fadeIn.オープンする( gd );
 				this._初めての進行描画 = false;
 			}
 
@@ -58,9 +59,9 @@ namespace DTXmatixx.ステージ.選曲
 			{
 				case フェーズ.フェードイン:
 					this._舞台画像.進行描画する( gd );
-					this._フェードイン.進行描画する( gd );
+					fadeIn.進行描画する( gd );
 
-					if( this._フェードイン.現在のフェーズ == 回転幕.フェーズ.オープン完了 )
+					if( fadeIn.現在のフェーズ == 回転幕.フェーズ.オープン完了 )
 					{
 						this.現在のフェーズ = フェーズ.表示;
 					}
@@ -78,6 +79,5 @@ namespace DTXmatixx.ステージ.選曲
 
 		private bool _初めての進行描画 = true;
 		private 舞台画像 _舞台画像 = null;
-		private 回転幕 _フェードイン = null;
 	}
 }

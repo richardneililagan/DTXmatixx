@@ -33,8 +33,6 @@ namespace DTXmatixx.ステージ.認証
 			this.子リスト.Add( this._舞台画像 = new 舞台画像() );
 			this.子リスト.Add( this._タッチアイコン = new 画像( @"$(System)images\タッチアイコン.png" ) );
 			this.子リスト.Add( this._確認できませんでした = new 文字列画像( "確認できませんでした。", 40f ) );
-			this.子リスト.Add( this._フェードイン = new シャッター() );
-			this.子リスト.Add( this._フェードアウト = new 回転幕() );
 		}
 		protected override void On活性化( グラフィックデバイス gd )
 		{
@@ -52,9 +50,12 @@ namespace DTXmatixx.ステージ.認証
 		}
 		public override void 進行描画する( グラフィックデバイス gd )
 		{
+			var fadeIn = App.ステージ管理.シャッター;
+			var fadeOut = App.ステージ管理.回転幕;
+
 			if( this._初めての進行描画 )
 			{
-				this._フェードイン.オープンする( gd );
+				fadeIn.オープンする( gd );
 				this._初めての進行描画 = false;
 			}
 
@@ -65,9 +66,9 @@ namespace DTXmatixx.ステージ.認証
 				case フェーズ.フェードイン:
 					this._舞台画像.進行描画する( gd, true );
 					this._タッチアイコン.描画する( gd, this._タッチアイコン表示行列 );
-					this._フェードイン.進行描画する( gd );
+					fadeIn.進行描画する( gd );
 
-					if( this._フェードイン.現在のフェーズ == シャッター.フェーズ.オープン完了 )
+					if( fadeIn.現在のフェーズ == シャッター.フェーズ.オープン完了 )
 					{
 						this._表示フェーズカウンタ = new Counter( 0, 5000, 1 );	// 全5秒
 						this.現在のフェーズ = フェーズ.表示;
@@ -82,16 +83,16 @@ namespace DTXmatixx.ステージ.認証
 
 					if( 2000 < this._表示フェーズカウンタ.現在値 )
 					{
-						this._フェードアウト.クローズする( gd );
+						fadeOut.クローズする( gd );
 						this.現在のフェーズ = フェーズ.フェードアウト;
 					}
 					break;
 
 				case フェーズ.フェードアウト:
 					this._舞台画像.進行描画する( gd, true );
-					this._フェードアウト.進行描画する( gd );
+					fadeOut.進行描画する( gd );
 
-					if( this._フェードアウト.現在のフェーズ == 回転幕.フェーズ.クローズ完了 )
+					if( fadeOut.現在のフェーズ == 回転幕.フェーズ.クローズ完了 )
 					{
 						this._待機フェーズカウンタ = new Counter( 0, 500, 1 );   // 全0.5秒
 						this.現在のフェーズ = フェーズ.アイキャッチ;
@@ -100,7 +101,7 @@ namespace DTXmatixx.ステージ.認証
 
 				case フェーズ.アイキャッチ:
 					//this._舞台画像.進行描画する( gd );		フェードアウトで全画面上書きされるため、描画不要。
-					this._フェードアウト.進行描画する( gd );
+					fadeOut.進行描画する( gd );
 
 					if( this._待機フェーズカウンタ.終了値に達した )
 					{
@@ -120,8 +121,6 @@ namespace DTXmatixx.ステージ.認証
 		private 文字列画像 _確認できませんでした = null;
 		private Counter _表示フェーズカウンタ = null;
 		private Counter _待機フェーズカウンタ = null;
-		private シャッター _フェードイン = null;
-		private 回転幕 _フェードアウト = null;
 
 		private readonly Matrix3x2 _タッチアイコン表示行列 = Matrix3x2.Translation( 960f - 128f, 540f - 128f );
 		private readonly Matrix3x2 _確認できませんでした表示行列 = Matrix3x2.Translation( 960f - 180f, 540f - 200f );

@@ -139,9 +139,7 @@ namespace DTXmatixx
 
 			using( Log.Block( FDKUtilities.現在のメソッド名 ) )
 			{
-				if( App.ステージ管理.現在のステージ?.活性化していない ?? false )
-					App.ステージ管理.現在のステージ?.活性化する( gd );
-
+				App.ステージ管理.活性化する( gd );
 				App.曲ツリー.活性化する( gd );
 			}
 		}
@@ -155,9 +153,7 @@ namespace DTXmatixx
 
 			using( Log.Block( FDKUtilities.現在のメソッド名 ) )
 			{
-				if( App.ステージ管理.現在のステージ?.活性化している ?? false )
-					App.ステージ管理.現在のステージ?.非活性化する( gd );
-
+				App.ステージ管理.非活性化する( gd );
 				App.曲ツリー.非活性化する( gd );
 			}
 		}

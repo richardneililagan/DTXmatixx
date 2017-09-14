@@ -7,20 +7,18 @@ using FDK.メディア;
 
 namespace DTXmatixx.ステージ
 {
-	class ステージ管理
+	class ステージ管理 : Activity, IDisposable
 	{
 		public string 最初のステージ名
 		{
 			get
 				=> this.ステージリスト.ElementAt( 0 ).Value.GetType().Name;
 		}
-
 		public ステージ 現在のステージ
 		{
 			get
 				=> this._現在のステージ;
 		}
-
 		/// <summary>
 		///		全ステージのリスト。
 		///		新しいステージができたら、ここに追加すること。
@@ -31,11 +29,46 @@ namespace DTXmatixx.ステージ
 			{ nameof( 認証.認証ステージ ), new 認証.認証ステージ() },
 			{ nameof( 選曲.選曲ステージ ), new 選曲.選曲ステージ() },
 		};
+		public アイキャッチ.シャッター シャッター
+		{
+			get;
+			protected set;
+		} = null;
+		public アイキャッチ.回転幕 回転幕
+		{
+			get;
+			protected set;
+		} = null;
 
 		public ステージ管理()
 		{
+			this.子リスト.Add( this.シャッター = new アイキャッチ.シャッター() );
+			this.子リスト.Add( this.回転幕 = new アイキャッチ.回転幕() );
 		}
-
+		protected override void On活性化( グラフィックデバイス gd )
+		{
+			using( Log.Block( FDKUtilities.現在のメソッド名 ) )
+			{
+				if( this.現在のステージ?.活性化していない ?? false )
+				{
+					this.現在のステージ?.活性化する( gd );
+				}
+			}
+		}
+		protected override void On非活性化( グラフィックデバイス gd )
+		{
+			using( Log.Block( FDKUtilities.現在のメソッド名 ) )
+			{
+				if( this.現在のステージ?.活性化している ?? false )
+				{
+					this.現在のステージ?.非活性化する( gd );
+				}
+			}
+		}
+		public void Dispose()
+		{
+			throw new InvalidOperationException( "このメソッドは使用できません。別のオーバーロードメソッドを使用してください。" );
+		}
 		public void Dispose( グラフィックデバイス gd )
 		{
 			Debug.Assert( null != gd );
