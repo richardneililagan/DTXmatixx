@@ -7,7 +7,7 @@ using SharpDX.DirectWrite;
 using FDK;
 using FDK.メディア;
 
-namespace SST.曲
+namespace DTXmatixx.曲
 {
 	/// <summary>
 	///		曲ノードの基本クラス。
@@ -110,6 +110,29 @@ namespace SST.曲
 				=> new Size2F( 314f, 220f );
 		}
 
+		/// <summary>
+		///		ノードを表す画像。
+		///		派生クラスで、適切な画像を割り当てること。
+		///		null にすると、既定のノード画像が使用される。
+		/// </summary>
+		public テクスチャ ノード画像
+		{
+			get;
+			protected set;
+		} = null;
+
+		/// <summary>
+		///		ノードを表す画像の既定画像。
+		/// </summary>
+		/// <remarks>
+		///		<see cref="ノード画像"/>が null の再に、代わりに表示される。
+		///		static であり、全ノードで１つのインスタンスを共有する。
+		/// </remarks>
+		public static テクスチャ 既定のノード画像
+		{
+			get;
+			protected set;
+		} = null;
 
 		public Node()
 		{
@@ -120,20 +143,20 @@ namespace SST.曲
 		protected override void On活性化( グラフィックデバイス gd )
 		{
 			// 全インスタンスで共有する static メンバが未生成なら生成する。
-			if( null == Node._既定のノード画像 )
+			if( null == Node.既定のノード画像 )
 			{
-				Node._既定のノード画像 = new テクスチャ( @"$(System)images\選曲パネル.png" );
-				Node._既定のノード画像.活性化する( gd );
+				Node.既定のノード画像 = new テクスチャ( @"$(System)images\既定のプレビュー画像.png" );
+				Node.既定のノード画像.活性化する( gd );
 			}
 		}
 
 		protected override void On非活性化( グラフィックデバイス gd )
 		{
 			// 全インスタンスで共有する static メンバが生成な済みなら解放する。
-			if( null != Node._既定のノード画像 )
+			if( null != Node.既定のノード画像 )
 			{
-				Node._既定のノード画像.非活性化する( gd );
-				Node._既定のノード画像 = null;
+				Node.既定のノード画像.非活性化する( gd );
+				Node.既定のノード画像 = null;
 			}
 		}
 
@@ -141,42 +164,29 @@ namespace SST.曲
 		{
 		}
 
-		public virtual void 描画する( グラフィックデバイス gd, Matrix ワールド変換行列 )
+		public virtual void 描画する( グラフィックデバイス gd, Matrix ワールド変換行列, bool キャプション表示 = true )
 		{
 			// (1) ノード画像
-			if( null != this._ノード画像 )
+			if( null != this.ノード画像 )
 			{
-				this._ノード画像.描画する( gd, ワールド変換行列 );
+				this.ノード画像.描画する( gd, ワールド変換行列 );
 			}
 			else
 			{
-				Node._既定のノード画像.描画する( gd, ワールド変換行列 );
+				Node.既定のノード画像.描画する( gd, ワールド変換行列 );
 			}
 
 			// (2) キャプション
-			ワールド変換行列 *= Matrix.Translation( 0f, 0f, 1f );    // ノード画像よりZ方向手前にほんのり移動
-			this._キャプション画像.タイトル = this.タイトル;
-			this._キャプション画像.サブタイトル = this.サブタイトル;
-			this._キャプション画像.描画する( gd, ワールド変換行列, new RectangleF( 0f, 138f, Node.全体サイズ.Width, Node.全体サイズ.Height - 138f + 27f ) );
+			if( キャプション表示 )
+			{
+				ワールド変換行列 *= Matrix.Translation( 0f, 0f, 1f );    // ノード画像よりZ方向手前にほんのり移動
+				this._キャプション画像.タイトル = this.タイトル;
+				this._キャプション画像.サブタイトル = this.サブタイトル;
+				this._キャプション画像.描画する( gd, ワールド変換行列, new RectangleF( 0f, 138f, Node.全体サイズ.Width, Node.全体サイズ.Height - 138f + 27f ) );
+			}
 		}
 
 
-		/// <summary>
-		///		ノードを表す画像。
-		///		派生クラスで、適切な画像を割り当てること。
-		///		null にすると、既定のノード画像が使用される。
-		/// </summary>
-		protected テクスチャ _ノード画像 = null;
-
 		protected キャプションテクスチャ _キャプション画像 = null;
-
-		/// <summary>
-		///		ノードを表す画像の既定画像。
-		/// </summary>
-		/// <remarks>
-		///		<see cref="_ノード画像"/>が null の再に、代わりに表示される。
-		///		static であり、全ノードで１つのインスタンスを共有する。
-		/// </remarks>
-		protected static テクスチャ _既定のノード画像 = null;
 	}
 }

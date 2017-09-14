@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 
-namespace SST.曲
+namespace DTXmatixx.曲
 {
 	/// <summary>
 	///		曲ツリー階層においてルートを表すノード。

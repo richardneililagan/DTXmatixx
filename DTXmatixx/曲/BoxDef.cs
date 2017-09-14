@@ -5,7 +5,7 @@ using System.IO;
 using System.Linq;
 using SSTFormat.v2;
 
-namespace SST.曲
+namespace DTXmatixx.曲
 {
 	/// <summary>
 	///		BOX定義。

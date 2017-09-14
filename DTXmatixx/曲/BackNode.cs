@@ -4,7 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using FDK;
 
-namespace SST.曲
+namespace DTXmatixx.曲
 {
 	/// <summary>
 	///		曲ツリー階層において「戻る」を表すノード。

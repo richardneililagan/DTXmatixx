@@ -87,6 +87,7 @@
     <Compile Include="ステージ\曲ツリー構築\曲ツリー構築ステージ.cs" />
     <Compile Include="ステージ\舞台画像.cs" />
     <Compile Include="ステージ\認証\認証ステージ.cs" />
+    <Compile Include="ステージ\選曲\曲リスト.cs" />
     <Compile Include="ステージ\選曲\選曲ステージ.cs" />
     <Compile Include="曲\BackNode.cs" />
     <Compile Include="曲\BoxDef.cs" />
@@ -162,10 +163,14 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <None Include="System\Images\選曲舞台.jpg">
+    <None Include="System\Images\既定のプレビュー画像.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <Content Include="曲\%40README.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="System\Images\ステージタイマー.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

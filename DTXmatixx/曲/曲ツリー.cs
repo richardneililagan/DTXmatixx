@@ -6,7 +6,7 @@ using System.Linq;
 using FDK;
 using FDK.メディア;
 
-namespace SST.曲
+namespace DTXmatixx.曲
 {
 	/// <summary>
 	///		選曲画面で使用される、曲ツリーを管理する。

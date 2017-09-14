@@ -8,7 +8,7 @@ using SSTFormat.v2;
 using FDK;
 using FDK.メディア;
 
-namespace SST.曲
+namespace DTXmatixx.曲
 {
 	/// <summary>
 	///		曲ツリー階層において「曲」を表すノード。
@@ -54,7 +54,7 @@ namespace SST.曲
 
 			if( null != サムネイル画像ファイルパス )
 			{
-				this.子リスト.Add( this._ノード画像 = new テクスチャ( サムネイル画像ファイルパス ) );
+				this.子リスト.Add( this.ノード画像 = new テクスチャ( サムネイル画像ファイルパス ) );
 			}
 
 			// 曲ファイルと同じ場所に（対応する拡張子を持った）動画ファイルがあるなら、それを背景動画として採用する。

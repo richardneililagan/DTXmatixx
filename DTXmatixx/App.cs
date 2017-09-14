@@ -14,7 +14,7 @@ using FDK;
 using FDK.入力;
 using DTXmatixx.ステージ;
 using DTXmatixx.アイキャッチ;
-using SST.曲;
+using DTXmatixx.曲;
 
 namespace DTXmatixx
 {
@@ -45,7 +45,7 @@ namespace DTXmatixx
 			this.Text = $"{Application.ProductName} {Application.ProductVersion}";
 
 			var exePath = Path.GetDirectoryName( Assembly.GetExecutingAssembly().Location );
-			Folder.フォルダ変数を追加または更新する( "Exe", exePath );
+			Folder.フォルダ変数を追加または更新する( "Exe", $@"{exePath}\" );
 			Folder.フォルダ変数を追加または更新する( "System", Path.Combine( exePath, @"System\" ) );
 			Folder.フォルダ変数を追加または更新する( "AppData", Path.Combine( Environment.GetFolderPath( Environment.SpecialFolder.ApplicationData, Environment.SpecialFolderOption.Create ), @"DTXMatixx\" ) );
 
@@ -202,7 +202,8 @@ namespace DTXmatixx
 						//----------------
 						if( stage.現在のフェーズ == ステージ.曲ツリー構築.曲ツリー構築ステージ.フェーズ.確定 )
 						{
-							App.ステージ管理.ステージを遷移する( gd, nameof( ステージ.タイトル.タイトルステージ ) );
+							//App.ステージ管理.ステージを遷移する( gd, nameof( ステージ.タイトル.タイトルステージ ) );
+							App.ステージ管理.ステージを遷移する( gd, nameof( ステージ.選曲.選曲ステージ ) );
 						}
 						//----------------
 						#endregion

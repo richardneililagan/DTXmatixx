@@ -8,9 +8,7 @@ using SharpDX.DirectWrite;
 using FDK;
 using FDK.メディア;
 
-using FDKUtilities = FDK.FDKUtilities;
-
-namespace SST.曲
+namespace DTXmatixx.曲
 {
 	class キャプションテクスチャ : ビットマップ付きテクスチャ
 	{
