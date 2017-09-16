@@ -31,7 +31,7 @@ namespace DTXmatixx.ステージ.タイトル
 		public タイトルステージ()
 		{
 			this.子リスト.Add( this._舞台画像 = new 舞台画像() );
-			this.子リスト.Add( this._タイトルロゴ = new 画像( @"$(System)images\タイトルロゴ（読みあり）.png" ) );
+			this.子リスト.Add( this._タイトルロゴ = new 画像( @"$(System)images\タイトルロゴ.png" ) );
 			this.子リスト.Add( this._パッドを叩いてください = new 文字列画像( "パッドを叩いてください", 40f ) );
 		}
 		protected override void On活性化( グラフィックデバイス gd )

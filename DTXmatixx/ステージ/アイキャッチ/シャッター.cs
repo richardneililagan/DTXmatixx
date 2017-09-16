@@ -376,6 +376,6 @@ namespace DTXmatixx.アイキャッチ
 		protected 画像 _ロゴ = null;
 		protected Variable _ロゴ不透明度 = null;
 		protected Storyboard _ロゴボード = null;
-		protected readonly RectangleF _ロゴ表示領域 = new RectangleF( 1200f, 650f, 600f, 350f );
+		protected readonly RectangleF _ロゴ表示領域 = new RectangleF( 1100f, 700f, 730f, 300f );
 	}
 }

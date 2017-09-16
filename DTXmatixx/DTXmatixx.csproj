@@ -148,11 +148,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <None Include="System\Images\タイトルロゴ（読みあり）.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
     <None Include="System\Images\舞台黒幕付き.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -169,6 +164,11 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="System\Images\ステージタイマー.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="System\Images\タイトルロゴ・影.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>

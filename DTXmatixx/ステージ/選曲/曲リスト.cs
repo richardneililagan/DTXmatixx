@@ -4,6 +4,8 @@ using System.Diagnostics;
 using System.Linq;
 using SharpDX;
 using SharpDX.Animation;
+using SharpDX.Direct2D1;
+using SharpDX.DirectWrite;
 using FDK;
 using FDK.メディア;
 using DTXmatixx.曲;
@@ -51,6 +53,8 @@ namespace DTXmatixx.ステージ.選曲
 				#endregion
 
 				this._曲リストのスクロール割合 = new Variable( gd.Animation.Manager, initialValue: 0.0 );
+				this._曲名フォーマット = new TextFormat( gd.DWriteFactory, "メイリオ", FontWeight.UltraBlack, FontStyle.Normal, 40.0f );
+				this._曲名の色 = new SolidColorBrush( gd.D2DDeviceContext, Color4.White );
 			}
 		}
 		protected override void On非活性化( グラフィックデバイス gd )
@@ -58,6 +62,7 @@ namespace DTXmatixx.ステージ.選曲
 			using( Log.Block( FDKUtilities.現在のメソッド名 ) )
 			{
 				FDKUtilities.解放する( ref this._曲リストのスクロール割合 );
+				FDKUtilities.解放する( ref this._曲名の色 );
 			}
 		}
 		public void 進行描画する( グラフィックデバイス gd )
@@ -155,6 +160,15 @@ namespace DTXmatixx.ステージ.選曲
 			#endregion
 			#region " タイトル文字列 "
 			//----------------
+			gd.D2DBatchDraw( ( dc ) => {
+
+				dc.DrawText(
+					ノード.タイトル,
+					this._曲名フォーマット,
+					new RectangleF( this._曲リストの基準左上隅座標dpx.X + 170f, this._曲リストの基準左上隅座標dpx.Y + ( 行番号 * _ノードの高さdpx ), 855f - 170f, _ノードの高さdpx ),
+					this._曲名の色 );
+
+			} );
 			//----------------
 			#endregion
 			#region " サブ文字列（フォーカスノードのみ）"
@@ -185,5 +199,8 @@ namespace DTXmatixx.ステージ.選曲
 		///		0.0 で基準（静止）位置、-1.0 で上に１行、+1.0 で下に１行ずれている状態。
 		/// </summary>
 		private Variable _曲リストのスクロール割合 = null;
+
+		private TextFormat _曲名フォーマット = null;
+		private SolidColorBrush _曲名の色 = null;
 	}
 }
