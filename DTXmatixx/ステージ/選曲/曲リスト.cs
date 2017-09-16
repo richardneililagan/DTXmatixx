@@ -23,6 +23,7 @@ namespace DTXmatixx.ステージ.選曲
 		public 曲リスト()
 		{
 		}
+
 		protected override void On活性化( グラフィックデバイス gd )
 		{
 			using( Log.Block( FDKUtilities.現在のメソッド名 ) )
@@ -52,19 +53,20 @@ namespace DTXmatixx.ステージ.選曲
 				//----------------
 				#endregion
 
-				this._曲リストのスクロール割合 = new Variable( gd.Animation.Manager, initialValue: 0.0 );
-				this._曲名フォーマット = new TextFormat( gd.DWriteFactory, "メイリオ", FontWeight.UltraBlack, FontStyle.Normal, 40.0f );
-				this._曲名の色 = new SolidColorBrush( gd.D2DDeviceContext, Color4.White );
+				this._曲名フォーマット = new TextFormat( gd.DWriteFactory, "HGMaruGothicMPRO", FontWeight.UltraBlack, FontStyle.Normal, 40.0f );
+				this._曲名の輪郭の色 = new SolidColorBrush( gd.D2DDeviceContext, Color4.White );
+				this._曲名の塗りつぶしの色 = new SolidColorBrush( gd.D2DDeviceContext, Color4.Black );
 			}
 		}
 		protected override void On非活性化( グラフィックデバイス gd )
 		{
 			using( Log.Block( FDKUtilities.現在のメソッド名 ) )
 			{
-				FDKUtilities.解放する( ref this._曲リストのスクロール割合 );
-				FDKUtilities.解放する( ref this._曲名の色 );
+				FDKUtilities.解放する( ref this._曲名の塗りつぶしの色 );
+				FDKUtilities.解放する( ref this._曲名の輪郭の色 );
 			}
 		}
+
 		public void 進行描画する( グラフィックデバイス gd )
 		{
 			// 進行
@@ -93,6 +95,16 @@ namespace DTXmatixx.ステージ.選曲
 				描画するノード = 描画するノード.次のノード;
 			}
 		}
+
+		public void 次のノードを選択する( グラフィックデバイス gd )
+		{
+			App.曲ツリー.次のノードをフォーカスする();
+		}
+		public void 前のノードを選択する( グラフィックデバイス gd )
+		{
+			App.曲ツリー.前のノードをフォーカスする();
+		}
+
 
 		/// <param name="行番号">
 		///		一番上:0 ～ 9:一番下。
@@ -162,11 +174,25 @@ namespace DTXmatixx.ステージ.選曲
 			//----------------
 			gd.D2DBatchDraw( ( dc ) => {
 
-				dc.DrawText(
-					ノード.タイトル,
-					this._曲名フォーマット,
-					new RectangleF( this._曲リストの基準左上隅座標dpx.X + 170f, this._曲リストの基準左上隅座標dpx.Y + ( 行番号 * _ノードの高さdpx ), 855f - 170f, _ノードの高さdpx ),
-					this._曲名の色 );
+				using( var textLayout = new TextLayout( gd.DWriteFactory, ノード.タイトル, this._曲名フォーマット, 1920f, 1080f ) )
+				using( var textRenderer = new 縁取りTextRenderer( gd.D2DFactory, dc, this._曲名の輪郭の色, this._曲名の塗りつぶしの色, 8f ) )
+				{
+					textLayout.Draw(
+						textRenderer,
+						this._曲リストの基準左上隅座標dpx.X + 170f,
+						this._曲リストの基準左上隅座標dpx.Y + ( 行番号 * _ノードの高さdpx ) );
+				}
+
+				//dc.DrawText(
+				//	ノード.タイトル,
+				//	this._曲名フォーマット,
+				//	new RectangleF(
+				//		this._曲リストの基準左上隅座標dpx.X + 170f,
+				//		this._曲リストの基準左上隅座標dpx.Y + ( 行番号 * _ノードの高さdpx ),
+				//		855f - 170f,
+				//		_ノードの高さdpx ),
+				//	this._曲名の色 );
+
 
 			} );
 			//----------------
@@ -195,12 +221,8 @@ namespace DTXmatixx.ステージ.選曲
 
 		private const float _ノードの高さdpx = ( 913f / 8f );
 
-		/// <summary>
-		///		0.0 で基準（静止）位置、-1.0 で上に１行、+1.0 で下に１行ずれている状態。
-		/// </summary>
-		private Variable _曲リストのスクロール割合 = null;
-
 		private TextFormat _曲名フォーマット = null;
-		private SolidColorBrush _曲名の色 = null;
+		private SolidColorBrush _曲名の輪郭の色 = null;
+		private SolidColorBrush _曲名の塗りつぶしの色 = null;
 	}
 }

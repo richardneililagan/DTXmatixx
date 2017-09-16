@@ -104,11 +104,13 @@ namespace DTXmatixx.ステージ.選曲
 
 			if( App.Keyboard.キーが押された( 0, Key.Up ) )
 			{
-				App.曲ツリー.前のノードをフォーカスする();
+				//App.曲ツリー.前のノードをフォーカスする();	--> 曲リストへ委譲
+				this._曲リスト.前のノードを選択する( gd );
 			}
 			else if( App.Keyboard.キーが押された( 0, Key.Down ) )
 			{
-				App.曲ツリー.次のノードをフォーカスする();
+				//App.曲ツリー.次のノードをフォーカスする();	--> 曲リストへ委譲
+				this._曲リスト.次のノードを選択する( gd );
 			}
 		}
 
@@ -171,10 +173,11 @@ namespace DTXmatixx.ステージ.選曲
 		private void _選択曲を囲む枠を描画する( グラフィックデバイス gd )
 		{
 			var 矩形 = new RectangleF( 1015f, 485f, 905f, 113f );
+			const float 余り = 8f;
 
-			this._青い枠.進行描画する( gd, 矩形.TopLeft, 幅dpx: 矩形.Width );
-			this._青い枠.進行描画する( gd, 矩形.BottomLeft, 幅dpx: 矩形.Width );
-			this._青い枠.進行描画する( gd, 矩形.TopLeft, 高さdpx: 矩形.Height );
+			this._青い枠.進行描画する( gd, new Vector2( 矩形.Left - 余り, 矩形.Top ), 幅dpx: 矩形.Width + 余り * 2f );
+			this._青い枠.進行描画する( gd, new Vector2( 矩形.Left - 余り, 矩形.Bottom ), 幅dpx: 矩形.Width + 余り * 2f );
+			this._青い枠.進行描画する( gd, new Vector2( 矩形.Left, 矩形.Top - 余り ), 高さdpx: 矩形.Height + 余り * 2f );
 		}
 	}
 }
