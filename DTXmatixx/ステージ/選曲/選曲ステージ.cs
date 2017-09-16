@@ -30,7 +30,7 @@ namespace DTXmatixx.ステージ.選曲
 
 		public 選曲ステージ()
 		{
-			this.子リスト.Add( this._舞台画像 = new 舞台画像() );
+			this.子リスト.Add( this._舞台画像 = new 舞台画像( @"$(System)images\舞台_暗.jpg" ) );
 			this.子リスト.Add( this._曲リスト = new 曲リスト() );
 			this.子リスト.Add( this._ステージタイマー = new 画像( @"$(System)images\ステージタイマー.png" ) );
 			this.子リスト.Add( this._青い枠 = new 青い枠() );
@@ -188,17 +188,17 @@ namespace DTXmatixx.ステージ.選曲
 		private void _選択曲を囲む枠を描画する( グラフィックデバイス gd )
 		{
 			var 矩形 = new RectangleF( 1015f, 485f, 905f, 113f );
-			const float 余り = 8f;
 
-			this._青い枠.描画する( gd, new Vector2( 矩形.Left - 余り, 矩形.Top ), 幅dpx: 矩形.Width + 余り * 2f );
-			this._青い枠.描画する( gd, new Vector2( 矩形.Left - 余り, 矩形.Bottom ), 幅dpx: 矩形.Width + 余り * 2f );
-			this._青い枠.描画する( gd, new Vector2( 矩形.Left, 矩形.Top - 余り ), 高さdpx: 矩形.Height + 余り * 2f );
+			this._青い枠.描画する( gd, new Vector2( 矩形.Left - this._青枠のマージンdpx, 矩形.Top ), 幅dpx: 矩形.Width + this._青枠のマージンdpx * 2f );
+			this._青い枠.描画する( gd, new Vector2( 矩形.Left - this._青枠のマージンdpx, 矩形.Bottom ), 幅dpx: 矩形.Width + this._青枠のマージンdpx * 2f );
+			this._青い枠.描画する( gd, new Vector2( 矩形.Left, 矩形.Top - this._青枠のマージンdpx ), 高さdpx: 矩形.Height + this._青枠のマージンdpx * 2f );
 		}
 
 		private Variable _上に伸びる導線の長さdpx = null;
 		private Variable _左に伸びる導線の長さdpx = null;
 		private Variable _プレビュー枠の長さdpx = null;
 		private Storyboard _導線のストーリーボード = null;
+		private readonly float _青枠のマージンdpx = 8f;
 
 		private void _導線アニメをリセットする( グラフィックデバイス gd )
 		{
@@ -249,7 +249,7 @@ namespace DTXmatixx.ステージ.選曲
 			using( var 維持 = gd.Animation.TrasitionLibrary.Constant( 期間 ) )
 			using( var 上に伸びる = gd.Animation.TrasitionLibrary.Constant( 期間 ) )
 			using( var 左に伸びる = gd.Animation.TrasitionLibrary.Constant( 期間 ) )
-			using( var 枠が広がる = gd.Animation.TrasitionLibrary.Linear( 期間, finalValue: 444.0 ) )
+			using( var 枠が広がる = gd.Animation.TrasitionLibrary.Linear( 期間, finalValue: 444.0 + this._青枠のマージンdpx * 2f ) )
 			{
 				this._導線のストーリーボード.AddTransition( this._上に伸びる導線の長さdpx, 上に伸びる );
 				this._導線のストーリーボード.AddTransition( this._左に伸びる導線の長さdpx, 左に伸びる );
@@ -266,15 +266,15 @@ namespace DTXmatixx.ステージ.選曲
 			var w = (float) this._左に伸びる導線の長さdpx.Value;
 			this._青い枠.描画する( gd, new Vector2( 1046f - w, 278f ), 幅dpx: w );
 
-			var z = (float) this._プレビュー枠の長さdpx.Value;
+			var z = (float) this._プレビュー枠の長さdpx.Value;   // マージン×2 込み
 			var 上 = this._プレビュー画像表示位置dpx.Y;
 			var 下 = this._プレビュー画像表示位置dpx.Y + this._プレビュー画像表示サイズdpx.Y;
 			var 左 = this._プレビュー画像表示位置dpx.X;
 			var 右 = this._プレビュー画像表示位置dpx.X + this._プレビュー画像表示サイズdpx.X;
-			this._青い枠.描画する( gd, new Vector2( 右 - z, 上 ), 幅dpx: z ); // 上辺
-			this._青い枠.描画する( gd, new Vector2( 右 - z, 下 ), 幅dpx: z ); // 下辺
-			this._青い枠.描画する( gd, new Vector2( 左, 下 - z ), 高さdpx: z ); // 左辺
-			this._青い枠.描画する( gd, new Vector2( 右, 下 - z ), 高さdpx: z ); // 右辺
+			this._青い枠.描画する( gd, new Vector2( 右 + this._青枠のマージンdpx - z, 上 ), 幅dpx: z ); // 上辺
+			this._青い枠.描画する( gd, new Vector2( 右 + this._青枠のマージンdpx - z, 下 ), 幅dpx: z ); // 下辺
+			this._青い枠.描画する( gd, new Vector2( 左, 下 + this._青枠のマージンdpx - z ), 高さdpx: z ); // 左辺
+			this._青い枠.描画する( gd, new Vector2( 右, 下 + this._青枠のマージンdpx - z ), 高さdpx: z ); // 右辺
 		}
 	}
 }
