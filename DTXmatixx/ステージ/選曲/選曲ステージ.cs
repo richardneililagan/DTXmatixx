@@ -7,6 +7,7 @@ using SharpDX.Direct2D1;
 using SharpDX.DirectInput;
 using FDK;
 using FDK.メディア;
+using FDK.カウンタ;
 using DTXmatixx.アイキャッチ;
 using DTXmatixx.曲;
 
@@ -34,6 +35,7 @@ namespace DTXmatixx.ステージ.選曲
 			this.子リスト.Add( this._ステージタイマー = new 画像( @"$(System)images\ステージタイマー.png" ) );
 			this.子リスト.Add( this._青い枠 = new 青い枠() );
 		}
+
 		protected override void On活性化( グラフィックデバイス gd )
 		{
 			using( Log.Block( FDKUtilities.現在のメソッド名 ) )
@@ -61,6 +63,7 @@ namespace DTXmatixx.ステージ.選曲
 				FDKUtilities.解放する( ref this._ソートタブ下色 );
 			}
 		}
+
 		public override void 進行描画する( グラフィックデバイス gd )
 		{
 			// 進行描画
@@ -77,6 +80,7 @@ namespace DTXmatixx.ステージ.選曲
 			this._曲リスト.進行描画する( gd );
 			this._その他パネルを描画する( gd );
 			this._プレビュー画像を描画する( gd, App.曲ツリー.フォーカスノード );
+			this._選択曲を囲む枠を描画する( gd );
 
 			switch( this.現在のフェーズ )
 			{
@@ -163,6 +167,14 @@ namespace DTXmatixx.ステージ.選曲
 					0f );
 
 			画像.描画する( gd, 変換行列 );
+		}
+		private void _選択曲を囲む枠を描画する( グラフィックデバイス gd )
+		{
+			var 矩形 = new RectangleF( 1015f, 485f, 905f, 113f );
+
+			this._青い枠.進行描画する( gd, 矩形.TopLeft, 幅dpx: 矩形.Width );
+			this._青い枠.進行描画する( gd, 矩形.BottomLeft, 幅dpx: 矩形.Width );
+			this._青い枠.進行描画する( gd, 矩形.TopLeft, 高さdpx: 矩形.Height );
 		}
 	}
 }
