@@ -88,6 +88,7 @@
     <Compile Include="ステージ\舞台画像.cs" />
     <Compile Include="ステージ\認証\認証ステージ.cs" />
     <Compile Include="ステージ\選曲\曲リスト.cs" />
+    <Compile Include="ステージ\選曲\青い枠.cs" />
     <Compile Include="ステージ\選曲\選曲ステージ.cs" />
     <Compile Include="曲\BackNode.cs" />
     <Compile Include="曲\BoxDef.cs" />

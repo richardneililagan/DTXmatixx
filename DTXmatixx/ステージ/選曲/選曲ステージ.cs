@@ -32,6 +32,7 @@ namespace DTXmatixx.ステージ.選曲
 			this.子リスト.Add( this._舞台画像 = new 舞台画像() );
 			this.子リスト.Add( this._曲リスト = new 曲リスト() );
 			this.子リスト.Add( this._ステージタイマー = new 画像( @"$(System)images\ステージタイマー.png" ) );
+			this.子リスト.Add( this._青い枠 = new 青い枠() );
 		}
 		protected override void On活性化( グラフィックデバイス gd )
 		{
@@ -110,6 +111,16 @@ namespace DTXmatixx.ステージ.選曲
 		private bool _初めての進行描画 = true;
 		private 舞台画像 _舞台画像 = null;
 		private 曲リスト _曲リスト = null;
+		private 青い枠 _青い枠 = null;
+
+		private SolidColorBrush _白 = null;
+		private SolidColorBrush _黒 = null;
+		private SolidColorBrush _ソートタブ上色 = null;
+		private SolidColorBrush _ソートタブ下色 = null;
+		private SolidColorBrush _黒透過 = null;
+		private SolidColorBrush _灰透過 = null;
+		private 画像 _ステージタイマー = null;
+		private readonly Vector3 _プレビュー画像表示サイズdpx = new Vector3( 444f, 444f, 0f );
 
 		private void _その他パネルを描画する( グラフィックデバイス gd )
 		{
@@ -153,14 +164,5 @@ namespace DTXmatixx.ステージ.選曲
 
 			画像.描画する( gd, 変換行列 );
 		}
-
-		private SolidColorBrush _白 = null;
-		private SolidColorBrush _黒 = null;
-		private SolidColorBrush _ソートタブ上色 = null;
-		private SolidColorBrush _ソートタブ下色 = null;
-		private SolidColorBrush _黒透過 = null;
-		private SolidColorBrush _灰透過 = null;
-		private 画像 _ステージタイマー = null;
-		private readonly Vector3 _プレビュー画像表示サイズdpx = new Vector3( 444f, 444f, 0f );
 	}
 }

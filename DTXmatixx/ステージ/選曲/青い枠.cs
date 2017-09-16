@@ -1,0 +1,115 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+using SharpDX;
+using SharpDX.Direct2D1;
+using FDK;
+using FDK.メディア;
+
+namespace DTXmatixx.ステージ.選曲
+{
+	class 青い枠 : Activity
+	{
+		public float 太さdpx
+		{
+			get;
+			protected set;
+		} = 26f;
+
+		public 青い枠()
+		{
+		}
+
+		protected override void On活性化( グラフィックデバイス gd )
+		{
+			using( Log.Block( FDKUtilities.現在のメソッド名 ) )
+			{
+				int 青色 = 0x61200a;
+				int 水色 = 0xf95925;
+				int 白色 = 0xffffff;
+
+				this._線グラ頂点集合 = new GradientStopCollection(
+					gd.D2DDeviceContext,
+					new GradientStop[] {
+						new GradientStop() { Position = 0.00f, Color = new Color4( new Color3( 青色 ), 0f ) },		// 完全透明
+						new GradientStop() { Position = 0.35f, Color = new Color4( new Color3( 水色 ), 1f ) },
+						new GradientStop() { Position = 0.42f, Color = new Color4( new Color3( 青色 ), 0.7f ) },
+
+						new GradientStop() { Position = 0.48f, Color = new Color4( new Color3( 白色 ), 1f ) },
+						new GradientStop() { Position = 0.52f, Color = new Color4( new Color3( 白色 ), 1f ) },
+
+						new GradientStop() { Position = 0.58f, Color = new Color4( new Color3( 青色 ), 0.7f ) },
+						new GradientStop() { Position = 0.65f, Color = new Color4( new Color3( 水色 ), 1f ) },
+						new GradientStop() { Position = 1.00f, Color = new Color4( new Color3( 青色 ), 0f ) },		// 完全透明
+					} );
+			}
+		}
+		protected override void On非活性化( グラフィックデバイス gd )
+		{
+			using( Log.Block( FDKUtilities.現在のメソッド名 ) )
+			{
+				FDKUtilities.解放する( ref this._線グラブラシ );
+				FDKUtilities.解放する( ref this._線グラ頂点集合 );
+			}
+		}
+
+		/// <param name="幅dpx">横方向（左→右）の長さ。<paramref name="高さdpx"/>と同時に指定してはならない。</param>
+		/// <param name="高さdpx">縦方向（上→下）の長さ。<paramref name="幅dpx"/>と同時に指定してはならない。</param>
+		public void 進行描画する( グラフィックデバイス gd, Vector2 開始位置dpx, float 幅dpx = -1f, float 高さdpx = -1f )
+		{
+			Debug.Assert( 0f > ( 幅dpx * 高さdpx ),
+				"幅か高さが両方指定されていないか、両方指定されています。どちらか一方だけを指定してください。" );
+
+			gd.D2DBatchDraw( ( dc ) => {
+
+				dc.PrimitiveBlend = PrimitiveBlend.Add;	// 加算合成
+
+				if( 0f < 幅dpx )
+				{
+					// (A) 横方向（左→右）の枠
+					var 矩形 = new RectangleF(
+						開始位置dpx.X, 
+						開始位置dpx.Y - this.太さdpx / 2f,
+						幅dpx,
+						this.太さdpx );
+
+					this._線グラブラシ?.Dispose();
+					this._線グラブラシ = new LinearGradientBrush(
+						dc,
+						new LinearGradientBrushProperties() {
+							StartPoint = new Vector2( 矩形.Left, 矩形.Top ),
+							EndPoint = new Vector2( 矩形.Left, 矩形.Bottom ),
+						},
+						this._線グラ頂点集合 );
+
+					dc.FillRectangle( 矩形, this._線グラブラシ );
+				}
+				else
+				{
+					// (B) 縦方向（上→下）の枠
+					var 矩形 = new RectangleF(
+						開始位置dpx.X - this.太さdpx / 2f,
+						開始位置dpx.Y,
+						this.太さdpx,
+						高さdpx );
+
+					this._線グラブラシ?.Dispose();
+					this._線グラブラシ = new LinearGradientBrush(
+						dc,
+						new LinearGradientBrushProperties() {
+							StartPoint = new Vector2( 矩形.Left, 矩形.Top ),
+							EndPoint = new Vector2( 矩形.Right, 矩形.Top ),
+						},
+						this._線グラ頂点集合 );
+
+					dc.FillRectangle( 矩形, this._線グラブラシ );
+				}
+
+			} );
+		}
+
+		private LinearGradientBrush _線グラブラシ = null;
+		private GradientStopCollection _線グラ頂点集合 = null;
+	}
+}
