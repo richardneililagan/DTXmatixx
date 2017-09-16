@@ -56,10 +56,14 @@ namespace DTXmatixx.ステージ.選曲
 
 		/// <param name="幅dpx">横方向（左→右）の長さ。<paramref name="高さdpx"/>と同時に指定してはならない。</param>
 		/// <param name="高さdpx">縦方向（上→下）の長さ。<paramref name="幅dpx"/>と同時に指定してはならない。</param>
-		public void 進行描画する( グラフィックデバイス gd, Vector2 開始位置dpx, float 幅dpx = -1f, float 高さdpx = -1f )
+		public void 描画する( グラフィックデバイス gd, Vector2 開始位置dpx, float 幅dpx = -1f, float 高さdpx = -1f )
 		{
-			Debug.Assert( 0f > ( 幅dpx * 高さdpx ),
-				"幅か高さが両方指定されていないか、両方指定されています。どちらか一方だけを指定してください。" );
+			var check = ( 幅dpx * 高さdpx );
+
+			Debug.Assert( 0f >= check, "幅か高さが両方指定されていないか、両方指定されています。どちらか一方だけを指定してください。" );
+
+			if( 0f == check )
+				return;	// 面積ゼロ
 
 			gd.D2DBatchDraw( ( dc ) => {
 
