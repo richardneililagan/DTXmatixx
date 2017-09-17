@@ -12,8 +12,8 @@ using SharpDX;
 using SharpDX.Windows;
 using FDK;
 using FDK.入力;
+using FDK.メディア;
 using DTXmatixx.ステージ;
-using DTXmatixx.アイキャッチ;
 using DTXmatixx.曲;
 
 namespace DTXmatixx
@@ -273,13 +273,27 @@ namespace DTXmatixx
 						break;
 
 					case ステージ.曲読み込み.曲読み込みステージ stage:
+						#region " 確定 → 演奏ステージへ "
+						//----------------
+						if( stage.現在のフェーズ == ステージ.曲読み込み.曲読み込みステージ.フェーズ.完了 )
+						{
+							App.ステージ管理.ステージを遷移する( gd, nameof( ステージ.演奏.演奏ステージ ) );
+
+							// 曲読み込みステージ画面をキャプチャする（演奏ステージのクロスフェードで使う）
+							var 演奏ステージ = App.ステージ管理.ステージリスト[ nameof( ステージ.演奏.演奏ステージ ) ] as ステージ.演奏.演奏ステージ;
+							演奏ステージ.キャプチャ画面 = 画面キャプチャ.取得する( gd );
+						}
+						//----------------
+						#endregion
+						break;
+
+					case ステージ.演奏.演奏ステージ stage:
 						break;
 				}
 
 				// コマンドフラッシュ。
 				if( vsync )
 					d3dDevice.ImmediateContext.Flush();
-
 			} );
 
 			// スワップチェーン表示。

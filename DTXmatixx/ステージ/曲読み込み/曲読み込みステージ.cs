@@ -22,7 +22,7 @@ namespace DTXmatixx.ステージ.曲読み込み
 		{
 			フェードイン,
 			表示,
-			確定,
+			完了,
 			キャンセル,
 		}
 		public フェーズ 現在のフェーズ
@@ -83,19 +83,21 @@ namespace DTXmatixx.ステージ.曲読み込み
 					break;
 
 				case フェーズ.表示:
+					
+					// todo: ここで曲データを読み込む。
+
+					this.現在のフェーズ = フェーズ.完了;
 					break;
 
-				case フェーズ.確定:
+				case フェーズ.完了:
 				case フェーズ.キャンセル:
 					break;
 			}
 		}
 
 		private bool _初めての進行描画 = true;
-
 		private 舞台画像 _舞台画像 = null;
 		private 画像 _注意文 = null;
-
 		private readonly Vector3 _プレビュー画像表示位置dpx = new Vector3( 150f, 117f, 0f );
 		private readonly Vector3 _プレビュー画像表示サイズdpx = new Vector3( 576f, 576f, 0f );
 
