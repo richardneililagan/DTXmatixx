@@ -843,7 +843,7 @@ namespace DTXmatixx.アイキャッチ
 				{
 					var context = this._ぐるぐる棒s[ i ];
 
-					if( null == context )
+					if( null == context || null == context.ストーリーボード )
 						continue;
 
 					if( context.ストーリーボード.Status != StoryboardStatus.Ready )
@@ -875,7 +875,7 @@ namespace DTXmatixx.アイキャッチ
 				{
 					var context = this._フラッシュオーバー棒s[ i ];
 
-					if( null == context.ストーリーボード )
+					if( null == context || null == context.ストーリーボード )
 						continue;
 
 					if( context.ストーリーボード.Status != StoryboardStatus.Ready )
