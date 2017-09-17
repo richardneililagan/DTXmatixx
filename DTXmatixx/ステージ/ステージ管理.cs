@@ -14,11 +14,13 @@ namespace DTXmatixx.ステージ
 			get
 				=> this.ステージリスト.ElementAt( 0 ).Value.GetType().Name;
 		}
+
 		public ステージ 現在のステージ
 		{
 			get
 				=> this._現在のステージ;
 		}
+
 		/// <summary>
 		///		全ステージのリスト。
 		///		新しいステージができたら、ここに追加すること。
@@ -28,6 +30,7 @@ namespace DTXmatixx.ステージ
 			{ nameof( タイトル.タイトルステージ ), new タイトル.タイトルステージ() },
 			{ nameof( 認証.認証ステージ ), new 認証.認証ステージ() },
 			{ nameof( 選曲.選曲ステージ ), new 選曲.選曲ステージ() },
+			{ nameof( 曲読み込み.曲読み込みステージ ), new 曲読み込み.曲読み込みステージ() },
 		};
 
 		// 全ステージで共通のアイキャッチインスタンス。ステージ間をまたいで描画することができる。
@@ -41,11 +44,17 @@ namespace DTXmatixx.ステージ
 			get;
 			protected set;
 		} = null;
+		public アイキャッチ.GO GO
+		{
+			get;
+			protected set;
+		} = null;
 
 		public ステージ管理()
 		{
 			this.子リスト.Add( this.シャッター = new アイキャッチ.シャッター() );
 			this.子リスト.Add( this.回転幕 = new アイキャッチ.回転幕() );
+			this.子リスト.Add( this.GO = new アイキャッチ.GO() );
 		}
 		protected override void On活性化( グラフィックデバイス gd )
 		{

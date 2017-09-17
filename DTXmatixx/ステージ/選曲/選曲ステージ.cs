@@ -19,6 +19,7 @@ namespace DTXmatixx.ステージ.選曲
 		{
 			フェードイン,
 			表示,
+			フェードアウト,
 			確定,
 			キャンセル,
 		}
@@ -79,6 +80,7 @@ namespace DTXmatixx.ステージ.選曲
 			// 進行描画
 
 			var fadeIn = App.ステージ管理.回転幕;
+			var fadeOut = App.ステージ管理.GO;
 
 			if( this._初めての進行描画 )
 			{
@@ -105,6 +107,12 @@ namespace DTXmatixx.ステージ.選曲
 				case フェーズ.表示:
 					break;
 
+				case フェーズ.フェードアウト:
+					fadeOut.進行描画する( gd );
+					if( fadeOut.現在のフェーズ == GO.フェーズ.クローズ完了 )
+						this.現在のフェーズ = フェーズ.確定;
+					break;
+
 				case フェーズ.確定:
 				case フェーズ.キャンセル:
 					break;
@@ -114,7 +122,12 @@ namespace DTXmatixx.ステージ.選曲
 
 			App.Keyboard.ポーリングする();
 
-			if( App.Keyboard.キーが押された( 0, Key.Up ) )
+			if( App.Keyboard.キーが押された( 0, Key.Return ) )
+			{
+				App.ステージ管理.GO.クローズする( gd );
+				this.現在のフェーズ = フェーズ.フェードアウト;
+			}
+			else if( App.Keyboard.キーが押された( 0, Key.Up ) )
 			{
 				//App.曲ツリー.前のノードをフォーカスする();	--> 曲リストへ委譲
 				this._曲リスト.前のノードを選択する( gd );
@@ -170,6 +183,8 @@ namespace DTXmatixx.ステージ.選曲
 		private void _プレビュー画像を描画する( グラフィックデバイス gd, Node ノード )
 		{
 			var 画像 = ノード?.ノード画像 ?? Node.既定のノード画像;
+
+			// テクスチャは画面中央が (0,0,0) で、Xは右がプラス方向, Yは上がプラス方向, Zは奥がプラス方向+。
 
 			var 画面左上dpx = new Vector3(
 				-gd.設計画面サイズ.Width / 2f,

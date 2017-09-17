@@ -21,6 +21,12 @@ namespace DTXmatixx.ステージ.選曲
 	/// </remarks>
 	class 曲リスト : Activity
 	{
+		private readonly string _フォント名 =
+			//"HGMaruGothicMPRO";	なんかグリフがバグる……
+			"メイリオ";
+
+		private readonly float _フォントサイズ = 40.0f;
+
 		public 曲リスト()
 		{
 		}
@@ -54,11 +60,14 @@ namespace DTXmatixx.ステージ.選曲
 				//----------------
 				#endregion
 
-				this._曲名フォーマット = new TextFormat( gd.DWriteFactory, "HGMaruGothicMPRO", FontWeight.UltraBlack, FontStyle.Normal, 40.0f );
+				this._曲名フォーマット = new TextFormat( gd.DWriteFactory, this._フォント名, FontWeight.UltraBlack, FontStyle.Normal, this._フォントサイズ );
 				this._曲名の輪郭の色 = new SolidColorBrush( gd.D2DDeviceContext, Color4.White );
 				this._曲名の塗りつぶしの色 = new SolidColorBrush( gd.D2DDeviceContext, Color4.Black );
 				this._カーソル位置 = 4;
 				this._曲リスト全体のY軸移動オフセット = 0;
+
+				this._選択ノードの表示オフセットdpx = null;
+				this._選択ノードの表示オフセットのストーリーボード = null;
 
 				this._初めての進行描画 = true;
 			}
@@ -67,6 +76,10 @@ namespace DTXmatixx.ステージ.選曲
 		{
 			using( Log.Block( FDKUtilities.現在のメソッド名 ) )
 			{
+				this._選択ノードの表示オフセットのストーリーボード?.Abandon();
+				FDKUtilities.解放する( ref this._選択ノードの表示オフセットdpx );
+				FDKUtilities.解放する( ref this._選択ノードの表示オフセットのストーリーボード );
+
 				FDKUtilities.解放する( ref this._曲名の塗りつぶしの色 );
 				FDKUtilities.解放する( ref this._曲名の輪郭の色 );
 			}
@@ -78,7 +91,8 @@ namespace DTXmatixx.ステージ.選曲
 
 			if( this._初めての進行描画 )
 			{
-				this._スクロール用カウンタ = new 定間隔進行();		// 生成と同時にカウント開始。
+				this._スクロール用カウンタ = new 定間隔進行();     // 生成と同時にカウント開始。
+				this._選択ノードのオフセットアニメをリセットする( gd );
 				this._初めての進行描画 = false;
 			}
 
@@ -164,11 +178,13 @@ namespace DTXmatixx.ステージ.選曲
 		{
 			this._カーソル位置--;		// 下限なし
 			App.曲ツリー.前のノードをフォーカスする();
+			this._選択ノードのオフセットアニメをリセットする( gd );
 		}
 		public void 次のノードを選択する( グラフィックデバイス gd )
 		{
 			this._カーソル位置++;		// 上限なし
 			App.曲ツリー.次のノードをフォーカスする();
+			this._選択ノードのオフセットアニメをリセットする( gd );
 		}
 
 
@@ -201,6 +217,7 @@ namespace DTXmatixx.ステージ.選曲
 		private void _曲ノードを描画する( グラフィックデバイス gd, int 行番号, MusicNode ノード )
 		{
 			var ノード画像 = ノード.ノード画像 ?? Node.既定のノード画像;
+			bool 選択ノードである = ( 4 == 行番号 );
 
 			Debug.Assert( null != ノード画像 );
 			Debug.Assert( ( 0.0f != ノード画像.サイズ.Width ) && ( 0.0f != ノード画像.サイズ.Height ) );    // 面積がゼロでないこと。
@@ -215,8 +232,8 @@ namespace DTXmatixx.ステージ.選曲
 			var 実数行番号 = 行番号 + ( this._曲リスト全体のY軸移動オフセット / 100f );
 
 			var ノード左上dpx = new Vector3(
-				画面左上dpx.X + this._曲リストの基準左上隅座標dpx.X,
-				画面左上dpx.Y - this._曲リストの基準左上隅座標dpx.Y - ( 実数行番号 * _ノードの高さdpx ),
+				this._曲リストの基準左上隅座標dpx.X + ( ( 選択ノードである ) ? (float) this._選択ノードの表示オフセットdpx.Value : 0f ),
+				this._曲リストの基準左上隅座標dpx.Y + ( 実数行番号 * _ノードの高さdpx ),
 				0f );
 
 			#region " サムネイル画像 "
@@ -225,8 +242,8 @@ namespace DTXmatixx.ステージ.選曲
 				var ノード内サムネイルオフセットdpx = new Vector3( 58f, 4f, 0f );
 
 				var サムネイル表示中央dpx = new Vector3(
-					( ノード左上dpx.X ) + ( this._サムネイル表示サイズdpx.X / 2f ) + ノード内サムネイルオフセットdpx.X,
-					( ノード左上dpx.Y ) - ( this._サムネイル表示サイズdpx.Y / 2f ) - ノード内サムネイルオフセットdpx.Y,
+					画面左上dpx.X + ノード左上dpx.X + ( this._サムネイル表示サイズdpx.X / 2f ) + ノード内サムネイルオフセットdpx.X,
+					画面左上dpx.Y - ノード左上dpx.Y - ( this._サムネイル表示サイズdpx.Y / 2f ) - ノード内サムネイルオフセットdpx.Y,
 					0f );
 
 				var 変換行列 =
@@ -246,8 +263,8 @@ namespace DTXmatixx.ステージ.選曲
 				{
 					textLayout.Draw(
 						textRenderer,
-						this._曲リストの基準左上隅座標dpx.X + 170f,
-						this._曲リストの基準左上隅座標dpx.Y + ( 実数行番号 * _ノードの高さdpx ) + 30f );
+						ノード左上dpx.X + 170f,
+						ノード左上dpx.Y + 30f );
 				}
 
 			} );
@@ -291,5 +308,31 @@ namespace DTXmatixx.ステージ.選曲
 		///		-100～100。曲リスト全体の表示位置を、負数は 上 へ、正数は 下 へずらす 。（正負と上下の対応に注意。）
 		/// </summary>
 		private int _曲リスト全体のY軸移動オフセット = 0;
+
+		/// <summary>
+		///		選択中の曲ノードエリアを左にずらす度合い。
+		///		-50f ～ 0f [dpx] 。
+		/// </summary>
+		private Variable _選択ノードの表示オフセットdpx = null;
+		private Storyboard _選択ノードの表示オフセットのストーリーボード = null;
+
+		private void _選択ノードのオフセットアニメをリセットする( グラフィックデバイス gd )
+		{
+			this._選択ノードの表示オフセットdpx?.Dispose();
+			this._選択ノードの表示オフセットdpx = new Variable( gd.Animation.Manager, initialValue: 0.0 );
+
+			this._選択ノードの表示オフセットのストーリーボード?.Abandon();
+			this._選択ノードの表示オフセットのストーリーボード?.Dispose();
+			this._選択ノードの表示オフセットのストーリーボード = new Storyboard( gd.Animation.Manager );
+
+			using( var 維持 = gd.Animation.TrasitionLibrary.Constant( 0.15 ) )
+			using( var 左へ移動 = gd.Animation.TrasitionLibrary.Linear( 0.07, finalValue: -50f ) )
+			{
+				this._選択ノードの表示オフセットのストーリーボード.AddTransition( this._選択ノードの表示オフセットdpx, 維持 );
+				this._選択ノードの表示オフセットのストーリーボード.AddTransition( this._選択ノードの表示オフセットdpx, 左へ移動 );
+			}
+
+			this._選択ノードの表示オフセットのストーリーボード.Schedule( gd.Animation.Timer.Time );
+		}
 	}
 }

@@ -85,6 +85,7 @@
     <Compile Include="ステージ\タイトル\タイトルステージ.cs" />
     <Compile Include="ステージ\アイキャッチ\回転幕.cs" />
     <Compile Include="ステージ\曲ツリー構築\曲ツリー構築ステージ.cs" />
+    <Compile Include="ステージ\曲読み込み\曲読み込みステージ.cs" />
     <Compile Include="ステージ\舞台画像.cs" />
     <Compile Include="ステージ\認証\認証ステージ.cs" />
     <Compile Include="ステージ\選曲\曲リスト.cs" />
@@ -175,6 +176,11 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="System\Images\舞台_暗.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="System\Images\ご注意ください.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
