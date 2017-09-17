@@ -77,8 +77,6 @@ namespace DTXmatixx.ステージ.選曲
 
 		public override void 進行描画する( グラフィックデバイス gd )
 		{
-			// 進行描画
-
 			var fadeIn = App.ステージ管理.回転幕;
 			var fadeOut = App.ステージ管理.GO;
 
@@ -96,6 +94,8 @@ namespace DTXmatixx.ステージ.選曲
 			this._選択曲を囲む枠を描画する( gd );
 			this._導線を描画する( gd );
 
+			App.Keyboard.ポーリングする();
+
 			switch( this.現在のフェーズ )
 			{
 				case フェーズ.フェードイン:
@@ -105,6 +105,23 @@ namespace DTXmatixx.ステージ.選曲
 					break;
 
 				case フェーズ.表示:
+					if( App.Keyboard.キーが押された( 0, Key.Return ) )
+					{
+						App.ステージ管理.GO.クローズする( gd );
+						this.現在のフェーズ = フェーズ.フェードアウト;
+					}
+					else if( App.Keyboard.キーが押された( 0, Key.Up ) )
+					{
+						//App.曲ツリー.前のノードをフォーカスする();	--> 曲リストへ委譲
+						this._曲リスト.前のノードを選択する( gd );
+						this._導線アニメをリセットする( gd );
+					}
+					else if( App.Keyboard.キーが押された( 0, Key.Down ) )
+					{
+						//App.曲ツリー.次のノードをフォーカスする();	--> 曲リストへ委譲
+						this._曲リスト.次のノードを選択する( gd );
+						this._導線アニメをリセットする( gd );
+					}
 					break;
 
 				case フェーズ.フェードアウト:
@@ -116,28 +133,6 @@ namespace DTXmatixx.ステージ.選曲
 				case フェーズ.確定:
 				case フェーズ.キャンセル:
 					break;
-			}
-
-			// 入力
-
-			App.Keyboard.ポーリングする();
-
-			if( App.Keyboard.キーが押された( 0, Key.Return ) )
-			{
-				App.ステージ管理.GO.クローズする( gd );
-				this.現在のフェーズ = フェーズ.フェードアウト;
-			}
-			else if( App.Keyboard.キーが押された( 0, Key.Up ) )
-			{
-				//App.曲ツリー.前のノードをフォーカスする();	--> 曲リストへ委譲
-				this._曲リスト.前のノードを選択する( gd );
-				this._導線アニメをリセットする( gd );
-			}
-			else if( App.Keyboard.キーが押された( 0, Key.Down ) )
-			{
-				//App.曲ツリー.次のノードをフォーカスする();	--> 曲リストへ委譲
-				this._曲リスト.次のノードを選択する( gd );
-				this._導線アニメをリセットする( gd );
 			}
 		}
 

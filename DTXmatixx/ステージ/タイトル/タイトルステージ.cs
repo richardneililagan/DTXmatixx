@@ -34,6 +34,7 @@ namespace DTXmatixx.ステージ.タイトル
 			this.子リスト.Add( this._タイトルロゴ = new 画像( @"$(System)images\タイトルロゴ.png" ) );
 			this.子リスト.Add( this._パッドを叩いてください = new 文字列画像( "パッドを叩いてください", 40f ) );
 		}
+
 		protected override void On活性化( グラフィックデバイス gd )
 		{
 			using( Log.Block( FDKUtilities.現在のメソッド名 ) )
@@ -49,6 +50,7 @@ namespace DTXmatixx.ステージ.タイトル
 				FDKUtilities.解放する( ref this._帯ブラシ );
 			}
 		}
+
 		public override void 進行描画する( グラフィックデバイス gd )
 		{
 			var fadeOut = App.ステージ管理.シャッター;
