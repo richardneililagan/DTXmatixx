@@ -65,7 +65,6 @@ namespace DTXmatixx.ステージ.選曲
 				FDKUtilities.解放する( ref this._左に伸びる導線の長さdpx );
 				FDKUtilities.解放する( ref this._プレビュー枠の長さdpx );
 				FDKUtilities.解放する( ref this._導線のストーリーボード );
-
 				FDKUtilities.解放する( ref this._白 );
 				FDKUtilities.解放する( ref this._黒 );
 				FDKUtilities.解放する( ref this._黒透過 );
