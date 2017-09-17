@@ -19,12 +19,7 @@ namespace DTXmatixx.ステージ
 				=> this._背景画像.サイズ;
 		}
 
-		public bool ぼかしを適用中
-		{
-			get;
-			protected set;
-		} = false;
-		public bool 縮小を適用中
+		public bool ぼかしと縮小を適用中
 		{
 			get;
 			protected set;
@@ -36,16 +31,16 @@ namespace DTXmatixx.ステージ
 			this.子リスト.Add( this._背景黒幕付き画像 = new 画像( 背景黒幕付き画像ファイル名 ?? @"$(System)images\舞台黒幕付き.jpg" ) );
 		}
 
-		public void ぼかしを適用する( グラフィックデバイス gd, double 完了までの最大時間sec = 1.0 )
+		public void ぼかしと縮小を適用する( グラフィックデバイス gd, double 完了までの最大時間sec = 1.0 )
 		{
 			Debug.Assert( this.活性化している );
 
-			if( !( this.ぼかしを適用中 ) )
+			if( !( this.ぼかしと縮小を適用中 ) )
 			{
 				if( 0.0 == 完了までの最大時間sec )
 				{
-					this._ぼかし割合?.Dispose();
-					this._ぼかし割合 = new Variable( gd.Animation.Manager, initialValue: 1.0 );
+					this._ぼかしと縮小割合?.Dispose();
+					this._ぼかしと縮小割合 = new Variable( gd.Animation.Manager, initialValue: 1.0 );
 				}
 				else
 				{
@@ -54,23 +49,23 @@ namespace DTXmatixx.ステージ
 						this._ストーリーボード?.Abandon();
 						this._ストーリーボード?.Dispose();
 						this._ストーリーボード = new Storyboard( gd.Animation.Manager );
-						this._ストーリーボード.AddTransition( this._ぼかし割合, 割合遷移 );
-						this._ストーリーボード.Schedule( gd.Animation.Timer.Time );    // 今すぐ開始
+						this._ストーリーボード.AddTransition( this._ぼかしと縮小割合, 割合遷移 );
+						this._ストーリーボード.Schedule( gd.Animation.Timer.Time );	// 今すぐ開始
 					}
 				}
-				this.ぼかしを適用中 = true;
+				this.ぼかしと縮小を適用中 = true;
 			}
 		}
-		public void ぼかしを解除する( グラフィックデバイス gd, double 完了までの最大時間sec = 1.0 )
+		public void ぼかしと縮小を解除する( グラフィックデバイス gd, double 完了までの最大時間sec = 1.0 )
 		{
 			Debug.Assert( this.活性化している );
 
-			if( this.ぼかしを適用中 )
+			if( this.ぼかしと縮小を適用中 )
 			{
 				if( 0.0 == 完了までの最大時間sec )
 				{
-					this._ぼかし割合?.Dispose();
-					this._ぼかし割合 = new Variable( gd.Animation.Manager, initialValue: 0.0 );
+					this._ぼかしと縮小割合?.Dispose();
+					this._ぼかしと縮小割合 = new Variable( gd.Animation.Manager, initialValue: 0.0 );
 				}
 				else
 				{
@@ -79,62 +74,11 @@ namespace DTXmatixx.ステージ
 						this._ストーリーボード?.Abandon();
 						this._ストーリーボード?.Dispose();
 						this._ストーリーボード = new Storyboard( gd.Animation.Manager );
-						this._ストーリーボード.AddTransition( this._ぼかし割合, 割合遷移 );
+						this._ストーリーボード.AddTransition( this._ぼかしと縮小割合, 割合遷移 );
 						this._ストーリーボード.Schedule( gd.Animation.Timer.Time );    // 今すぐ開始
 					}
 				}
-				this.ぼかしを適用中 = false;
-			}
-		}
-
-		public void 縮小を適用する( グラフィックデバイス gd, double 完了までの最大時間sec = 1.0 )
-		{
-			Debug.Assert( this.活性化している );
-
-			if( !( this.縮小を適用中 ) )
-			{
-				if( 0.0 == 完了までの最大時間sec )
-				{
-					this._縮小割合?.Dispose();
-					this._縮小割合 = new Variable( gd.Animation.Manager, initialValue: 1.0 );
-				}
-				else
-				{
-					using( var 割合遷移 = gd.Animation.TrasitionLibrary.SmoothStop( 完了までの最大時間sec, finalValue: 1.0 ) )
-					{
-						this._ストーリーボード?.Abandon();
-						this._ストーリーボード?.Dispose();
-						this._ストーリーボード = new Storyboard( gd.Animation.Manager );
-						this._ストーリーボード.AddTransition( this._縮小割合, 割合遷移 );
-						this._ストーリーボード.Schedule( gd.Animation.Timer.Time );    // 今すぐ開始
-					}
-				}
-				this.縮小を適用中 = true;
-			}
-		}
-		public void 縮小を解除する( グラフィックデバイス gd, double 完了までの最大時間sec = 1.0 )
-		{
-			Debug.Assert( this.活性化している );
-
-			if( this.縮小を適用中 )
-			{
-				if( 0.0 == 完了までの最大時間sec )
-				{
-					this._縮小割合?.Dispose();
-					this._縮小割合 = new Variable( gd.Animation.Manager, initialValue: 0.0 );
-				}
-				else
-				{
-					using( var 割合遷移 = gd.Animation.TrasitionLibrary.SmoothStop( 完了までの最大時間sec, finalValue: 0.0 ) )
-					{
-						this._ストーリーボード?.Abandon();
-						this._ストーリーボード?.Dispose();
-						this._ストーリーボード = new Storyboard( gd.Animation.Manager );
-						this._ストーリーボード.AddTransition( this._縮小割合, 割合遷移 );
-						this._ストーリーボード.Schedule( gd.Animation.Timer.Time );    // 今すぐ開始
-					}
-				}
-				this.縮小を適用中 = false;
+				this.ぼかしと縮小を適用中 = false;
 			}
 		}
 
@@ -153,8 +97,7 @@ namespace DTXmatixx.ステージ
 			this._切り取りエフェクト = new Crop( gd.D2DDeviceContext );
 			this._切り取りエフェクト黒幕付き用 = new Crop( gd.D2DDeviceContext );
 
-			this._ぼかし割合 = new Variable( gd.Animation.Manager, initialValue: 0.0 );
-			this._縮小割合 = new Variable( gd.Animation.Manager, initialValue: 1.0 );
+			this._ぼかしと縮小割合 = new Variable( gd.Animation.Manager, initialValue: 0.0 );
 			this._ストーリーボード = null;
 
 			this._初めての進行描画 = true;
@@ -164,8 +107,7 @@ namespace DTXmatixx.ステージ
 			this._ストーリーボード?.Abandon();
 
 			FDKUtilities.解放する( ref this._ストーリーボード );
-			FDKUtilities.解放する( ref this._ぼかし割合 );
-			FDKUtilities.解放する( ref this._縮小割合 );
+			FDKUtilities.解放する( ref this._ぼかしと縮小割合 );
 			FDKUtilities.解放する( ref this._切り取りエフェクト黒幕付き用 );
 			FDKUtilities.解放する( ref this._切り取りエフェクト );
 			FDKUtilities.解放する( ref this._拡大エフェクト黒幕付き用 );
@@ -198,13 +140,12 @@ namespace DTXmatixx.ステージ
 			//----------------
 			#endregion
 
-			double ぼかし割合 = this._ぼかし割合?.Value ?? 0.0;
-			double 縮小割合 = this._縮小割合?.Value ?? 1.0;
+			double 割合 = this._ぼかしと縮小割合?.Value ?? 0.0;
 
 			if( 黒幕付き )
 			{
-				this._拡大エフェクト黒幕付き用.ScaleAmount = new Vector2( (float) ( 1f + ( 1.0 - 縮小割合 ) * 0.04 ) );    // 1.04 ～ 1
-				this._ガウスぼかしエフェクト黒幕付き用.StandardDeviation = (float) ( ぼかし割合 * 10.0 );       // 0～10
+				this._拡大エフェクト黒幕付き用.ScaleAmount = new Vector2( (float) ( 1f + ( 1.0 - 割合 ) * 0.04 ) );    // 1.04 ～ 1
+				this._ガウスぼかしエフェクト黒幕付き用.StandardDeviation = (float) ( 割合 * 10.0 );       // 0～10
 				this._切り取りエフェクト黒幕付き用.Rectangle = ( null != 表示領域 ) ? ( (Vector4) 表示領域 ) : new Vector4( 0f, 0f, this._背景黒幕付き画像.サイズ.Width, this._背景黒幕付き画像.サイズ.Height );
 
 				gd.D2DBatchDraw( ( dc ) => {
@@ -227,8 +168,8 @@ namespace DTXmatixx.ステージ
 			}
 			else
 			{
-				this._拡大エフェクト.ScaleAmount = new Vector2( (float) ( 1f + ( 1.0 - 縮小割合 ) * 0.04 ) );    // 1.04 ～ 1
-				this._ガウスぼかしエフェクト.StandardDeviation = (float) ( ぼかし割合 * 10.0 );       // 0～10
+				this._拡大エフェクト.ScaleAmount = new Vector2( (float) ( 1f + ( 1.0 - 割合 ) * 0.04 ) );    // 1.04 ～ 1
+				this._ガウスぼかしエフェクト.StandardDeviation = (float) ( 割合 * 10.0 );       // 0～10
 				this._切り取りエフェクト.Rectangle = ( null != 表示領域 ) ? ( (Vector4) 表示領域 ) : new Vector4( 0f, 0f, this._背景画像.サイズ.Width, this._背景画像.サイズ.Height );
 
 				gd.D2DBatchDraw( ( dc ) => {
@@ -262,13 +203,9 @@ namespace DTXmatixx.ステージ
 		private Crop _切り取りエフェクト黒幕付き用 = null;
 
 		/// <summary>
-		///		くっきり: 0 ～ 1 :ぼかし
+		///		くっきり＆拡大: 0 ～ 1 :ぼかし＆縮小
 		/// </summary>
-		private Variable _ぼかし割合 = null;
-		/// <summary>
-		///		拡大: 0 ～ 1 :標準
-		/// </summary>
-		private Variable _縮小割合 = null;
+		private Variable _ぼかしと縮小割合 = null;
 		private Storyboard _ストーリーボード = null;
 	}
 }

@@ -34,6 +34,7 @@ namespace DTXmatixx.ステージ.認証
 			this.子リスト.Add( this._タッチアイコン = new 画像( @"$(System)images\タッチアイコン.png" ) );
 			this.子リスト.Add( this._確認できませんでした = new 文字列画像( "確認できませんでした。", 40f ) );
 		}
+
 		protected override void On活性化( グラフィックデバイス gd )
 		{
 			using( Log.Block( FDKUtilities.現在のメソッド名 ) )
@@ -48,6 +49,7 @@ namespace DTXmatixx.ステージ.認証
 			{
 			}
 		}
+
 		public override void 進行描画する( グラフィックデバイス gd )
 		{
 			var fadeIn = App.ステージ管理.シャッター;

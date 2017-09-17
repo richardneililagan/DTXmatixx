@@ -40,7 +40,7 @@ namespace DTXmatixx
 
 
 		public App()
-			: base( 設計画面サイズ: new SizeF( 1920f, 1080f ), 物理画面サイズ: new SizeF( 960f, 540f ) )
+			: base( 設計画面サイズ: new SizeF( 1920f, 1080f ), 物理画面サイズ: new SizeF( 1280f, 720f ) )
 		{
 			this.Text = $"{Application.ProductName} {Application.ProductVersion}";
 
@@ -204,9 +204,7 @@ namespace DTXmatixx
 						//----------------
 						if( stage.現在のフェーズ == ステージ.曲ツリー構築.曲ツリー構築ステージ.フェーズ.確定 )
 						{
-#warning いきなり選曲すてーじへ遷移。
-							//App.ステージ管理.ステージを遷移する( gd, nameof( ステージ.タイトル.タイトルステージ ) );
-							App.ステージ管理.ステージを遷移する( gd, nameof( ステージ.選曲.選曲ステージ ) );
+							App.ステージ管理.ステージを遷移する( gd, nameof( ステージ.タイトル.タイトルステージ ) );
 						}
 						//----------------
 						#endregion

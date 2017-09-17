@@ -14,9 +14,10 @@ namespace DTXmatixx.ステージ.曲読み込み
 	class 曲読み込みステージ : ステージ
 	{
 		private readonly string _フォント名 =
-			//"HGMaruGothicMPRO";	なんかグリフがバグる……
-			"メイリオ";
-		private readonly float _フォントサイズ = 80.0f;
+			"HGMaruGothicMPRO";
+			//"メイリオ";
+		private readonly float _フォントサイズ = 70.0f;
+		private readonly float _フォントの輪郭幅 = 6f;  // 大きくするとグリフがバグるみたい。
 
 		public enum フェーズ
 		{
@@ -41,7 +42,7 @@ namespace DTXmatixx.ステージ.曲読み込み
 		{
 			using( Log.Block( FDKUtilities.現在のメソッド名 ) )
 			{
-				this._曲名フォーマット = new TextFormat( gd.DWriteFactory, this._フォント名, FontWeight.UltraBlack, FontStyle.Normal, this._フォントサイズ );
+				this._曲名フォーマット = new TextFormat( gd.DWriteFactory, this._フォント名, FontWeight.Regular, FontStyle.Normal, this._フォントサイズ );
 				this._曲名の輪郭の色 = new SolidColorBrush( gd.D2DDeviceContext, Color4.White );
 				this._曲名の塗りつぶしの色 = new SolidColorBrush( gd.D2DDeviceContext, Color4.Black );
 
@@ -64,7 +65,7 @@ namespace DTXmatixx.ステージ.曲読み込み
 
 			if( this._初めての進行描画 )
 			{
-				this._舞台画像.ぼかしを適用する( gd, 0.0 );
+				this._舞台画像.ぼかしと縮小を適用する( gd, 0.0 );
 				fadeIn.オープンする( gd );
 				this._初めての進行描画 = false;
 			}
@@ -138,7 +139,7 @@ namespace DTXmatixx.ステージ.曲読み込み
 			gd.D2DBatchDraw( ( dc ) => {
 
 				using( var textLayout = new TextLayout( gd.DWriteFactory, 選択曲.タイトル, this._曲名フォーマット, 1920f, 1080f ) )
-				using( var textRenderer = new 縁取りTextRenderer( gd.D2DFactory, dc, this._曲名の輪郭の色, this._曲名の塗りつぶしの色, 8f ) )
+				using( var textRenderer = new 縁取りTextRenderer( gd.D2DFactory, dc, this._曲名の輪郭の色, this._曲名の塗りつぶしの色, this._フォントの輪郭幅 ) )
 				{
 					textLayout.Draw( textRenderer, 782f, 409f );
 				}

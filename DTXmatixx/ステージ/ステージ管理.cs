@@ -57,6 +57,23 @@ namespace DTXmatixx.ステージ
 			this.子リスト.Add( this.回転幕 = new アイキャッチ.回転幕() );
 			this.子リスト.Add( this.GO = new アイキャッチ.GO() );
 		}
+		public void Dispose()
+		{
+			throw new InvalidOperationException( "このメソッドは使用できません。別のオーバーロードメソッドを使用してください。" );
+		}
+		public void Dispose( グラフィックデバイス gd )
+		{
+			Debug.Assert( null != gd );
+
+			// 現在活性化しているステージがあれば、すべて非活性化する。
+			foreach( var kvp in this.ステージリスト )
+			{
+				if( kvp.Value.活性化している )
+				{
+					kvp.Value.非活性化する( gd );
+				}
+			}
+		}
 		protected override void On活性化( グラフィックデバイス gd )
 		{
 			using( Log.Block( FDKUtilities.現在のメソッド名 ) )
@@ -77,24 +94,7 @@ namespace DTXmatixx.ステージ
 				}
 			}
 		}
-		public void Dispose()
-		{
-			throw new InvalidOperationException( "このメソッドは使用できません。別のオーバーロードメソッドを使用してください。" );
-		}
-		public void Dispose( グラフィックデバイス gd )
-		{
-			Debug.Assert( null != gd );
-
-			// 現在活性化しているステージがあれば、すべて非活性化する。
-			foreach( var kvp in this.ステージリスト )
-			{
-				if( kvp.Value.活性化している )
-				{
-					kvp.Value.非活性化する( gd );
-				}
-			}
-		}
-
+		
 		/// <summary>
 		///		現在のステージを非活性化し、指定されたステージに遷移して、活性化する。
 		/// </summary>
@@ -125,7 +125,6 @@ namespace DTXmatixx.ステージ
 				}
 			}
 		}
-
 
 		/// <summary>
 		///		現在実行中のステージ。<see cref="ステージリスト"/> の中のひとつを参照している（ので、うかつにDisposeとかしたりしないこと）。

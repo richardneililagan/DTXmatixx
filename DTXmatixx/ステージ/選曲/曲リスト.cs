@@ -22,10 +22,11 @@ namespace DTXmatixx.ステージ.選曲
 	class 曲リスト : Activity
 	{
 		private readonly string _フォント名 =
-			//"HGMaruGothicMPRO";	なんかグリフがバグる……
+			//"HGMaruGothicMPRO";
 			"メイリオ";
 
 		private readonly float _フォントサイズ = 40.0f;
+		private readonly float _フォントの輪郭幅 = 6f;	// 大きくするとグリフがバグるみたい。
 
 		public 曲リスト()
 		{
@@ -60,7 +61,7 @@ namespace DTXmatixx.ステージ.選曲
 				//----------------
 				#endregion
 
-				this._曲名フォーマット = new TextFormat( gd.DWriteFactory, this._フォント名, FontWeight.UltraBlack, FontStyle.Normal, this._フォントサイズ );
+				this._曲名フォーマット = new TextFormat( gd.DWriteFactory, this._フォント名, FontWeight.Regular, FontStyle.Normal, this._フォントサイズ );
 				this._曲名の輪郭の色 = new SolidColorBrush( gd.D2DDeviceContext, Color4.White );
 				this._曲名の塗りつぶしの色 = new SolidColorBrush( gd.D2DDeviceContext, Color4.Black );
 				this._カーソル位置 = 4;
@@ -259,7 +260,7 @@ namespace DTXmatixx.ステージ.選曲
 			gd.D2DBatchDraw( ( dc ) => {
 
 				using( var textLayout = new TextLayout( gd.DWriteFactory, ノード.タイトル, this._曲名フォーマット, 1920f, 1080f ) )
-				using( var textRenderer = new 縁取りTextRenderer( gd.D2DFactory, dc, this._曲名の輪郭の色, this._曲名の塗りつぶしの色, 8f ) )
+				using( var textRenderer = new 縁取りTextRenderer( gd.D2DFactory, dc, this._曲名の輪郭の色, this._曲名の塗りつぶしの色, this._フォントの輪郭幅 ) )
 				{
 					textLayout.Draw(
 						textRenderer,

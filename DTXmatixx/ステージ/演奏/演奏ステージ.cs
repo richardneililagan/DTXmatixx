@@ -36,6 +36,7 @@ namespace DTXmatixx.ステージ.演奏
 		{
 			this.子リスト.Add( this._背景画像 = new 画像( @"$(System)images\演奏画面.jpg" ) );
 			this.子リスト.Add( this._曲名パネル = new 曲名パネル() );
+			this.子リスト.Add( this._ステータスパネル = new ステータスパネル() );
 		}
 
 		protected override void On活性化( グラフィックデバイス gd )
@@ -69,6 +70,7 @@ namespace DTXmatixx.ステージ.演奏
 
 			this._背景画像.描画する( gd, 0f, 0f );
 			this._曲名パネル.描画する( gd );
+			this._ステータスパネル.描画する( gd );
 
 			switch( this.現在のフェーズ )
 			{
@@ -99,6 +101,7 @@ namespace DTXmatixx.ステージ.演奏
 		private bool _初めての進行描画 = true;
 		private 画像 _背景画像 = null;
 		private 曲名パネル _曲名パネル = null;
+		private ステータスパネル _ステータスパネル = null;
 		/// <summary>
 		///		読み込み画面: 0 ～ 1: 演奏画面
 		/// </summary>
