@@ -259,14 +259,14 @@ namespace DTXmatixx.ステージ.選曲
 				{
 					曲名画像 = new 文字列画像() {
 						表示文字列 = ノード.タイトル,
-						フォント名 = "メイリオ",
+						フォント名 = "HGMaruGothicMPRO", // "メイリオ",
 						フォント幅 = FontWeight.Regular,
 						フォントスタイル = FontStyle.Normal,
 						フォントサイズpt = 40f,
 						描画効果 = 文字列画像.効果.縁取り,
 						縁のサイズdpx = 6f,
-						前景色 = Color4.White,
-						背景色 = Color4.Black,
+						前景色 = Color4.Black,
+						背景色 = Color4.White,
 					};
 					曲名画像.活性化する( gd );
 

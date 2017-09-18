@@ -36,9 +36,9 @@ namespace DTXmatixx.ステージ.曲読み込み
 				フォント幅 = FontWeight.Regular,
 				フォントスタイル = FontStyle.Normal,
 				描画効果 = 文字列画像.効果.縁取り,
-				縁のサイズdpx = 6f,
-				前景色 = Color4.White,
-				背景色 = Color4.Black,
+				縁のサイズdpx = 10f,
+				前景色 = Color4.Black,
+				背景色 = Color4.White,
 			} );
 		}
 
