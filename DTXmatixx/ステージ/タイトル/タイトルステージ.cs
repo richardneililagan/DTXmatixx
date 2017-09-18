@@ -32,7 +32,7 @@ namespace DTXmatixx.ステージ.タイトル
 		{
 			this.子リスト.Add( this._舞台画像 = new 舞台画像() );
 			this.子リスト.Add( this._タイトルロゴ = new 画像( @"$(System)images\タイトルロゴ.png" ) );
-			this.子リスト.Add( this._パッドを叩いてください = new 文字列画像( "パッドを叩いてください", 40f ) );
+			this.子リスト.Add( this._パッドを叩いてください = new 文字列画像() { 表示文字列 = "パッドを叩いてください", フォントサイズpt = 40f, 描画効果 = 文字列画像.効果.縁取り } );
 		}
 
 		protected override void On活性化( グラフィックデバイス gd )

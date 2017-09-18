@@ -21,13 +21,6 @@ namespace DTXmatixx.ステージ.選曲
 	/// </remarks>
 	class 曲リスト : Activity
 	{
-		private readonly string _フォント名 =
-			//"HGMaruGothicMPRO";
-			"メイリオ";
-
-		private readonly float _フォントサイズ = 40.0f;
-		private readonly float _フォントの輪郭幅 = 6f;	// 大きくするとグリフがバグるみたい。
-
 		public 曲リスト()
 		{
 		}
@@ -61,14 +54,13 @@ namespace DTXmatixx.ステージ.選曲
 				//----------------
 				#endregion
 
-				this._曲名フォーマット = new TextFormat( gd.DWriteFactory, this._フォント名, FontWeight.Regular, FontStyle.Normal, this._フォントサイズ );
-				this._曲名の輪郭の色 = new SolidColorBrush( gd.D2DDeviceContext, Color4.White );
-				this._曲名の塗りつぶしの色 = new SolidColorBrush( gd.D2DDeviceContext, Color4.Black );
 				this._カーソル位置 = 4;
 				this._曲リスト全体のY軸移動オフセット = 0;
 
 				this._選択ノードの表示オフセットdpx = null;
 				this._選択ノードの表示オフセットのストーリーボード = null;
+
+				this._ノードto曲名画像 = new Dictionary<Node, 文字列画像>();
 
 				this._初めての進行描画 = true;
 			}
@@ -77,12 +69,13 @@ namespace DTXmatixx.ステージ.選曲
 		{
 			using( Log.Block( FDKUtilities.現在のメソッド名 ) )
 			{
+				foreach( var kvp in this._ノードto曲名画像 )
+					kvp.Value.非活性化する( gd );
+				this._ノードto曲名画像.Clear();
+
 				this._選択ノードの表示オフセットのストーリーボード?.Abandon();
 				FDKUtilities.解放する( ref this._選択ノードの表示オフセットdpx );
 				FDKUtilities.解放する( ref this._選択ノードの表示オフセットのストーリーボード );
-
-				FDKUtilities.解放する( ref this._曲名の塗りつぶしの色 );
-				FDKUtilities.解放する( ref this._曲名の輪郭の色 );
 			}
 		}
 
@@ -255,22 +248,35 @@ namespace DTXmatixx.ステージ.選曲
 			}
 			//----------------
 			#endregion
+
 			#region " タイトル文字列 "
 			//----------------
-			gd.D2DBatchDraw( ( dc ) => {
-
-				using( var textLayout = new TextLayout( gd.DWriteFactory, ノード.タイトル, this._曲名フォーマット, 1920f, 1080f ) )
-				using( var textRenderer = new 縁取りTextRenderer( gd.D2DFactory, dc, this._曲名の輪郭の色, this._曲名の塗りつぶしの色, this._フォントの輪郭幅 ) )
+			{
+				// 曲名画像が未生成なら生成する。
+				if( !( this._ノードto曲名画像.ContainsKey( ノード ) ) )
 				{
-					textLayout.Draw(
-						textRenderer,
-						ノード左上dpx.X + 170f,
-						ノード左上dpx.Y + 30f );
+					var 曲名画像 = new 文字列画像() {
+						表示文字列 = ノード.タイトル,
+						フォント名 = "メイリオ",
+						フォント幅 = FontWeight.Regular,
+						フォントスタイル = FontStyle.Normal,
+						フォントサイズpt = 40f,
+						描画効果 = 文字列画像.効果.縁取り,
+						縁のサイズdpx = 6f,
+						前景色 = Color4.White,
+						背景色 = Color4.Black,
+					};
+					曲名画像.活性化する( gd );
+
+					this._ノードto曲名画像.Add( ノード, 曲名画像 );
 				}
 
-			} );
+				// 曲名画像を描画する。
+				this._ノードto曲名画像[ ノード ].描画する( gd, ノード左上dpx.X + 170f, ノード左上dpx.Y + 30f );
+			}
 			//----------------
 			#endregion
+
 			#region " サブ文字列（フォーカスノードのみ）"
 			//----------------
 			//----------------
@@ -295,9 +301,7 @@ namespace DTXmatixx.ステージ.選曲
 		private readonly Vector3 _サムネイル表示サイズdpx = new Vector3( 100f, 100f, 0f );
 		private const float _ノードの高さdpx = ( 913f / 8f );
 
-		private TextFormat _曲名フォーマット = null;
-		private SolidColorBrush _曲名の輪郭の色 = null;
-		private SolidColorBrush _曲名の塗りつぶしの色 = null;
+		private Dictionary<Node, 文字列画像> _ノードto曲名画像 = new Dictionary<Node, 文字列画像>();
 
 		/// <summary>
 		///		静止時は 4 。曲リストがスクロールしているときは、4より大きい整数（下から上にスクロール中）か、
