@@ -13,12 +13,6 @@ namespace DTXmatixx.ステージ.曲読み込み
 {
 	class 曲読み込みステージ : ステージ
 	{
-		private readonly string _フォント名 =
-			"HGMaruGothicMPRO";
-			//"メイリオ";
-		private readonly float _フォントサイズ = 70.0f;
-		private readonly float _フォントの輪郭幅 = 6f;  // 大きくするとグリフがバグるみたい。
-
 		public enum フェーズ
 		{
 			フェードイン,
@@ -36,15 +30,26 @@ namespace DTXmatixx.ステージ.曲読み込み
 		{
 			this.子リスト.Add( this._舞台画像 = new 舞台画像() );
 			this.子リスト.Add( this._注意文 = new 画像( @"$(System)images\ご注意ください.png" ) );
+			this.子リスト.Add( this._曲名画像 = new 文字列画像() {
+				フォント名 = "HGMaruGothicMPRO",
+				フォントサイズpt = 70f,
+				フォント幅 = FontWeight.Regular,
+				フォントスタイル = FontStyle.Normal,
+				描画効果 = 文字列画像.効果.縁取り,
+				縁のサイズdpx = 6f,
+				前景色 = Color4.White,
+				背景色 = Color4.Black,
+			} );
 		}
 
 		protected override void On活性化( グラフィックデバイス gd )
 		{
 			using( Log.Block( FDKUtilities.現在のメソッド名 ) )
 			{
-				this._曲名フォーマット = new TextFormat( gd.DWriteFactory, this._フォント名, FontWeight.Regular, FontStyle.Normal, this._フォントサイズ );
-				this._曲名の輪郭の色 = new SolidColorBrush( gd.D2DDeviceContext, Color4.White );
-				this._曲名の塗りつぶしの色 = new SolidColorBrush( gd.D2DDeviceContext, Color4.Black );
+				var 選択曲 = App.曲ツリー.フォーカスノード as MusicNode;
+				Debug.Assert( null != 選択曲 );
+
+				this._曲名画像.表示文字列 = 選択曲.タイトル;
 
 				this.現在のフェーズ = フェーズ.フェードイン;
 				this._初めての進行描画 = true;
@@ -54,8 +59,6 @@ namespace DTXmatixx.ステージ.曲読み込み
 		{
 			using( Log.Block( FDKUtilities.現在のメソッド名 ) )
 			{
-				FDKUtilities.解放する( ref this._曲名の塗りつぶしの色 );
-				FDKUtilities.解放する( ref this._曲名の輪郭の色 );
 			}
 		}
 
@@ -99,6 +102,8 @@ namespace DTXmatixx.ステージ.曲読み込み
 		private bool _初めての進行描画 = true;
 		private 舞台画像 _舞台画像 = null;
 		private 画像 _注意文 = null;
+		private 文字列画像 _曲名画像 = null;
+
 		private readonly Vector3 _プレビュー画像表示位置dpx = new Vector3( 150f, 117f, 0f );
 		private readonly Vector3 _プレビュー画像表示サイズdpx = new Vector3( 576f, 576f, 0f );
 
@@ -126,25 +131,18 @@ namespace DTXmatixx.ステージ.曲読み込み
 
 			プレビュー画像.描画する( gd, 変換行列 );
 		}
-
-		private TextFormat _曲名フォーマット = null;
-		private SolidColorBrush _曲名の輪郭の色 = null;
-		private SolidColorBrush _曲名の塗りつぶしの色 = null;
-
 		private void _曲名を描画する( グラフィックデバイス gd )
 		{
-			var 選択曲 = App.曲ツリー.フォーカスノード as MusicNode;
-			Debug.Assert( null != 選択曲 );
+			var 表示位置dpx = new Vector2( 782f, 409f );
 
-			gd.D2DBatchDraw( ( dc ) => {
+			// 拡大率を計算して描画する。
+			float 最大幅dpx = gd.設計画面サイズ.Width - 表示位置dpx.X;
 
-				using( var textLayout = new TextLayout( gd.DWriteFactory, 選択曲.タイトル, this._曲名フォーマット, 1920f, 1080f ) )
-				using( var textRenderer = new 縁取りTextRenderer( gd.D2DFactory, dc, this._曲名の輪郭の色, this._曲名の塗りつぶしの色, this._フォントの輪郭幅 ) )
-				{
-					textLayout.Draw( textRenderer, 782f, 409f );
-				}
-
-			} );
+			this._曲名画像.描画する(
+				gd,
+				表示位置dpx.X,
+				表示位置dpx.Y,
+				X方向拡大率: ( this._曲名画像.サイズ.Width <= 最大幅dpx ) ? 1f : 最大幅dpx / this._曲名画像.サイズ.Width );
 		}
 	}
 }
