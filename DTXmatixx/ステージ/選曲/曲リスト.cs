@@ -252,10 +252,12 @@ namespace DTXmatixx.ステージ.選曲
 			#region " タイトル文字列 "
 			//----------------
 			{
+				var 曲名画像 = (文字列画像) null;
+
 				// 曲名画像が未生成なら生成する。
 				if( !( this._ノードto曲名画像.ContainsKey( ノード ) ) )
 				{
-					var 曲名画像 = new 文字列画像() {
+					曲名画像 = new 文字列画像() {
 						表示文字列 = ノード.タイトル,
 						フォント名 = "メイリオ",
 						フォント幅 = FontWeight.Regular,
@@ -270,9 +272,18 @@ namespace DTXmatixx.ステージ.選曲
 
 					this._ノードto曲名画像.Add( ノード, 曲名画像 );
 				}
+				else
+				{
+					曲名画像 = this._ノードto曲名画像[ ノード ];
+				}
 
-				// 曲名画像を描画する。
-				this._ノードto曲名画像[ ノード ].描画する( gd, ノード左上dpx.X + 170f, ノード左上dpx.Y + 30f );
+				// 拡大率を計算して描画する。
+				float 最大幅dpx = gd.設計画面サイズ.Width - ノード左上dpx.X - 170f;
+				曲名画像.描画する(
+					gd,
+					ノード左上dpx.X + 170f,
+					ノード左上dpx.Y + 30f,
+					X方向拡大率: ( 曲名画像.サイズ.Width <= 最大幅dpx ) ? 1f : 最大幅dpx / 曲名画像.サイズ.Width );
 			}
 			//----------------
 			#endregion
