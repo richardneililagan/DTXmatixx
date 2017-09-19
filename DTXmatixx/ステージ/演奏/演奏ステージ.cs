@@ -34,9 +34,11 @@ namespace DTXmatixx.ステージ.演奏
 
 		public 演奏ステージ()
 		{
-			this.子リスト.Add( this._背景画像 = new 画像( @"$(System)images\演奏画面.jpg" ) );
+			this.子リスト.Add( this._背景画像 = new 画像( @"$(System)images\演奏画面.png" ) );
 			this.子リスト.Add( this._曲名パネル = new 曲名パネル() );
 			this.子リスト.Add( this._ステータスパネル = new ステータスパネル() );
+			this.子リスト.Add( this._成績パネル = new 成績パネル() );
+			this.子リスト.Add( this._ヒットバー = new 画像( @"$(System)images\演奏画面_ヒットバー.png" ) );
 		}
 
 		protected override void On活性化( グラフィックデバイス gd )
@@ -69,8 +71,10 @@ namespace DTXmatixx.ステージ.演奏
 			}
 
 			this._背景画像.描画する( gd, 0f, 0f );
-			this._曲名パネル.描画する( gd );
 			this._ステータスパネル.描画する( gd );
+			this._成績パネル.進行描画する( gd );
+			this._曲名パネル.描画する( gd );
+			this._ヒットバー.描画する( gd, 441f, 843f );
 
 			switch( this.現在のフェーズ )
 			{
@@ -102,6 +106,8 @@ namespace DTXmatixx.ステージ.演奏
 		private 画像 _背景画像 = null;
 		private 曲名パネル _曲名パネル = null;
 		private ステータスパネル _ステータスパネル = null;
+		private 成績パネル _成績パネル = null;
+		private 画像 _ヒットバー = null;
 		/// <summary>
 		///		読み込み画面: 0 ～ 1: 演奏画面
 		/// </summary>

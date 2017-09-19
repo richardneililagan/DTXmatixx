@@ -87,6 +87,7 @@
     <Compile Include="ステージ\曲ツリー構築\曲ツリー構築ステージ.cs" />
     <Compile Include="ステージ\曲読み込み\曲読み込みステージ.cs" />
     <Compile Include="ステージ\演奏\ステータスパネル.cs" />
+    <Compile Include="ステージ\演奏\成績パネル.cs" />
     <Compile Include="ステージ\演奏\曲名パネル.cs" />
     <Compile Include="ステージ\演奏\演奏ステージ.cs" />
     <Compile Include="ステージ\舞台画像.cs" />
@@ -188,17 +189,27 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <None Include="System\Images\演奏画面.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
     <None Include="System\Images\演奏画面_曲名パネル.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
   <ItemGroup>
     <None Include="System\Images\演奏画面_ステータスパネル.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="System\Images\演奏画面_成績パネル.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="System\Images\演奏画面.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="System\Images\演奏画面_ヒットバー.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
