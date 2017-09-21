@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<Root>
+  <!-- 各 Name は 判定種別 列挙子の名前であること。-->
+  <SubImage Name="PERFECT" Rectangle="0,0,144,42" />
+  <SubImage Name="GREAT" Rectangle="0,42,144,42" />
+  <SubImage Name="GOOD" Rectangle="0,84,144,42" />
+  <SubImage Name="OK" Rectangle="0,126,144,42" />
+  <SubImage Name="MISS" Rectangle="0,168,144,42" />
+</Root>
