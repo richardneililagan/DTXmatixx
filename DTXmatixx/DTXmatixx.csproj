@@ -91,9 +91,11 @@
     <Compile Include="ステージ\曲読み込み\曲読み込みステージ.cs" />
     <Compile Include="ステージ\演奏\ステータスパネル.cs" />
     <Compile Include="ステージ\演奏\ドラムパッド.cs" />
+    <Compile Include="ステージ\演奏\レーンフレーム.cs" />
     <Compile Include="ステージ\演奏\成績パネル.cs" />
     <Compile Include="ステージ\演奏\曲名パネル.cs" />
     <Compile Include="ステージ\演奏\演奏ステージ.cs" />
+    <Compile Include="ステージ\演奏\表示レーン種別.cs" />
     <Compile Include="ステージ\舞台画像.cs" />
     <Compile Include="ステージ\認証\認証ステージ.cs" />
     <Compile Include="ステージ\選曲\曲リスト.cs" />

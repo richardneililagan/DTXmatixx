@@ -1,23 +1,27 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <Root>
-  <!-- チップ本体 -->
-  <SubImage Name="左シンバル" Rectangle="0,0,96,98" />
-  <SubImage Name="ハイハット" Rectangle="100,0,70,98" />
-  <SubImage Name="左ペダル" Rectangle="177,0,73,98" />
-  <SubImage Name="スネア" Rectangle="255,0,84,98" />
-  <SubImage Name="バス" Rectangle="348,0,90,98" />
-  <SubImage Name="ハイタム" Rectangle="443,0,71,98" />
-  <SubImage Name="ロータム" Rectangle="518,0,71,98" />
-  <SubImage Name="フロアタム" Rectangle="594,0,71,98" />
-  <SubImage Name="右シンバル" Rectangle="673,0,96,98" />
-  <!-- パッド絵 -->
-  <SubImage Name="左シンバル" Rectangle="0,102,96,98" />
-  <SubImage Name="ハイハット" Rectangle="103,102,70,98" />
-  <SubImage Name="左ペダル" Rectangle="177,102,98" />
-  <SubImage Name="スネア" Rectangle="255,102,84,98" />
-  <SubImage Name="バス" Rectangle="348,102,90,98" />
-  <SubImage Name="ハイタム" Rectangle="443,102,71,98" />
-  <SubImage Name="ロータム" Rectangle="518,102,71,98" />
-  <SubImage Name="フロアタム" Rectangle="594,102,71,98" />
-  <SubImage Name="右シンバル" Rectangle="673,102,96,98" />
+  <!-- チップ本体。各 Name は 表示レーン種別 列挙子の名前であること。-->
+  <SubImage Name="Unknown" Rectangle="0,0,0,0" />
+  <SubImage Name="LeftCrash" Rectangle="0,0,96,98" />
+  <SubImage Name="HiHat" Rectangle="100,0,70,98" />
+  <SubImage Name="Foot" Rectangle="177,0,73,98" />
+  <SubImage Name="Snare" Rectangle="255,0,84,98" />
+  <SubImage Name="Bass" Rectangle="348,0,90,98" />
+  <SubImage Name="Tom1" Rectangle="443,0,71,98" />
+  <SubImage Name="Tom2" Rectangle="518,0,71,98" />
+  <SubImage Name="Tom3" Rectangle="594,0,71,98" />
+  <SubImage Name="RightCrash" Rectangle="673,0,96,98" />
+  <!-- パッド絵。各 Name は 表示レーン種別 列挙子の名前 + "_back" であること。-->
+  <SubImage Name="Unknown_back" Rectangle="0,0,0,0" />
+  <SubImage Name="LeftCrash_back" Rectangle="0,102,96,98" />
+  <SubImage Name="HiHat_back" Rectangle="103,102,70,98" />
+  <SubImage Name="Foot_back" Rectangle="177,102,73,98" />
+  <SubImage Name="Snare_back" Rectangle="255,102,84,98" />
+  <SubImage Name="Bass_back" Rectangle="348,102,90,98" />
+  <SubImage Name="Tom1_back" Rectangle="443,102,71,98" />
+  <SubImage Name="Tom2_back" Rectangle="518,102,71,98" />
+  <SubImage Name="Tom3_back" Rectangle="594,102,71,98" />
+  <SubImage Name="RightCrash_back" Rectangle="673,102,96,98" />
+  <!-- 縦方向中央位置(heightのみ使う)-->
+  <SubImage Name="縦方向中央位置" Rectangle="0,0,0,49" />
 </Root>
