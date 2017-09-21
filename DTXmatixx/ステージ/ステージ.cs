@@ -20,7 +20,6 @@ namespace DTXmatixx.ステージ
 		/// </remarks>
 		public virtual void 高速進行する()
 		{
-			Debug.Assert( this.活性化している );
 		}
 
 		/// <summary>
@@ -28,7 +27,6 @@ namespace DTXmatixx.ステージ
 		/// </summary>
 		public virtual void 進行描画する( グラフィックデバイス gd )
 		{
-			Debug.Assert( this.活性化している );
 		}
 	}
 }

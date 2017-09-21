@@ -7,14 +7,17 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using SharpDX;
 using SharpDX.Windows;
 using FDK;
 using FDK.入力;
 using FDK.メディア;
+using FDK.同期;
 using DTXmatixx.ステージ;
 using DTXmatixx.曲;
+using SSTFormat.v2;
 
 namespace DTXmatixx
 {
@@ -38,6 +41,23 @@ namespace DTXmatixx
 			protected set;
 		} = null;
 
+		public static スコア 演奏スコア
+		{
+			get;
+			set;
+		} = null;
+
+		public static FDK.メディア.サウンド.WASAPI.Device サウンドデバイス
+		{
+			get;
+			protected set;
+		} = null;
+
+		public static FDK.メディア.サウンド.WASAPI.SoundTimer サウンドタイマ
+		{
+			get;
+			protected set;
+		} = null;
 
 		public App()
 			: base( 設計画面サイズ: new SizeF( 1920f, 1080f ), 物理画面サイズ: new SizeF( 1280f, 720f ) )
@@ -52,6 +72,8 @@ namespace DTXmatixx
 			App.Keyboard = new Keyboard( this.Handle );
 			App.ステージ管理 = new ステージ管理();
 			App.曲ツリー = new 曲ツリー();
+			App.サウンドデバイス = new FDK.メディア.サウンド.WASAPI.Device( CSCore.CoreAudioAPI.AudioClientShareMode.Shared );
+			App.サウンドタイマ = new FDK.メディア.サウンド.WASAPI.SoundTimer( App.サウンドデバイス );
 
 			this._活性化する();
 
@@ -67,14 +89,20 @@ namespace DTXmatixx
 			{
 				this._非活性化する();
 
-				App.Keyboard.Dispose();
-				App.Keyboard = null;
+				App.サウンドタイマ?.Dispose();
+				App.サウンドタイマ = null;
+
+				App.サウンドデバイス?.Dispose();
+				App.サウンドデバイス = null;
 
 				App.曲ツリー.Dispose();
 				App.曲ツリー = null;
 
 				App.ステージ管理.Dispose( App.グラフィックデバイス );
 				App.ステージ管理 = null;
+
+				App.Keyboard.Dispose();
+				App.Keyboard = null;
 
 				base.Dispose();
 			}
@@ -87,7 +115,14 @@ namespace DTXmatixx
 				switch( this._AppStatus )
 				{
 					case AppStatus.開始:
+						
+						// 高速進行タスク起動。
+						this._高速進行ステータス = new TriStateEvent( TriStateEvent.状態種別.OFF );
+						Task.Factory.StartNew( this._高速進行タスクエントリ );
+						
+						// 描画タスク起動。
 						this._AppStatus = AppStatus.実行中;
+
 						break;
 
 					case AppStatus.実行中:
@@ -133,6 +168,13 @@ namespace DTXmatixx
 		private AppStatus _AppStatus = AppStatus.開始;
 
 		/// <summary>
+		///		進行タスクの状態。
+		///		OFF:タスク起動前、ON:タスク実行中、OFF:タスク終了済み
+		/// </summary>
+		private TriStateEvent _高速進行ステータス;
+
+
+		/// <summary>
 		///		グローバルリソースのうち、グラフィックリソースを持つものについて、活性化がまだなら活性化する。
 		/// </summary>
 		private void _活性化する()
@@ -158,6 +200,37 @@ namespace DTXmatixx
 				App.ステージ管理.非活性化する( gd );
 				App.曲ツリー.非活性化する( gd );
 			}
+		}
+
+		/// <summary>
+		///		高速進行ループの処理内容。
+		/// </summary>
+		private void _高速進行タスクエントリ()
+		{
+			Log.現在のスレッドに名前をつける( "高速進行" );
+			Log.Header( "高速進行タスクを開始します。" );
+
+			this._高速進行ステータス.現在の状態 = TriStateEvent.状態種別.ON;
+
+			while( true )
+			{
+				lock( this._高速進行と描画の同期 )
+				{
+					if( this._高速進行ステータス.現在の状態 != TriStateEvent.状態種別.ON )    // lock してる間に状態が変わることがあるので注意。
+						break;
+
+					//App.入力管理.すべての入力デバイスをポーリングする();
+					// --> 入力ポーリングの挙動はステージごとに異なるので、それぞれのステージ内で行う。
+
+					App.ステージ管理.現在のステージ.高速進行する();
+				}
+
+				Thread.Sleep( 1 );  // ウェイト。
+			}
+
+			this._高速進行ステータス.現在の状態 = TriStateEvent.状態種別.無効;
+
+			Log.Header( "高速進行タスクを終了しました。" );
 		}
 
 		/// <summary>
@@ -308,6 +381,8 @@ namespace DTXmatixx
 			{
 				if( this._AppStatus != AppStatus.終了 )
 				{
+					this._高速進行ステータス.現在の状態 = TriStateEvent.状態種別.OFF;
+
 					// _AppStatus を変更してから、GUI スレッドで非同期実行を指示する。
 					this._AppStatus = AppStatus.終了;
 					this.BeginInvoke( new Action( () => { this.Close(); } ) );

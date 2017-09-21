@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<Root>
+  <!-- チップ本体 -->
+  <SubImage Name="左シンバル" Rectangle="0,0,96,98" />
+  <SubImage Name="ハイハット" Rectangle="100,0,70,98" />
+  <SubImage Name="左ペダル" Rectangle="177,0,73,98" />
+  <SubImage Name="スネア" Rectangle="255,0,84,98" />
+  <SubImage Name="バス" Rectangle="348,0,90,98" />
+  <SubImage Name="ハイタム" Rectangle="443,0,71,98" />
+  <SubImage Name="ロータム" Rectangle="518,0,71,98" />
+  <SubImage Name="フロアタム" Rectangle="594,0,71,98" />
+  <SubImage Name="右シンバル" Rectangle="673,0,96,98" />
+  <!-- パッド絵 -->
+  <SubImage Name="左シンバル" Rectangle="0,102,96,98" />
+  <SubImage Name="ハイハット" Rectangle="103,102,70,98" />
+  <SubImage Name="左ペダル" Rectangle="177,102,98" />
+  <SubImage Name="スネア" Rectangle="255,102,84,98" />
+  <SubImage Name="バス" Rectangle="348,102,90,98" />
+  <SubImage Name="ハイタム" Rectangle="443,102,71,98" />
+  <SubImage Name="ロータム" Rectangle="518,102,71,98" />
+  <SubImage Name="フロアタム" Rectangle="594,102,71,98" />
+  <SubImage Name="右シンバル" Rectangle="673,102,96,98" />
+</Root>

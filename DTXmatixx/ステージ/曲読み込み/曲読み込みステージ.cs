@@ -8,6 +8,7 @@ using SharpDX.DirectWrite;
 using FDK;
 using FDK.メディア;
 using DTXmatixx.曲;
+using SSTFormat.v2;
 
 namespace DTXmatixx.ステージ.曲読み込み
 {
@@ -87,9 +88,7 @@ namespace DTXmatixx.ステージ.曲読み込み
 					break;
 
 				case フェーズ.表示:
-					
-					// todo: ここで曲データを読み込む。
-
+					this._スコアを読み込む();
 					this.現在のフェーズ = フェーズ.完了;
 					break;
 
@@ -143,6 +142,31 @@ namespace DTXmatixx.ステージ.曲読み込み
 				表示位置dpx.X,
 				表示位置dpx.Y,
 				X方向拡大率: ( this._曲名画像.サイズ.Width <= 最大幅dpx ) ? 1f : 最大幅dpx / this._曲名画像.サイズ.Width );
+		}
+
+		private void _スコアを読み込む()
+		{
+			using( Log.Block( FDKUtilities.現在のメソッド名 ) )
+			{
+				var 選択ノード = App.曲ツリー.フォーカスノード;
+				Debug.Assert( null != 選択ノード );
+
+				var 選択曲 = 選択ノード as MusicNode;
+				Debug.Assert( null != 選択曲 );
+
+				string 選択曲ファイルパス = 選択曲.曲ファイルパス;
+				Debug.Assert( 選択曲ファイルパス.Nullでも空でもない() );
+
+				App.演奏スコア = new スコア( Folder.絶対パスに含まれるフォルダ変数を展開して返す( 選択曲ファイルパス ) );
+
+				// サウンドデバイス遅延を取得し、全チップの発声時刻へ反映する。
+				float 再生時遅延ms = (float) ( App.サウンドデバイス.遅延sec * 1000.0 );
+				foreach( var chip in App.演奏スコア.チップリスト )
+					chip.発声時刻ms -= (long) 再生時遅延ms;
+
+				Log.Info( $"曲ファイルを読み込みました。" );
+				Log.Info( $"曲名: {App.演奏スコア.Header.曲名}" );
+			}
 		}
 	}
 }
