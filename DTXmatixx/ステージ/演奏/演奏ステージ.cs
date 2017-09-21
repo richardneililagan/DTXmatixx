@@ -58,7 +58,7 @@ namespace DTXmatixx.ステージ.演奏
 				this._拍線色 = new SolidColorBrush( gd.D2DDeviceContext, Color.LightGray );
 				this._ドラムチップ画像の矩形リスト = new 矩形リスト( @"$(System)images\ドラムチップ矩形.xml" );      // デバイスリソースは持たないので、子Activityではない。
 				this._現在進行描画中の譜面スクロール速度の倍率 = this._譜面スクロール速度の倍率;
-
+				this._ドラムチップアニメ = new LoopCounter( 0, 200, 3 );
 				this.現在のフェーズ = フェーズ.フェードイン;
 				this._初めての進行描画 = true;
 			}
@@ -331,6 +331,7 @@ namespace DTXmatixx.ステージ.演奏
 
 		private 画像 _ドラムチップ画像 = null;
 		private 矩形リスト _ドラムチップ画像の矩形リスト = null;
+		private LoopCounter _ドラムチップアニメ = null;
 		private void _チップを描画する( グラフィックデバイス gd, double 現在の演奏時刻sec )
 		{
 			Debug.Assert( null != this._ドラムチップ画像の矩形リスト );
@@ -426,12 +427,48 @@ namespace DTXmatixx.ステージ.演奏
 			var 縦方向中央位置dpx = this._ドラムチップ画像の矩形リスト[ "縦方向中央位置" ]?.Height ?? 0f;
 
 			// パッド絵
-			this._ドラムチップ画像.描画する(
-				gd,
-				左位置: レーンフレーム.領域.Left + レーンフレーム.レーンto左端位置dpx[ lane ],
-				上位置: 縦中央位置dpx - 縦方向中央位置dpx * 音量0to1,
-				転送元矩形: this._ドラムチップ画像の矩形リスト[ lane.ToString() + "_back" ],
-				Y方向拡大率: 音量0to1 );
+			{
+				var 矩形 = this._ドラムチップ画像の矩形リスト[ lane.ToString() + "_back" ].Value;
+				var 矩形中央 = new Vector2( 矩形.Width / 2f, 矩形.Height / 2f );
+				var 割合 = this._ドラムチップアニメ.現在値の割合;   // 0→1のループ
+				var 変換行列2D = Matrix3x2.Identity;
+
+				// 拡大縮小回転
+				switch( lane )
+				{
+					case 表示レーン種別.LeftCrash:
+					case 表示レーン種別.HiHat:
+					case 表示レーン種別.Foot:
+					case 表示レーン種別.Tom3:
+					case 表示レーン種別.RightCrash:
+						{
+							float v = (float) ( Math.Sin( 2 * Math.PI * 割合 ) * 0.2 );
+							変換行列2D = 変換行列2D * Matrix3x2.Scaling( (float) ( 1 + v ), (float) ( 1 - v ) * 音量0to1, 矩形中央 );
+						}
+						break;
+
+					case 表示レーン種別.Bass:
+						{
+							float r = (float) ( Math.Sin( 2 * Math.PI * 割合 ) * 0.2 );
+							変換行列2D = 変換行列2D *
+								Matrix3x2.Scaling( 1f, 音量0to1, 矩形中央 ) *
+								Matrix3x2.Rotation( (float) ( r * Math.PI ), 矩形中央 ); 
+						}
+						break;
+
+					default:
+						変換行列2D = 変換行列2D * Matrix3x2.Scaling( 1f, 音量0to1, 矩形中央 );
+						break;
+				}
+
+				// 移動
+				変換行列2D = 変換行列2D *
+					Matrix3x2.Translation(
+						x: レーンフレーム.領域.Left + レーンフレーム.レーンto左端位置dpx[ lane ],
+						y: 縦中央位置dpx - 縦方向中央位置dpx * 音量0to1 );
+
+				this._ドラムチップ画像.描画する( gd, 変換行列2D, 転送元矩形: 矩形 );
+			}
 
 			// チップ本体
 			this._ドラムチップ画像.描画する(
