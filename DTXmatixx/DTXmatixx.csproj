@@ -117,6 +117,7 @@
     <Compile Include="曲\曲ツリー.cs" />
     <Compile Include="設定\AutoPlay種別.cs" />
     <Compile Include="設定\オプション設定.cs" />
+    <Compile Include="設定\システム設定.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>

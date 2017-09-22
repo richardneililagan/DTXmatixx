@@ -60,6 +60,12 @@ namespace DTXmatixx
 			protected set;
 		} = null;
 
+		public static システム設定 システム設定
+		{
+			get;
+			protected set;
+		} = null;
+
 		public static オプション設定 オプション設定
 		{
 			get;
@@ -85,6 +91,7 @@ namespace DTXmatixx
 			App.曲ツリー = new 曲ツリー();
 			App.サウンドデバイス = new FDK.メディア.サウンド.WASAPI.Device( CSCore.CoreAudioAPI.AudioClientShareMode.Shared );
 			App.サウンドタイマ = new FDK.メディア.サウンド.WASAPI.SoundTimer( App.サウンドデバイス );
+			App.システム設定 = new システム設定();
 			App.オプション設定 = オプション設定.復元する( Folder.フォルダ変数の内容を返す( "AppData" ) );
 
 			this._活性化する();
