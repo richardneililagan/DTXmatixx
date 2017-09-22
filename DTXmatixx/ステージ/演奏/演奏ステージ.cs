@@ -58,7 +58,7 @@ namespace DTXmatixx.ステージ.演奏
 				this._小節線色 = new SolidColorBrush( gd.D2DDeviceContext, Color.White );
 				this._拍線色 = new SolidColorBrush( gd.D2DDeviceContext, Color.LightGray );
 				this._ドラムチップ画像の矩形リスト = new 矩形リスト( @"$(System)images\ドラムチップ矩形.xml" );      // デバイスリソースは持たないので、子Activityではない。
-				this._現在進行描画中の譜面スクロール速度の倍率 = this._譜面スクロール速度の倍率;
+				this._現在進行描画中の譜面スクロール速度の倍率 = App.オプション設定.譜面スクロール速度の倍率;
 				this._ドラムチップアニメ = new LoopCounter( 0, 200, 3 );
 				this.現在のフェーズ = フェーズ.フェードイン;
 				this._初めての進行描画 = true;
@@ -119,7 +119,7 @@ namespace DTXmatixx.ステージ.演奏
 						#region " 上 → 譜面スクロールを加速 "
 						//----------------
 						const double 最大倍率 = 8.0;
-						this._譜面スクロール速度の倍率 = Math.Min( this._譜面スクロール速度の倍率 + 0.5, 最大倍率 );
+						App.オプション設定.譜面スクロール速度の倍率 = Math.Min( App.オプション設定.譜面スクロール速度の倍率 + 0.5, 最大倍率 );
 						//----------------
 						#endregion
 					}
@@ -128,7 +128,7 @@ namespace DTXmatixx.ステージ.演奏
 						#region " 下 → 譜面スクロールを減速 "
 						//----------------
 						const double 最小倍率 = 0.5;
-						this._譜面スクロール速度の倍率 = Math.Max( this._譜面スクロール速度の倍率 - 0.5, 最小倍率 );
+						App.オプション設定.譜面スクロール速度の倍率 = Math.Max( App.オプション設定.譜面スクロール速度の倍率 - 0.5, 最小倍率 );
 						//----------------
 						#endregion
 					}
@@ -187,7 +187,7 @@ namespace DTXmatixx.ステージ.演奏
 						{
 							double 倍率 = this._現在進行描画中の譜面スクロール速度の倍率;
 
-							if( 倍率 < this._譜面スクロール速度の倍率 )
+							if( 倍率 < App.オプション設定.譜面スクロール速度の倍率 )
 							{
 								if( 0 > this._スクロール倍率追い付き用_最後の値 )
 								{
@@ -202,10 +202,10 @@ namespace DTXmatixx.ステージ.演奏
 										this._スクロール倍率追い付き用_最後の値++;
 									}
 
-									this._現在進行描画中の譜面スクロール速度の倍率 = Math.Min( 倍率, this._譜面スクロール速度の倍率 );
+									this._現在進行描画中の譜面スクロール速度の倍率 = Math.Min( 倍率, App.オプション設定.譜面スクロール速度の倍率 );
 								}
 							}
-							else if( 倍率 > this._譜面スクロール速度の倍率 )
+							else if( 倍率 > App.オプション設定.譜面スクロール速度の倍率 )
 							{
 								if( 0 > this._スクロール倍率追い付き用_最後の値 )
 								{
@@ -220,7 +220,7 @@ namespace DTXmatixx.ステージ.演奏
 										this._スクロール倍率追い付き用_最後の値++;
 									}
 
-									this._現在進行描画中の譜面スクロール速度の倍率 = Math.Max( 倍率, this._譜面スクロール速度の倍率 );
+									this._現在進行描画中の譜面スクロール速度の倍率 = Math.Max( 倍率, App.オプション設定.譜面スクロール速度の倍率 );
 								}
 							}
 							else
@@ -267,10 +267,6 @@ namespace DTXmatixx.ステージ.演奏
 		/// </summary>
 		private Counter _フェードインカウンタ = null;
 
-		/// <summary>
-		///		演奏画面での譜面スクロール速度の倍率。1.0 で等倍。
-		/// </summary>
-		private double _譜面スクロール速度の倍率 = 1.0;
 		private double _現在進行描画中の譜面スクロール速度の倍率 = 1.0;
 		private LoopCounter _スクロール倍率追い付き用カウンタ = null;
 		private int _スクロール倍率追い付き用_最後の値 = -1;

@@ -19,6 +19,12 @@ namespace DTXmatixx.設定
 		[DataMember]
 		public Dictionary<AutoPlay種別, bool> AutoPlay { get; set; }
 
+		/// <summary>
+		///		演奏画面での譜面スクロール速度の倍率。1.0 で等倍。
+		/// </summary>
+		[DataMember]
+		public double 譜面スクロール速度の倍率 { get; set; }
+
 
 		/// <summary>
 		///		コンストラクタ。
@@ -80,6 +86,8 @@ namespace DTXmatixx.設定
 				this.AutoPlay = new Dictionary<AutoPlay種別, bool>();
 				foreach( AutoPlay種別 autoPlayType in Enum.GetValues( typeof( AutoPlay種別 ) ) )
 					this.AutoPlay[ autoPlayType ] = false;
+
+				this.譜面スクロール速度の倍率 = 1.0;
 			}
 		}
 
