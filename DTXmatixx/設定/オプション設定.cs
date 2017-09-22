@@ -33,6 +33,13 @@ namespace DTXmatixx.設定
 		[DataMember]
 		public double 譜面スクロール速度の倍率 { get; set; }
 
+		/// <summary>
+		///		初期の表示モード。
+		///		true なら全画面モードで、false ならウィンドウモード。
+		/// </summary>
+		[DataMember]
+		public bool 全画面モードである { get; set; }
+
 		public ドラムとチップと入力の対応表 ドラムとチップと入力の対応表
 		{
 			get;

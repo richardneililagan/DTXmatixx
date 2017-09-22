@@ -96,7 +96,7 @@ namespace DTXmatixx
 
 			this._活性化する();
 
-			//base.全画面モード = true;
+			base.全画面モード = App.オプション設定.全画面モードである;
 
 			// 最初のステージへ遷移する。
 			App.ステージ管理.ステージを遷移する( App.グラフィックデバイス, App.ステージ管理.最初のステージ名 );
@@ -178,7 +178,10 @@ namespace DTXmatixx
 		protected override void OnKeyDown( KeyEventArgs e )
 		{
 			if( e.KeyCode == Keys.F11 )
+			{
 				this.全画面モード = !( this.全画面モード );
+				App.オプション設定.全画面モードである = this.全画面モード;
+			}
 		}
 
 
