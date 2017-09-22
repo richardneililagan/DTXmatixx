@@ -135,23 +135,23 @@ namespace DTXmatixx.ステージ.演奏
 
 #warning "手動ヒット。"
 					if( App.Keyboard.キーが押された( 0, Key.Z ) )
-						this._判定文字列.開始( 表示レーン種別.LeftCrash, 判定種別.PERFECT );
+						this._判定文字列.表示を開始する( 表示レーン種別.LeftCrash, 判定種別.PERFECT );
 					if( App.Keyboard.キーが押された( 0, Key.X ) )
-						this._判定文字列.開始( 表示レーン種別.HiHat, 判定種別.GREAT );
+						this._判定文字列.表示を開始する( 表示レーン種別.HiHat, 判定種別.GREAT );
 					if( App.Keyboard.キーが押された( 0, Key.C ) )
-						this._判定文字列.開始( 表示レーン種別.Foot, 判定種別.GOOD );
+						this._判定文字列.表示を開始する( 表示レーン種別.Foot, 判定種別.GOOD );
 					if( App.Keyboard.キーが押された( 0, Key.V ) )
-						this._判定文字列.開始( 表示レーン種別.Snare, 判定種別.OK );
+						this._判定文字列.表示を開始する( 表示レーン種別.Snare, 判定種別.OK );
 					if( App.Keyboard.キーが押された( 0, Key.B ) )
-						this._判定文字列.開始( 表示レーン種別.Bass, 判定種別.MISS );
+						this._判定文字列.表示を開始する( 表示レーン種別.Bass, 判定種別.MISS );
 					if( App.Keyboard.キーが押された( 0, Key.N ) )
-						this._判定文字列.開始( 表示レーン種別.Tom1, 判定種別.PERFECT );
+						this._判定文字列.表示を開始する( 表示レーン種別.Tom1, 判定種別.PERFECT );
 					if( App.Keyboard.キーが押された( 0, Key.M ) )
-						this._判定文字列.開始( 表示レーン種別.Tom2, 判定種別.GREAT );
+						this._判定文字列.表示を開始する( 表示レーン種別.Tom2, 判定種別.GREAT );
 					if( App.Keyboard.キーが押された( 0, Key.K ) )
-						this._判定文字列.開始( 表示レーン種別.Tom3, 判定種別.GOOD );
+						this._判定文字列.表示を開始する( 表示レーン種別.Tom3, 判定種別.GOOD );
 					if( App.Keyboard.キーが押された( 0, Key.L ) )
-						this._判定文字列.開始( 表示レーン種別.RightCrash, 判定種別.OK );
+						this._判定文字列.表示を開始する( 表示レーン種別.RightCrash, 判定種別.OK );
 					break;
 
 				case フェーズ.クリア時フェードアウト:

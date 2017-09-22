@@ -6,4 +6,6 @@
   <SubImage Name="GOOD" Rectangle="0,84,144,42" />
   <SubImage Name="OK" Rectangle="0,126,144,42" />
   <SubImage Name="MISS" Rectangle="0,168,144,42" />
+  <!-- ヒット光 -->
+  <SubImage Name="PERFECT光" Rectangle="154,0,8,315" />
 </Root>
