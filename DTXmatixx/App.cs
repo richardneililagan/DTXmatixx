@@ -17,6 +17,7 @@ using FDK.メディア;
 using FDK.同期;
 using DTXmatixx.ステージ;
 using DTXmatixx.曲;
+using DTXmatixx.設定;
 using SSTFormat.v2;
 
 namespace DTXmatixx
@@ -59,6 +60,13 @@ namespace DTXmatixx
 			protected set;
 		} = null;
 
+		public static オプション設定 オプション設定
+		{
+			get;
+			protected set;
+		} = null;
+
+
 		public App()
 			: base( 設計画面サイズ: new SizeF( 1920f, 1080f ), 物理画面サイズ: new SizeF( 1280f, 720f ) )
 		{
@@ -69,11 +77,15 @@ namespace DTXmatixx
 			Folder.フォルダ変数を追加または更新する( "System", Path.Combine( exePath, @"System\" ) );
 			Folder.フォルダ変数を追加または更新する( "AppData", Path.Combine( Environment.GetFolderPath( Environment.SpecialFolder.ApplicationData, Environment.SpecialFolderOption.Create ), @"DTXMatixx\" ) );
 
+			if( !( Directory.Exists( Folder.フォルダ変数の内容を返す( "AppData" ) ) ) )
+				Directory.CreateDirectory( Folder.フォルダ変数の内容を返す( "AppData" ) );	// なければ作成。
+
 			App.Keyboard = new Keyboard( this.Handle );
 			App.ステージ管理 = new ステージ管理();
 			App.曲ツリー = new 曲ツリー();
 			App.サウンドデバイス = new FDK.メディア.サウンド.WASAPI.Device( CSCore.CoreAudioAPI.AudioClientShareMode.Shared );
 			App.サウンドタイマ = new FDK.メディア.サウンド.WASAPI.SoundTimer( App.サウンドデバイス );
+			App.オプション設定 = オプション設定.復元する( Folder.フォルダ変数の内容を返す( "AppData" ) );
 
 			this._活性化する();
 
@@ -88,6 +100,8 @@ namespace DTXmatixx
 			using( Log.Block( FDKUtilities.現在のメソッド名 ) )
 			{
 				this._非活性化する();
+
+				App.オプション設定.保存する( Folder.フォルダ変数の内容を返す( "AppData" ) );
 
 				App.サウンドタイマ?.Dispose();
 				App.サウンドタイマ = null;
