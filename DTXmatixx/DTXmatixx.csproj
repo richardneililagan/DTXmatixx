@@ -107,6 +107,7 @@
     <Compile Include="ステージ\選曲\曲リスト.cs" />
     <Compile Include="ステージ\選曲\青い枠.cs" />
     <Compile Include="ステージ\選曲\選曲ステージ.cs" />
+    <Compile Include="入力\ドラム入力種別.cs" />
     <Compile Include="曲\BackNode.cs" />
     <Compile Include="曲\BoxDef.cs" />
     <Compile Include="曲\BoxNode.cs" />
@@ -118,6 +119,8 @@
     <Compile Include="設定\AutoPlay種別.cs" />
     <Compile Include="設定\オプション設定.cs" />
     <Compile Include="設定\システム設定.cs" />
+    <Compile Include="設定\ドラムとチップと入力の対応表.cs" />
+    <Compile Include="設定\表示レーンの左右.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>

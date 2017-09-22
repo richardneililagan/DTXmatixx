@@ -33,6 +33,12 @@ namespace DTXmatixx.設定
 		[DataMember]
 		public double 譜面スクロール速度の倍率 { get; set; }
 
+		public ドラムとチップと入力の対応表 ドラムとチップと入力の対応表
+		{
+			get;
+			protected set;
+		} = null;
+
 
 		/// <summary>
 		///		コンストラクタ。
@@ -71,6 +77,8 @@ namespace DTXmatixx.設定
 			{
 				var path = Path.Combine( ユーザフォルダパス, _Optionファイル名 );
 				var options = FDKUtilities.復元または新規作成する<オプション設定>( path );
+
+				options.ドラムとチップと入力の対応表 = new ドラムとチップと入力の対応表( new 表示レーンの左右() );	// 左右オプションは規定で固定。
 
 				// ファイルに反映されていないメンバはいつまでも反映されないので、ここで一度、明示的に保存することにする。
 				options.保存する( ユーザフォルダパス );

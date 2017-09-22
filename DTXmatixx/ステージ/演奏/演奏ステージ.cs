@@ -8,8 +8,8 @@ using SharpDX.DirectInput;
 using FDK;
 using FDK.メディア;
 using FDK.カウンタ;
-using DTXmatixx.曲;
 using SSTFormat.v2;
+using DTXmatixx.設定;
 
 namespace DTXmatixx.ステージ.演奏
 {
@@ -110,72 +110,74 @@ namespace DTXmatixx.ステージ.演奏
 
 					#region " 自動ヒット処理。"
 					//----------------
-					//this._描画範囲のチップに処理を適用する( 現在の演奏時刻sec, ( chip, index, ヒット判定バーと描画との時間sec, ヒット判定バーと発声との時間sec, ヒット判定バーとの距離 ) => {
+					this._描画範囲のチップに処理を適用する( 現在の演奏時刻sec, ( chip, index, ヒット判定バーと描画との時間sec, ヒット判定バーと発声との時間sec, ヒット判定バーとの距離 ) => {
 
-					//	var オプション設定 = App.オプション設定;
-					//	var 対応表 = オプション設定.ドラムとチップと入力の対応表[ chip.チップ種別 ];
-					//	var AutoPlay = オプション設定.AutoPlay[ 対応表.AutoPlay種別 ];
+						var オプション設定 = App.オプション設定;
+						var 対応表 = オプション設定.ドラムとチップと入力の対応表[ chip.チップ種別 ];
+						var AutoPlay = オプション設定.AutoPlay[ 対応表.AutoPlay種別 ];
 
-					//	bool チップはヒット済みである = chip.ヒット済みである;
-					//	bool チップはMISSエリアに達している = ( ヒット判定バーと描画との時間sec > オプション設定.最大ヒット距離sec[ ヒットランク種別.POOR ] );
-					//	bool チップは描画についてヒット判定バーを通過した = ( 0 <= ヒット判定バーと描画との時間sec );
-					//	bool チップは発声についてヒット判定バーを通過した = ( 0 <= ヒット判定バーと発声との時間sec );
+						bool チップはヒット済みである = chip.ヒット済みである;
+						bool チップはMISSエリアに達している = ( ヒット判定バーと描画との時間sec > オプション設定.最大ヒット距離sec[ 判定種別.OK ] );
+						bool チップは描画についてヒット判定バーを通過した = ( 0 <= ヒット判定バーと描画との時間sec );
+						bool チップは発声についてヒット判定バーを通過した = ( 0 <= ヒット判定バーと発声との時間sec );
 
-					//	if( チップはヒット済みである )
-					//	{
-					//		// 何もしない。
-					//		return;
-					//	}
+						if( チップはヒット済みである )
+						{
+							// 何もしない。
+							return;
+						}
 
-					//	if( チップはMISSエリアに達している )
-					//	{
-					//		// MISS判定。
-					//		if( AutoPlay && 対応表.AutoPlayON.MISS判定 )
-					//		{
-					//			this._チップのヒット処理を行う( chip, ヒットランク種別.MISS, 対応表.AutoPlayON.自動ヒット時処理, ヒット判定バーと発声との時間sec );
-					//			return;
-					//		}
-					//		else if( !AutoPlay && 対応表.AutoPlayOFF.MISS判定 )
-					//		{
-					//			this._チップのヒット処理を行う( chip, ヒットランク種別.MISS, 対応表.AutoPlayOFF.ユーザヒット時処理, ヒット判定バーと発声との時間sec );
-					//			return;
-					//		}
-					//		else
-					//		{
-					//			// 通過。
-					//		}
-					//	}
+						if( チップはMISSエリアに達している )
+						{
+							// MISS判定。
+							if( AutoPlay && 対応表.AutoPlayON.MISS判定 )
+							{
+								this._チップのヒット処理を行う( chip, 判定種別.MISS, 対応表.AutoPlayON.自動ヒット時処理, ヒット判定バーと発声との時間sec );
+								return;
+							}
+							else if( !AutoPlay && 対応表.AutoPlayOFF.MISS判定 )
+							{
+								this._チップのヒット処理を行う( chip, 判定種別.MISS, 対応表.AutoPlayOFF.ユーザヒット時処理, ヒット判定バーと発声との時間sec );
+								return;
+							}
+							else
+							{
+								// 通過。
+							}
+						}
 
-					//	if( チップは発声についてヒット判定バーを通過した )
-					//	{
-					//		// 自動ヒット判定。
-					//		if( ( AutoPlay && 対応表.AutoPlayON.自動ヒット && 対応表.AutoPlayON.自動ヒット時処理.再生 ) ||
-					//			( !AutoPlay && 対応表.AutoPlayOFF.自動ヒット && 対応表.AutoPlayOFF.自動ヒット時処理.再生 ) )
-					//		{
-					//			this._チップの発声を行う( chip, ヒット判定バーと発声との時間sec );
-					//		}
-					//	}
+						if( チップは発声についてヒット判定バーを通過した )
+						{
+							// 自動ヒット判定。
+							if( ( AutoPlay && 対応表.AutoPlayON.自動ヒット && 対応表.AutoPlayON.自動ヒット時処理.再生 ) ||
+								( !AutoPlay && 対応表.AutoPlayOFF.自動ヒット && 対応表.AutoPlayOFF.自動ヒット時処理.再生 ) )
+							{
+								this._チップの発声を行う( chip, ヒット判定バーと発声との時間sec );
+							}
+						}
 
-					//	if( チップは描画についてヒット判定バーを通過した )
-					//	{
-					//		// 自動ヒット判定。
-					//		if( AutoPlay && 対応表.AutoPlayON.自動ヒット )
-					//		{
-					//			this._チップのヒット処理を行う( chip, ヒットランク種別.AUTO, 対応表.AutoPlayON.自動ヒット時処理, ヒット判定バーと発声との時間sec );
-					//			return;
-					//		}
-					//		else if( !AutoPlay && 対応表.AutoPlayOFF.自動ヒット )
-					//		{
-					//			this._チップのヒット処理を行う( chip, ヒットランク種別.AUTO, 対応表.AutoPlayOFF.自動ヒット時処理, ヒット判定バーと発声との時間sec );
-					//			return;
-					//		}
-					//		else
-					//		{
-					//			// 通過。
-					//		}
-					//	}
+						if( チップは描画についてヒット判定バーを通過した )
+						{
+							// 自動ヒット判定。
+							if( AutoPlay && 対応表.AutoPlayON.自動ヒット )
+							{
+								// Auto は Perfect 扱い
+								this._チップのヒット処理を行う( chip, 判定種別.PERFECT, 対応表.AutoPlayON.自動ヒット時処理, ヒット判定バーと発声との時間sec );
+								return;
+							}
+							else if( !AutoPlay && 対応表.AutoPlayOFF.自動ヒット )
+							{
+								// Auto は Perfect 扱い
+								this._チップのヒット処理を行う( chip, 判定種別.PERFECT, 対応表.AutoPlayOFF.自動ヒット時処理, ヒット判定バーと発声との時間sec );
+								return;
+							}
+							else
+							{
+								// 通過。
+							}
+						}
 
-					//} );
+					} );
 					//----------------
 					#endregion
 
@@ -470,7 +472,7 @@ namespace DTXmatixx.ステージ.演奏
 
 				float 音量0to1 = 1f;      // chip.音量 / (float) チップ.最大音量;		matixx では音量無視。
 
-				var lane = App.システム設定.チップ種別to表示レーン[ chip.チップ種別 ];
+				var lane = App.システム設定.チップto表示レーン[ chip.チップ種別 ];
 				if( lane != 表示レーン種別.Unknown )
 				{
 					// xml の記述ミスの検出用。
@@ -555,6 +557,101 @@ namespace DTXmatixx.ステージ.演奏
 				}
 
 			} );
+		}
+
+		private void _チップのヒット処理を行う( チップ chip, 判定種別 judge, ドラムとチップと入力の対応表.Column.Columnヒット処理 ヒット処理表, double ヒット判定バーと発声との時間sec )
+		{
+			chip.ヒット済みである = true;
+
+			if( ヒット処理表.再生 )
+			{
+				#region " チップの発声を行う。"
+				//----------------
+				if( chip.発声されていない )
+					this._チップの発声を行う( chip, ヒット判定バーと発声との時間sec );
+				//----------------
+				#endregion
+			}
+			if( ヒット処理表.判定 )
+			{
+				#region " チップの判定処理を行う。"
+				//----------------
+				var 対応表 = App.オプション設定.ドラムとチップと入力の対応表[ chip.チップ種別 ];
+
+				if( judge != 判定種別.MISS )
+				{
+					// (A) PERFECT～POOR
+
+					//this._コンボ.COMBO値++;
+
+					//this._回転羽.発火する(
+					//	new Vector2(
+					//		レーンフレームの左端位置 + レーンフレーム.レーンto横中央相対位置[ 対応表.表示レーン種別 ],
+					//		ヒット判定バーの中央Y座標 ) );
+
+					//this._ドラムセット.ヒットアニメ開始( 対応表.ドラム入力種別, App.ユーザ管理.選択されているユーザ.オプション設定.表示レーンの左右 );
+
+					//if( hitRankType == ヒットランク種別.AUTO )
+					//	this._レーンフレーム.フラッシュ開始( 対応表.表示レーン種別 );   // レーンフラッシュは Auto 時のみ。
+
+					this._判定文字列.表示を開始する( 対応表.表示レーン種別, judge );
+					//this.ヒットランク別ヒット回数[ hitRankType ]++;
+				}
+				else
+				{
+					// (B) MISS
+
+					//this._コンボ.COMBO値 = 0;
+
+					this._判定文字列.表示を開始する( 対応表.表示レーン種別, 判定種別.MISS );
+					//this.ヒットランク別ヒット回数[ hitRankType ]++;
+				}
+				//----------------
+				#endregion
+			}
+			if( ヒット処理表.非表示 )
+			{
+				#region " チップを非表示にする。"
+				//----------------
+				if( judge != 判定種別.MISS )
+				{
+					chip.可視 = false;        // PERFECT～POOR チップは非表示。
+				}
+				else
+				{
+					// MISSチップは最後まで表示し続ける。
+				}
+				//----------------
+				#endregion
+			}
+		}
+		private void _チップの発声を行う( チップ chip, double 再生開始位置sec )
+		{
+			if( chip.発声済みである )
+				return;
+
+			chip.発声済みである = true;
+
+			//if( chip.チップ種別 == チップ種別.背景動画 )
+			//{
+			//	App.サウンドタイマ.一時停止する();
+
+			//	// 背景動画の再生を開始する。
+			//	this._背景動画?.再生を開始する();
+			//	this._背景動画開始済み = true;
+
+			//	// BGMの再生を開始する。
+			//	this._BGM?.Play( 再生開始位置sec );
+			//	this._BGM再生開始済み = true;
+
+			//	App.サウンドタイマ.再開する();
+			//}
+			//else
+			//{
+			//	// BGM以外のサウンドについては、再生開始位置sec は反映せず、常に最初から再生する。
+			//	if( App.システム設定.Autoチップのドラム音を再生する )
+			//		this._ドラムサウンド.発声する( chip.チップ種別, ( chip.音量 / (float) チップ.最大音量 ) );
+			//}
 		}
 
 		private void _キャプチャ画面を描画する( グラフィックデバイス gd, float 不透明度 = 1.0f )
