@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
 using FDK;
+using DTXmatixx.ステージ.演奏;
 
 namespace DTXmatixx.設定
 {
@@ -18,6 +19,13 @@ namespace DTXmatixx.設定
 		/// </summary>
 		[DataMember]
 		public Dictionary<AutoPlay種別, bool> AutoPlay { get; set; }
+
+		/// <summary>
+		///		チップがヒット判定バーから（上または下に）どれだけ離れていると Perfect ～ Ok 判定になるのかの定義。秒単位。
+		/// </summary>
+		[DataMember]
+		public Dictionary<判定種別, double> 最大ヒット距離sec { get; set; }
+		private Dictionary<判定種別, double> _最大ヒット距離secの既定値 = null;
 
 		/// <summary>
 		///		演奏画面での譜面スクロール速度の倍率。1.0 で等倍。
@@ -86,6 +94,18 @@ namespace DTXmatixx.設定
 				this.AutoPlay = new Dictionary<AutoPlay種別, bool>();
 				foreach( AutoPlay種別 autoPlayType in Enum.GetValues( typeof( AutoPlay種別 ) ) )
 					this.AutoPlay[ autoPlayType ] = false;
+
+				// ※メンバ初期化子で設定してはならない。（OnDeserializing 時にはコンストラクタが呼び出されない。）
+				this._最大ヒット距離secの既定値 = new Dictionary<判定種別, double>() {
+					{ 判定種別.PERFECT, 0.034 },
+					{ 判定種別.GREAT, 0.067 },
+					{ 判定種別.GOOD, 0.084 },
+					{ 判定種別.OK, 0.117 },
+					{ 判定種別.MISS, double.NaN },  // 使わない
+				};
+				this.最大ヒット距離sec = new Dictionary<判定種別, double>();
+				foreach( 判定種別 judge in Enum.GetValues( typeof( 判定種別 ) ) )
+					this.最大ヒット距離sec[ judge ] = this._最大ヒット距離secの既定値[ judge ];
 
 				this.譜面スクロール速度の倍率 = 1.0;
 			}

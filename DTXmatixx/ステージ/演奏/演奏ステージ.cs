@@ -290,7 +290,8 @@ namespace DTXmatixx.ステージ.演奏
 		///		<see cref="_描画開始チップ番号"/> から画面上端にはみ出すまでの間の各チップに対して、指定された処理を適用する。
 		/// </summary>
 		/// <param name="適用する処理">
-		///		引数は、順に、対象のチップ、チップ番号、ヒット判定バーとの時間sec、ヒット判定バーとの距離
+		///		引数は、順に、対象のチップ, チップ番号, ヒット判定バーと描画との時間sec, ヒット判定バーと発声との時間sec, ヒット判定バーとの距離dpx。
+		///		時間と距離はいずれも、負数ならバー未達、0でバー直上、正数でバー通過。
 		///	</param>
 		private void _描画範囲のチップに処理を適用する( double 現在の演奏時刻sec, Action<チップ, int, double, double, double> 適用する処理 )
 		{
@@ -359,6 +360,16 @@ namespace DTXmatixx.ステージ.演奏
 
 				float 縦中央位置dpx = (float) ( ヒット判定バーの中央Y座標dpx + ヒット判定バーとの距離dpx );
 
+				// チップがヒット判定バーを通過してたら、通過距離に応じて 0→1の消滅割合を付与する。
+				// 0で完全表示、1で完全消滅、通過してなければ 0。
+				const float 消滅を開始するヒット判定バーからの距離dpx = 20f;
+				const float 消滅開始から完全消滅するまでの距離dpx = 70f;
+				float 消滅割合 = 0f;
+				if( 消滅を開始するヒット判定バーからの距離dpx < ヒット判定バーとの距離dpx )
+				{
+					消滅割合 = Math.Min( 1f, (float) ( ( ヒット判定バーとの距離dpx - 消滅を開始するヒット判定バーからの距離dpx ) / 消滅開始から完全消滅するまでの距離dpx ) );
+				}
+
 				#region " チップが描画開始チップであり、かつ、そのY座標が画面下端を超えたなら、描画開始チップ番号を更新する。"
 				//----------------
 				if( ( index == this._描画開始チップ番号 ) &&
@@ -385,50 +396,50 @@ namespace DTXmatixx.ステージ.演奏
 				{
 					case チップ種別.LeftCrash:
 					case チップ種別.Splash:		// Splash は左固定
-						this._チップを１つ描画する( gd, 表示レーン種別.LeftCrash, 縦中央位置dpx, 音量0to1 );
+						this._チップを１つ描画する( gd, 表示レーン種別.LeftCrash, 縦中央位置dpx, 音量0to1, 消滅割合 );
 						break;
 
 					case チップ種別.HiHat_Close:
 					case チップ種別.HiHat_HalfOpen:
 					case チップ種別.HiHat_Open:
-						this._チップを１つ描画する( gd, 表示レーン種別.HiHat, 縦中央位置dpx, 音量0to1 );
+						this._チップを１つ描画する( gd, 表示レーン種別.HiHat, 縦中央位置dpx, 音量0to1, 消滅割合 );
 						break;
 
 					case チップ種別.HiHat_Foot:
-						this._チップを１つ描画する( gd, 表示レーン種別.Foot, 縦中央位置dpx, 音量0to1 );
+						this._チップを１つ描画する( gd, 表示レーン種別.Foot, 縦中央位置dpx, 音量0to1, 消滅割合 );
 						break;
 
 					case チップ種別.Snare:
 					case チップ種別.Snare_ClosedRim:
 					case チップ種別.Snare_OpenRim:
 					case チップ種別.Snare_Ghost:
-						this._チップを１つ描画する( gd, 表示レーン種別.Snare, 縦中央位置dpx, 音量0to1 );
+						this._チップを１つ描画する( gd, 表示レーン種別.Snare, 縦中央位置dpx, 音量0to1, 消滅割合 );
 						break;
 
 					case チップ種別.Bass:
-						this._チップを１つ描画する( gd, 表示レーン種別.Bass, 縦中央位置dpx, 音量0to1 );
+						this._チップを１つ描画する( gd, 表示レーン種別.Bass, 縦中央位置dpx, 音量0to1, 消滅割合 );
 						break;
 
 					case チップ種別.Tom1:
 					case チップ種別.Tom1_Rim:
-						this._チップを１つ描画する( gd, 表示レーン種別.Tom1, 縦中央位置dpx, 音量0to1 );
+						this._チップを１つ描画する( gd, 表示レーン種別.Tom1, 縦中央位置dpx, 音量0to1, 消滅割合 );
 						break;
 
 					case チップ種別.Tom2:
 					case チップ種別.Tom2_Rim:
-						this._チップを１つ描画する( gd, 表示レーン種別.Tom2, 縦中央位置dpx, 音量0to1 );
+						this._チップを１つ描画する( gd, 表示レーン種別.Tom2, 縦中央位置dpx, 音量0to1, 消滅割合 );
 						break;
 
 					case チップ種別.Tom3:
 					case チップ種別.Tom3_Rim:
-						this._チップを１つ描画する( gd, 表示レーン種別.Tom3, 縦中央位置dpx, 音量0to1 );
+						this._チップを１つ描画する( gd, 表示レーン種別.Tom3, 縦中央位置dpx, 音量0to1, 消滅割合 );
 						break;
 
 					case チップ種別.RightCrash:
 					case チップ種別.China:   // China, Ride は右固定
 					case チップ種別.Ride:
 					case チップ種別.Ride_Cup:
-						this._チップを１つ描画する( gd, 表示レーン種別.RightCrash, 縦中央位置dpx, 音量0to1 );
+						this._チップを１つ描画する( gd, 表示レーン種別.RightCrash, 縦中央位置dpx, 音量0to1, 消滅割合 );
 						break;
 
 					case チップ種別.LeftCymbal_Mute:		// 未対応。
@@ -437,7 +448,7 @@ namespace DTXmatixx.ステージ.演奏
 				}
 			} );
 		}
-		private void _チップを１つ描画する( グラフィックデバイス gd, 表示レーン種別 lane, float 縦中央位置dpx, float 音量0to1 )
+		private void _チップを１つ描画する( グラフィックデバイス gd, 表示レーン種別 lane, float 縦中央位置dpx, float 音量0to1, float 消滅割合 )
 		{
 			// xml の記述ミスの検出用。
 			Debug.Assert( null != this._ドラムチップ画像の矩形リスト[ lane.ToString() ] );
@@ -450,7 +461,8 @@ namespace DTXmatixx.ステージ.演奏
 				var 矩形 = this._ドラムチップ画像の矩形リスト[ lane.ToString() + "_back" ].Value;
 				var 矩形中央 = new Vector2( 矩形.Width / 2f, 矩形.Height / 2f );
 				var 割合 = this._ドラムチップアニメ.現在値の割合;   // 0→1のループ
-				var 変換行列2D = Matrix3x2.Identity;
+
+				var 変換行列2D = ( 0 >= 消滅割合 ) ? Matrix3x2.Identity : Matrix3x2.Scaling( 1f - 消滅割合, 1f, 矩形中央 );
 
 				// 拡大縮小回転
 				switch( lane )
@@ -486,16 +498,31 @@ namespace DTXmatixx.ステージ.演奏
 						x: レーンフレーム.領域.Left + レーンフレーム.レーンto左端位置dpx[ lane ],
 						y: 縦中央位置dpx - 縦方向中央位置dpx * 音量0to1 );
 
-				this._ドラムチップ画像.描画する( gd, 変換行列2D, 転送元矩形: 矩形 );
+				this._ドラムチップ画像.描画する(
+					gd,
+					変換行列2D, 
+					転送元矩形: 矩形,
+					不透明度0to1: 1f - 消滅割合 );
 			}
 
 			// チップ本体
-			this._ドラムチップ画像.描画する(
-				gd,
-				左位置: レーンフレーム.領域.Left + レーンフレーム.レーンto左端位置dpx[ lane ],
-				上位置: 縦中央位置dpx - 縦方向中央位置dpx * 音量0to1,
-				転送元矩形: this._ドラムチップ画像の矩形リスト[ lane.ToString() ],
-				Y方向拡大率: 音量0to1 );
+			{
+				var 矩形 = this._ドラムチップ画像の矩形リスト[ lane.ToString() ].Value;
+				var 矩形中央 = new Vector2( 矩形.Width / 2f, 矩形.Height / 2f );
+
+				var 変換行列2D =
+					( ( 0 >= 消滅割合 ) ? Matrix3x2.Identity : Matrix3x2.Scaling( 1f - 消滅割合, 1f, 矩形中央 ) ) *
+					Matrix3x2.Scaling( 1f, 音量0to1, 矩形中央 ) *
+					Matrix3x2.Translation(
+						x: レーンフレーム.領域.Left + レーンフレーム.レーンto左端位置dpx[ lane ],
+						y: 縦中央位置dpx - 縦方向中央位置dpx * 音量0to1 );
+
+				this._ドラムチップ画像.描画する(
+					gd,
+					変換行列2D,
+					転送元矩形: 矩形,
+					不透明度0to1: 1f - 消滅割合 );
+			}
 		}
 
 		private void _キャプチャ画面を描画する( グラフィックデバイス gd, float 不透明度 = 1.0f )
