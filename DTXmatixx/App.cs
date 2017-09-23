@@ -29,55 +29,46 @@ namespace DTXmatixx
 			get;
 			protected set;
 		} = null;
-
 		public static 曲ツリー 曲ツリー
 		{
 			get;
 			protected set;
 		} = null;
-
 		public static Keyboard Keyboard
 		{
 			get;
 			protected set;
 		} = null;
-
 		public static スコア 演奏スコア
 		{
 			get;
 			set;
 		} = null;
-
 		public static FDK.メディア.サウンド.WASAPI.Device サウンドデバイス
 		{
 			get;
 			protected set;
 		} = null;
-
 		public static FDK.メディア.サウンド.WASAPI.SoundTimer サウンドタイマ
 		{
 			get;
 			protected set;
 		} = null;
-
 		public static システム設定 システム設定
 		{
 			get;
 			protected set;
 		} = null;
-
 		public static オプション設定 オプション設定
 		{
 			get;
 			protected set;
 		} = null;
-
 		public static ドラムサウンド ドラムサウンド
 		{
 			get;
 			protected set;
 		} = null;
-
 
 		public App()
 			: base( 設計画面サイズ: new SizeF( 1920f, 1080f ), 物理画面サイズ: new SizeF( 1280f, 720f ) )
@@ -108,7 +99,6 @@ namespace DTXmatixx
 			// 最初のステージへ遷移する。
 			App.ステージ管理.ステージを遷移する( App.グラフィックデバイス, App.ステージ管理.最初のステージ名 );
 		}
-
 		public new void Dispose()
 		{
 			using( Log.Block( FDKUtilities.現在のメソッド名 ) )
@@ -138,7 +128,6 @@ namespace DTXmatixx
 				base.Dispose();
 			}
 		}
-
 		public override void Run()
 		{
 			RenderLoop.Run( this, () => {
@@ -167,7 +156,6 @@ namespace DTXmatixx
 
 			} );
 		}
-
 		protected override void OnClosing( CancelEventArgs e )
 		{
 			using( Log.Block( FDKUtilities.現在のメソッド名 ) )
@@ -184,7 +172,6 @@ namespace DTXmatixx
 				}
 			}
 		}
-
 		protected override void OnKeyDown( KeyEventArgs e )
 		{
 			if( e.KeyCode == Keys.F11 )
@@ -193,7 +180,6 @@ namespace DTXmatixx
 				App.オプション設定.全画面モードである = this.全画面モード;
 			}
 		}
-
 
 		// ※ Form イベントの override メソッドは描画スレッドで実行されるため、処理中に進行タスクが呼び出されると困る場合には、進行タスクとの lock を忘れないこと。
 		private readonly object _高速進行と描画の同期 = new object();
@@ -206,7 +192,6 @@ namespace DTXmatixx
 		///		OFF:タスク起動前、ON:タスク実行中、OFF:タスク終了済み
 		/// </summary>
 		private TriStateEvent _高速進行ステータス;
-
 
 		/// <summary>
 		///		グローバルリソースのうち、グラフィックリソースを持つものについて、活性化がまだなら活性化する。
@@ -394,6 +379,19 @@ namespace DTXmatixx
 						break;
 
 					case ステージ.演奏.演奏ステージ stage:
+						#region " キャンセル → 選曲ステージへ "
+						//----------------
+						if( stage.現在のフェーズ == ステージ.演奏.演奏ステージ.フェーズ.キャンセル )
+						{
+							App.ステージ管理.ステージを遷移する( gd, nameof( ステージ.選曲.選曲ステージ ) );
+						}
+						//----------------
+						#endregion
+						if( stage.現在のフェーズ == ステージ.演奏.演奏ステージ.フェーズ.クリア時フェードアウト )
+						{
+							// 仮実装
+							App.ステージ管理.ステージを遷移する( gd, nameof( ステージ.選曲.選曲ステージ ) );
+						}
 						break;
 				}
 

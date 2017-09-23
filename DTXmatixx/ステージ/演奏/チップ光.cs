@@ -148,7 +148,8 @@ namespace DTXmatixx.ステージ.演奏
 									Matrix3x2.Rotation( MathUtil.DegreesToRadians( (float) status.放射光の回転角.Value ), center: 転送元矩形の中心dpx ) *
 									Matrix3x2.Translation( status.表示中央位置dpx.X - 転送元矩形の中心dpx.X, status.表示中央位置dpx.Y - 転送元矩形の中心dpx.Y );
 
-								this._放射光.描画する( gd, 変換行列2D, 転送元矩形: 転送元矩形dpx );
+								const float 不透明度 = 0.3f;	// 眩しいので減光
+								this._放射光.描画する( gd, 変換行列2D, 転送元矩形: 転送元矩形dpx, 不透明度0to1: 不透明度 );
 							}
 							//----------------
 							#endregion
