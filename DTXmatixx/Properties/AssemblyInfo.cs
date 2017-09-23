@@ -5,12 +5,12 @@ using System.Runtime.InteropServices;
 // アセンブリに関する一般情報は以下の属性セットをとおして制御されます。
 // アセンブリに関連付けられている情報を変更するには、
 // これらの属性値を変更してください。
-[assembly: AssemblyTitle( "DTXmatixx" )]
+[assembly: AssemblyTitle( "DTXMania matixx" )]
 [assembly: AssemblyDescription( "" )]
 [assembly: AssemblyConfiguration( "" )]
 [assembly: AssemblyCompany( "" )]
-[assembly: AssemblyProduct( "DTXmatixx" )]
-[assembly: AssemblyCopyright( "Copyright ©  2017" )]
+[assembly: AssemblyProduct( "DTXMania matixx" )]
+[assembly: AssemblyCopyright( "2017 ＦＲＯＭ／くまかみ公房" )]
 [assembly: AssemblyTrademark( "" )]
 [assembly: AssemblyCulture( "" )]
 
