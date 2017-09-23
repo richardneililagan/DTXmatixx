@@ -46,6 +46,7 @@ namespace DTXmatixx.ステージ.演奏
 			this.子リスト.Add( this._ドラムパッド = new ドラムパッド() );
 			this.子リスト.Add( this._ドラムチップ画像 = new 画像( @"$(System)images\ドラムチップ.png" ) );
 			this.子リスト.Add( this._判定文字列 = new 判定文字列() );
+			this.子リスト.Add( this._チップ光 = new チップ光() );
 			this.子リスト.Add( this._FPS = new FPS() );
 		}
 
@@ -215,23 +216,50 @@ namespace DTXmatixx.ステージ.演奏
 
 #warning "手動ヒット。"
 					if( App.Keyboard.キーが押された( 0, Key.Z ) )
+					{
 						this._判定文字列.表示を開始する( 表示レーン種別.LeftCrash, 判定種別.PERFECT );
+						this._チップ光.表示を開始する( 表示レーン種別.LeftCrash );
+					}
 					if( App.Keyboard.キーが押された( 0, Key.X ) )
+					{
 						this._判定文字列.表示を開始する( 表示レーン種別.HiHat, 判定種別.GREAT );
+						this._チップ光.表示を開始する( 表示レーン種別.HiHat );
+					}
 					if( App.Keyboard.キーが押された( 0, Key.C ) )
+					{
 						this._判定文字列.表示を開始する( 表示レーン種別.Foot, 判定種別.GOOD );
+						this._チップ光.表示を開始する( 表示レーン種別.Foot );
+					}
 					if( App.Keyboard.キーが押された( 0, Key.V ) )
+					{
 						this._判定文字列.表示を開始する( 表示レーン種別.Snare, 判定種別.OK );
+						this._チップ光.表示を開始する( 表示レーン種別.Snare );
+					}
 					if( App.Keyboard.キーが押された( 0, Key.B ) )
+					{
 						this._判定文字列.表示を開始する( 表示レーン種別.Bass, 判定種別.MISS );
+						this._チップ光.表示を開始する( 表示レーン種別.Bass );
+					}
 					if( App.Keyboard.キーが押された( 0, Key.N ) )
+					{
 						this._判定文字列.表示を開始する( 表示レーン種別.Tom1, 判定種別.PERFECT );
+						this._チップ光.表示を開始する( 表示レーン種別.Tom1 );
+					}
 					if( App.Keyboard.キーが押された( 0, Key.M ) )
+					{
 						this._判定文字列.表示を開始する( 表示レーン種別.Tom2, 判定種別.GREAT );
+						this._チップ光.表示を開始する( 表示レーン種別.Tom2 );
+					}
 					if( App.Keyboard.キーが押された( 0, Key.K ) )
+					{
 						this._判定文字列.表示を開始する( 表示レーン種別.Tom3, 判定種別.GOOD );
+						this._チップ光.表示を開始する( 表示レーン種別.Tom3 );
+					}
 					if( App.Keyboard.キーが押された( 0, Key.L ) )
+					{
 						this._判定文字列.表示を開始する( 表示レーン種別.RightCrash, 判定種別.OK );
+						this._チップ光.表示を開始する( 表示レーン種別.RightCrash );
+					}
 					break;
 
 				case フェーズ.クリア時フェードアウト:
@@ -322,6 +350,7 @@ namespace DTXmatixx.ステージ.演奏
 						this._曲名パネル.描画する( gd );
 						this._ヒットバーを描画する( gd );
 						this._チップを描画する( gd, 演奏時刻sec );
+						this._チップ光.進行描画する( gd );
 						this._判定文字列.進行描画する( gd );
 						this._FPS.VPSをカウントする();
 						this._FPS.描画する( gd, 0f, 0f );
@@ -341,6 +370,7 @@ namespace DTXmatixx.ステージ.演奏
 		private 成績パネル _成績パネル = null;
 		private ドラムパッド _ドラムパッド = null;
 		private 判定文字列 _判定文字列 = null;
+		private チップ光 _チップ光 = null;
 		private FPS _FPS = null;
 		/// <summary>
 		///		読み込み画面: 0 ～ 1: 演奏画面
@@ -584,10 +614,7 @@ namespace DTXmatixx.ステージ.演奏
 
 					//this._コンボ.COMBO値++;
 
-					//this._回転羽.発火する(
-					//	new Vector2(
-					//		レーンフレームの左端位置 + レーンフレーム.レーンto横中央相対位置[ 対応表.表示レーン種別 ],
-					//		ヒット判定バーの中央Y座標 ) );
+					this._チップ光.表示を開始する( 対応表.表示レーン種別 );
 
 					//this._ドラムセット.ヒットアニメ開始( 対応表.ドラム入力種別, App.ユーザ管理.選択されているユーザ.オプション設定.表示レーンの左右 );
 

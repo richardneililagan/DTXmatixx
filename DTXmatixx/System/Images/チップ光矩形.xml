@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<Root>
+  <!-- チップ本体。各 Name は 表示レーン種別 列挙子の名前であること。-->
+  <SubImage Name="Unknown" Rectangle="0,0,0,0" />
+  <SubImage Name="LeftCrash" Rectangle="0,0,400,300" />
+  <SubImage Name="HiHat" Rectangle="400,0,400,300" />
+  <SubImage Name="Foot" Rectangle="800,0,400,300" />
+  <SubImage Name="Snare" Rectangle="0,300,400,300" />
+  <SubImage Name="Bass" Rectangle="400,300,400,300" />
+  <SubImage Name="Tom1" Rectangle="800,300,400,300" />
+  <SubImage Name="Tom2" Rectangle="0,600,400,300" />
+  <SubImage Name="Tom3" Rectangle="400,600,400,300" />
+  <SubImage Name="RightCrash" Rectangle="800,600,400,300" />
+</Root>
