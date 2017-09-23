@@ -7,8 +7,8 @@ using DTXmatixx.設定;
 using DTXmatixx.入力;
 using DTXmatixx.ステージ.演奏;
 
-using チップ種別 = SSTFormat.v2.チップ種別;
-using レーン種別 = SSTFormat.v2.レーン種別;
+using チップ種別 = SSTFormat.v3.チップ種別;
+using レーン種別 = SSTFormat.v3.レーン種別;
 
 namespace DTXmatixx.設定
 {

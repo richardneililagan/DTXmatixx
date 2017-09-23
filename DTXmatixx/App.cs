@@ -18,7 +18,7 @@ using FDK.同期;
 using DTXmatixx.ステージ;
 using DTXmatixx.曲;
 using DTXmatixx.設定;
-using SSTFormat.v2;
+using SSTFormat.v3;
 
 namespace DTXmatixx
 {
@@ -72,6 +72,12 @@ namespace DTXmatixx
 			protected set;
 		} = null;
 
+		public static ドラムサウンド ドラムサウンド
+		{
+			get;
+			protected set;
+		} = null;
+
 
 		public App()
 			: base( 設計画面サイズ: new SizeF( 1920f, 1080f ), 物理画面サイズ: new SizeF( 1280f, 720f ) )
@@ -93,6 +99,7 @@ namespace DTXmatixx
 			App.サウンドタイマ = new FDK.メディア.サウンド.WASAPI.SoundTimer( App.サウンドデバイス );
 			App.システム設定 = new システム設定();
 			App.オプション設定 = オプション設定.復元する( Folder.フォルダ変数の内容を返す( "AppData" ) );
+			App.ドラムサウンド = new ドラムサウンド();
 
 			this._活性化する();
 
@@ -107,6 +114,9 @@ namespace DTXmatixx
 			using( Log.Block( FDKUtilities.現在のメソッド名 ) )
 			{
 				this._非活性化する();
+
+				App.ドラムサウンド?.Dispose();
+				App.ドラムサウンド = null;
 
 				App.オプション設定.保存する( Folder.フォルダ変数の内容を返す( "AppData" ) );
 

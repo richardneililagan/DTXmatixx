@@ -8,7 +8,7 @@ using SharpDX.DirectInput;
 using FDK;
 using FDK.メディア;
 using FDK.カウンタ;
-using SSTFormat.v2;
+using SSTFormat.v3;
 using DTXmatixx.設定;
 
 namespace DTXmatixx.ステージ.演奏
@@ -675,9 +675,10 @@ namespace DTXmatixx.ステージ.演奏
 			//}
 			//else
 			//{
-			//	// BGM以外のサウンドについては、再生開始位置sec は反映せず、常に最初から再生する。
-			//	if( App.システム設定.Autoチップのドラム音を再生する )
-			//		this._ドラムサウンド.発声する( chip.チップ種別, ( chip.音量 / (float) チップ.最大音量 ) );
+
+			// BGM以外のサウンドについては、再生開始位置sec は反映せず、常に最初から再生する。
+			App.ドラムサウンド.発声する( chip.チップ種別, chip.チップサブID, ( chip.音量 / (float) チップ.最大音量 ) );
+			
 			//}
 		}
 

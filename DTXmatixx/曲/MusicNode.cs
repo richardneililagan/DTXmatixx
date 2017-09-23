@@ -4,7 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using SharpDX.Direct3D11;
-using SSTFormat.v2;
+using SSTFormat.v3;
 using FDK;
 using FDK.メディア;
 
