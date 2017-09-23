@@ -35,6 +35,7 @@ namespace DTXmatixx.ステージ.選曲
 			this.子リスト.Add( this._曲リスト = new 曲リスト() );
 			this.子リスト.Add( this._ステージタイマー = new 画像( @"$(System)images\ステージタイマー.png" ) );
 			this.子リスト.Add( this._青い枠 = new 青い枠() );
+			this.子リスト.Add( this._選択曲枠ランナー = new 選択曲枠ランナー() );
 		}
 
 		protected override void On活性化( グラフィックデバイス gd )
@@ -91,6 +92,7 @@ namespace DTXmatixx.ステージ.選曲
 			this._その他パネルを描画する( gd );
 			this._プレビュー画像を描画する( gd, App.曲ツリー.フォーカスノード );
 			this._選択曲を囲む枠を描画する( gd );
+			this._選択曲枠ランナー.進行描画する( gd );
 			this._導線を描画する( gd );
 
 			App.Keyboard.ポーリングする();
@@ -139,6 +141,7 @@ namespace DTXmatixx.ステージ.選曲
 		private 舞台画像 _舞台画像 = null;
 		private 曲リスト _曲リスト = null;
 		private 青い枠 _青い枠 = null;
+		private 選択曲枠ランナー _選択曲枠ランナー = null;
 
 		private SolidColorBrush _白 = null;
 		private SolidColorBrush _黒 = null;
@@ -211,6 +214,8 @@ namespace DTXmatixx.ステージ.選曲
 
 		private void _導線アニメをリセットする( グラフィックデバイス gd )
 		{
+			this._選択曲枠ランナー.リセットする();
+
 			this._上に伸びる導線の長さdpx?.Dispose();
 			this._上に伸びる導線の長さdpx = new Variable( gd.Animation.Manager, initialValue: 0.0 );
 

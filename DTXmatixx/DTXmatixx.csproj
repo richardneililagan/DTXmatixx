@@ -106,6 +106,7 @@
     <Compile Include="ステージ\舞台画像.cs" />
     <Compile Include="ステージ\認証\認証ステージ.cs" />
     <Compile Include="ステージ\選曲\曲リスト.cs" />
+    <Compile Include="ステージ\選曲\選択曲枠ランナー.cs" />
     <Compile Include="ステージ\選曲\青い枠.cs" />
     <Compile Include="ステージ\選曲\選曲ステージ.cs" />
     <Compile Include="入力\ドラム入力種別.cs" />
@@ -269,6 +270,11 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="System\Images\チップ光輪.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="System\Images\選曲画面_枠ランナー.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
