@@ -7,6 +7,7 @@ using SharpDX.Direct2D1;
 using SharpDX.DirectInput;
 using FDK;
 using FDK.メディア;
+using FDK.メディア.サウンド.WASAPI;
 using FDK.カウンタ;
 using SSTFormat.v3;
 using DTXmatixx.設定;
@@ -49,7 +50,6 @@ namespace DTXmatixx.ステージ.演奏
 			this.子リスト.Add( this._チップ光 = new チップ光() );
 			this.子リスト.Add( this._FPS = new FPS() );
 		}
-
 		protected override void On活性化( グラフィックデバイス gd )
 		{
 			using( Log.Block( FDKUtilities.現在のメソッド名 ) )
@@ -61,6 +61,44 @@ namespace DTXmatixx.ステージ.演奏
 				this._ドラムチップ画像の矩形リスト = new 矩形リスト( @"$(System)images\ドラムチップ矩形.xml" );      // デバイスリソースは持たないので、子Activityではない。
 				this._現在進行描画中の譜面スクロール速度の倍率 = App.オプション設定.譜面スクロール速度の倍率;
 				this._ドラムチップアニメ = new LoopCounter( 0, 200, 3 );
+				this._背景動画 = null;
+				this._BGM = null;
+				this._背景動画開始済み = false;
+				this._BGM再生開始済み = false;
+				//this._デコード済みWaveSource = null;	--> キャッシュなので消さない。
+
+				#region " 背景動画とBGMを生成する。"
+				//----------------
+				if( ( null != App.演奏スコア ) && ( App.演奏スコア.背景動画ファイル名.Nullでも空でもない() ) )
+				{
+					Log.Info( "背景動画とBGMを読み込みます。" );
+
+					// 動画を子リストに追加。
+					this.子リスト.Add( this._背景動画 = new 動画( App.演奏スコア.背景動画ファイル名 ) );
+
+					// 動画から音声パートを抽出して BGM を作成。
+					if( ( null != this._デコード済みWaveSource ) && this._デコード済みWaveSource.Path.Equals( App.演奏スコア.背景動画ファイル名 ) )
+					{
+						// (A) 前回生成したBGMとパスが同じなので、前回のデコード済み WaveSource をキャッシュとして再利用する。
+						Log.Info( "前回生成したサウンドデータを再利用します。" );
+					}
+					else
+					{
+						// (B) 初めての生成か、または前回生成したBGMとパスが違うので、新しくデコード済み WaveSource を生成する。
+						this._デコード済みWaveSource?.Dispose();
+						this._デコード済みWaveSource = new DecodedWaveSource( App.演奏スコア.背景動画ファイル名, App.サウンドデバイス.WaveFormat );
+					}
+
+					this._BGM?.Dispose();
+					this._BGM = App.サウンドデバイス.サウンドを生成する( this._デコード済みWaveSource );
+				}
+				else
+				{
+					Log.Info( "背景動画とBGMはありません。" );
+				}
+				//----------------
+				#endregion
+
 				this.現在のフェーズ = フェーズ.フェードイン;
 				this._初めての進行描画 = true;
 			}
@@ -69,6 +107,10 @@ namespace DTXmatixx.ステージ.演奏
 		{
 			using( Log.Block( FDKUtilities.現在のメソッド名 ) )
 			{
+				// 背景動画を生成した場合は子リストから削除。
+				if( null != this._背景動画 )
+					this.子リスト.Remove( this._背景動画 );
+
 				FDKUtilities.解放する( ref this._拍線色 );
 				FDKUtilities.解放する( ref this._小節線色 );
 
@@ -76,11 +118,11 @@ namespace DTXmatixx.ステージ.演奏
 				this.キャプチャ画面 = null;
 			}
 		}
-
 		public override void 高速進行する()
 		{
 			if( this._初めての進行描画 )
 			{
+				App.サウンドタイマ.リセットする();		// カウント開始
 				this._フェードインカウンタ = new Counter( 0, 100, 10 );
 				this._初めての進行描画 = false;
 			}
@@ -88,6 +130,16 @@ namespace DTXmatixx.ステージ.演奏
 			// 高速進行
 
 			this._FPS.FPSをカウントしプロパティを更新する();
+
+			#region " 背景動画が再生されているのにBGMがまだ再生されていないなら、すぐに再生を開始する。"
+			//----------------
+			if( this._背景動画開始済み && !( this._BGM再生開始済み ) )
+			{
+				this._BGM?.Play();
+				this._BGM再生開始済み = true;
+			}
+			//----------------
+			#endregion
 
 			switch( this.現在のフェーズ )
 			{
@@ -342,6 +394,14 @@ namespace DTXmatixx.ステージ.演奏
 
 						double 演奏時刻sec = this._演奏開始からの経過時間secを返す() + gd.次のDComp表示までの残り時間sec;
 
+						if( this._背景動画開始済み )
+						{
+							// 背景動画チップがヒット済みなら、背景動画の進行描画を行う。
+							this._背景動画?.描画する( gd, new RectangleF( 0f, 0f, gd.設計画面サイズ.Width, gd.設計画面サイズ.Height ), 1.0f );
+	
+							// 開始直後のデコードが重たいかもしれないので、演奏時刻をここで更新しておく。	---> 重たくても更新禁止！（譜面スクロールがガタつく原因になる）
+							//演奏時刻sec = this._演奏開始からの経過時間secを返す();
+						}
 						this._小節線拍線を描画する( gd, 演奏時刻sec );
 						this._背景画像.描画する( gd, 0f, 0f );
 						this._ドラムパッド.進行描画する( gd );
@@ -360,6 +420,42 @@ namespace DTXmatixx.ステージ.演奏
 				case フェーズ.クリア時フェードアウト:
 				case フェーズ.キャンセル:
 					break;
+			}
+		}
+		public void 演奏を停止する()
+		{
+			using( Log.Block( FDKUtilities.現在のメソッド名 ) )
+			{
+				this._描画開始チップ番号 = -1;   // 演奏停止
+
+				this.BGMを停止する();
+				this._背景動画開始済み = false;
+
+				//this._コンボ.COMBO値 = 0;
+			}
+		}
+		/// <remarks>
+		///		演奏クリア時には、次の結果ステージに入ってもBGMが鳴り続ける。
+		///		そのため、後からBGMだけを別個に停止するためのメソッドが必要になる。
+		/// </remarks>
+		public void BGMを停止する()
+		{
+			using( Log.Block( FDKUtilities.現在のメソッド名 ) )
+			{
+				this._BGM?.Stop();
+				this._BGM?.Dispose();
+				this._BGM = null;
+
+				//this._デコード済みWaveSource?.Dispose();	--> ここではまだ解放しない。
+				//this._デコード済みWaveSource = null;
+			}
+		}
+		public void BGMのキャッシュを解放する()
+		{
+			using( Log.Block( FDKUtilities.現在のメソッド名 ) )
+			{
+				this.BGMを停止する();
+				FDKUtilities.解放する( ref this._デコード済みWaveSource );
 			}
 		}
 
@@ -589,6 +685,24 @@ namespace DTXmatixx.ステージ.演奏
 			} );
 		}
 
+		private 動画 _背景動画 = null;
+		private bool _背景動画開始済み = false;
+		/// <remarks>
+		///		停止と解放は、演奏ステージクラスの非活性化後に、外部から行われる。
+		///		<see cref="SST.ステージ.演奏.演奏ステージ.BGMを停止する"/>
+		///		<see cref="SST.ステージ.演奏.演奏ステージ.BGMのキャッシュを解放する"/>
+		/// </remarks>
+		private Sound _BGM = null;
+		private bool _BGM再生開始済み = false;
+		/// <summary>
+		///		BGM の生成もとになるデコード済みサウンドデータ。
+		///	</summary>
+		///	<remarks>
+		///		活性化と非活性化に関係なく、常に最後にデコードしたデータを持つ。（キャッシュ）
+		///		演奏ステージインスタンスを破棄する際に、このインスタンスもDisposeすること。
+		/// </remarks>
+		private DecodedWaveSource _デコード済みWaveSource = null;
+
 		private void _チップのヒット処理を行う( チップ chip, 判定種別 judge, ドラムとチップと入力の対応表.Column.Columnヒット処理 ヒット処理表, double ヒット判定バーと発声との時間sec )
 		{
 			chip.ヒット済みである = true;
@@ -659,27 +773,25 @@ namespace DTXmatixx.ステージ.演奏
 
 			chip.発声済みである = true;
 
-			//if( chip.チップ種別 == チップ種別.背景動画 )
-			//{
-			//	App.サウンドタイマ.一時停止する();
+			if( chip.チップ種別 == チップ種別.背景動画 )
+			{
+				App.サウンドタイマ.一時停止する();		// 止めても止めなくてもカクつくだろうが、止めておけば譜面は再開時にワープしない。
 
-			//	// 背景動画の再生を開始する。
-			//	this._背景動画?.再生を開始する();
-			//	this._背景動画開始済み = true;
+				// 背景動画の再生を開始する。
+				this._背景動画?.再生を開始する();
+				this._背景動画開始済み = true;
 
-			//	// BGMの再生を開始する。
-			//	this._BGM?.Play( 再生開始位置sec );
-			//	this._BGM再生開始済み = true;
+				// BGMの再生を開始する。
+				this._BGM?.Play( 再生開始位置sec );
+				this._BGM再生開始済み = true;
 
-			//	App.サウンドタイマ.再開する();
-			//}
-			//else
-			//{
-
-			// BGM以外のサウンドについては、再生開始位置sec は反映せず、常に最初から再生する。
-			App.ドラムサウンド.発声する( chip.チップ種別, chip.チップサブID, ( chip.音量 / (float) チップ.最大音量 ) );
-			
-			//}
+				App.サウンドタイマ.再開する();
+			}
+			else
+			{
+				// BGM以外のサウンドについては、再生開始位置sec は反映せず、常に最初から再生する。
+				App.ドラムサウンド.発声する( chip.チップ種別, chip.チップサブID, ( chip.音量 / (float) チップ.最大音量 ) );
+			}
 		}
 
 		private void _キャプチャ画面を描画する( グラフィックデバイス gd, float 不透明度 = 1.0f )
