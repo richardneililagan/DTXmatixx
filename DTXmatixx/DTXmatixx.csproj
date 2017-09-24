@@ -96,7 +96,6 @@
     <Compile Include="ステージ\曲ツリー構築\曲ツリー構築ステージ.cs" />
     <Compile Include="ステージ\曲読み込み\曲読み込みステージ.cs" />
     <Compile Include="ステージ\演奏\コンボ.cs" />
-    <Compile Include="ステージ\演奏\ステータスパネル.cs" />
     <Compile Include="ステージ\演奏\チップ光.cs" />
     <Compile Include="ステージ\演奏\ドラムパッド.cs" />
     <Compile Include="ステージ\演奏\レーンフレーム.cs" />
@@ -104,7 +103,6 @@
     <Compile Include="ステージ\演奏\判定種別.cs" />
     <Compile Include="ステージ\演奏\右サイドクリアパネル.cs" />
     <Compile Include="ステージ\演奏\左サイドクリアパネル.cs" />
-    <Compile Include="ステージ\演奏\成績パネル.cs" />
     <Compile Include="ステージ\演奏\曲名パネル.cs" />
     <Compile Include="ステージ\演奏\演奏ステージ.cs" />
     <Compile Include="ステージ\演奏\表示レーン種別.cs" />
@@ -215,16 +213,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="System\Images\演奏画面_曲名パネル.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="System\Images\演奏画面_ステータスパネル.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="System\Images\演奏画面_成績パネル.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>

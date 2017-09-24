@@ -42,8 +42,8 @@ namespace DTXmatixx.ステージ.演奏
 		public void クリアする( グラフィックデバイス gd )
 		{
 			this.クリアパネル.ビットマップへ描画する( gd, ( dc, bmp ) => {
-				// bmp は AlphaMode.Premultiplied なので、opacity に何を設定しても 1f（不透明）扱いになるので注意。
-				dc.DrawBitmap( this._背景.Bitmap, opacity: 0.005f, interpolationMode: InterpolationMode.Linear );
+				dc.PrimitiveBlend = PrimitiveBlend.Copy;
+				dc.DrawBitmap( this._背景.Bitmap, opacity: 1f, interpolationMode: InterpolationMode.Linear );
 			} );
 		}
 		public void 描画する( グラフィックデバイス gd )

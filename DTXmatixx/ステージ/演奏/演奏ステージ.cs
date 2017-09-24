@@ -41,8 +41,6 @@ namespace DTXmatixx.ステージ.演奏
 		{
 			this.子リスト.Add( this._背景画像 = new 画像( @"$(System)images\演奏画面.png" ) );
 			this.子リスト.Add( this._曲名パネル = new 曲名パネル() );
-			this.子リスト.Add( this._ステータスパネル = new ステータスパネル() );
-			this.子リスト.Add( this._成績パネル = new 成績パネル() );
 			this.子リスト.Add( this._ヒットバー画像 = new 画像( @"$(System)images\演奏画面_ヒットバー.png" ) );
 			this.子リスト.Add( this._ドラムパッド = new ドラムパッド() );
 			this.子リスト.Add( this._ドラムチップ画像 = new 画像( @"$(System)images\ドラムチップ.png" ) );
@@ -335,15 +333,9 @@ namespace DTXmatixx.ステージ.演奏
 				case フェーズ.フェードイン:
 					{
 						this._左サイドクリアパネル.クリアする( gd );
-						this._左サイドクリアパネル.クリアパネル.ビットマップへ描画する( gd, ( dc, bmp ) => {
-							this._ステータスパネル.描画する( dc, bmp );
-						} );
 						this._左サイドクリアパネル.描画する( gd );
 
 						this._右サイドクリアパネル.クリアする( gd );
-						this._右サイドクリアパネル.クリアパネル.ビットマップへ描画する( gd, ( dc, bmp ) => {
-							this._成績パネル.描画する( dc, bmp );
-						} );
 						this._右サイドクリアパネル.描画する( gd );
 
 						this._背景画像.描画する( gd, 0f, 0f );
@@ -418,15 +410,9 @@ namespace DTXmatixx.ステージ.演奏
 						}
 
 						this._左サイドクリアパネル.クリアする( gd );
-						this._左サイドクリアパネル.クリアパネル.ビットマップへ描画する( gd, ( dc, bmp ) => {
-							this._ステータスパネル.描画する( dc, bmp );
-						} );
 						this._左サイドクリアパネル.描画する( gd );
 
 						this._右サイドクリアパネル.クリアする( gd );
-						this._右サイドクリアパネル.クリアパネル.ビットマップへ描画する( gd, ( dc, bmp ) => {
-							this._成績パネル.描画する( dc, bmp );
-						} );
 						this._右サイドクリアパネル.描画する( gd );
 
 						this._小節線拍線を描画する( gd, 演奏時刻sec );
@@ -488,8 +474,6 @@ namespace DTXmatixx.ステージ.演奏
 		private bool _初めての進行描画 = true;
 		private 画像 _背景画像 = null;
 		private 曲名パネル _曲名パネル = null;
-		private ステータスパネル _ステータスパネル = null;
-		private 成績パネル _成績パネル = null;
 		private ドラムパッド _ドラムパッド = null;
 		private 判定文字列 _判定文字列 = null;
 		private チップ光 _チップ光 = null;
