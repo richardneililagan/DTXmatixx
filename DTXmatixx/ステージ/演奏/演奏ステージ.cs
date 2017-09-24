@@ -48,6 +48,9 @@ namespace DTXmatixx.ステージ.演奏
 			this.子リスト.Add( this._ドラムチップ画像 = new 画像( @"$(System)images\ドラムチップ.png" ) );
 			this.子リスト.Add( this._判定文字列 = new 判定文字列() );
 			this.子リスト.Add( this._チップ光 = new チップ光() );
+			this.子リスト.Add( this._左サイドクリアパネル = new 左サイドクリアパネル() );
+			this.子リスト.Add( this._右サイドクリアパネル = new 右サイドクリアパネル() );
+			this.子リスト.Add( this._コンボ = new コンボ() );
 			this.子リスト.Add( this._FPS = new FPS() );
 		}
 		protected override void On活性化( グラフィックデバイス gd )
@@ -331,10 +334,20 @@ namespace DTXmatixx.ステージ.演奏
 			{
 				case フェーズ.フェードイン:
 					{
+						this._左サイドクリアパネル.クリアする( gd );
+						this._左サイドクリアパネル.クリアパネル.ビットマップへ描画する( gd, ( dc, bmp ) => {
+							this._ステータスパネル.描画する( dc, bmp );
+						} );
+						this._左サイドクリアパネル.描画する( gd );
+
+						this._右サイドクリアパネル.クリアする( gd );
+						this._右サイドクリアパネル.クリアパネル.ビットマップへ描画する( gd, ( dc, bmp ) => {
+							this._成績パネル.描画する( dc, bmp );
+						} );
+						this._右サイドクリアパネル.描画する( gd );
+
 						this._背景画像.描画する( gd, 0f, 0f );
 						this._ドラムパッド.進行描画する( gd );
-						this._ステータスパネル.描画する( gd );
-						this._成績パネル.進行描画する( gd );
 						this._曲名パネル.描画する( gd );
 						this._ヒットバーを描画する( gd );
 						this._キャプチャ画面を描画する( gd, ( 1.0f - this._フェードインカウンタ.現在値の割合 ) );
@@ -403,16 +416,28 @@ namespace DTXmatixx.ステージ.演奏
 							// 開始直後のデコードが重たいかもしれないので、演奏時刻をここで更新しておく。	---> 重たくても更新禁止！（譜面スクロールがガタつく原因になる）
 							//演奏時刻sec = this._演奏開始からの経過時間secを返す();
 						}
+
+						this._左サイドクリアパネル.クリアする( gd );
+						this._左サイドクリアパネル.クリアパネル.ビットマップへ描画する( gd, ( dc, bmp ) => {
+							this._ステータスパネル.描画する( dc, bmp );
+						} );
+						this._左サイドクリアパネル.描画する( gd );
+
+						this._右サイドクリアパネル.クリアする( gd );
+						this._右サイドクリアパネル.クリアパネル.ビットマップへ描画する( gd, ( dc, bmp ) => {
+							this._成績パネル.描画する( dc, bmp );
+						} );
+						this._右サイドクリアパネル.描画する( gd );
+
 						this._小節線拍線を描画する( gd, 演奏時刻sec );
 						this._背景画像.描画する( gd, 0f, 0f );
 						this._ドラムパッド.進行描画する( gd );
-						this._ステータスパネル.描画する( gd );
-						this._成績パネル.進行描画する( gd );
 						this._曲名パネル.描画する( gd );
 						this._ヒットバーを描画する( gd );
 						this._チップを描画する( gd, 演奏時刻sec );
 						this._チップ光.進行描画する( gd );
 						this._判定文字列.進行描画する( gd );
+//						this._コンボ.進行描画する( gd );
 						this._FPS.VPSをカウントする();
 						this._FPS.描画する( gd, 0f, 0f );
 					}
@@ -468,6 +493,9 @@ namespace DTXmatixx.ステージ.演奏
 		private ドラムパッド _ドラムパッド = null;
 		private 判定文字列 _判定文字列 = null;
 		private チップ光 _チップ光 = null;
+		private 左サイドクリアパネル _左サイドクリアパネル = null;
+		private 右サイドクリアパネル _右サイドクリアパネル = null;
+		private コンボ _コンボ = null;
 		private FPS _FPS = null;
 		/// <summary>
 		///		読み込み画面: 0 ～ 1: 演奏画面
