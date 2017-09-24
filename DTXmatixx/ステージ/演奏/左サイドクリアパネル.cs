@@ -29,6 +29,7 @@ namespace DTXmatixx.ステージ.演奏
 		public void クリアする( グラフィックデバイス gd )
 		{
 			this.クリアパネル.ビットマップへ描画する( gd, ( dc, bmp ) => {
+				dc.Transform = Matrix3x2.Identity;	// 等倍描画(DPXtoDPX)
 				dc.PrimitiveBlend = PrimitiveBlend.Copy;
 				dc.DrawBitmap( this._背景.Bitmap, opacity: 1f, interpolationMode: InterpolationMode.Linear );
 			} );

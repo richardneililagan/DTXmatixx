@@ -34,7 +34,6 @@ namespace DTXmatixx.ステージ.演奏
 		{
 			return this._判定toヒット数[ judge ];
 		}
-
 		public void ヒット数を加算する( 判定種別 judge )
 		{
 			this._判定toヒット数[ judge ]++;
