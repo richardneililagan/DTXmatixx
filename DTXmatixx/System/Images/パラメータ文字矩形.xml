@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<Root>
+  <SubImage Name="0" Rectangle="0,0,17,32" />
+  <SubImage Name="1" Rectangle="17,0,17,32" />
+  <SubImage Name="2" Rectangle="34,0,17,32" />
+  <SubImage Name="3" Rectangle="51,0,17,32" />
+  <SubImage Name="4" Rectangle="68,0,17,32" />
+  <SubImage Name="5" Rectangle="0,32,17,32" />
+  <SubImage Name="6" Rectangle="17,32,17,32" />
+  <SubImage Name="7" Rectangle="34,32,17,32" />
+  <SubImage Name="8" Rectangle="51,32,17,32" />
+  <SubImage Name="9" Rectangle="68,32,17,32" />
+  <SubImage Name="o" Rectangle="0,64,17,32" /><!-- o は グレーのゼロ -->
+  <SubImage Name="." Rectangle="17,64,17,32" />
+  <SubImage Name="%" Rectangle="34,64,17,32" />
+</Root>

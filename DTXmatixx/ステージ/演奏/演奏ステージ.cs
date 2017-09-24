@@ -48,6 +48,7 @@ namespace DTXmatixx.ステージ.演奏
 			this.子リスト.Add( this._チップ光 = new チップ光() );
 			this.子リスト.Add( this._左サイドクリアパネル = new 左サイドクリアパネル() );
 			this.子リスト.Add( this._右サイドクリアパネル = new 右サイドクリアパネル() );
+			this.子リスト.Add( this._演奏判定パラメータ = new 演奏判定パラメータ() );
 			this.子リスト.Add( this._コンボ = new コンボ() );
 			this.子リスト.Add( this._FPS = new FPS() );
 		}
@@ -267,53 +268,6 @@ namespace DTXmatixx.ステージ.演奏
 						//----------------
 						#endregion
 					}
-
-#warning "手動ヒット。"
-					if( App.Keyboard.キーが押された( 0, Key.Z ) )
-					{
-						this._判定文字列.表示を開始する( 表示レーン種別.LeftCrash, 判定種別.PERFECT );
-						this._チップ光.表示を開始する( 表示レーン種別.LeftCrash );
-					}
-					if( App.Keyboard.キーが押された( 0, Key.X ) )
-					{
-						this._判定文字列.表示を開始する( 表示レーン種別.HiHat, 判定種別.GREAT );
-						this._チップ光.表示を開始する( 表示レーン種別.HiHat );
-					}
-					if( App.Keyboard.キーが押された( 0, Key.C ) )
-					{
-						this._判定文字列.表示を開始する( 表示レーン種別.Foot, 判定種別.GOOD );
-						this._チップ光.表示を開始する( 表示レーン種別.Foot );
-					}
-					if( App.Keyboard.キーが押された( 0, Key.V ) )
-					{
-						this._判定文字列.表示を開始する( 表示レーン種別.Snare, 判定種別.OK );
-						this._チップ光.表示を開始する( 表示レーン種別.Snare );
-					}
-					if( App.Keyboard.キーが押された( 0, Key.B ) )
-					{
-						this._判定文字列.表示を開始する( 表示レーン種別.Bass, 判定種別.MISS );
-						this._チップ光.表示を開始する( 表示レーン種別.Bass );
-					}
-					if( App.Keyboard.キーが押された( 0, Key.N ) )
-					{
-						this._判定文字列.表示を開始する( 表示レーン種別.Tom1, 判定種別.PERFECT );
-						this._チップ光.表示を開始する( 表示レーン種別.Tom1 );
-					}
-					if( App.Keyboard.キーが押された( 0, Key.M ) )
-					{
-						this._判定文字列.表示を開始する( 表示レーン種別.Tom2, 判定種別.GREAT );
-						this._チップ光.表示を開始する( 表示レーン種別.Tom2 );
-					}
-					if( App.Keyboard.キーが押された( 0, Key.K ) )
-					{
-						this._判定文字列.表示を開始する( 表示レーン種別.Tom3, 判定種別.GOOD );
-						this._チップ光.表示を開始する( 表示レーン種別.Tom3 );
-					}
-					if( App.Keyboard.キーが押された( 0, Key.L ) )
-					{
-						this._判定文字列.表示を開始する( 表示レーン種別.RightCrash, 判定種別.OK );
-						this._チップ光.表示を開始する( 表示レーン種別.RightCrash );
-					}
 					break;
 
 				case フェーズ.クリア時フェードアウト:
@@ -333,6 +287,9 @@ namespace DTXmatixx.ステージ.演奏
 				case フェーズ.フェードイン:
 					{
 						this._左サイドクリアパネル.クリアする( gd );
+						this._左サイドクリアパネル.クリアパネル.ビットマップへ描画する( gd, ( dc, bmp ) => {
+							this._演奏判定パラメータ.描画する( dc, +210f, +392f );
+						} );
 						this._左サイドクリアパネル.描画する( gd );
 
 						this._右サイドクリアパネル.クリアする( gd );
@@ -410,6 +367,9 @@ namespace DTXmatixx.ステージ.演奏
 						}
 
 						this._左サイドクリアパネル.クリアする( gd );
+						this._左サイドクリアパネル.クリアパネル.ビットマップへ描画する( gd, ( dc, bmp ) => {
+							this._演奏判定パラメータ.描画する( dc, +210f, +392f );
+						} );
 						this._左サイドクリアパネル.描画する( gd );
 
 						this._右サイドクリアパネル.クリアする( gd );
@@ -479,6 +439,7 @@ namespace DTXmatixx.ステージ.演奏
 		private チップ光 _チップ光 = null;
 		private 左サイドクリアパネル _左サイドクリアパネル = null;
 		private 右サイドクリアパネル _右サイドクリアパネル = null;
+		private 演奏判定パラメータ _演奏判定パラメータ = null;
 		private コンボ _コンボ = null;
 		private FPS _FPS = null;
 		/// <summary>
@@ -751,7 +712,7 @@ namespace DTXmatixx.ステージ.演奏
 					//	this._レーンフレーム.フラッシュ開始( 対応表.表示レーン種別 );   // レーンフラッシュは Auto 時のみ。
 
 					this._判定文字列.表示を開始する( 対応表.表示レーン種別, judge );
-					//this.ヒットランク別ヒット回数[ hitRankType ]++;
+					this._演奏判定パラメータ.ヒット数を加算する( judge );
 				}
 				else
 				{

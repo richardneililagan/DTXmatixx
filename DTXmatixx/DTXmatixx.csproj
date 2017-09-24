@@ -105,6 +105,7 @@
     <Compile Include="ステージ\演奏\左サイドクリアパネル.cs" />
     <Compile Include="ステージ\演奏\曲名パネル.cs" />
     <Compile Include="ステージ\演奏\演奏ステージ.cs" />
+    <Compile Include="ステージ\演奏\演奏判定パラメータ.cs" />
     <Compile Include="ステージ\演奏\表示レーン種別.cs" />
     <Compile Include="ステージ\舞台画像.cs" />
     <Compile Include="ステージ\認証\認証ステージ.cs" />
@@ -359,6 +360,16 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="System\Images\左サイドクリアパネル.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="System\Images\パラメータ文字.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="System\Images\パラメータ文字矩形.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>

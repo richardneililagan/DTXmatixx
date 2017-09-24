@@ -20,20 +20,7 @@ namespace DTXmatixx.ステージ.演奏
 		public 左サイドクリアパネル()
 		{
 			this.子リスト.Add( this._背景 = new 画像( @"$(System)images\左サイドクリアパネル.png" ) );
-			this.子リスト.Add( this.クリアパネル = new ビットマップ付きテクスチャ( new Size2( 388, 990 ) ) );	// this._背景.サイズはまだ設定されていない。
-		}
-
-		protected override void On活性化( グラフィックデバイス gd )
-		{
-			using( Log.Block( FDKUtilities.現在のメソッド名 ) )
-			{
-			}
-		}
-		protected override void On非活性化( グラフィックデバイス gd )
-		{
-			using( Log.Block( FDKUtilities.現在のメソッド名 ) )
-			{
-			}
+			this.子リスト.Add( this.クリアパネル = new ビットマップ付きテクスチャ( new Size2( 388, 990 ) ) );  // this._背景.サイズはまだ設定されていない。
 		}
 
 		/// <summary>
