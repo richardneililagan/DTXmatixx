@@ -21,7 +21,7 @@ namespace DTXmatixx.ステージ.演奏
 		{
 			get;
 			protected set;
-		} = new RectangleF( 445f, 0f, 775f, 938f );
+		} = new RectangleF( 445f, 0f, 778f, 938f );
 
 		/// <summary>
 		///		表示レーンの左端X位置を、レーンフレームの左端からの相対位置で示す。
