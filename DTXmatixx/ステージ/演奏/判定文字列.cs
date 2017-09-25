@@ -384,7 +384,7 @@ namespace DTXmatixx.ステージ.演奏
 				this.現在の状態 = 状態.非表示;
 
 				// 表示中央位置は、レーンごとに固定。
-				float x = レーンフレーム.領域.Left + レーンフレーム.レーンto左端位置dpx[ lane ] + レーンフレーム.レーンtoレーン幅dpx[ lane ] / 2f;
+				float x = レーンフレーム.領域.Left + レーンフレーム.レーンtoチップの左端位置dpx[ lane ] + レーンフレーム.レーンtoレーン幅dpx[ lane ] / 2f;
 				switch( lane )
 				{
 					case 表示レーン種別.LeftCrash: this.表示中央位置dpx = new Vector2( x, 530f ); break;

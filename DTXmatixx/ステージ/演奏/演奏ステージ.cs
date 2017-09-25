@@ -40,6 +40,7 @@ namespace DTXmatixx.ステージ.演奏
 		public 演奏ステージ()
 		{
 			this.子リスト.Add( this._背景画像 = new 画像( @"$(System)images\演奏画面.png" ) );
+			this.子リスト.Add( this._レーンフレーム = new レーンフレーム() );
 			this.子リスト.Add( this._曲名パネル = new 曲名パネル() );
 			this.子リスト.Add( this._ヒットバー画像 = new 画像( @"$(System)images\演奏画面_ヒットバー.png" ) );
 			this.子リスト.Add( this._ドラムパッド = new ドラムパッド() );
@@ -296,6 +297,7 @@ namespace DTXmatixx.ステージ.演奏
 						this._右サイドクリアパネル.描画する( gd );
 
 						this._背景画像.描画する( gd, 0f, 0f );
+						this._レーンフレーム.描画する( gd );
 						this._ドラムパッド.進行描画する( gd );
 						this._曲名パネル.描画する( gd );
 						this._ヒットバーを描画する( gd );
@@ -377,6 +379,7 @@ namespace DTXmatixx.ステージ.演奏
 
 						this._小節線拍線を描画する( gd, 演奏時刻sec );
 						this._背景画像.描画する( gd, 0f, 0f );
+						this._レーンフレーム.描画する( gd );
 						this._ドラムパッド.進行描画する( gd );
 						this._曲名パネル.描画する( gd );
 						this._ヒットバーを描画する( gd );
@@ -433,6 +436,7 @@ namespace DTXmatixx.ステージ.演奏
 
 		private bool _初めての進行描画 = true;
 		private 画像 _背景画像 = null;
+		private レーンフレーム _レーンフレーム = null;
 		private 曲名パネル _曲名パネル = null;
 		private ドラムパッド _ドラムパッド = null;
 		private 判定文字列 _判定文字列 = null;
@@ -623,7 +627,7 @@ namespace DTXmatixx.ステージ.演奏
 						// 移動
 						変換行列2D = 変換行列2D *
 							Matrix3x2.Translation(
-								x: レーンフレーム.領域.Left + レーンフレーム.レーンto左端位置dpx[ lane ],
+								x: レーンフレーム.領域.Left + レーンフレーム.レーンtoチップの左端位置dpx[ lane ],
 								y: 縦中央位置dpx - 縦方向中央位置dpx * 音量0to1 );
 
 						this._ドラムチップ画像.描画する(
@@ -645,7 +649,7 @@ namespace DTXmatixx.ステージ.演奏
 							( ( 0 >= 消滅割合 ) ? Matrix3x2.Identity : Matrix3x2.Scaling( 1f - 消滅割合, 1f, 矩形中央 ) ) *
 							Matrix3x2.Scaling( 1f, 音量0to1, 矩形中央 ) *
 							Matrix3x2.Translation(
-								x: レーンフレーム.領域.Left + レーンフレーム.レーンto左端位置dpx[ lane ],
+								x: レーンフレーム.領域.Left + レーンフレーム.レーンtoチップの左端位置dpx[ lane ],
 								y: 縦中央位置dpx - 縦方向中央位置dpx * 音量0to1 );
 
 						this._ドラムチップ画像.描画する(

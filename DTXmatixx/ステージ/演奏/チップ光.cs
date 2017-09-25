@@ -218,7 +218,7 @@ namespace DTXmatixx.ステージ.演奏
 
 				// 表示中央位置は、レーンごとに固定。
 				this.表示中央位置dpx = new Vector2(
-					レーンフレーム.領域.Left + レーンフレーム.レーンto左端位置dpx[ lane ] + レーンフレーム.レーンtoレーン幅dpx[ lane ] / 2f,
+					レーンフレーム.領域.Left + レーンフレーム.レーンtoチップの左端位置dpx[ lane ] + レーンフレーム.レーンtoレーン幅dpx[ lane ] / 2f,
 					演奏ステージ.ヒット判定バーの中央Y座標dpx );
 			}
 			public void Dispose()
