@@ -1,0 +1,6 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<Root>
+  <SubImage Name="Bar" Rectangle="9,8,72,8" />
+  <SubImage Name="Left" Rectangle="0,17,12,24" />
+  <SubImage Name="Right" Rectangle="86,17,12,24" />
+</Root>
