@@ -69,6 +69,15 @@ namespace DTXmatixx
 			get;
 			protected set;
 		} = null;
+		/// <remarks>
+		///		SharpDX.Mathematics パッケージを参照し、かつ SharpDX 名前空間を using しておくと、
+		///		SharpDX で定義する追加の拡張メソッド（NextFloatなど）を使えるようになる。
+		/// </remarks>
+		public static Random 乱数
+		{
+			get;
+			protected set;
+		} = null;
 
 		public App()
 			: base( 設計画面サイズ: new SizeF( 1920f, 1080f ), 物理画面サイズ: new SizeF( 1920f, 1080f ), 深度ステンシルを使う: false )
@@ -81,8 +90,9 @@ namespace DTXmatixx
 			Folder.フォルダ変数を追加または更新する( "AppData", Path.Combine( Environment.GetFolderPath( Environment.SpecialFolder.ApplicationData, Environment.SpecialFolderOption.Create ), @"DTXMatixx\" ) );
 
 			if( !( Directory.Exists( Folder.フォルダ変数の内容を返す( "AppData" ) ) ) )
-				Directory.CreateDirectory( Folder.フォルダ変数の内容を返す( "AppData" ) );	// なければ作成。
+				Directory.CreateDirectory( Folder.フォルダ変数の内容を返す( "AppData" ) );  // なければ作成。
 
+			App.乱数 = new Random( DateTime.Now.Millisecond );
 			App.Keyboard = new Keyboard( this.Handle );
 			App.ステージ管理 = new ステージ管理();
 			App.曲ツリー = new 曲ツリー();

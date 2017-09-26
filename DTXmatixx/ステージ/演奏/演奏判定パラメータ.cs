@@ -113,7 +113,7 @@ namespace DTXmatixx.ステージ.演奏
 		/// <returns>
 		///		すべての判定種別をキーとして含む辞書。
 		/// </returns>
-		private IReadOnlyDictionary<判定種別, int> ヒット割合を取得する()
+		internal IReadOnlyDictionary<判定種別, int> ヒット割合を取得する()
 		{
 			int ヒット数の合計 = 0;
 			var ヒット割合_実数 = new Dictionary<判定種別, double>();  // 実値（0～100）

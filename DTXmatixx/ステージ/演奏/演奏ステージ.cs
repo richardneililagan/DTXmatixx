@@ -377,6 +377,9 @@ namespace DTXmatixx.ステージ.演奏
 						this._左サイドクリアパネル.描画する( gd );
 
 						this._右サイドクリアパネル.クリアする( gd );
+						this._右サイドクリアパネル.クリアパネル.ビットマップへ描画する( gd, ( dc, bmp ) => {
+							this._コンボ.進行描画する( dc, gd.Animation, new Vector2( +228f + 264f/2f, +234f ) );
+						} );
 						this._右サイドクリアパネル.描画する( gd );
 
 						this._小節線拍線を描画する( gd, 演奏時刻sec );
@@ -393,7 +396,6 @@ namespace DTXmatixx.ステージ.演奏
 						this._チップを描画する( gd, 演奏時刻sec );
 						this._チップ光.進行描画する( gd );
 						this._判定文字列.進行描画する( gd );
-//						this._コンボ.進行描画する( gd );
 						this._FPS.VPSをカウントする();
 						this._FPS.描画する( gd, 0f, 0f );
 					}
@@ -714,8 +716,7 @@ namespace DTXmatixx.ステージ.演奏
 				{
 					// (A) PERFECT～POOR
 
-					//this._コンボ.COMBO値++;
-
+					this._コンボ.現在値++;
 					this._チップ光.表示を開始する( 対応表.表示レーン種別 );
 
 					//this._ドラムセット.ヒットアニメ開始( 対応表.ドラム入力種別, App.ユーザ管理.選択されているユーザ.オプション設定.表示レーンの左右 );
@@ -730,8 +731,7 @@ namespace DTXmatixx.ステージ.演奏
 				{
 					// (B) MISS
 
-					//this._コンボ.COMBO値 = 0;
-
+					this._コンボ.現在値 = 0;
 					this._判定文字列.表示を開始する( 対応表.表示レーン種別, 判定種別.MISS );
 					//this.ヒットランク別ヒット回数[ hitRankType ]++;
 				}
