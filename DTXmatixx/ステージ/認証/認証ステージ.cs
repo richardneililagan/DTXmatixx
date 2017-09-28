@@ -70,7 +70,7 @@ namespace DTXmatixx.ステージ.認証
 					this._タッチアイコン.描画する( gd, this._タッチアイコン表示行列 );
 					fadeIn.進行描画する( gd );
 
-					if( fadeIn.現在のフェーズ == シャッター.フェーズ.オープン完了 )
+					if( fadeIn.現在のフェーズ == アイキャッチ.フェーズ.オープン完了 )
 					{
 						this._表示フェーズカウンタ = new Counter( 0, 5000, 1 );	// 全5秒
 						this.現在のフェーズ = フェーズ.表示;
@@ -94,7 +94,7 @@ namespace DTXmatixx.ステージ.認証
 					this._舞台画像.進行描画する( gd, true );
 					fadeOut.進行描画する( gd );
 
-					if( fadeOut.現在のフェーズ == 回転幕.フェーズ.クローズ完了 )
+					if( fadeOut.現在のフェーズ == アイキャッチ.フェーズ.クローズ完了 )
 					{
 						this._待機フェーズカウンタ = new Counter( 0, 500, 1 );   // 全0.5秒
 						this.現在のフェーズ = フェーズ.アイキャッチ;

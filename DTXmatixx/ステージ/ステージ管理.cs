@@ -34,7 +34,7 @@ namespace DTXmatixx.ステージ
 			{ nameof( 演奏.演奏ステージ ), new 演奏.演奏ステージ() },
 		};
 
-		// 全ステージで共通のアイキャッチインスタンス。ステージ間をまたいで描画することができる。
+		// 全ステージで共通のアイキャッチインスタンス。ステージ間をまたいで状態を維持しつつ描画することができる。
 		public アイキャッチ.シャッター シャッター
 		{
 			get;
@@ -50,12 +50,18 @@ namespace DTXmatixx.ステージ
 			get;
 			protected set;
 		} = null;
+		public アイキャッチ.半回転黒フェード 半回転黒フェード
+		{
+			get;
+			protected set;
+		} = null;
 
 		public ステージ管理()
 		{
 			this.子リスト.Add( this.シャッター = new アイキャッチ.シャッター() );
 			this.子リスト.Add( this.回転幕 = new アイキャッチ.回転幕() );
 			this.子リスト.Add( this.GO = new アイキャッチ.GO() );
+			this.子リスト.Add( this.半回転黒フェード = new アイキャッチ.半回転黒フェード() );
 		}
 		public void Dispose()
 		{

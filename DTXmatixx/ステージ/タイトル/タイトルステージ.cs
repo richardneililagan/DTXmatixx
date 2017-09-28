@@ -84,7 +84,7 @@ namespace DTXmatixx.ステージ.タイトル
 
 					fadeOut.進行描画する( gd );
 
-					if( fadeOut.現在のフェーズ == シャッター.フェーズ.クローズ完了 )
+					if( fadeOut.現在のフェーズ ==	 アイキャッチ.フェーズ.クローズ完了 )
 						this.現在のフェーズ = フェーズ.確定;
 					break;
 

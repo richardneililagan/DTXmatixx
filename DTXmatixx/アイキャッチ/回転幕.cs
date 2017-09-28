@@ -44,18 +44,8 @@ using DTXmatixx.ステージ;
 
 namespace DTXmatixx.アイキャッチ
 {
-	class 回転幕 : Activity
+	class 回転幕 : アイキャッチBase
 	{
-		public enum フェーズ
-		{
-			未定,
-			クローズ,
-			クローズ完了,
-			オープン,
-			オープン完了
-		}
-		public フェーズ 現在のフェーズ { get; protected set; }
-
 		public 回転幕()
 		{
 			this.子リスト.Add( this._ロゴ = new 画像( @"$(System)images\タイトルロゴ.png" ) );
@@ -92,7 +82,6 @@ namespace DTXmatixx.アイキャッチ
 
 			this.現在のフェーズ = フェーズ.未定;
 		}
-
 		protected override void On非活性化( グラフィックデバイス gd )
 		{
 			this._斜めレイヤーパラメータ.GeometricMask = null;	// 参照してるので先に手放す
@@ -106,8 +95,9 @@ namespace DTXmatixx.アイキャッチ
 			}
 		}
 
-		public void クローズする( グラフィックデバイス gd, float 速度倍率 = 1.0f )
+		public override void クローズする( グラフィックデバイス gd, float 速度倍率 = 1.0f )
 		{
+			double 秒( double v ) => ( v / 速度倍率 );
 			this.現在のフェーズ = フェーズ.クローズ;
 
 			if( null != this._黒幕 )
@@ -145,12 +135,12 @@ namespace DTXmatixx.アイキャッチ
 			var 幕 = this._黒幕[ 0 ];
 
 			// シーン1 細くなりつつ画面中央へ移動。
-			using( var 中心位置Xの遷移 = gd.Animation.TrasitionLibrary.Constant( duration: _シーン1期間 / 速度倍率 ) )
-			using( var 中心位置Yの遷移 = gd.Animation.TrasitionLibrary.AccelerateDecelerate( duration: _シーン1期間 / 速度倍率, finalValue: 1080.0 / 2.0, accelerationRatio: 0.1, decelerationRatio: 0.9 ) )
-			using( var 回転radの遷移 = gd.Animation.TrasitionLibrary.Constant( duration: ( _シーン1期間 - 0.1 ) / 速度倍率 ) )
-			using( var 太さの遷移 = gd.Animation.TrasitionLibrary.AccelerateDecelerate( duration: _シーン1期間 / 速度倍率, finalValue: 100.0, accelerationRatio: 0.1, decelerationRatio: 0.9 ) )
-			using( var 不透明度の遷移1 = gd.Animation.TrasitionLibrary.AccelerateDecelerate( duration: ( _シーン1期間 * 0.75 ) / 速度倍率, finalValue: 0.9, accelerationRatio: 0.1, decelerationRatio: 0.9 ) )
-			using( var 不透明度の遷移2 = gd.Animation.TrasitionLibrary.AccelerateDecelerate( duration: ( _シーン1期間 * 0.25 ) / 速度倍率, finalValue: 0.5, accelerationRatio: 0.1, decelerationRatio: 0.9 ) )
+			using( var 中心位置Xの遷移 = gd.Animation.TrasitionLibrary.Constant( duration: 秒( _シーン1期間 ) ) )
+			using( var 中心位置Yの遷移 = gd.Animation.TrasitionLibrary.AccelerateDecelerate( duration: 秒( _シーン1期間 ), finalValue: 1080.0 / 2.0, accelerationRatio: 0.1, decelerationRatio: 0.9 ) )
+			using( var 回転radの遷移 = gd.Animation.TrasitionLibrary.Constant( duration: 秒( _シーン1期間 - 0.1 ) ) )
+			using( var 太さの遷移 = gd.Animation.TrasitionLibrary.AccelerateDecelerate( duration: 秒( _シーン1期間 ), finalValue: 100.0, accelerationRatio: 0.1, decelerationRatio: 0.9 ) )
+			using( var 不透明度の遷移1 = gd.Animation.TrasitionLibrary.AccelerateDecelerate( duration: 秒( _シーン1期間 * 0.75 ), finalValue: 0.9, accelerationRatio: 0.1, decelerationRatio: 0.9 ) )
+			using( var 不透明度の遷移2 = gd.Animation.TrasitionLibrary.AccelerateDecelerate( duration: 秒( _シーン1期間 * 0.25 ), finalValue: 0.5, accelerationRatio: 0.1, decelerationRatio: 0.9 ) )
 			{
 				幕.ストーリーボード.AddTransition( 幕.中心位置X, 中心位置Xの遷移 );
 				幕.ストーリーボード.AddTransition( 幕.中心位置Y, 中心位置Yの遷移 );
@@ -160,18 +150,18 @@ namespace DTXmatixx.アイキャッチ
 				幕.ストーリーボード.AddTransition( 幕.不透明度, 不透明度の遷移2 );
 
 				// 便乗
-				using( var クローズ割合の遷移0to1 = gd.Animation.TrasitionLibrary.AccelerateDecelerate( duration: (_シーン1期間 - 0.07/*他より短め*/) / 速度倍率, finalValue: 1.0, accelerationRatio: 0.9, decelerationRatio: 0.1 ) )
+				using( var クローズ割合の遷移0to1 = gd.Animation.TrasitionLibrary.AccelerateDecelerate( duration: 秒( _シーン1期間 - 0.07/*他より短め*/), finalValue: 1.0, accelerationRatio: 0.9, decelerationRatio: 0.1 ) )
 				{
 					幕.ストーリーボード.AddTransition( this._クローズ割合, クローズ割合の遷移0to1 );
 				}
 			}
 
 			// シーン2 270°回転。
-			using( var 中心位置Xの遷移 = gd.Animation.TrasitionLibrary.Constant( duration: ( _シーン2期間 - 0.18 ) / 速度倍率 ) )
-			using( var 中心位置Yの遷移 = gd.Animation.TrasitionLibrary.Constant( duration: ( _シーン2期間 - 0.18 ) / 速度倍率 ) )
-			using( var 回転radの遷移 = gd.Animation.TrasitionLibrary.AccelerateDecelerate( duration: _シーン2期間 / 速度倍率, finalValue: Math.PI * 1.75, accelerationRatio: 0.5, decelerationRatio: 0.5 ) )
-			using( var 太さの遷移 = gd.Animation.TrasitionLibrary.Constant( duration: ( _シーン2期間 - 0.18 ) / 速度倍率 ) )
-			using( var 不透明度の遷移 = gd.Animation.TrasitionLibrary.Constant( duration: ( _シーン2期間 - 0.18 ) / 速度倍率 ) )
+			using( var 中心位置Xの遷移 = gd.Animation.TrasitionLibrary.Constant( duration: 秒( _シーン2期間 - 0.18 ) ) )
+			using( var 中心位置Yの遷移 = gd.Animation.TrasitionLibrary.Constant( duration: 秒( _シーン2期間 - 0.18 ) ) )
+			using( var 回転radの遷移 = gd.Animation.TrasitionLibrary.AccelerateDecelerate( duration: 秒( _シーン2期間 ), finalValue: Math.PI * 1.75, accelerationRatio: 0.5, decelerationRatio: 0.5 ) )
+			using( var 太さの遷移 = gd.Animation.TrasitionLibrary.Constant( duration: 秒( _シーン2期間 - 0.18 ) ) )
+			using( var 不透明度の遷移 = gd.Animation.TrasitionLibrary.Constant( duration: 秒( _シーン2期間 - 0.18 ) ) )
 			{
 				幕.ストーリーボード.AddTransition( 幕.中心位置X, 中心位置Xの遷移 );
 				幕.ストーリーボード.AddTransition( 幕.中心位置Y, 中心位置Yの遷移 );
@@ -180,18 +170,18 @@ namespace DTXmatixx.アイキャッチ
 				幕.ストーリーボード.AddTransition( 幕.不透明度, 不透明度の遷移 );
 
 				// 便乗
-				using( var クローズ割合の遷移1to2 = gd.Animation.TrasitionLibrary.Linear( duration: ( _シーン2期間 - 0.18 + 0.07/*他より長め*/) / 速度倍率, finalValue: 2.0 ) )
+				using( var クローズ割合の遷移1to2 = gd.Animation.TrasitionLibrary.Linear( duration: 秒( _シーン2期間 - 0.18 + 0.07/*他より長め*/), finalValue: 2.0 ) )
 				{
 					幕.ストーリーボード.AddTransition( this._クローズ割合, クローズ割合の遷移1to2 );
 				}
 			}
 
 			// シーン3 太くなりつつ画面左へ移動。
-			using( var 中心位置Xの遷移 = gd.Animation.TrasitionLibrary.AccelerateDecelerate( duration: _シーン3期間 / 速度倍率, finalValue: 0.0 - 200.0, accelerationRatio: 0.1, decelerationRatio: 0.9 ) )
-			using( var 中心位置Yの遷移 = gd.Animation.TrasitionLibrary.Constant( duration: _シーン3期間 / 速度倍率 ) )
-			using( var 回転radの遷移 = gd.Animation.TrasitionLibrary.Constant( duration: _シーン3期間 / 速度倍率 ) )
-			using( var 太さの遷移 = gd.Animation.TrasitionLibrary.AccelerateDecelerate( duration: ( _シーン3期間 + 0.05 ) / 速度倍率, finalValue: 800.0, accelerationRatio: 0.1, decelerationRatio: 0.9 ) )
-			using( var 不透明度の遷移 = gd.Animation.TrasitionLibrary.AccelerateDecelerate( duration: ( _シーン3期間 * 0.25 ) / 速度倍率, finalValue: 1.0, accelerationRatio: 0.1, decelerationRatio: 0.9 ) )
+			using( var 中心位置Xの遷移 = gd.Animation.TrasitionLibrary.AccelerateDecelerate( duration: 秒( _シーン3期間 ), finalValue: 0.0 - 200.0, accelerationRatio: 0.1, decelerationRatio: 0.9 ) )
+			using( var 中心位置Yの遷移 = gd.Animation.TrasitionLibrary.Constant( duration: 秒( _シーン3期間 ) ) )
+			using( var 回転radの遷移 = gd.Animation.TrasitionLibrary.Constant( duration: 秒( _シーン3期間 ) ) )
+			using( var 太さの遷移 = gd.Animation.TrasitionLibrary.AccelerateDecelerate( duration: 秒( _シーン3期間 + 0.05 ), finalValue: 800.0, accelerationRatio: 0.1, decelerationRatio: 0.9 ) )
+			using( var 不透明度の遷移 = gd.Animation.TrasitionLibrary.AccelerateDecelerate( duration: 秒( _シーン3期間 * 0.25 ), finalValue: 1.0, accelerationRatio: 0.1, decelerationRatio: 0.9 ) )
 			{
 				幕.ストーリーボード.AddTransition( 幕.中心位置X, 中心位置Xの遷移 );
 				幕.ストーリーボード.AddTransition( 幕.中心位置Y, 中心位置Yの遷移 );
@@ -200,7 +190,7 @@ namespace DTXmatixx.アイキャッチ
 				幕.ストーリーボード.AddTransition( 幕.不透明度, 不透明度の遷移 );
 
 				// 便乗
-				using( var クローズ割合の遷移2to3 = gd.Animation.TrasitionLibrary.AccelerateDecelerate( duration: _シーン3期間 / 速度倍率, finalValue: 3.0, accelerationRatio: 0.1, decelerationRatio: 0.9 ) )
+				using( var クローズ割合の遷移2to3 = gd.Animation.TrasitionLibrary.AccelerateDecelerate( duration: 秒( _シーン3期間 ), finalValue: 3.0, accelerationRatio: 0.1, decelerationRatio: 0.9 ) )
 				{
 					幕.ストーリーボード.AddTransition( this._クローズ割合, クローズ割合の遷移2to3 );
 				}
@@ -216,12 +206,12 @@ namespace DTXmatixx.アイキャッチ
 
 			// シーン1 細くなりつつ画面中央へ移動。
 			double 期間 = _シーン1期間 - ずれ;
-			using( var 中心位置Xの遷移 = gd.Animation.TrasitionLibrary.Constant( duration: 期間 / 速度倍率 ) )
-			using( var 中心位置Yの遷移 = gd.Animation.TrasitionLibrary.AccelerateDecelerate( duration: 期間 / 速度倍率, finalValue: 1080.0 / 2.0, accelerationRatio: 0.1, decelerationRatio: 0.9 ) )
-			using( var 回転radの遷移 = gd.Animation.TrasitionLibrary.Constant( duration: ( 期間 - 0.1 ) / 速度倍率 ) )
-			using( var 太さの遷移 = gd.Animation.TrasitionLibrary.AccelerateDecelerate( duration: 期間 / 速度倍率, finalValue: 100.0, accelerationRatio: 0.1, decelerationRatio: 0.9 ) )
-			using( var 不透明度の遷移1 = gd.Animation.TrasitionLibrary.AccelerateDecelerate( duration: ( 期間 * 0.75 ) / 速度倍率, finalValue: 0.9, accelerationRatio: 0.1, decelerationRatio: 0.9 ) )
-			using( var 不透明度の遷移2 = gd.Animation.TrasitionLibrary.AccelerateDecelerate( duration: ( 期間 * 0.25 ) / 速度倍率, finalValue: 0.5, accelerationRatio: 0.1, decelerationRatio: 0.9 ) )
+			using( var 中心位置Xの遷移 = gd.Animation.TrasitionLibrary.Constant( duration: 秒( 期間 ) ) )
+			using( var 中心位置Yの遷移 = gd.Animation.TrasitionLibrary.AccelerateDecelerate( duration: 秒( 期間 ), finalValue: 1080.0 / 2.0, accelerationRatio: 0.1, decelerationRatio: 0.9 ) )
+			using( var 回転radの遷移 = gd.Animation.TrasitionLibrary.Constant( duration: 秒( 期間 - 0.1 ) ) )
+			using( var 太さの遷移 = gd.Animation.TrasitionLibrary.AccelerateDecelerate( duration: 秒( 期間 ), finalValue: 100.0, accelerationRatio: 0.1, decelerationRatio: 0.9 ) )
+			using( var 不透明度の遷移1 = gd.Animation.TrasitionLibrary.AccelerateDecelerate( duration: 秒( 期間 * 0.75 ), finalValue: 0.9, accelerationRatio: 0.1, decelerationRatio: 0.9 ) )
+			using( var 不透明度の遷移2 = gd.Animation.TrasitionLibrary.AccelerateDecelerate( duration: 秒( 期間 * 0.25 ), finalValue: 0.5, accelerationRatio: 0.1, decelerationRatio: 0.9 ) )
 			{
 				幕.ストーリーボード.AddTransition( 幕.中心位置X, 中心位置Xの遷移 );
 				幕.ストーリーボード.AddTransition( 幕.中心位置Y, 中心位置Yの遷移 );
@@ -233,11 +223,11 @@ namespace DTXmatixx.アイキャッチ
 
 			// シーン2 270°回転。
 			期間 = _シーン2期間 + ずれ;
-			using( var 中心位置Xの遷移 = gd.Animation.TrasitionLibrary.Constant( duration: ( 期間 - 0.18 ) / 速度倍率 ) )
-			using( var 中心位置Yの遷移 = gd.Animation.TrasitionLibrary.Constant( duration: ( 期間 - 0.18 ) / 速度倍率 ) )
-			using( var 回転radの遷移 = gd.Animation.TrasitionLibrary.AccelerateDecelerate( duration: 期間 / 速度倍率, finalValue: Math.PI * 1.75, accelerationRatio: 0.5, decelerationRatio: 0.5 ) )
-			using( var 太さの遷移 = gd.Animation.TrasitionLibrary.Constant( duration: ( 期間 - 0.18 ) / 速度倍率 ) )
-			using( var 不透明度の遷移 = gd.Animation.TrasitionLibrary.Constant( duration: ( 期間 - 0.18 ) / 速度倍率 ) )
+			using( var 中心位置Xの遷移 = gd.Animation.TrasitionLibrary.Constant( duration: 秒( 期間 - 0.18 ) ) )
+			using( var 中心位置Yの遷移 = gd.Animation.TrasitionLibrary.Constant( duration: 秒( 期間 - 0.18 ) ) )
+			using( var 回転radの遷移 = gd.Animation.TrasitionLibrary.AccelerateDecelerate( duration: 秒( 期間 ), finalValue: Math.PI * 1.75, accelerationRatio: 0.5, decelerationRatio: 0.5 ) )
+			using( var 太さの遷移 = gd.Animation.TrasitionLibrary.Constant( duration: 秒( 期間 - 0.18 ) ) )
+			using( var 不透明度の遷移 = gd.Animation.TrasitionLibrary.Constant( duration: 秒( 期間 - 0.18 ) ) )
 			{
 				幕.ストーリーボード.AddTransition( 幕.中心位置X, 中心位置Xの遷移 );
 				幕.ストーリーボード.AddTransition( 幕.中心位置Y, 中心位置Yの遷移 );
@@ -247,11 +237,11 @@ namespace DTXmatixx.アイキャッチ
 			}
 
 			// シーン3 太くなりつつ画面右へ移動。
-			using( var 中心位置Xの遷移 = gd.Animation.TrasitionLibrary.AccelerateDecelerate( duration: _シーン3期間 / 速度倍率, finalValue: 1920.0 + 200.0, accelerationRatio: 0.1, decelerationRatio: 0.9 ) )
-			using( var 中心位置Yの遷移 = gd.Animation.TrasitionLibrary.Constant( duration: _シーン3期間 / 速度倍率 ) )
-			using( var 回転radの遷移 = gd.Animation.TrasitionLibrary.Constant( duration: _シーン3期間 / 速度倍率 ) )
-			using( var 太さの遷移 = gd.Animation.TrasitionLibrary.AccelerateDecelerate( duration: ( _シーン3期間 + 0.05 ) / 速度倍率, finalValue: 800.0, accelerationRatio: 0.1, decelerationRatio: 0.9 ) )
-			using( var 不透明度の遷移 = gd.Animation.TrasitionLibrary.AccelerateDecelerate( duration: ( _シーン3期間 * 0.25 ) / 速度倍率, finalValue: 1.0, accelerationRatio: 0.1, decelerationRatio: 0.9 ) )
+			using( var 中心位置Xの遷移 = gd.Animation.TrasitionLibrary.AccelerateDecelerate( duration: 秒( _シーン3期間 ), finalValue: 1920.0 + 200.0, accelerationRatio: 0.1, decelerationRatio: 0.9 ) )
+			using( var 中心位置Yの遷移 = gd.Animation.TrasitionLibrary.Constant( duration: 秒( _シーン3期間 ) ) )
+			using( var 回転radの遷移 = gd.Animation.TrasitionLibrary.Constant( duration: 秒( _シーン3期間 ) ) )
+			using( var 太さの遷移 = gd.Animation.TrasitionLibrary.AccelerateDecelerate( duration: 秒( _シーン3期間 + 0.05 ), finalValue: 800.0, accelerationRatio: 0.1, decelerationRatio: 0.9 ) )
+			using( var 不透明度の遷移 = gd.Animation.TrasitionLibrary.AccelerateDecelerate( duration: 秒( _シーン3期間 * 0.25 ), finalValue: 1.0, accelerationRatio: 0.1, decelerationRatio: 0.9 ) )
 			{
 				幕.ストーリーボード.AddTransition( 幕.中心位置X, 中心位置Xの遷移 );
 				幕.ストーリーボード.AddTransition( 幕.中心位置Y, 中心位置Yの遷移 );
@@ -269,9 +259,9 @@ namespace DTXmatixx.アイキャッチ
 
 			this._初めての進行描画 = true;
 		}
-
-		public void オープンする( グラフィックデバイス gd, float 速度倍率 = 1.0f )
+		public override void オープンする( グラフィックデバイス gd, float 速度倍率 = 1.0f )
 		{
+			double 秒( double v ) => ( v / 速度倍率 );
 			this.現在のフェーズ = フェーズ.オープン;
 
 			if( null != this._黒幕 )
@@ -309,12 +299,12 @@ namespace DTXmatixx.アイキャッチ
 			var 幕 = this._黒幕[ 0 ];
 
 			// シーン3 細くなりつつ画面中央へ移動。
-			using( var 中心位置Xの遷移 = gd.Animation.TrasitionLibrary.AccelerateDecelerate( duration: _シーン3期間 / 速度倍率, finalValue: 1920.0 / 2.0, accelerationRatio: 0.9, decelerationRatio: 0.1 ) )
-			using( var 中心位置Yの遷移 = gd.Animation.TrasitionLibrary.Constant( duration: _シーン3期間 / 速度倍率 ) )
-			using( var 回転radの遷移 = gd.Animation.TrasitionLibrary.Constant( duration: ( _シーン3期間 - 0.08 ) / 速度倍率 ) )
-			using( var 太さの遷移 = gd.Animation.TrasitionLibrary.AccelerateDecelerate( duration: _シーン3期間 / 速度倍率, finalValue: 100.0, accelerationRatio: 0.9, decelerationRatio: 0.1 ) )
-			using( var 不透明度の遷移1 = gd.Animation.TrasitionLibrary.AccelerateDecelerate( duration: ( _シーン3期間 * 0.75 ) / 速度倍率, finalValue: 0.9, accelerationRatio: 0.9, decelerationRatio: 0.1 ) )
-			using( var 不透明度の遷移2 = gd.Animation.TrasitionLibrary.AccelerateDecelerate( duration: ( _シーン3期間 * 0.25 ) / 速度倍率, finalValue: 0.5, accelerationRatio: 0.9, decelerationRatio: 0.1 ) )
+			using( var 中心位置Xの遷移 = gd.Animation.TrasitionLibrary.AccelerateDecelerate( duration: 秒( _シーン3期間 ), finalValue: 1920.0 / 2.0, accelerationRatio: 0.9, decelerationRatio: 0.1 ) )
+			using( var 中心位置Yの遷移 = gd.Animation.TrasitionLibrary.Constant( duration: 秒( _シーン3期間 ) ) )
+			using( var 回転radの遷移 = gd.Animation.TrasitionLibrary.Constant( duration: 秒( _シーン3期間 - 0.08 ) ) )
+			using( var 太さの遷移 = gd.Animation.TrasitionLibrary.AccelerateDecelerate( duration: 秒( _シーン3期間 ), finalValue: 100.0, accelerationRatio: 0.9, decelerationRatio: 0.1 ) )
+			using( var 不透明度の遷移1 = gd.Animation.TrasitionLibrary.AccelerateDecelerate( duration: 秒( _シーン3期間 * 0.75 ), finalValue: 0.9, accelerationRatio: 0.9, decelerationRatio: 0.1 ) )
+			using( var 不透明度の遷移2 = gd.Animation.TrasitionLibrary.AccelerateDecelerate( duration: 秒( _シーン3期間 * 0.25 ), finalValue: 0.5, accelerationRatio: 0.9, decelerationRatio: 0.1 ) )
 			{
 				幕.ストーリーボード.AddTransition( 幕.中心位置X, 中心位置Xの遷移 );
 				幕.ストーリーボード.AddTransition( 幕.中心位置Y, 中心位置Yの遷移 );
@@ -324,18 +314,18 @@ namespace DTXmatixx.アイキャッチ
 				幕.ストーリーボード.AddTransition( 幕.不透明度, 不透明度の遷移2 );
 
 				// 便乗
-				using( var クローズ割合の遷移3to2 = gd.Animation.TrasitionLibrary.AccelerateDecelerate( duration: _シーン3期間 / 速度倍率, finalValue: 2.0, accelerationRatio: 0.9, decelerationRatio: 0.1 ) )
+				using( var クローズ割合の遷移3to2 = gd.Animation.TrasitionLibrary.AccelerateDecelerate( duration: 秒( _シーン3期間 ), finalValue: 2.0, accelerationRatio: 0.9, decelerationRatio: 0.1 ) )
 				{
 					幕.ストーリーボード.AddTransition( this._クローズ割合, クローズ割合の遷移3to2 );
 				}
 			}
 
 			// シーン2 -270°回転。
-			using( var 中心位置Xの遷移 = gd.Animation.TrasitionLibrary.Constant( duration: _シーン2期間 / 速度倍率 ) )
-			using( var 中心位置Yの遷移 = gd.Animation.TrasitionLibrary.Constant( duration: ( _シーン2期間 - 0.18 ) / 速度倍率 ) )
-			using( var 回転radの遷移 = gd.Animation.TrasitionLibrary.AccelerateDecelerate( duration: _シーン2期間 / 速度倍率, finalValue: 0.0, accelerationRatio: 0.5, decelerationRatio: 0.5 ) )
-			using( var 太さの遷移 = gd.Animation.TrasitionLibrary.Constant( duration: ( _シーン2期間 - 0.18 ) / 速度倍率 ) )
-			using( var 不透明度の遷移 = gd.Animation.TrasitionLibrary.Constant( duration: ( _シーン2期間 - 0.18 ) / 速度倍率 ) )
+			using( var 中心位置Xの遷移 = gd.Animation.TrasitionLibrary.Constant( duration: 秒( _シーン2期間 ) ) )
+			using( var 中心位置Yの遷移 = gd.Animation.TrasitionLibrary.Constant( duration: 秒( _シーン2期間 - 0.18 ) ) )
+			using( var 回転radの遷移 = gd.Animation.TrasitionLibrary.AccelerateDecelerate( duration: 秒( _シーン2期間 ), finalValue: 0.0, accelerationRatio: 0.5, decelerationRatio: 0.5 ) )
+			using( var 太さの遷移 = gd.Animation.TrasitionLibrary.Constant( duration: 秒( _シーン2期間 - 0.18 ) ) )
+			using( var 不透明度の遷移 = gd.Animation.TrasitionLibrary.Constant( duration: 秒( _シーン2期間 - 0.18 ) ) )
 			{
 				幕.ストーリーボード.AddTransition( 幕.中心位置X, 中心位置Xの遷移 );
 				幕.ストーリーボード.AddTransition( 幕.中心位置Y, 中心位置Yの遷移 );
@@ -344,19 +334,19 @@ namespace DTXmatixx.アイキャッチ
 				幕.ストーリーボード.AddTransition( 幕.不透明度, 不透明度の遷移 );
 
 				// 便乗
-				using( var クローズ割合の遷移2to1 = gd.Animation.TrasitionLibrary.Linear( duration: ( _シーン2期間 - 0.18 + 0.07/*他より長め*/) / 速度倍率, finalValue: 1.0 ) )
+				using( var クローズ割合の遷移2to1 = gd.Animation.TrasitionLibrary.Linear( duration: 秒( _シーン2期間 - 0.18 + 0.07/*他より長め*/), finalValue: 1.0 ) )
 				{
 					幕.ストーリーボード.AddTransition( this._クローズ割合, クローズ割合の遷移2to1 );
 				}
 			}
 
 			// シーン1 太くなりつつ画面上方へ移動。
-			using( var 中心位置Xの遷移 = gd.Animation.TrasitionLibrary.Constant( duration: _シーン1期間 / 速度倍率 ) )
-			using( var 中心位置Yの遷移 = gd.Animation.TrasitionLibrary.AccelerateDecelerate( duration: _シーン1期間 / 速度倍率, finalValue: 0.0 - 500.0, accelerationRatio: 0.9, decelerationRatio: 0.1 ) )
-			using( var 回転radの遷移 = gd.Animation.TrasitionLibrary.Constant( duration: _シーン1期間 / 速度倍率 ) )
-			using( var 太さの遷移 = gd.Animation.TrasitionLibrary.AccelerateDecelerate( duration: _シーン1期間 / 速度倍率, finalValue: 1000.0, accelerationRatio: 0.9, decelerationRatio: 0.1 ) )
-			using( var 不透明度の遷移 = gd.Animation.TrasitionLibrary.AccelerateDecelerate( duration: ( _シーン1期間 * 0.25 ) / 速度倍率, finalValue: 1.0, accelerationRatio: 0.9, decelerationRatio: 0.1 ) )
-			using( var ロゴの不透明度の遷移 = gd.Animation.TrasitionLibrary.Discrete( delay: ( _シーン3期間 * ( 1.0 - 0.24 ) ) / 速度倍率, finalValue: 0.0, hold: ( _シーン3期間 ) / 速度倍率 ) )
+			using( var 中心位置Xの遷移 = gd.Animation.TrasitionLibrary.Constant( duration: 秒( _シーン1期間 ) ) )
+			using( var 中心位置Yの遷移 = gd.Animation.TrasitionLibrary.AccelerateDecelerate( duration: 秒( _シーン1期間 ), finalValue: 0.0 - 500.0, accelerationRatio: 0.9, decelerationRatio: 0.1 ) )
+			using( var 回転radの遷移 = gd.Animation.TrasitionLibrary.Constant( duration: 秒( _シーン1期間 ) ) )
+			using( var 太さの遷移 = gd.Animation.TrasitionLibrary.AccelerateDecelerate( duration: 秒( _シーン1期間 ), finalValue: 1000.0, accelerationRatio: 0.9, decelerationRatio: 0.1 ) )
+			using( var 不透明度の遷移 = gd.Animation.TrasitionLibrary.AccelerateDecelerate( duration: 秒( _シーン1期間 * 0.25 ), finalValue: 1.0, accelerationRatio: 0.9, decelerationRatio: 0.1 ) )
+			using( var ロゴの不透明度の遷移 = gd.Animation.TrasitionLibrary.Discrete( delay: 秒( _シーン3期間 * ( 1.0 - 0.24 ) ), finalValue: 0.0, hold: ( _シーン3期間 ) / 速度倍率 ) )
 			{
 				幕.ストーリーボード.AddTransition( 幕.中心位置X, 中心位置Xの遷移 );
 				幕.ストーリーボード.AddTransition( 幕.中心位置Y, 中心位置Yの遷移 );
@@ -365,7 +355,7 @@ namespace DTXmatixx.アイキャッチ
 				幕.ストーリーボード.AddTransition( 幕.不透明度, 不透明度の遷移 );
 
 				// 便乗
-				using( var クローズ割合の遷移1to0 = gd.Animation.TrasitionLibrary.AccelerateDecelerate( duration: ( _シーン1期間 - 0.07/*他より短め*/) / 速度倍率, finalValue: 0.0, accelerationRatio: 0.9, decelerationRatio: 0.1 ) )
+				using( var クローズ割合の遷移1to0 = gd.Animation.TrasitionLibrary.AccelerateDecelerate( duration: 秒( _シーン1期間 - 0.07/*他より短め*/), finalValue: 0.0, accelerationRatio: 0.9, decelerationRatio: 0.1 ) )
 				{
 					幕.ストーリーボード.AddTransition( this._クローズ割合, クローズ割合の遷移1to0 );
 				}
@@ -380,12 +370,12 @@ namespace DTXmatixx.アイキャッチ
 			double ずれ = 0.03;
 
 			// シーン3 細くなりつつ画面中央へ移動。
-			using( var 中心位置Xの遷移 = gd.Animation.TrasitionLibrary.AccelerateDecelerate( duration: _シーン3期間 / 速度倍率, finalValue: 1920.0 / 2.0, accelerationRatio: 0.9, decelerationRatio: 0.1 ) )
-			using( var 中心位置Yの遷移 = gd.Animation.TrasitionLibrary.Constant( duration: _シーン3期間 / 速度倍率 ) )
-			using( var 回転radの遷移 = gd.Animation.TrasitionLibrary.Constant( duration: ( _シーン3期間 - 0.08 ) / 速度倍率 ) )
-			using( var 太さの遷移 = gd.Animation.TrasitionLibrary.AccelerateDecelerate( duration: _シーン3期間 / 速度倍率, finalValue: 100.0, accelerationRatio: 0.9, decelerationRatio: 0.1 ) )
-			using( var 不透明度の遷移1 = gd.Animation.TrasitionLibrary.AccelerateDecelerate( duration: ( _シーン3期間 * 0.75 ) / 速度倍率, finalValue: 0.9, accelerationRatio: 0.9, decelerationRatio: 0.1 ) )
-			using( var 不透明度の遷移2 = gd.Animation.TrasitionLibrary.AccelerateDecelerate( duration: ( _シーン3期間 * 0.25 ) / 速度倍率, finalValue: 0.5, accelerationRatio: 0.9, decelerationRatio: 0.1 ) )
+			using( var 中心位置Xの遷移 = gd.Animation.TrasitionLibrary.AccelerateDecelerate( duration: 秒( _シーン3期間 ), finalValue: 1920.0 / 2.0, accelerationRatio: 0.9, decelerationRatio: 0.1 ) )
+			using( var 中心位置Yの遷移 = gd.Animation.TrasitionLibrary.Constant( duration: 秒( _シーン3期間 ) ) )
+			using( var 回転radの遷移 = gd.Animation.TrasitionLibrary.Constant( duration: 秒( _シーン3期間 - 0.08 ) ) )
+			using( var 太さの遷移 = gd.Animation.TrasitionLibrary.AccelerateDecelerate( duration: 秒( _シーン3期間 ), finalValue: 100.0, accelerationRatio: 0.9, decelerationRatio: 0.1 ) )
+			using( var 不透明度の遷移1 = gd.Animation.TrasitionLibrary.AccelerateDecelerate( duration: 秒( _シーン3期間 * 0.75 ), finalValue: 0.9, accelerationRatio: 0.9, decelerationRatio: 0.1 ) )
+			using( var 不透明度の遷移2 = gd.Animation.TrasitionLibrary.AccelerateDecelerate( duration: 秒( _シーン3期間 * 0.25 ), finalValue: 0.5, accelerationRatio: 0.9, decelerationRatio: 0.1 ) )
 			{
 				幕.ストーリーボード.AddTransition( 幕.中心位置X, 中心位置Xの遷移 );
 				幕.ストーリーボード.AddTransition( 幕.中心位置Y, 中心位置Yの遷移 );
@@ -396,11 +386,11 @@ namespace DTXmatixx.アイキャッチ
 			}
 			// シーン2 -270°回転。
 			double 期間 = _シーン2期間 + ずれ;
-			using( var 中心位置Xの遷移 = gd.Animation.TrasitionLibrary.Constant( duration: 期間 / 速度倍率 ) )
-			using( var 中心位置Yの遷移 = gd.Animation.TrasitionLibrary.Constant( duration: ( 期間 - 0.18 ) / 速度倍率 ) )
-			using( var 回転radの遷移 = gd.Animation.TrasitionLibrary.AccelerateDecelerate( duration: 期間 / 速度倍率, finalValue: 0.0, accelerationRatio: 0.5, decelerationRatio: 0.5 ) )
-			using( var 太さの遷移 = gd.Animation.TrasitionLibrary.Constant( duration: ( 期間 - 0.18 ) / 速度倍率 ) )
-			using( var 不透明度の遷移 = gd.Animation.TrasitionLibrary.Constant( duration: ( 期間 - 0.18 ) / 速度倍率 ) )
+			using( var 中心位置Xの遷移 = gd.Animation.TrasitionLibrary.Constant( duration: 秒( 期間 ) ) )
+			using( var 中心位置Yの遷移 = gd.Animation.TrasitionLibrary.Constant( duration: 秒( 期間 - 0.18 ) ) )
+			using( var 回転radの遷移 = gd.Animation.TrasitionLibrary.AccelerateDecelerate( duration: 秒( 期間 ), finalValue: 0.0, accelerationRatio: 0.5, decelerationRatio: 0.5 ) )
+			using( var 太さの遷移 = gd.Animation.TrasitionLibrary.Constant( duration: 秒( 期間 - 0.18 ) ) )
+			using( var 不透明度の遷移 = gd.Animation.TrasitionLibrary.Constant( duration: 秒( 期間 - 0.18 ) ) )
 			{
 				幕.ストーリーボード.AddTransition( 幕.中心位置X, 中心位置Xの遷移 );
 				幕.ストーリーボード.AddTransition( 幕.中心位置Y, 中心位置Yの遷移 );
@@ -411,11 +401,11 @@ namespace DTXmatixx.アイキャッチ
 
 			// シーン1 太くなりつつ画面下方へ移動。
 			期間 = _シーン1期間 - ずれ;
-			using( var 中心位置Xの遷移 = gd.Animation.TrasitionLibrary.Constant( duration: 期間 / 速度倍率 ) )
-			using( var 中心位置Yの遷移 = gd.Animation.TrasitionLibrary.AccelerateDecelerate( duration: 期間 / 速度倍率, finalValue: 1080.0 + 500.0, accelerationRatio: 0.9, decelerationRatio: 0.1 ) )
-			using( var 回転radの遷移 = gd.Animation.TrasitionLibrary.Constant( duration: 期間 / 速度倍率 ) )
-			using( var 太さの遷移 = gd.Animation.TrasitionLibrary.AccelerateDecelerate( duration: 期間 / 速度倍率, finalValue: 1000.0, accelerationRatio: 0.9, decelerationRatio: 0.1 ) )
-			using( var 不透明度の遷移 = gd.Animation.TrasitionLibrary.AccelerateDecelerate( duration: ( 期間 * 0.25 ) / 速度倍率, finalValue: 1.0, accelerationRatio: 0.9, decelerationRatio: 0.1 ) )
+			using( var 中心位置Xの遷移 = gd.Animation.TrasitionLibrary.Constant( duration: 秒( 期間 ) ) )
+			using( var 中心位置Yの遷移 = gd.Animation.TrasitionLibrary.AccelerateDecelerate( duration: 秒( 期間 ), finalValue: 1080.0 + 500.0, accelerationRatio: 0.9, decelerationRatio: 0.1 ) )
+			using( var 回転radの遷移 = gd.Animation.TrasitionLibrary.Constant( duration: 秒( 期間 ) ) )
+			using( var 太さの遷移 = gd.Animation.TrasitionLibrary.AccelerateDecelerate( duration: 秒( 期間 ), finalValue: 1000.0, accelerationRatio: 0.9, decelerationRatio: 0.1 ) )
+			using( var 不透明度の遷移 = gd.Animation.TrasitionLibrary.AccelerateDecelerate( duration: 秒( 期間 * 0.25 ), finalValue: 1.0, accelerationRatio: 0.9, decelerationRatio: 0.1 ) )
 			{
 				幕.ストーリーボード.AddTransition( 幕.中心位置X, 中心位置Xの遷移 );
 				幕.ストーリーボード.AddTransition( 幕.中心位置Y, 中心位置Yの遷移 );
@@ -434,38 +424,20 @@ namespace DTXmatixx.アイキャッチ
 			this._初めての進行描画 = true;
 		}
 
-		public void 進行描画する( グラフィックデバイス gd )
-		{
-			switch( this.現在のフェーズ )
-			{
-				case フェーズ.未定:
-					break;
-
-				case フェーズ.クローズ:
-				case フェーズ.クローズ完了:
-					this.進行描画する( gd, StoryboardStatus.Scheduled );
-					break;
-
-				case フェーズ.オープン:
-				case フェーズ.オープン完了:
-					this.進行描画する( gd, StoryboardStatus.Ready );
-					break;
-			}
-		}
-
-		protected void 進行描画する( グラフィックデバイス gd, StoryboardStatus 描画しないStatus )
+		protected override void 進行描画する( グラフィックデバイス gd, StoryboardStatus 描画しないStatus )
 		{
 			bool すべて完了 = true;
 
-			// 背景画面
+			#region " 背景の画像 "
+			//----------------
 			switch( this.現在のフェーズ )
 			{
 				case フェーズ.クローズ:
 					{
 						if( this._初めての進行描画 )
 						{
-							this._画面BC_アイキャッチ遷移画面1_回転中.ぼかしと縮小を解除する( gd, 0.0 );	// 全部解除してから
-							this._画面BC_アイキャッチ遷移画面1_回転中.ぼかしと縮小を適用する( gd );		// ゆっくり適用開始。
+							this._画面BC_アイキャッチ遷移画面1_回転中.ぼかしと縮小を解除する( gd, 0.0 );  // 全部解除してから
+							this._画面BC_アイキャッチ遷移画面1_回転中.ぼかしと縮小を適用する( gd );       // ゆっくり適用開始。
 
 							this._初めての進行描画 = false;
 						}
@@ -515,7 +487,7 @@ namespace DTXmatixx.アイキャッチ
 										Matrix3x2.Rotation( (float) ( Math.PI / ( 5.85 - 1.85 * ( 割合 * 2 ) ) ) ) :
 										Matrix3x2.Rotation( (float) ( Math.PI / 4.0 ) ) // 45°
 									) *
-									Matrix3x2.Translation( gd.設計画面サイズ.Width / 2.0f, gd.設計画面サイズ.Height / 2.0f );	// 画面中央固定。
+									Matrix3x2.Translation( gd.設計画面サイズ.Width / 2.0f, gd.設計画面サイズ.Height / 2.0f ); // 画面中央固定。
 
 								this._画面BC_アイキャッチ遷移画面1_回転中.進行描画する( gd, layerParameters1: this._斜めレイヤーパラメータ );
 								this._ロゴを描画する( gd );
@@ -608,6 +580,8 @@ namespace DTXmatixx.アイキャッチ
 					}
 					break;
 			}
+			//----------------
+			#endregion
 
 			#region " 黒帯（全シーンで共通）"
 			//----------------
@@ -646,16 +620,19 @@ namespace DTXmatixx.アイキャッチ
 			if( すべて完了 )
 			{
 				if( this.現在のフェーズ == フェーズ.クローズ )
+				{
 					this.現在のフェーズ = フェーズ.クローズ完了;
-
-				if( this.現在のフェーズ == フェーズ.オープン )
+				}
+				else if( this.現在のフェーズ == フェーズ.オープン )
+				{
 					this.現在のフェーズ = フェーズ.オープン完了;
+				}
 			}
 		}
 
 		private bool _初めての進行描画 = false;
 
-		protected class 黒幕 : IDisposable
+		private class 黒幕 : IDisposable
 		{
 			public Variable 中心位置X = null;
 			public Variable 中心位置Y = null;
@@ -674,17 +651,17 @@ namespace DTXmatixx.アイキャッチ
 				FDKUtilities.解放する( ref this.中心位置X );
 			}
 		}
-		protected 黒幕[] _黒幕 = null;
+		private 黒幕[] _黒幕 = null;
 
-		protected 画像 _ロゴ = null;
-		protected readonly RectangleF _ロゴ表示領域 = new RectangleF( ( 1920f - 730f ) / 2f, ( 1080f - 300f ) / 2f, 730f, 300f );
+		private 画像 _ロゴ = null;
+		private readonly RectangleF _ロゴ表示領域 = new RectangleF( ( 1920f - 730f ) / 2f, ( 1080f - 300f ) / 2f, 730f, 300f );
 
 		/// <summary>
 		///		1:全表示 ... 0:非表示
 		/// </summary>
-		protected Variable _クローズ割合 = null;
-		protected 舞台画像 _画面BC_アイキャッチ遷移画面1_回転中 = null;        // 画面BとCで共通。
-		protected 舞台画像 _画面D_アイキャッチ遷移画面2_逆回転中 = null;
+		private Variable _クローズ割合 = null;
+		private 舞台画像 _画面BC_アイキャッチ遷移画面1_回転中 = null;        // 画面BとCで共通。
+		private 舞台画像 _画面D_アイキャッチ遷移画面2_逆回転中 = null;
 
 		private PathGeometry _斜めジオメトリマスク = null;
 		private LayerParameters1 _斜めレイヤーパラメータ;

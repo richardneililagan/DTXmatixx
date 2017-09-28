@@ -83,7 +83,7 @@ namespace DTXmatixx.ステージ.曲読み込み
 			{
 				case フェーズ.フェードイン:
 					fadeIn.進行描画する( gd );
-					if( fadeIn.現在のフェーズ == アイキャッチ.GO.フェーズ.オープン完了 )
+					if( fadeIn.現在のフェーズ == アイキャッチ.フェーズ.オープン完了 )
 						this.現在のフェーズ = フェーズ.表示;
 					break;
 

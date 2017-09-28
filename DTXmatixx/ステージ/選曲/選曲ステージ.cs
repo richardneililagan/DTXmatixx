@@ -101,14 +101,14 @@ namespace DTXmatixx.ステージ.選曲
 			{
 				case フェーズ.フェードイン:
 					fadeIn.進行描画する( gd );
-					if( fadeIn.現在のフェーズ == 回転幕.フェーズ.オープン完了 )
+					if( fadeIn.現在のフェーズ == アイキャッチ.フェーズ.オープン完了 )
 						this.現在のフェーズ = フェーズ.表示;
 					break;
 
 				case フェーズ.表示:
 					if( App.Keyboard.キーが押された( 0, Key.Return ) )
 					{
-						App.ステージ管理.GO.クローズする( gd );
+						fadeOut.クローズする( gd );
 						this.現在のフェーズ = フェーズ.フェードアウト;
 					}
 					else if( App.Keyboard.キーが押された( 0, Key.Up ) )
@@ -127,7 +127,7 @@ namespace DTXmatixx.ステージ.選曲
 
 				case フェーズ.フェードアウト:
 					fadeOut.進行描画する( gd );
-					if( fadeOut.現在のフェーズ == GO.フェーズ.クローズ完了 )
+					if( fadeOut.現在のフェーズ == アイキャッチ.フェーズ.クローズ完了 )
 						this.現在のフェーズ = フェーズ.確定;
 					break;
 

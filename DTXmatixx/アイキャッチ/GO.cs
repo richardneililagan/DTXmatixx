@@ -10,18 +10,8 @@ using FDK.メディア;
 
 namespace DTXmatixx.アイキャッチ
 {
-	class GO : Activity
+	class GO : アイキャッチBase
 	{
-		public enum フェーズ
-		{
-			未定,
-			クローズ,
-			オープン,
-			クローズ完了,
-			オープン完了,
-		}
-		public フェーズ 現在のフェーズ { get; protected set; }
-
 		protected override void On活性化( グラフィックデバイス gd )
 		{
 			this.現在のフェーズ = フェーズ.未定;
@@ -65,7 +55,6 @@ namespace DTXmatixx.アイキャッチ
 			//----------------
 			#endregion
 		}
-
 		protected override void On非活性化( グラフィックデバイス gd )
 		{
 			#region " Go! "
@@ -111,8 +100,10 @@ namespace DTXmatixx.アイキャッチ
 			#endregion
 		}
 
-		public void クローズする( グラフィックデバイス gd, float 速度倍率 = 1.0f )
+		public override void クローズする( グラフィックデバイス gd, float 速度倍率 = 1.0f )
 		{
+			double 秒( double v ) => ( v / 速度倍率 );
+
 			this.現在のフェーズ = フェーズ.クローズ;
 
 			// Go!
@@ -132,13 +123,13 @@ namespace DTXmatixx.アイキャッチ
 
 				文字.ストーリーボード = new Storyboard( gd.Animation.Manager );
 
-				using( var 中心位置Xの遷移 = gd.Animation.TrasitionLibrary.AccelerateDecelerate( duration: 0.23 / 速度倍率, finalValue: 1920.0 / 2.0 - 260.0, accelerationRatio: 0.5, decelerationRatio: 0.5 ) )
+				using( var 中心位置Xの遷移 = gd.Animation.TrasitionLibrary.AccelerateDecelerate( duration: 秒( 0.23 ), finalValue: 1920.0 / 2.0 - 260.0, accelerationRatio: 0.5, decelerationRatio: 0.5 ) )
 					文字.ストーリーボード.AddTransition( 文字.中心位置X, 中心位置Xの遷移 );
 
-				using( var 中心位置Xの遷移 = gd.Animation.TrasitionLibrary.AccelerateDecelerate( duration: 0.07 / 速度倍率, finalValue: 1920.0 / 2.0 - 320.0, accelerationRatio: 0.5, decelerationRatio: 0.5 ) )
+				using( var 中心位置Xの遷移 = gd.Animation.TrasitionLibrary.AccelerateDecelerate( duration: 秒( 0.07 ), finalValue: 1920.0 / 2.0 - 320.0, accelerationRatio: 0.5, decelerationRatio: 0.5 ) )
 					文字.ストーリーボード.AddTransition( 文字.中心位置X, 中心位置Xの遷移 );
 
-				using( var 中心位置Xの遷移 = gd.Animation.TrasitionLibrary.AccelerateDecelerate( duration: 0.07 / 速度倍率, finalValue: 1920.0 / 2.0 - 260.0, accelerationRatio: 0.5, decelerationRatio: 0.5 ) )
+				using( var 中心位置Xの遷移 = gd.Animation.TrasitionLibrary.AccelerateDecelerate( duration: 秒( 0.07 ), finalValue: 1920.0 / 2.0 - 260.0, accelerationRatio: 0.5, decelerationRatio: 0.5 ) )
 					文字.ストーリーボード.AddTransition( 文字.中心位置X, 中心位置Xの遷移 );
 
 				文字.ストーリーボード.Schedule( start );
@@ -158,13 +149,13 @@ namespace DTXmatixx.アイキャッチ
 
 				文字.ストーリーボード = new Storyboard( gd.Animation.Manager );
 
-				using( var 中心位置Xの遷移 = gd.Animation.TrasitionLibrary.AccelerateDecelerate( duration: 0.23 / 速度倍率, finalValue: 1920.0 / 2.0 - 20.0, accelerationRatio: 0.5, decelerationRatio: 0.5 ) )
+				using( var 中心位置Xの遷移 = gd.Animation.TrasitionLibrary.AccelerateDecelerate( duration: 秒( 0.23 ), finalValue: 1920.0 / 2.0 - 20.0, accelerationRatio: 0.5, decelerationRatio: 0.5 ) )
 					文字.ストーリーボード.AddTransition( 文字.中心位置X, 中心位置Xの遷移 );
 
-				using( var 中心位置Xの遷移 = gd.Animation.TrasitionLibrary.AccelerateDecelerate( duration: 0.07 / 速度倍率, finalValue: 1920.0 / 2.0 + 20.0, accelerationRatio: 0.5, decelerationRatio: 0.5 ) )
+				using( var 中心位置Xの遷移 = gd.Animation.TrasitionLibrary.AccelerateDecelerate( duration: 秒( 0.07 ), finalValue: 1920.0 / 2.0 + 20.0, accelerationRatio: 0.5, decelerationRatio: 0.5 ) )
 					文字.ストーリーボード.AddTransition( 文字.中心位置X, 中心位置Xの遷移 );
 
-				using( var 中心位置Xの遷移 = gd.Animation.TrasitionLibrary.AccelerateDecelerate( duration: 0.07 / 速度倍率, finalValue: 1920.0 / 2.0 - 20.0, accelerationRatio: 0.5, decelerationRatio: 0.5 ) )
+				using( var 中心位置Xの遷移 = gd.Animation.TrasitionLibrary.AccelerateDecelerate( duration: 秒( 0.07 ), finalValue: 1920.0 / 2.0 - 20.0, accelerationRatio: 0.5, decelerationRatio: 0.5 ) )
 					文字.ストーリーボード.AddTransition( 文字.中心位置X, 中心位置Xの遷移 );
 
 				文字.ストーリーボード.Schedule( start );
@@ -184,27 +175,27 @@ namespace DTXmatixx.アイキャッチ
 
 				文字.ストーリーボード = new Storyboard( gd.Animation.Manager );
 
-				using( var 中心位置Yの遷移 = gd.Animation.TrasitionLibrary.AccelerateDecelerate( duration: 0.14 / 速度倍率, finalValue: 1080.0 / 2.0 - 340.0, accelerationRatio: 0.5, decelerationRatio: 0.5 ) )
-				using( var 拡大率の遷移 = gd.Animation.TrasitionLibrary.AccelerateDecelerate( duration: 0.14 / 速度倍率, finalValue: 1.5, accelerationRatio: 0.5, decelerationRatio: 0.5 ) )
+				using( var 中心位置Yの遷移 = gd.Animation.TrasitionLibrary.AccelerateDecelerate( duration: 秒( 0.14 ), finalValue: 1080.0 / 2.0 - 340.0, accelerationRatio: 0.5, decelerationRatio: 0.5 ) )
+				using( var 拡大率の遷移 = gd.Animation.TrasitionLibrary.AccelerateDecelerate( duration: 秒( 0.14 ), finalValue: 1.5, accelerationRatio: 0.5, decelerationRatio: 0.5 ) )
 				{
 					文字.ストーリーボード.AddTransition( 文字.中心位置Y, 中心位置Yの遷移 );
 					文字.ストーリーボード.AddTransition( 文字.拡大率, 拡大率の遷移 );
 				}
 
-				using( var 中心位置Yの遷移 = gd.Animation.TrasitionLibrary.AccelerateDecelerate( duration: 0.1 / 速度倍率, finalValue: 1080.0 / 2.0 - 200.0, accelerationRatio: 0.5, decelerationRatio: 0.5 ) )
-				using( var 拡大率の遷移 = gd.Animation.TrasitionLibrary.AccelerateDecelerate( duration: 0.1 / 速度倍率, finalValue: 1.0, accelerationRatio: 0.5, decelerationRatio: 0.5 ) )
+				using( var 中心位置Yの遷移 = gd.Animation.TrasitionLibrary.AccelerateDecelerate( duration: 秒( 0.1 ), finalValue: 1080.0 / 2.0 - 200.0, accelerationRatio: 0.5, decelerationRatio: 0.5 ) )
+				using( var 拡大率の遷移 = gd.Animation.TrasitionLibrary.AccelerateDecelerate( duration: 秒( 0.1 ), finalValue: 1.0, accelerationRatio: 0.5, decelerationRatio: 0.5 ) )
 				{
 					文字.ストーリーボード.AddTransition( 文字.中心位置Y, 中心位置Yの遷移 );
 					文字.ストーリーボード.AddTransition( 文字.拡大率, 拡大率の遷移 );
 				}
 
-				文字.ストーリーボード.Schedule( start + 0.16 / 速度倍率 );
+				文字.ストーリーボード.Schedule( start + 秒( 0.16 ) );
 			}
 			//----------------
 			#endregion
 
 			// ぐるぐる棒
-			start = basetime + ( 0.2 / 速度倍率 );
+			start = basetime + 秒( 0.2 );
 
 			#region " [0] 上側１番目の青 "
 			//----------------
@@ -221,19 +212,19 @@ namespace DTXmatixx.アイキャッチ
 				bar.ブラシ = new SolidColorBrush( gd.D2DDeviceContext, new Color4( 0.5f, 0.5f, 1f, 1f ) ); // 青
 				bar.ストーリーボード = new Storyboard( gd.Animation.Manager );
 
-				using( var 太さの遷移 = gd.Animation.TrasitionLibrary.AccelerateDecelerate( duration: 0.1765 / 速度倍率, finalValue: 800.0, accelerationRatio: 0.0, decelerationRatio: 1.0 ) )
-				using( var 回転の遷移 = gd.Animation.TrasitionLibrary.Constant( duration: 0.088 / 速度倍率 ) )
+				using( var 太さの遷移 = gd.Animation.TrasitionLibrary.AccelerateDecelerate( duration: 秒( 0.1765 ), finalValue: 800.0, accelerationRatio: 0.0, decelerationRatio: 1.0 ) )
+				using( var 回転の遷移 = gd.Animation.TrasitionLibrary.Constant( duration: 秒( 0.088 ) ) )
 				{
 					bar.ストーリーボード.AddTransition( bar.太さ, 太さの遷移 );
 					bar.ストーリーボード.AddTransition( bar.回転角rad, 回転の遷移 );
 				}
-				using( var 太さの遷移 = gd.Animation.TrasitionLibrary.Constant( duration: 0.1765 / 速度倍率 ) )
-				using( var 回転の遷移 = gd.Animation.TrasitionLibrary.AccelerateDecelerate( duration: 0.294 / 速度倍率, finalValue: Math.PI * 1.25, accelerationRatio: 0.5, decelerationRatio: 0.5 ) )
+				using( var 太さの遷移 = gd.Animation.TrasitionLibrary.Constant( duration: 秒( 0.1765 ) ) )
+				using( var 回転の遷移 = gd.Animation.TrasitionLibrary.AccelerateDecelerate( duration: 秒( 0.294 ), finalValue: Math.PI * 1.25, accelerationRatio: 0.5, decelerationRatio: 0.5 ) )
 				{
 					bar.ストーリーボード.AddTransition( bar.太さ, 太さの遷移 );
 					bar.ストーリーボード.AddTransition( bar.回転角rad, 回転の遷移 );
 				}
-				using( var 太さの遷移 = gd.Animation.TrasitionLibrary.AccelerateDecelerate( duration: 0.147 / 速度倍率, finalValue: 2200.0, accelerationRatio: 0.5, decelerationRatio: 0.5 ) )
+				using( var 太さの遷移 = gd.Animation.TrasitionLibrary.AccelerateDecelerate( duration: 秒( 0.147 ), finalValue: 2200.0, accelerationRatio: 0.5, decelerationRatio: 0.5 ) )
 				{
 					bar.ストーリーボード.AddTransition( bar.太さ, 太さの遷移 );
 				}
@@ -257,19 +248,19 @@ namespace DTXmatixx.アイキャッチ
 				bar.ブラシ = new SolidColorBrush( gd.D2DDeviceContext, new Color4( 1f, 1f, 1f, 1f ) ); // 白
 				bar.ストーリーボード = new Storyboard( gd.Animation.Manager );
 
-				using( var 太さの遷移 = gd.Animation.TrasitionLibrary.AccelerateDecelerate( duration: 0.1765 / 速度倍率, finalValue: 1200.0, accelerationRatio: 0.0, decelerationRatio: 1.0 ) )
-				using( var 回転の遷移 = gd.Animation.TrasitionLibrary.Constant( duration: 0.8824 / 速度倍率 ) )
+				using( var 太さの遷移 = gd.Animation.TrasitionLibrary.AccelerateDecelerate( duration: 秒( 0.1765 ), finalValue: 1200.0, accelerationRatio: 0.0, decelerationRatio: 1.0 ) )
+				using( var 回転の遷移 = gd.Animation.TrasitionLibrary.Constant( duration: 秒( 0.8824 ) ) )
 				{
 					bar.ストーリーボード.AddTransition( bar.太さ, 太さの遷移 );
 					bar.ストーリーボード.AddTransition( bar.回転角rad, 回転の遷移 );
 				}
-				using( var 太さの遷移 = gd.Animation.TrasitionLibrary.Constant( duration: 0.1765 / 速度倍率 ) )
-				using( var 回転の遷移 = gd.Animation.TrasitionLibrary.AccelerateDecelerate( duration: 0.294 / 速度倍率, finalValue: Math.PI * 1.25, accelerationRatio: 0.5, decelerationRatio: 0.5 ) )
+				using( var 太さの遷移 = gd.Animation.TrasitionLibrary.Constant( duration: 秒( 0.1765 ) ) )
+				using( var 回転の遷移 = gd.Animation.TrasitionLibrary.AccelerateDecelerate( duration: 秒( 0.294 ), finalValue: Math.PI * 1.25, accelerationRatio: 0.5, decelerationRatio: 0.5 ) )
 				{
 					bar.ストーリーボード.AddTransition( bar.太さ, 太さの遷移 );
 					bar.ストーリーボード.AddTransition( bar.回転角rad, 回転の遷移 );
 				}
-				using( var 太さの遷移 = gd.Animation.TrasitionLibrary.AccelerateDecelerate( duration: 0.147 / 速度倍率, finalValue: 2600.0, accelerationRatio: 0.5, decelerationRatio: 0.5 ) )
+				using( var 太さの遷移 = gd.Animation.TrasitionLibrary.AccelerateDecelerate( duration: 秒( 0.147 ), finalValue: 2600.0, accelerationRatio: 0.5, decelerationRatio: 0.5 ) )
 				{
 					bar.ストーリーボード.AddTransition( bar.太さ, 太さの遷移 );
 				}
@@ -293,24 +284,24 @@ namespace DTXmatixx.アイキャッチ
 				bar.ブラシ = new SolidColorBrush( gd.D2DDeviceContext, new Color4( 0.5f, 0.5f, 1f, 1f ) ); // 青
 				bar.ストーリーボード = new Storyboard( gd.Animation.Manager );
 
-				using( var 太さの遷移 = gd.Animation.TrasitionLibrary.AccelerateDecelerate( duration: 0.1765 / 速度倍率, finalValue: 800.0, accelerationRatio: 0.0, decelerationRatio: 1.0 ) )
-				using( var 回転の遷移 = gd.Animation.TrasitionLibrary.Constant( duration: 0.088 / 速度倍率 ) )
+				using( var 太さの遷移 = gd.Animation.TrasitionLibrary.AccelerateDecelerate( duration: 秒( 0.1765 ), finalValue: 800.0, accelerationRatio: 0.0, decelerationRatio: 1.0 ) )
+				using( var 回転の遷移 = gd.Animation.TrasitionLibrary.Constant( duration: 秒( 0.088 ) ) )
 				{
 					bar.ストーリーボード.AddTransition( bar.太さ, 太さの遷移 );
 					bar.ストーリーボード.AddTransition( bar.回転角rad, 回転の遷移 );
 				}
-				using( var 太さの遷移 = gd.Animation.TrasitionLibrary.Constant( duration: 0.1765 / 速度倍率 ) )
-				using( var 回転の遷移 = gd.Animation.TrasitionLibrary.AccelerateDecelerate( duration: 0.294 / 速度倍率, finalValue: Math.PI * 1.25, accelerationRatio: 0.5, decelerationRatio: 0.5 ) )
+				using( var 太さの遷移 = gd.Animation.TrasitionLibrary.Constant( duration: 秒( 0.1765 ) ) )
+				using( var 回転の遷移 = gd.Animation.TrasitionLibrary.AccelerateDecelerate( duration: 秒( 0.294 ), finalValue: Math.PI * 1.25, accelerationRatio: 0.5, decelerationRatio: 0.5 ) )
 				{
 					bar.ストーリーボード.AddTransition( bar.太さ, 太さの遷移 );
 					bar.ストーリーボード.AddTransition( bar.回転角rad, 回転の遷移 );
 				}
-				using( var 太さの遷移 = gd.Animation.TrasitionLibrary.AccelerateDecelerate( duration: 0.147 / 速度倍率, finalValue: 2200.0, accelerationRatio: 0.5, decelerationRatio: 0.5 ) )
+				using( var 太さの遷移 = gd.Animation.TrasitionLibrary.AccelerateDecelerate( duration: 秒( 0.147 ), finalValue: 2200.0, accelerationRatio: 0.5, decelerationRatio: 0.5 ) )
 				{
 					bar.ストーリーボード.AddTransition( bar.太さ, 太さの遷移 );
 				}
 
-				bar.ストーリーボード.Schedule( start + ( 0.0294 / 速度倍率 ) );
+				bar.ストーリーボード.Schedule( start + 秒( 0.0294 ) );
 			}
 			//----------------
 			#endregion
@@ -329,24 +320,24 @@ namespace DTXmatixx.アイキャッチ
 				bar.ブラシ = new SolidColorBrush( gd.D2DDeviceContext, new Color4( 1f, 1f, 1f, 1f ) ); // 白
 				bar.ストーリーボード = new Storyboard( gd.Animation.Manager );
 
-				using( var 太さの遷移 = gd.Animation.TrasitionLibrary.AccelerateDecelerate( duration: 0.1765 / 速度倍率, finalValue: 1200.0, accelerationRatio: 0.0, decelerationRatio: 1.0 ) )
-				using( var 回転の遷移 = gd.Animation.TrasitionLibrary.Constant( duration: 0.088 / 速度倍率 ) )
+				using( var 太さの遷移 = gd.Animation.TrasitionLibrary.AccelerateDecelerate( duration: 秒( 0.1765 ), finalValue: 1200.0, accelerationRatio: 0.0, decelerationRatio: 1.0 ) )
+				using( var 回転の遷移 = gd.Animation.TrasitionLibrary.Constant( duration: 秒( 0.088 ) ) )
 				{
 					bar.ストーリーボード.AddTransition( bar.太さ, 太さの遷移 );
 					bar.ストーリーボード.AddTransition( bar.回転角rad, 回転の遷移 );
 				}
-				using( var 太さの遷移 = gd.Animation.TrasitionLibrary.Constant( duration: 0.1765 / 速度倍率 ) )
-				using( var 回転の遷移 = gd.Animation.TrasitionLibrary.AccelerateDecelerate( duration: 0.294 / 速度倍率, finalValue: Math.PI * 1.25, accelerationRatio: 0.5, decelerationRatio: 0.5 ) )
+				using( var 太さの遷移 = gd.Animation.TrasitionLibrary.Constant( duration: 秒( 0.1765 ) ) )
+				using( var 回転の遷移 = gd.Animation.TrasitionLibrary.AccelerateDecelerate( duration: 秒( 0.294 ), finalValue: Math.PI * 1.25, accelerationRatio: 0.5, decelerationRatio: 0.5 ) )
 				{
 					bar.ストーリーボード.AddTransition( bar.太さ, 太さの遷移 );
 					bar.ストーリーボード.AddTransition( bar.回転角rad, 回転の遷移 );
 				}
-				using( var 太さの遷移 = gd.Animation.TrasitionLibrary.AccelerateDecelerate( duration: 0.147 / 速度倍率, finalValue: 2600.0, accelerationRatio: 0.5, decelerationRatio: 0.5 ) )
+				using( var 太さの遷移 = gd.Animation.TrasitionLibrary.AccelerateDecelerate( duration: 秒( 0.147 ), finalValue: 2600.0, accelerationRatio: 0.5, decelerationRatio: 0.5 ) )
 				{
 					bar.ストーリーボード.AddTransition( bar.太さ, 太さの遷移 );
 				}
 
-				bar.ストーリーボード.Schedule( start + ( 0.0294 / 速度倍率 ) );
+				bar.ストーリーボード.Schedule( start + 秒( 0.0294 ) );
 			}
 			//----------------
 			#endregion
@@ -365,24 +356,24 @@ namespace DTXmatixx.アイキャッチ
 				bar.ブラシ = new SolidColorBrush( gd.D2DDeviceContext, new Color4( 0.1f, 0.1f, 0.5f, 0.5f ) ); // 青
 				bar.ストーリーボード = new Storyboard( gd.Animation.Manager );
 
-				using( var 太さの遷移 = gd.Animation.TrasitionLibrary.AccelerateDecelerate( duration: 0.1765 / 速度倍率, finalValue: 800.0, accelerationRatio: 0.0, decelerationRatio: 1.0 ) )
-				using( var 回転の遷移 = gd.Animation.TrasitionLibrary.Constant( duration: 0.088 / 速度倍率 ) )
+				using( var 太さの遷移 = gd.Animation.TrasitionLibrary.AccelerateDecelerate( duration: 秒( 0.1765 ), finalValue: 800.0, accelerationRatio: 0.0, decelerationRatio: 1.0 ) )
+				using( var 回転の遷移 = gd.Animation.TrasitionLibrary.Constant( duration: 秒( 0.088 ) ) )
 				{
 					bar.ストーリーボード.AddTransition( bar.太さ, 太さの遷移 );
 					bar.ストーリーボード.AddTransition( bar.回転角rad, 回転の遷移 );
 				}
-				using( var 太さの遷移 = gd.Animation.TrasitionLibrary.Constant( duration: 0.1765 / 速度倍率 ) )
-				using( var 回転の遷移 = gd.Animation.TrasitionLibrary.AccelerateDecelerate( duration: 0.294 / 速度倍率, finalValue: Math.PI * 1.25, accelerationRatio: 0.5, decelerationRatio: 0.5 ) )
+				using( var 太さの遷移 = gd.Animation.TrasitionLibrary.Constant( duration: 秒( 0.1765 ) ) )
+				using( var 回転の遷移 = gd.Animation.TrasitionLibrary.AccelerateDecelerate( duration: 秒( 0.294 ), finalValue: Math.PI * 1.25, accelerationRatio: 0.5, decelerationRatio: 0.5 ) )
 				{
 					bar.ストーリーボード.AddTransition( bar.太さ, 太さの遷移 );
 					bar.ストーリーボード.AddTransition( bar.回転角rad, 回転の遷移 );
 				}
-				using( var 太さの遷移 = gd.Animation.TrasitionLibrary.AccelerateDecelerate( duration: 0.147 / 速度倍率, finalValue: 2200.0, accelerationRatio: 0.5, decelerationRatio: 0.5 ) )
+				using( var 太さの遷移 = gd.Animation.TrasitionLibrary.AccelerateDecelerate( duration: 秒( 0.147 ), finalValue: 2200.0, accelerationRatio: 0.5, decelerationRatio: 0.5 ) )
 				{
 					bar.ストーリーボード.AddTransition( bar.太さ, 太さの遷移 );
 				}
 
-				bar.ストーリーボード.Schedule( start + ( 0.0471 / 速度倍率 ) );
+				bar.ストーリーボード.Schedule( start + 秒( 0.0471 ) );
 			}
 			//----------------
 			#endregion
@@ -401,24 +392,24 @@ namespace DTXmatixx.アイキャッチ
 				bar.ブラシ = new SolidColorBrush( gd.D2DDeviceContext, new Color4( 1f, 1f, 1f, 0.5f ) ); // 白
 				bar.ストーリーボード = new Storyboard( gd.Animation.Manager );
 
-				using( var 太さの遷移 = gd.Animation.TrasitionLibrary.AccelerateDecelerate( duration: 0.1765 / 速度倍率, finalValue: 1200.0, accelerationRatio: 0.0, decelerationRatio: 1.0 ) )
-				using( var 回転の遷移 = gd.Animation.TrasitionLibrary.Constant( duration: 0.088 / 速度倍率 ) )
+				using( var 太さの遷移 = gd.Animation.TrasitionLibrary.AccelerateDecelerate( duration: 秒( 0.1765 ), finalValue: 1200.0, accelerationRatio: 0.0, decelerationRatio: 1.0 ) )
+				using( var 回転の遷移 = gd.Animation.TrasitionLibrary.Constant( duration: 秒( 0.088 ) ) )
 				{
 					bar.ストーリーボード.AddTransition( bar.太さ, 太さの遷移 );
 					bar.ストーリーボード.AddTransition( bar.回転角rad, 回転の遷移 );
 				}
-				using( var 太さの遷移 = gd.Animation.TrasitionLibrary.Constant( duration: 0.1765 / 速度倍率 ) )
-				using( var 回転の遷移 = gd.Animation.TrasitionLibrary.AccelerateDecelerate( duration: 0.294 / 速度倍率, finalValue: Math.PI * 1.25, accelerationRatio: 0.5, decelerationRatio: 0.5 ) )
+				using( var 太さの遷移 = gd.Animation.TrasitionLibrary.Constant( duration: 秒( 0.1765 ) ) )
+				using( var 回転の遷移 = gd.Animation.TrasitionLibrary.AccelerateDecelerate( duration: 秒( 0.294 ), finalValue: Math.PI * 1.25, accelerationRatio: 0.5, decelerationRatio: 0.5 ) )
 				{
 					bar.ストーリーボード.AddTransition( bar.太さ, 太さの遷移 );
 					bar.ストーリーボード.AddTransition( bar.回転角rad, 回転の遷移 );
 				}
-				using( var 太さの遷移 = gd.Animation.TrasitionLibrary.AccelerateDecelerate( duration: 0.147 / 速度倍率, finalValue: 2600.0, accelerationRatio: 0.5, decelerationRatio: 0.5 ) )
+				using( var 太さの遷移 = gd.Animation.TrasitionLibrary.AccelerateDecelerate( duration: 秒( 0.147 ), finalValue: 2600.0, accelerationRatio: 0.5, decelerationRatio: 0.5 ) )
 				{
 					bar.ストーリーボード.AddTransition( bar.太さ, 太さの遷移 );
 				}
 
-				bar.ストーリーボード.Schedule( start + ( 0.0471 / 速度倍率 ) );
+				bar.ストーリーボード.Schedule( start + 秒( 0.0471 ) );
 			}
 			//----------------
 			#endregion
@@ -437,19 +428,19 @@ namespace DTXmatixx.アイキャッチ
 				bar.ブラシ = new SolidColorBrush( gd.D2DDeviceContext, new Color4( 0.5f, 0.5f, 1f, 1f ) ); // 青
 				bar.ストーリーボード = new Storyboard( gd.Animation.Manager );
 
-				using( var 太さの遷移 = gd.Animation.TrasitionLibrary.AccelerateDecelerate( duration: 0.1765 / 速度倍率, finalValue: 800.0, accelerationRatio: 0.0, decelerationRatio: 1.0 ) )
-				using( var 回転の遷移 = gd.Animation.TrasitionLibrary.Constant( duration: 0.088 / 速度倍率 ) )
+				using( var 太さの遷移 = gd.Animation.TrasitionLibrary.AccelerateDecelerate( duration: 秒( 0.1765 ), finalValue: 800.0, accelerationRatio: 0.0, decelerationRatio: 1.0 ) )
+				using( var 回転の遷移 = gd.Animation.TrasitionLibrary.Constant( duration: 秒( 0.088 ) ) )
 				{
 					bar.ストーリーボード.AddTransition( bar.太さ, 太さの遷移 );
 					bar.ストーリーボード.AddTransition( bar.回転角rad, 回転の遷移 );
 				}
-				using( var 太さの遷移 = gd.Animation.TrasitionLibrary.Constant( duration: 0.1765 / 速度倍率 ) )
-				using( var 回転の遷移 = gd.Animation.TrasitionLibrary.AccelerateDecelerate( duration: 0.294 / 速度倍率, finalValue: Math.PI * 1.25, accelerationRatio: 0.5, decelerationRatio: 0.5 ) )
+				using( var 太さの遷移 = gd.Animation.TrasitionLibrary.Constant( duration: 秒( 0.1765 ) ) )
+				using( var 回転の遷移 = gd.Animation.TrasitionLibrary.AccelerateDecelerate( duration: 秒( 0.294 ), finalValue: Math.PI * 1.25, accelerationRatio: 0.5, decelerationRatio: 0.5 ) )
 				{
 					bar.ストーリーボード.AddTransition( bar.太さ, 太さの遷移 );
 					bar.ストーリーボード.AddTransition( bar.回転角rad, 回転の遷移 );
 				}
-				using( var 太さの遷移 = gd.Animation.TrasitionLibrary.AccelerateDecelerate( duration: 0.147 / 速度倍率, finalValue: 2200.0, accelerationRatio: 0.5, decelerationRatio: 0.5 ) )
+				using( var 太さの遷移 = gd.Animation.TrasitionLibrary.AccelerateDecelerate( duration: 秒( 0.147 ), finalValue: 2200.0, accelerationRatio: 0.5, decelerationRatio: 0.5 ) )
 				{
 					bar.ストーリーボード.AddTransition( bar.太さ, 太さの遷移 );
 				}
@@ -473,19 +464,19 @@ namespace DTXmatixx.アイキャッチ
 				bar.ブラシ = new SolidColorBrush( gd.D2DDeviceContext, new Color4( 1f, 1f, 1f, 1f ) ); // 白
 				bar.ストーリーボード = new Storyboard( gd.Animation.Manager );
 
-				using( var 太さの遷移 = gd.Animation.TrasitionLibrary.AccelerateDecelerate( duration: 0.1765 / 速度倍率, finalValue: 1200.0, accelerationRatio: 0.0, decelerationRatio: 1.0 ) )
-				using( var 回転の遷移 = gd.Animation.TrasitionLibrary.Constant( duration: 0.088 / 速度倍率 ) )
+				using( var 太さの遷移 = gd.Animation.TrasitionLibrary.AccelerateDecelerate( duration: 秒( 0.1765 ), finalValue: 1200.0, accelerationRatio: 0.0, decelerationRatio: 1.0 ) )
+				using( var 回転の遷移 = gd.Animation.TrasitionLibrary.Constant( duration: 秒( 0.088 ) ) )
 				{
 					bar.ストーリーボード.AddTransition( bar.太さ, 太さの遷移 );
 					bar.ストーリーボード.AddTransition( bar.回転角rad, 回転の遷移 );
 				}
-				using( var 太さの遷移 = gd.Animation.TrasitionLibrary.Constant( duration: 0.1765 / 速度倍率 ) )
-				using( var 回転の遷移 = gd.Animation.TrasitionLibrary.AccelerateDecelerate( duration: 0.294 / 速度倍率, finalValue: Math.PI * 1.25, accelerationRatio: 0.5, decelerationRatio: 0.5 ) )
+				using( var 太さの遷移 = gd.Animation.TrasitionLibrary.Constant( duration: 秒( 0.1765 ) ) )
+				using( var 回転の遷移 = gd.Animation.TrasitionLibrary.AccelerateDecelerate( duration: 秒( 0.294 ), finalValue: Math.PI * 1.25, accelerationRatio: 0.5, decelerationRatio: 0.5 ) )
 				{
 					bar.ストーリーボード.AddTransition( bar.太さ, 太さの遷移 );
 					bar.ストーリーボード.AddTransition( bar.回転角rad, 回転の遷移 );
 				}
-				using( var 太さの遷移 = gd.Animation.TrasitionLibrary.AccelerateDecelerate( duration: 0.147 / 速度倍率, finalValue: 2600.0, accelerationRatio: 0.5, decelerationRatio: 0.5 ) )
+				using( var 太さの遷移 = gd.Animation.TrasitionLibrary.AccelerateDecelerate( duration: 秒( 0.147 ), finalValue: 2600.0, accelerationRatio: 0.5, decelerationRatio: 0.5 ) )
 				{
 					bar.ストーリーボード.AddTransition( bar.太さ, 太さの遷移 );
 				}
@@ -509,24 +500,24 @@ namespace DTXmatixx.アイキャッチ
 				bar.ブラシ = new SolidColorBrush( gd.D2DDeviceContext, new Color4( 0.5f, 0.5f, 1f, 1f ) ); // 青
 				bar.ストーリーボード = new Storyboard( gd.Animation.Manager );
 
-				using( var 太さの遷移 = gd.Animation.TrasitionLibrary.AccelerateDecelerate( duration: 0.1765 / 速度倍率, finalValue: 800.0, accelerationRatio: 0.0, decelerationRatio: 1.0 ) )
-				using( var 回転の遷移 = gd.Animation.TrasitionLibrary.Constant( duration: 0.088 / 速度倍率 ) )
+				using( var 太さの遷移 = gd.Animation.TrasitionLibrary.AccelerateDecelerate( duration: 秒( 0.1765 ), finalValue: 800.0, accelerationRatio: 0.0, decelerationRatio: 1.0 ) )
+				using( var 回転の遷移 = gd.Animation.TrasitionLibrary.Constant( duration: 秒( 0.088 ) ) )
 				{
 					bar.ストーリーボード.AddTransition( bar.太さ, 太さの遷移 );
 					bar.ストーリーボード.AddTransition( bar.回転角rad, 回転の遷移 );
 				}
-				using( var 太さの遷移 = gd.Animation.TrasitionLibrary.Constant( duration: 0.1765 / 速度倍率 ) )
-				using( var 回転の遷移 = gd.Animation.TrasitionLibrary.AccelerateDecelerate( duration: 0.294 / 速度倍率, finalValue: Math.PI * 1.25, accelerationRatio: 0.5, decelerationRatio: 0.5 ) )
+				using( var 太さの遷移 = gd.Animation.TrasitionLibrary.Constant( duration: 秒( 0.1765 ) ) )
+				using( var 回転の遷移 = gd.Animation.TrasitionLibrary.AccelerateDecelerate( duration: 秒( 0.294 ), finalValue: Math.PI * 1.25, accelerationRatio: 0.5, decelerationRatio: 0.5 ) )
 				{
 					bar.ストーリーボード.AddTransition( bar.太さ, 太さの遷移 );
 					bar.ストーリーボード.AddTransition( bar.回転角rad, 回転の遷移 );
 				}
-				using( var 太さの遷移 = gd.Animation.TrasitionLibrary.AccelerateDecelerate( duration: 0.147 / 速度倍率, finalValue: 2200.0, accelerationRatio: 0.5, decelerationRatio: 0.5 ) )
+				using( var 太さの遷移 = gd.Animation.TrasitionLibrary.AccelerateDecelerate( duration: 秒( 0.147 ), finalValue: 2200.0, accelerationRatio: 0.5, decelerationRatio: 0.5 ) )
 				{
 					bar.ストーリーボード.AddTransition( bar.太さ, 太さの遷移 );
 				}
 
-				bar.ストーリーボード.Schedule( start + ( 0.0294 / 速度倍率 ) );
+				bar.ストーリーボード.Schedule( start + 秒( 0.0294 ) );
 			}
 			//----------------
 			#endregion
@@ -545,24 +536,24 @@ namespace DTXmatixx.アイキャッチ
 				bar.ブラシ = new SolidColorBrush( gd.D2DDeviceContext, new Color4( 1f, 1f, 1f, 1f ) ); // 白
 				bar.ストーリーボード = new Storyboard( gd.Animation.Manager );
 
-				using( var 太さの遷移 = gd.Animation.TrasitionLibrary.AccelerateDecelerate( duration: 0.1765 / 速度倍率, finalValue: 1200.0, accelerationRatio: 0.0, decelerationRatio: 1.0 ) )
-				using( var 回転の遷移 = gd.Animation.TrasitionLibrary.Constant( duration: 0.088 / 速度倍率 ) )
+				using( var 太さの遷移 = gd.Animation.TrasitionLibrary.AccelerateDecelerate( duration: 秒( 0.1765 ), finalValue: 1200.0, accelerationRatio: 0.0, decelerationRatio: 1.0 ) )
+				using( var 回転の遷移 = gd.Animation.TrasitionLibrary.Constant( duration: 秒( 0.088 ) ) )
 				{
 					bar.ストーリーボード.AddTransition( bar.太さ, 太さの遷移 );
 					bar.ストーリーボード.AddTransition( bar.回転角rad, 回転の遷移 );
 				}
-				using( var 太さの遷移 = gd.Animation.TrasitionLibrary.Constant( duration: 0.1765 / 速度倍率 ) )
-				using( var 回転の遷移 = gd.Animation.TrasitionLibrary.AccelerateDecelerate( duration: 0.294 / 速度倍率, finalValue: Math.PI * 1.25, accelerationRatio: 0.5, decelerationRatio: 0.5 ) )
+				using( var 太さの遷移 = gd.Animation.TrasitionLibrary.Constant( duration: 秒( 0.1765 ) ) )
+				using( var 回転の遷移 = gd.Animation.TrasitionLibrary.AccelerateDecelerate( duration: 秒( 0.294 ), finalValue: Math.PI * 1.25, accelerationRatio: 0.5, decelerationRatio: 0.5 ) )
 				{
 					bar.ストーリーボード.AddTransition( bar.太さ, 太さの遷移 );
 					bar.ストーリーボード.AddTransition( bar.回転角rad, 回転の遷移 );
 				}
-				using( var 太さの遷移 = gd.Animation.TrasitionLibrary.AccelerateDecelerate( duration: 0.147 / 速度倍率, finalValue: 2600.0, accelerationRatio: 0.5, decelerationRatio: 0.5 ) )
+				using( var 太さの遷移 = gd.Animation.TrasitionLibrary.AccelerateDecelerate( duration: 秒( 0.147 ), finalValue: 2600.0, accelerationRatio: 0.5, decelerationRatio: 0.5 ) )
 				{
 					bar.ストーリーボード.AddTransition( bar.太さ, 太さの遷移 );
 				}
 
-				bar.ストーリーボード.Schedule( start + ( 0.0294 / 速度倍率 ) );
+				bar.ストーリーボード.Schedule( start + 秒( 0.0294 ) );
 			}
 			//----------------
 			#endregion
@@ -581,24 +572,24 @@ namespace DTXmatixx.アイキャッチ
 				bar.ブラシ = new SolidColorBrush( gd.D2DDeviceContext, new Color4( 0.1f, 0.1f, 0.5f, 0.5f ) ); // 青
 				bar.ストーリーボード = new Storyboard( gd.Animation.Manager );
 
-				using( var 太さの遷移 = gd.Animation.TrasitionLibrary.AccelerateDecelerate( duration: 0.1765 / 速度倍率, finalValue: 800.0, accelerationRatio: 0.0, decelerationRatio: 1.0 ) )
-				using( var 回転の遷移 = gd.Animation.TrasitionLibrary.Constant( duration: 0.088 / 速度倍率 ) )
+				using( var 太さの遷移 = gd.Animation.TrasitionLibrary.AccelerateDecelerate( duration: 秒( 0.1765 ), finalValue: 800.0, accelerationRatio: 0.0, decelerationRatio: 1.0 ) )
+				using( var 回転の遷移 = gd.Animation.TrasitionLibrary.Constant( duration: 秒( 0.088 ) ) )
 				{
 					bar.ストーリーボード.AddTransition( bar.太さ, 太さの遷移 );
 					bar.ストーリーボード.AddTransition( bar.回転角rad, 回転の遷移 );
 				}
-				using( var 太さの遷移 = gd.Animation.TrasitionLibrary.Constant( duration: 0.1765 / 速度倍率 ) )
-				using( var 回転の遷移 = gd.Animation.TrasitionLibrary.AccelerateDecelerate( duration: 0.294 / 速度倍率, finalValue: Math.PI * 1.25, accelerationRatio: 0.5, decelerationRatio: 0.5 ) )
+				using( var 太さの遷移 = gd.Animation.TrasitionLibrary.Constant( duration: 秒( 0.1765 ) ) )
+				using( var 回転の遷移 = gd.Animation.TrasitionLibrary.AccelerateDecelerate( duration: 秒( 0.294 ), finalValue: Math.PI * 1.25, accelerationRatio: 0.5, decelerationRatio: 0.5 ) )
 				{
 					bar.ストーリーボード.AddTransition( bar.太さ, 太さの遷移 );
 					bar.ストーリーボード.AddTransition( bar.回転角rad, 回転の遷移 );
 				}
-				using( var 太さの遷移 = gd.Animation.TrasitionLibrary.AccelerateDecelerate( duration: 0.147 / 速度倍率, finalValue: 2200.0, accelerationRatio: 0.5, decelerationRatio: 0.5 ) )
+				using( var 太さの遷移 = gd.Animation.TrasitionLibrary.AccelerateDecelerate( duration: 秒( 0.147 ), finalValue: 2200.0, accelerationRatio: 0.5, decelerationRatio: 0.5 ) )
 				{
 					bar.ストーリーボード.AddTransition( bar.太さ, 太さの遷移 );
 				}
 
-				bar.ストーリーボード.Schedule( start + ( 0.0471 / 速度倍率 ) );
+				bar.ストーリーボード.Schedule( start + 秒( 0.0471 ) );
 			}
 			//----------------
 			#endregion
@@ -617,30 +608,30 @@ namespace DTXmatixx.アイキャッチ
 				bar.ブラシ = new SolidColorBrush( gd.D2DDeviceContext, new Color4( 1f, 1f, 1f, 0.5f ) ); // 白
 				bar.ストーリーボード = new Storyboard( gd.Animation.Manager );
 
-				using( var 太さの遷移 = gd.Animation.TrasitionLibrary.AccelerateDecelerate( duration: 0.1765 / 速度倍率, finalValue: 1200.0, accelerationRatio: 0.0, decelerationRatio: 1.0 ) )
-				using( var 回転の遷移 = gd.Animation.TrasitionLibrary.Constant( duration: 0.088 / 速度倍率 ) )
+				using( var 太さの遷移 = gd.Animation.TrasitionLibrary.AccelerateDecelerate( duration: 秒( 0.1765 ), finalValue: 1200.0, accelerationRatio: 0.0, decelerationRatio: 1.0 ) )
+				using( var 回転の遷移 = gd.Animation.TrasitionLibrary.Constant( duration: 秒( 0.088 ) ) )
 				{
 					bar.ストーリーボード.AddTransition( bar.太さ, 太さの遷移 );
 					bar.ストーリーボード.AddTransition( bar.回転角rad, 回転の遷移 );
 				}
-				using( var 太さの遷移 = gd.Animation.TrasitionLibrary.Constant( duration: 0.1765 / 速度倍率 ) )
-				using( var 回転の遷移 = gd.Animation.TrasitionLibrary.AccelerateDecelerate( duration: 0.294 / 速度倍率, finalValue: Math.PI * 1.25, accelerationRatio: 0.5, decelerationRatio: 0.5 ) )
+				using( var 太さの遷移 = gd.Animation.TrasitionLibrary.Constant( duration: 秒( 0.1765 ) ) )
+				using( var 回転の遷移 = gd.Animation.TrasitionLibrary.AccelerateDecelerate( duration: 秒( 0.294 ), finalValue: Math.PI * 1.25, accelerationRatio: 0.5, decelerationRatio: 0.5 ) )
 				{
 					bar.ストーリーボード.AddTransition( bar.太さ, 太さの遷移 );
 					bar.ストーリーボード.AddTransition( bar.回転角rad, 回転の遷移 );
 				}
-				using( var 太さの遷移 = gd.Animation.TrasitionLibrary.AccelerateDecelerate( duration: 0.147 / 速度倍率, finalValue: 2600.0, accelerationRatio: 0.5, decelerationRatio: 0.5 ) )
+				using( var 太さの遷移 = gd.Animation.TrasitionLibrary.AccelerateDecelerate( duration: 秒( 0.147 ), finalValue: 2600.0, accelerationRatio: 0.5, decelerationRatio: 0.5 ) )
 				{
 					bar.ストーリーボード.AddTransition( bar.太さ, 太さの遷移 );
 				}
 
-				bar.ストーリーボード.Schedule( start + ( 0.0471 / 速度倍率 ) );
+				bar.ストーリーボード.Schedule( start + 秒( 0.0471 ) );
 			}
 			//----------------
 			#endregion
 
 			// フラッシュオーバー棒
-			start = basetime + ( 0.55 / 速度倍率 );
+			start = basetime + 秒( 0.55 );
 
 			#region " [0] 上側１番目の白 "
 			//----------------
@@ -657,7 +648,7 @@ namespace DTXmatixx.アイキャッチ
 				bar.ブラシ = new SolidColorBrush( gd.D2DDeviceContext, new Color4( 1f, 1f, 1f, 1f ) ); // 白
 				bar.ストーリーボード = new Storyboard( gd.Animation.Manager );
 
-				using( var 太さの遷移 = gd.Animation.TrasitionLibrary.Linear( duration: 0.18 / 速度倍率, finalValue: 2200.0 ) )
+				using( var 太さの遷移 = gd.Animation.TrasitionLibrary.Linear( duration: 秒( 0.18 ), finalValue: 2200.0 ) )
 					bar.ストーリーボード.AddTransition( bar.太さ, 太さの遷移 );
 
 				bar.ストーリーボード.Schedule( start );
@@ -679,10 +670,10 @@ namespace DTXmatixx.アイキャッチ
 				bar.ブラシ = new SolidColorBrush( gd.D2DDeviceContext, new Color4( 1f, 1f, 1f, 1f ) ); // 白
 				bar.ストーリーボード = new Storyboard( gd.Animation.Manager );
 
-				using( var 太さの遷移 = gd.Animation.TrasitionLibrary.Linear( duration: 0.18 / 速度倍率, finalValue: 2200.0 ) )
+				using( var 太さの遷移 = gd.Animation.TrasitionLibrary.Linear( duration: 秒( 0.18 ), finalValue: 2200.0 ) )
 					bar.ストーリーボード.AddTransition( bar.太さ, 太さの遷移 );
 
-				bar.ストーリーボード.Schedule( start + ( 0.02 / 速度倍率 ) );
+				bar.ストーリーボード.Schedule( start + 秒( 0.02 ) );
 			}
 			//----------------
 			#endregion
@@ -701,7 +692,7 @@ namespace DTXmatixx.アイキャッチ
 				bar.ブラシ = new SolidColorBrush( gd.D2DDeviceContext, new Color4( 1f, 1f, 1f, 1f ) ); // 白
 				bar.ストーリーボード = new Storyboard( gd.Animation.Manager );
 
-				using( var 太さの遷移 = gd.Animation.TrasitionLibrary.Linear( duration: 0.18 / 速度倍率, finalValue: 2200.0 ) )
+				using( var 太さの遷移 = gd.Animation.TrasitionLibrary.Linear( duration: 秒( 0.18 ), finalValue: 2200.0 ) )
 					bar.ストーリーボード.AddTransition( bar.太さ, 太さの遷移 );
 
 				bar.ストーリーボード.Schedule( start );
@@ -723,10 +714,10 @@ namespace DTXmatixx.アイキャッチ
 				bar.ブラシ = new SolidColorBrush( gd.D2DDeviceContext, new Color4( 1f, 1f, 1f, 1f ) ); // 白
 				bar.ストーリーボード = new Storyboard( gd.Animation.Manager );
 
-				using( var 太さの遷移 = gd.Animation.TrasitionLibrary.Linear( duration: 0.18 / 速度倍率, finalValue: 2200.0 ) )
+				using( var 太さの遷移 = gd.Animation.TrasitionLibrary.Linear( duration: 秒( 0.18 ), finalValue: 2200.0 ) )
 					bar.ストーリーボード.AddTransition( bar.太さ, 太さの遷移 );
 
-				bar.ストーリーボード.Schedule( start + ( 0.02 / 速度倍率 ) );
+				bar.ストーリーボード.Schedule( start + 秒( 0.02 ) );
 			}
 			//----------------
 			#endregion
@@ -745,10 +736,10 @@ namespace DTXmatixx.アイキャッチ
 				bar.ブラシ = new SolidColorBrush( gd.D2DDeviceContext, new Color4( 1f, 1f, 1f, 1f ) ); // 白
 				bar.ストーリーボード = new Storyboard( gd.Animation.Manager );
 
-				using( var 棒の太さの遷移 = gd.Animation.TrasitionLibrary.Linear( duration: 0.18 / 速度倍率, finalValue: 2200.0 ) )
+				using( var 棒の太さの遷移 = gd.Animation.TrasitionLibrary.Linear( duration: 秒( 0.18 ), finalValue: 2200.0 ) )
 					bar.ストーリーボード.AddTransition( bar.棒の太さ, 棒の太さの遷移 );
 
-				bar.ストーリーボード.Schedule( start + ( 0.033 / 速度倍率 ) );
+				bar.ストーリーボード.Schedule( start + 秒( 0.033 ) );
 			}
 			//----------------
 			#endregion
@@ -767,10 +758,10 @@ namespace DTXmatixx.アイキャッチ
 				bar.ブラシ = new SolidColorBrush( gd.D2DDeviceContext, new Color4( 0.5f, 0.5f, 1f, 1f ) ); // 青
 				bar.ストーリーボード = new Storyboard( gd.Animation.Manager );
 
-				using( var 棒の太さの遷移 = gd.Animation.TrasitionLibrary.Linear( duration: 0.18 / 速度倍率, finalValue: 2200.0 ) )
+				using( var 棒の太さの遷移 = gd.Animation.TrasitionLibrary.Linear( duration: 秒( 0.18 ), finalValue: 2200.0 ) )
 					bar.ストーリーボード.AddTransition( bar.棒の太さ, 棒の太さの遷移 );
 
-				bar.ストーリーボード.Schedule( start + ( 0.1 / 速度倍率 ) );
+				bar.ストーリーボード.Schedule( start + 秒( 0.1 ) );
 			}
 			//----------------
 			#endregion
@@ -778,9 +769,10 @@ namespace DTXmatixx.アイキャッチ
 			// フェードイン → 未使用
 			FDKUtilities.解放する( ref this._フェードイン );
 		}
-
-		public void オープンする( グラフィックデバイス gd, float 速度倍率 = 1.0f )
+		public override void オープンする( グラフィックデバイス gd, float 速度倍率 = 1.0f )
 		{
+			double 秒( double v ) => ( v / 速度倍率 );
+
 			this.現在のフェーズ = フェーズ.オープン;
 			var basetime = gd.Animation.Timer.Time;
 
@@ -803,33 +795,14 @@ namespace DTXmatixx.アイキャッチ
 				不透明度 = new Variable( gd.Animation.Manager, initialValue: 1.0 ),
 				ストーリーボード = new Storyboard( gd.Animation.Manager ),
 			};
-			using( var 不透明度の遷移 = gd.Animation.TrasitionLibrary.AccelerateDecelerate( duration: 0.8, finalValue: 0.0, accelerationRatio: 0.5, decelerationRatio: 0.5 ) )
+			using( var 不透明度の遷移 = gd.Animation.TrasitionLibrary.AccelerateDecelerate( duration: 秒( 0.8 ), finalValue: 0.0, accelerationRatio: 0.5, decelerationRatio: 0.5 ) )
 			{
 				this._フェードイン.ストーリーボード.AddTransition( this._フェードイン.不透明度, 不透明度の遷移 );
 			}
 			this._フェードイン.ストーリーボード.Schedule( start );
 		}
 
-		public void 進行描画する( グラフィックデバイス gd )
-		{
-			switch( this.現在のフェーズ )
-			{
-				case フェーズ.未定:
-					break;
-
-				case フェーズ.クローズ:
-				case フェーズ.クローズ完了:
-					this.進行描画する( gd, StoryboardStatus.Scheduled );
-					break;
-
-				case フェーズ.オープン:
-				case フェーズ.オープン完了:
-					this.進行描画する( gd, StoryboardStatus.Ready );
-					break;
-			}
-		}
-
-		protected void 進行描画する( グラフィックデバイス gd, StoryboardStatus 描画しないStatus )
+		protected override void 進行描画する( グラフィックデバイス gd, StoryboardStatus 描画しないStatus )
 		{
 			bool すべて完了 = true;
 
@@ -983,10 +956,13 @@ namespace DTXmatixx.アイキャッチ
 			if( すべて完了 )
 			{
 				if( this.現在のフェーズ == フェーズ.クローズ )
+				{
 					this.現在のフェーズ = フェーズ.クローズ完了;
-
-				if( this.現在のフェーズ == フェーズ.オープン )
+				}
+				else if( this.現在のフェーズ == フェーズ.オープン )
+				{
 					this.現在のフェーズ = フェーズ.オープン完了;
+				}
 			}
 		}
 

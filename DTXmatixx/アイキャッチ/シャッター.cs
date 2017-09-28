@@ -9,19 +9,9 @@ using FDK;
 using FDK.メディア;
 
 namespace DTXmatixx.アイキャッチ
-
 {
-	class シャッター : Activity
+	class シャッター : アイキャッチBase
 	{
-		public enum フェーズ {
-			未定,
-			クローズ,
-			オープン,
-			クローズ完了,
-			オープン完了
-		}
-		public フェーズ 現在のフェーズ { get; protected set; }
-
 		public シャッター()
 		{
 			this.子リスト.Add( this._ロゴ = new 画像( @"$(System)images\タイトルロゴ.png" ) );
@@ -176,7 +166,6 @@ namespace DTXmatixx.アイキャッチ
 
 			this.現在のフェーズ = フェーズ.未定;
 		}
-
 		protected override void On非活性化( グラフィックデバイス gd )
 		{
 			FDKUtilities.解放する( ref this._白ブラシ );
@@ -195,13 +184,14 @@ namespace DTXmatixx.アイキャッチ
 			FDKUtilities.解放する( ref this._ロゴ不透明度 );
 		}
 
-		public void クローズする( グラフィックデバイス gd, float 速度倍率 = 1.0f )
+		public override void クローズする( グラフィックデバイス gd, float 速度倍率 = 1.0f )
 		{
+			double 秒( double v ) => ( v / 速度倍率 );
 			var start = gd.Animation.Timer.Time;
 
 			for( int i = 0; i < シャッター枚数; i++ )
 			{
-				using( var 開閉遷移 = gd.Animation.TrasitionLibrary.SmoothStop( this._シャッター情報[ i ].開閉時間sec / 速度倍率, finalValue: 1.0 ) )   // 終了値 1.0(完全閉じ)
+				using( var 開閉遷移 = gd.Animation.TrasitionLibrary.SmoothStop( maximumDuration: 秒( this._シャッター情報[ i ].開閉時間sec ), finalValue: 1.0 ) )   // 終了値 1.0(完全閉じ)
 				{
 					this._シャッター情報[ i ].開to閉割合?.Dispose();
 					this._シャッター情報[ i ].開to閉割合 = new Variable( gd.Animation.Manager, initialValue: 0.0 );    // 初期値 0.0(完全開き)
@@ -209,11 +199,11 @@ namespace DTXmatixx.アイキャッチ
 					this._シャッター情報[ i ].ストーリーボード?.Dispose();
 					this._シャッター情報[ i ].ストーリーボード = new Storyboard( gd.Animation.Manager );
 					this._シャッター情報[ i ].ストーリーボード.AddTransition( this._シャッター情報[ i ].開to閉割合, 開閉遷移 );
-					this._シャッター情報[ i ].ストーリーボード.Schedule( start + this._シャッター情報[ i ].完全開き時刻sec / 速度倍率 );    // 開始時刻: 完全開き時刻
+					this._シャッター情報[ i ].ストーリーボード.Schedule( start + 秒( this._シャッター情報[ i ].完全開き時刻sec ) );    // 開始時刻: 完全開き時刻
 				}
 			}
 
-			using( var _不透明度遷移 = gd.Animation.TrasitionLibrary.Linear( duration: 0.75f / 速度倍率, finalValue: 1.0 ) )    // 終了値 1.0(完全不透明)
+			using( var _不透明度遷移 = gd.Animation.TrasitionLibrary.Linear( duration: 秒( 0.75f ), finalValue: 1.0 ) )    // 終了値 1.0(完全不透明)
 			{
 				this._ロゴ不透明度?.Dispose();
 				this._ロゴ不透明度 = new Variable( gd.Animation.Manager, initialValue: 0.0 ); // 初期値 0.0(完全透明)
@@ -224,9 +214,10 @@ namespace DTXmatixx.アイキャッチ
 
 			this.現在のフェーズ = フェーズ.クローズ;
 		}
-
-		public void オープンする( グラフィックデバイス gd, float 速度倍率 = 1.0f )
+		public override void オープンする( グラフィックデバイス gd, float 速度倍率 = 1.0f )
 		{
+			double 秒( double v ) => ( v / 速度倍率 );
+
 			double 最も遅い時刻sec = 0.0;
 			foreach( var s in this._シャッター情報 )
 			{
@@ -234,11 +225,11 @@ namespace DTXmatixx.アイキャッチ
 					最も遅い時刻sec = s.完全閉じ時刻sec;
 			}
 			var start = gd.Animation.Timer.Time;
-			var end = start + 最も遅い時刻sec / 速度倍率;
+			var end = start + 秒( 最も遅い時刻sec );
 
 			for( int i = 0; i < シャッター枚数; i++ )
 			{
-				using( var 開閉遷移 = gd.Animation.TrasitionLibrary.SmoothStop( this._シャッター情報[ i ].開閉時間sec / 速度倍率, finalValue: 0.0 ) )  // 終了値: 0.0(完全開き)
+				using( var 開閉遷移 = gd.Animation.TrasitionLibrary.SmoothStop( maximumDuration: 秒( this._シャッター情報[ i ].開閉時間sec ), finalValue: 0.0 ) )  // 終了値: 0.0(完全開き)
 				{
 					this._シャッター情報[ i ].開to閉割合?.Dispose();
 					this._シャッター情報[ i ].開to閉割合 = new Variable( gd.Animation.Manager, initialValue: 1.0 );    // 初期値 1.0(完全閉じ)
@@ -246,13 +237,13 @@ namespace DTXmatixx.アイキャッチ
 					this._シャッター情報[ i ].ストーリーボード?.Dispose();
 					this._シャッター情報[ i ].ストーリーボード = new Storyboard( gd.Animation.Manager );
 					this._シャッター情報[ i ].ストーリーボード.AddTransition( this._シャッター情報[ i ].開to閉割合, 開閉遷移 );
-					this._シャッター情報[ i ].ストーリーボード.Schedule( end - ( this._シャッター情報[ i ].完全閉じ時刻sec / 速度倍率 ) );   // 開始時刻: 完全閉じ時刻
+					this._シャッター情報[ i ].ストーリーボード.Schedule( end - 秒( this._シャッター情報[ i ].完全閉じ時刻sec ) );   // 開始時刻: 完全閉じ時刻
 				}
 			}
 
 			this._ロゴ不透明度?.Dispose();
 			this._ロゴ不透明度 = new Variable( gd.Animation.Manager, initialValue: 1.0 ); // 初期値 0.0(完全不透明)
-			using( var _不透明度遷移 = gd.Animation.TrasitionLibrary.Linear( duration: 0.75f / 速度倍率, finalValue: 0.0 ) )    // 終了値 0.0(完全透明)
+			using( var _不透明度遷移 = gd.Animation.TrasitionLibrary.Linear( duration: 秒( 0.75 ), finalValue: 0.0 ) )    // 終了値 0.0(完全透明)
 			{
 				this._ロゴボード = new Storyboard( gd.Animation.Manager );
 				this._ロゴボード.AddTransition( this._ロゴ不透明度, _不透明度遷移 );
@@ -262,27 +253,7 @@ namespace DTXmatixx.アイキャッチ
 			this.現在のフェーズ = フェーズ.オープン;
 		}
 
-		public void 進行描画する( グラフィックデバイス gd )
-		{
-			switch( this.現在のフェーズ )
-			{
-				case フェーズ.未定:
-					break;
-
-				case フェーズ.クローズ:
-				case フェーズ.クローズ完了:
-					this.進行描画する( gd, StoryboardStatus.Scheduled );
-					break;
-
-				case フェーズ.オープン:
-				case フェーズ.オープン完了:
-					this.進行描画する( gd, StoryboardStatus.Ready );
-					break;
-			}
-		}
-
-
-		protected void 進行描画する( グラフィックデバイス gd, StoryboardStatus 描画しないStatus )
+		protected override void 進行描画する( グラフィックデバイス gd, StoryboardStatus 描画しないStatus )
 		{
 			bool すべて完了 = true;
 
@@ -330,14 +301,17 @@ namespace DTXmatixx.アイキャッチ
 			if( すべて完了 )
 			{
 				if( this.現在のフェーズ == フェーズ.クローズ )
+				{
 					this.現在のフェーズ = フェーズ.クローズ完了;
-
-				if( this.現在のフェーズ == フェーズ.オープン )
+				}
+				else if( this.現在のフェーズ == フェーズ.オープン )
+				{
 					this.現在のフェーズ = フェーズ.オープン完了;
+				}
 			}
 		}
 
-		protected class シャッター情報 : IDisposable
+		private class シャッター情報 : IDisposable
 		{
 			public シャッター情報()
 			{
@@ -364,18 +338,18 @@ namespace DTXmatixx.アイキャッチ
 			public Storyboard ストーリーボード = null;
 		}
 
-		protected const int シャッター枚数 = 14;
-		protected シャッター情報[] _シャッター情報 = null;
+		private const int シャッター枚数 = 14;
+		private シャッター情報[] _シャッター情報 = null;
 
-		protected Brush _明るいブラシ = null;
-		protected Brush _ふつうのブラシ = null;
-		protected Brush _濃いブラシ = null;
-		protected Brush _黒ブラシ = null;
-		protected Brush _白ブラシ = null;
+		private Brush _明るいブラシ = null;
+		private Brush _ふつうのブラシ = null;
+		private Brush _濃いブラシ = null;
+		private Brush _黒ブラシ = null;
+		private Brush _白ブラシ = null;
 
-		protected 画像 _ロゴ = null;
-		protected Variable _ロゴ不透明度 = null;
-		protected Storyboard _ロゴボード = null;
-		protected readonly RectangleF _ロゴ表示領域 = new RectangleF( 1100f, 700f, 730f, 300f );
+		private 画像 _ロゴ = null;
+		private Variable _ロゴ不透明度 = null;
+		private Storyboard _ロゴボード = null;
+		private readonly RectangleF _ロゴ表示領域 = new RectangleF( 1100f, 700f, 730f, 300f );
 	}
 }

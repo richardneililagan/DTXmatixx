@@ -85,12 +85,14 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ステージ\アイキャッチ\GO.cs" />
-    <Compile Include="ステージ\アイキャッチ\シャッター.cs" />
+    <Compile Include="アイキャッチ\GO.cs" />
+    <Compile Include="アイキャッチ\アイキャッチBase.cs" />
+    <Compile Include="アイキャッチ\シャッター.cs" />
+    <Compile Include="アイキャッチ\半回転黒フェード.cs" />
     <Compile Include="ステージ\ステージ.cs" />
     <Compile Include="ステージ\ステージ管理.cs" />
     <Compile Include="ステージ\タイトル\タイトルステージ.cs" />
-    <Compile Include="ステージ\アイキャッチ\回転幕.cs" />
+    <Compile Include="アイキャッチ\回転幕.cs" />
     <Compile Include="ステージ\チップExtensions.cs" />
     <Compile Include="ステージ\ドラムサウンド.cs" />
     <Compile Include="ステージ\曲ツリー構築\曲ツリー構築ステージ.cs" />
