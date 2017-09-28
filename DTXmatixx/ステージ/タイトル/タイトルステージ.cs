@@ -53,8 +53,6 @@ namespace DTXmatixx.ステージ.タイトル
 
 		public override void 進行描画する( グラフィックデバイス gd )
 		{
-			var fadeOut = App.ステージ管理.シャッター;
-
 			App.Keyboard.ポーリングする();
 
 			switch( this.現在のフェーズ )
@@ -67,7 +65,7 @@ namespace DTXmatixx.ステージ.タイトル
 
 					if( App.Keyboard.キーが押された( 0, Key.Return ) )
 					{
-						fadeOut.クローズする( gd );
+						App.ステージ管理.アイキャッチを選択しクローズする( gd, nameof( シャッター ) );
 						this.現在のフェーズ = フェーズ.フェードアウト;
 					}
 					else if( App.Keyboard.キーが押された( 0, Key.Escape ) )
@@ -82,9 +80,9 @@ namespace DTXmatixx.ステージ.タイトル
 					this._タイトルロゴ.描画する( gd, ( gd.設計画面サイズ.Width - this._タイトルロゴ.サイズ.Width ) / 2f, ( gd.設計画面サイズ.Height - this._タイトルロゴ.サイズ.Height ) / 2f - 100f );
 					this._帯メッセージを描画する( gd );
 
-					fadeOut.進行描画する( gd );
+					App.ステージ管理.現在のアイキャッチ.進行描画する( gd );
 
-					if( fadeOut.現在のフェーズ ==	 アイキャッチ.フェーズ.クローズ完了 )
+					if( App.ステージ管理.現在のアイキャッチ.現在のフェーズ == アイキャッチ.フェーズ.クローズ完了 )
 						this.現在のフェーズ = フェーズ.確定;
 					break;
 

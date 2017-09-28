@@ -65,12 +65,10 @@ namespace DTXmatixx.ステージ.曲読み込み
 
 		public override void 進行描画する( グラフィックデバイス gd )
 		{
-			var fadeIn = App.ステージ管理.GO;
-
 			if( this._初めての進行描画 )
 			{
 				this._舞台画像.ぼかしと縮小を適用する( gd, 0.0 );
-				fadeIn.オープンする( gd );
+				App.ステージ管理.現在のアイキャッチ.オープンする( gd );
 				this._初めての進行描画 = false;
 			}
 
@@ -82,8 +80,8 @@ namespace DTXmatixx.ステージ.曲読み込み
 			switch( this.現在のフェーズ )
 			{
 				case フェーズ.フェードイン:
-					fadeIn.進行描画する( gd );
-					if( fadeIn.現在のフェーズ == アイキャッチ.フェーズ.オープン完了 )
+					App.ステージ管理.現在のアイキャッチ.進行描画する( gd );
+					if( App.ステージ管理.現在のアイキャッチ.現在のフェーズ == アイキャッチ.フェーズ.オープン完了 )
 						this.現在のフェーズ = フェーズ.表示;
 					break;
 

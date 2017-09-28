@@ -8,9 +8,9 @@ using SharpDX.Direct2D1;
 using FDK;
 using FDK.メディア;
 
-namespace DTXmatixx.アイキャッチ
+namespace DTXmatixx.ステージ.アイキャッチ
 {
-	class GO : アイキャッチ
+	class GO : アイキャッチBase
 	{
 		protected override void On活性化( グラフィックデバイス gd )
 		{

@@ -10,7 +10,7 @@ using FDK.メディア;
 
 namespace DTXmatixx.アイキャッチ
 {
-	class シャッター : アイキャッチ
+	class シャッター : アイキャッチBase
 	{
 		public シャッター()
 		{

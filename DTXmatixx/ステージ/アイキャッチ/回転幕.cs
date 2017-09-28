@@ -44,7 +44,7 @@ using DTXmatixx.ステージ;
 
 namespace DTXmatixx.アイキャッチ
 {
-	class 回転幕 : アイキャッチ
+	class 回転幕 : アイキャッチBase
 	{
 		public 回転幕()
 		{

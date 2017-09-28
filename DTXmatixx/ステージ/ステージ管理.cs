@@ -20,6 +20,11 @@ namespace DTXmatixx.ステージ
 			get
 				=> this._現在のステージ;
 		}
+		public アイキャッチ.アイキャッチ 現在のアイキャッチ
+		{
+			get
+				=> this._現在のアイキャッチ;
+		}
 
 		/// <summary>
 		///		全ステージのリスト。
@@ -34,34 +39,8 @@ namespace DTXmatixx.ステージ
 			{ nameof( 演奏.演奏ステージ ), new 演奏.演奏ステージ() },
 		};
 
-		// 全ステージで共通のアイキャッチインスタンス。ステージ間をまたいで状態を維持しつつ描画することができる。
-		public アイキャッチ.シャッター シャッター
-		{
-			get;
-			protected set;
-		} = null;
-		public アイキャッチ.回転幕 回転幕
-		{
-			get;
-			protected set;
-		} = null;
-		public アイキャッチ.GO GO
-		{
-			get;
-			protected set;
-		} = null;
-		public アイキャッチ.半回転黒フェード 半回転黒フェード
-		{
-			get;
-			protected set;
-		} = null;
-
 		public ステージ管理()
 		{
-			this.子リスト.Add( this.シャッター = new アイキャッチ.シャッター() );
-			this.子リスト.Add( this.回転幕 = new アイキャッチ.回転幕() );
-			this.子リスト.Add( this.GO = new アイキャッチ.GO() );
-			this.子リスト.Add( this.半回転黒フェード = new アイキャッチ.半回転黒フェード() );
 		}
 		public void Dispose()
 		{
@@ -79,15 +58,27 @@ namespace DTXmatixx.ステージ
 					kvp.Value.非活性化する( gd );
 				}
 			}
+			// 現在活性化しているアイキャッチがあれば、すべて非活性化する。
+			foreach( var kvp in this._アイキャッチリスト )
+			{
+				if( kvp.Value.活性化している )
+				{
+					kvp.Value.非活性化する( gd );
+				}
+			}
+
 		}
 		protected override void On活性化( グラフィックデバイス gd )
 		{
 			using( Log.Block( FDKUtilities.現在のメソッド名 ) )
 			{
 				if( this.現在のステージ?.活性化していない ?? false )
-				{
 					this.現在のステージ?.活性化する( gd );
-				}
+
+				foreach( var kvp in this._アイキャッチリスト )
+					kvp.Value.活性化する( gd );
+
+				this._現在のアイキャッチ = this._アイキャッチリスト.ElementAt( 0 ).Value;
 			}
 		}
 		protected override void On非活性化( グラフィックデバイス gd )
@@ -95,9 +86,12 @@ namespace DTXmatixx.ステージ
 			using( Log.Block( FDKUtilities.現在のメソッド名 ) )
 			{
 				if( this.現在のステージ?.活性化している ?? false )
-				{
 					this.現在のステージ?.非活性化する( gd );
-				}
+
+				foreach( var kvp in this._アイキャッチリスト )
+					kvp.Value.非活性化する( gd );
+
+				this._現在のアイキャッチ = null;
 			}
 		}
 		
@@ -131,10 +125,27 @@ namespace DTXmatixx.ステージ
 				}
 			}
 		}
+		public void アイキャッチを選択しクローズする( グラフィックデバイス gd, string 名前 )
+		{
+			this._現在のアイキャッチ = this._アイキャッチリスト[ 名前 ];
+			this._現在のアイキャッチ.クローズする( gd );
+		}
 
 		/// <summary>
 		///		現在実行中のステージ。<see cref="ステージリスト"/> の中のひとつを参照している（ので、うかつにDisposeとかしたりしないこと）。
 		/// </summary>
 		private ステージ _現在のステージ;
+
+		/// <summary>
+		///		現在選択中のアイキャッチ。アイキャッチリストの中のひとつを参照している（ので、うかつにDisposeとかしたりしないこと）。
+		/// </summary>
+		private アイキャッチ.アイキャッチ _現在のアイキャッチ = null;
+
+		private Dictionary<string, アイキャッチ.アイキャッチ> _アイキャッチリスト = new Dictionary<string, アイキャッチ.アイキャッチ>() {
+			{ nameof( アイキャッチ.シャッター ), new アイキャッチ.シャッター() },
+			{ nameof( アイキャッチ.回転幕 ), new アイキャッチ.回転幕() },
+			{ nameof( アイキャッチ.GO ), new アイキャッチ.GO() },
+			{ nameof( アイキャッチ.半回転黒フェード ), new アイキャッチ.半回転黒フェード() },
+		};
 	}
 }

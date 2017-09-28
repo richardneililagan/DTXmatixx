@@ -86,7 +86,7 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="アイキャッチ\GO.cs" />
-    <Compile Include="アイキャッチ\アイキャッチBase.cs" />
+    <Compile Include="アイキャッチ\アイキャッチ.cs" />
     <Compile Include="アイキャッチ\シャッター.cs" />
     <Compile Include="アイキャッチ\半回転黒フェード.cs" />
     <Compile Include="ステージ\ステージ.cs" />

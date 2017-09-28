@@ -10,7 +10,7 @@ using FDK.メディア;
 
 namespace DTXmatixx.アイキャッチ
 {
-	class 半回転黒フェード : アイキャッチ
+	class 半回転黒フェード : アイキャッチBase
 	{
 		public 半回転黒フェード()
 		{
@@ -92,9 +92,6 @@ namespace DTXmatixx.アイキャッチ
 			}
 			//----------------
 			#endregion
-
-			using( var 時間稼ぎ = gd.Animation.TrasitionLibrary.Constant( duration: 秒( 0.5 ) ) )
-				this._アニメ.ストーリーボード.AddTransition( this._アニメ.ロゴ_位置X, 時間稼ぎ );
 
 			// 今すぐ開始。
 			this._アニメ.ストーリーボード.Schedule( gd.Animation.Timer.Time );

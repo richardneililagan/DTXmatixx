@@ -77,12 +77,9 @@ namespace DTXmatixx.ステージ.選曲
 
 		public override void 進行描画する( グラフィックデバイス gd )
 		{
-			var fadeIn = App.ステージ管理.回転幕;
-			var fadeOut = App.ステージ管理.GO;
-
 			if( this._初めての進行描画 )
 			{
-				fadeIn.オープンする( gd );
+				App.ステージ管理.現在のアイキャッチ.オープンする( gd );
 				this._導線アニメをリセットする( gd );
 				this._初めての進行描画 = false;
 			}
@@ -100,15 +97,15 @@ namespace DTXmatixx.ステージ.選曲
 			switch( this.現在のフェーズ )
 			{
 				case フェーズ.フェードイン:
-					fadeIn.進行描画する( gd );
-					if( fadeIn.現在のフェーズ == アイキャッチ.フェーズ.オープン完了 )
+					App.ステージ管理.現在のアイキャッチ.進行描画する( gd );
+					if( App.ステージ管理.現在のアイキャッチ.現在のフェーズ == アイキャッチ.フェーズ.オープン完了 )
 						this.現在のフェーズ = フェーズ.表示;
 					break;
 
 				case フェーズ.表示:
 					if( App.Keyboard.キーが押された( 0, Key.Return ) )
 					{
-						fadeOut.クローズする( gd );
+						App.ステージ管理.アイキャッチを選択しクローズする( gd, nameof( GO ) );
 						this.現在のフェーズ = フェーズ.フェードアウト;
 					}
 					else if( App.Keyboard.キーが押された( 0, Key.Up ) )
@@ -126,8 +123,8 @@ namespace DTXmatixx.ステージ.選曲
 					break;
 
 				case フェーズ.フェードアウト:
-					fadeOut.進行描画する( gd );
-					if( fadeOut.現在のフェーズ == アイキャッチ.フェーズ.クローズ完了 )
+					App.ステージ管理.現在のアイキャッチ.進行描画する( gd );
+					if( App.ステージ管理.現在のアイキャッチ.現在のフェーズ == アイキャッチ.フェーズ.クローズ完了 )
 						this.現在のフェーズ = フェーズ.確定;
 					break;
 
