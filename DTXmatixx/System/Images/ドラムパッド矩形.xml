@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<Root>
+  <!-- パッド本体。各 Name は 表示レーン種別 列挙子の名前であること。-->
+  <SubImage Name="Unknown" Rectangle="0,0,0,0" />
+  <SubImage Name="LeftCrash" Rectangle="1,0,91,98" />
+  <SubImage Name="HiHat" Rectangle="108,0,68,98" />
+  <SubImage Name="Foot" Rectangle="183,0,68,98" />
+  <SubImage Name="Snare" Rectangle="259,0,85,98" />
+  <SubImage Name="Bass" Rectangle="351,0,90,98" />
+  <SubImage Name="Tom1" Rectangle="447,0,72,98" />
+  <SubImage Name="Tom2" Rectangle="520,0,72,98" />
+  <SubImage Name="Tom3" Rectangle="594,0,72,98" />
+  <SubImage Name="RightCrash" Rectangle="683,0,92,98" />
+  <!-- パッドフラッシュ。各 Name は 表示レーン種別 列挙子の名前 + "_Flush" であること。-->
+  <SubImage Name="Unknown_Flush" Rectangle="0,0,0,0" />
+  <SubImage Name="LeftCrash_Flush" Rectangle="1,98,91,98" />
+  <SubImage Name="HiHat_Flush" Rectangle="108,98,68,98" />
+  <SubImage Name="Foot_Flush" Rectangle="183,98,68,98" />
+  <SubImage Name="Snare_Flush" Rectangle="259,98,85,98" />
+  <SubImage Name="Bass_Flush" Rectangle="351,98,90,98" />
+  <SubImage Name="Tom1_Flush" Rectangle="447,98,72,98" />
+  <SubImage Name="Tom2_Flush" Rectangle="520,98,72,98" />
+  <SubImage Name="Tom3_Flush" Rectangle="594,98,72,98" />
+  <SubImage Name="RightCrash_Flush" Rectangle="683,98,92,98" />
+</Root>
