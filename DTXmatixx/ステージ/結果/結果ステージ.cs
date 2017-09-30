@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using SharpDX;
 using SharpDX.Direct2D1;
+using SharpDX.DirectWrite;
 using SharpDX.DirectInput;
 using FDK;
 using FDK.メディア;
@@ -29,12 +30,28 @@ namespace DTXmatixx.ステージ.結果
 		public 結果ステージ()
 		{
 			this.子リスト.Add( this._背景 = new 舞台画像() );
+			this.子リスト.Add( this._曲名パネル = new 画像( @"$(System)images\結果画面_曲名パネル.png" ) );
+			this.子リスト.Add( this._曲名画像 = new 文字列画像() {
+				フォント名 = "HGMaruGothicMPRO",
+				フォントサイズpt = 40f,
+				フォント幅 = FontWeight.Regular,
+				フォントスタイル = FontStyle.Normal,
+				描画効果 = 文字列画像.効果.縁取り,
+				縁のサイズdpx = 6f,
+				前景色 = Color4.Black,
+				背景色 = Color4.White,
+			} );
 		}
 
 		protected override void On活性化( グラフィックデバイス gd )
 		{
 			using( Log.Block( FDKUtilities.現在のメソッド名 ) )
 			{
+				var 選択曲 = App.曲ツリー.フォーカスノード as MusicNode;
+				Debug.Assert( null != 選択曲 );
+
+				this._曲名画像.表示文字列 = 選択曲.タイトル;
+
 				this._プレビュー枠ブラシ = new SolidColorBrush( gd.D2DDeviceContext, new Color4( 0xFF209292 ) );
 				this.現在のフェーズ = フェーズ.表示;
 				this._初めての進行描画 = true;
@@ -58,6 +75,8 @@ namespace DTXmatixx.ステージ.結果
 
 			this._背景.進行描画する( gd );
 			this._プレビュー画像を描画する( gd );
+			this._曲名パネル.描画する( gd, 660f, 796f );
+			this._曲名を描画する( gd );
 
 			App.Keyboard.ポーリングする();
 
@@ -84,6 +103,9 @@ namespace DTXmatixx.ステージ.結果
 
 		private bool _初めての進行描画 = true;
 		private 舞台画像 _背景 = null;
+		private 画像 _曲名パネル = null;
+		private 文字列画像 _曲名画像 = null;
+
 		private SolidColorBrush _プレビュー枠ブラシ = null;
 		private readonly Vector3 _プレビュー画像表示位置dpx = new Vector3( 668f, 194f, 0f );
 		private readonly Vector3 _プレビュー画像表示サイズdpx = new Vector3( 574f, 574f, 0f );
@@ -125,7 +147,18 @@ namespace DTXmatixx.ステージ.結果
 
 			プレビュー画像.描画する( gd, 変換行列 );
 		}
+		private void _曲名を描画する( グラフィックデバイス gd )
+		{
+			var 表示位置dpx = new Vector2( 690f, 820f );
 
+			// 拡大率を計算して描画する。
+			float 最大幅dpx = 555f;
 
+			this._曲名画像.描画する(
+				gd,
+				表示位置dpx.X,
+				表示位置dpx.Y,
+				X方向拡大率: ( this._曲名画像.サイズ.Width <= 最大幅dpx ) ? 1f : 最大幅dpx / this._曲名画像.サイズ.Width );
+		}
 	}
 }
