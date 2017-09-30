@@ -109,8 +109,9 @@
     <Compile Include="ステージ\演奏\曲名パネル.cs" />
     <Compile Include="ステージ\演奏\演奏ステージ.cs" />
     <Compile Include="ステージ\演奏\演奏位置パネル.cs" />
-    <Compile Include="ステージ\演奏\演奏判定パラメータ.cs" />
+    <Compile Include="ステージ\演奏\演奏パラメータ.cs" />
     <Compile Include="ステージ\演奏\表示レーン種別.cs" />
+    <Compile Include="ステージ\結果\演奏パラメータ結果.cs" />
     <Compile Include="ステージ\結果\結果ステージ.cs" />
     <Compile Include="ステージ\舞台画像.cs" />
     <Compile Include="ステージ\認証\認証ステージ.cs" />
@@ -405,6 +406,16 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="System\Images\結果画面_曲名パネル.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="System\Images\パラメータ用判定種別文字.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="System\Images\パラメータ用判定種別文字矩形.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>

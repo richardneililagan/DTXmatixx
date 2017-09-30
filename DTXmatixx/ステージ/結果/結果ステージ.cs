@@ -41,6 +41,7 @@ namespace DTXmatixx.ステージ.結果
 				前景色 = Color4.Black,
 				背景色 = Color4.White,
 			} );
+			this.子リスト.Add( this._演奏パラメータ結果 = new 演奏パラメータ結果() );
 		}
 
 		protected override void On活性化( グラフィックデバイス gd )
@@ -77,6 +78,7 @@ namespace DTXmatixx.ステージ.結果
 			this._プレビュー画像を描画する( gd );
 			this._曲名パネル.描画する( gd, 660f, 796f );
 			this._曲名を描画する( gd );
+			this._演奏パラメータ結果.描画する( gd, 1317f, 716f );
 
 			App.Keyboard.ポーリングする();
 
@@ -105,6 +107,7 @@ namespace DTXmatixx.ステージ.結果
 		private 舞台画像 _背景 = null;
 		private 画像 _曲名パネル = null;
 		private 文字列画像 _曲名画像 = null;
+		private 演奏パラメータ結果 _演奏パラメータ結果 = null;
 
 		private SolidColorBrush _プレビュー枠ブラシ = null;
 		private readonly Vector3 _プレビュー画像表示位置dpx = new Vector3( 668f, 194f, 0f );

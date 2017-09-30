@@ -38,7 +38,7 @@ namespace DTXmatixx.ステージ.演奏
 			get;
 			set;
 		} = null;
-		public 演奏判定パラメータ 演奏判定パラメータ
+		public 演奏パラメータ 演奏判定パラメータ
 		{
 			get;
 			protected set;
@@ -57,7 +57,7 @@ namespace DTXmatixx.ステージ.演奏
 			this.子リスト.Add( this._チップ光 = new チップ光() );
 			this.子リスト.Add( this._左サイドクリアパネル = new 左サイドクリアパネル() );
 			this.子リスト.Add( this._右サイドクリアパネル = new 右サイドクリアパネル() );
-			this.子リスト.Add( this.演奏判定パラメータ = new 演奏判定パラメータ() );
+			this.子リスト.Add( this.演奏判定パラメータ = new 演奏パラメータ() );
 			this.子リスト.Add( this._演奏位置パネル = new 演奏位置パネル() );
 			this.子リスト.Add( this._コンボ = new コンボ() );
 			this.子リスト.Add( this._FPS = new FPS() );
@@ -294,7 +294,7 @@ namespace DTXmatixx.ステージ.演奏
 					{
 						this._左サイドクリアパネル.クリアする( gd );
 						this._左サイドクリアパネル.クリアパネル.ビットマップへ描画する( gd, ( dc, bmp ) => {
-							this.演奏判定パラメータ.描画する( dc, +210f, +392f );
+							this.演奏判定パラメータ.描画する( dc, +118f, +392f );
 						} );
 						this._左サイドクリアパネル.描画する( gd );
 
@@ -377,7 +377,7 @@ namespace DTXmatixx.ステージ.演奏
 
 						this._左サイドクリアパネル.クリアする( gd );
 						this._左サイドクリアパネル.クリアパネル.ビットマップへ描画する( gd, ( dc, bmp ) => {
-							this.演奏判定パラメータ.描画する( dc, +210f, +392f );
+							this.演奏判定パラメータ.描画する( dc, +118f, +392f );
 						} );
 						this._左サイドクリアパネル.描画する( gd );
 
