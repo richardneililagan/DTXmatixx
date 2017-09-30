@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using SharpDX;
+using SharpDX.Direct2D1;
 using SharpDX.DirectInput;
 using FDK;
 using FDK.メディア;
+using DTXmatixx.曲;
 using DTXmatixx.アイキャッチ;
 
 namespace DTXmatixx.ステージ.結果
@@ -33,6 +35,7 @@ namespace DTXmatixx.ステージ.結果
 		{
 			using( Log.Block( FDKUtilities.現在のメソッド名 ) )
 			{
+				this._プレビュー枠ブラシ = new SolidColorBrush( gd.D2DDeviceContext, new Color4( 0xFF209292 ) );
 				this.現在のフェーズ = フェーズ.表示;
 				this._初めての進行描画 = true;
 			}
@@ -41,6 +44,7 @@ namespace DTXmatixx.ステージ.結果
 		{
 			using( Log.Block( FDKUtilities.現在のメソッド名 ) )
 			{
+				FDKUtilities.解放する( ref this._プレビュー枠ブラシ );
 			}
 		}
 
@@ -53,6 +57,7 @@ namespace DTXmatixx.ステージ.結果
 			}
 
 			this._背景.進行描画する( gd );
+			this._プレビュー画像を描画する( gd );
 
 			App.Keyboard.ポーリングする();
 
@@ -79,5 +84,48 @@ namespace DTXmatixx.ステージ.結果
 
 		private bool _初めての進行描画 = true;
 		private 舞台画像 _背景 = null;
+		private SolidColorBrush _プレビュー枠ブラシ = null;
+		private readonly Vector3 _プレビュー画像表示位置dpx = new Vector3( 668f, 194f, 0f );
+		private readonly Vector3 _プレビュー画像表示サイズdpx = new Vector3( 574f, 574f, 0f );
+
+		private void _プレビュー画像を描画する( グラフィックデバイス gd )
+		{
+			var 選択曲 = App.曲ツリー.フォーカスノード as MusicNode;
+			Debug.Assert( null != 選択曲 );
+
+			var プレビュー画像 = 選択曲.ノード画像 ?? Node.既定のノード画像;
+			Debug.Assert( null != プレビュー画像 );
+
+			// 枠
+
+			gd.D2DBatchDraw( ( dc ) => {
+				const float 枠の太さdpx = 5f;
+				dc.FillRectangle(
+					new RectangleF(
+						this._プレビュー画像表示位置dpx.X - 枠の太さdpx,
+						this._プレビュー画像表示位置dpx.Y - 枠の太さdpx,
+						this._プレビュー画像表示サイズdpx.X + 枠の太さdpx * 2f,
+						this._プレビュー画像表示サイズdpx.Y + 枠の太さdpx * 2f ),
+					this._プレビュー枠ブラシ );
+			} );
+
+			// テクスチャは画面中央が (0,0,0) で、Xは右がプラス方向, Yは上がプラス方向, Zは奥がプラス方向+。
+
+			var 画面左上dpx = new Vector3(  // 3D視点で見る画面左上の座標。
+				-gd.設計画面サイズ.Width / 2f,
+				+gd.設計画面サイズ.Height / 2f,
+				0f );
+
+			var 変換行列 =
+				Matrix.Scaling( this._プレビュー画像表示サイズdpx ) *
+				Matrix.Translation(
+					画面左上dpx.X + this._プレビュー画像表示位置dpx.X + this._プレビュー画像表示サイズdpx.X / 2f,
+					画面左上dpx.Y - this._プレビュー画像表示位置dpx.Y - this._プレビュー画像表示サイズdpx.Y / 2f,
+					0f );
+
+			プレビュー画像.描画する( gd, 変換行列 );
+		}
+
+
 	}
 }
