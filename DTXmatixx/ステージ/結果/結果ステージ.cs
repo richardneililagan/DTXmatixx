@@ -52,7 +52,7 @@ namespace DTXmatixx.ステージ.結果
 				Debug.Assert( null != 選択曲 );
 
 				this._曲名画像.表示文字列 = 選択曲.タイトル;
-
+				this._黒マスクブラシ = new SolidColorBrush( gd.D2DDeviceContext, new Color4( Color3.Black, 0.75f ) );
 				this._プレビュー枠ブラシ = new SolidColorBrush( gd.D2DDeviceContext, new Color4( 0xFF209292 ) );
 				this.現在のフェーズ = フェーズ.表示;
 				this._初めての進行描画 = true;
@@ -62,6 +62,7 @@ namespace DTXmatixx.ステージ.結果
 		{
 			using( Log.Block( FDKUtilities.現在のメソッド名 ) )
 			{
+				FDKUtilities.解放する( ref this._黒マスクブラシ );
 				FDKUtilities.解放する( ref this._プレビュー枠ブラシ );
 			}
 		}
@@ -75,6 +76,9 @@ namespace DTXmatixx.ステージ.結果
 			}
 
 			this._背景.進行描画する( gd );
+			gd.D2DBatchDraw( ( dc ) => {
+				dc.FillRectangle( new RectangleF( 0f, 36f, gd.設計画面サイズ.Width, gd.設計画面サイズ.Height - 72f ), this._黒マスクブラシ );
+			} );
 			this._プレビュー画像を描画する( gd );
 			this._曲名パネル.描画する( gd, 660f, 796f );
 			this._曲名を描画する( gd );
@@ -108,6 +112,7 @@ namespace DTXmatixx.ステージ.結果
 		private 画像 _曲名パネル = null;
 		private 文字列画像 _曲名画像 = null;
 		private 演奏パラメータ結果 _演奏パラメータ結果 = null;
+		private SolidColorBrush _黒マスクブラシ = null;
 
 		private SolidColorBrush _プレビュー枠ブラシ = null;
 		private readonly Vector3 _プレビュー画像表示位置dpx = new Vector3( 668f, 194f, 0f );

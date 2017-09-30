@@ -68,6 +68,7 @@ namespace DTXmatixx.ステージ.演奏
 			using( Log.Block( FDKUtilities.現在のメソッド名 ) )
 			{
 				this._レーン色ブラシ = new SolidColorBrush( gd.D2DDeviceContext, new Color4( 0xff5d5d5d ) );
+				this._レーンエリア色ブラシ = new SolidColorBrush( gd.D2DDeviceContext, new Color4( 0f, 0f, 0f, 0.5f ) );
 			}
 		}
 		protected override void On非活性化( グラフィックデバイス gd )
@@ -75,12 +76,16 @@ namespace DTXmatixx.ステージ.演奏
 			using( Log.Block( FDKUtilities.現在のメソッド名 ) )
 			{
 				FDKUtilities.解放する( ref this._レーン色ブラシ );
+				FDKUtilities.解放する( ref this._レーンエリア色ブラシ );
 			}
 		}
 
 		public void 描画する( グラフィックデバイス gd )
 		{
 			gd.D2DBatchDraw( ( dc ) => {
+
+				// レーンエリアを描画する。
+				dc.FillRectangle( new RectangleF( 445f, 0f, 778f, 938f ), this._レーンエリア色ブラシ );
 
 				// レーンラインを描画する。
 				for( int i = 0; i < _レーンライン.Length; i++ )
@@ -113,5 +118,6 @@ namespace DTXmatixx.ステージ.演奏
 		};
 
 		private SolidColorBrush _レーン色ブラシ = null;
+		private SolidColorBrush _レーンエリア色ブラシ = null;
 	}
 }
