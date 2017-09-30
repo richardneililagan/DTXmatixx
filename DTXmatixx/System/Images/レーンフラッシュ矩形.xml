@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<Root>
+  <!-- レーンフラッシュ。各 Name は 表示レーン種別 列挙子の名前 であること。-->
+  <SubImage Name="Unknown" Rectangle="0,0,0,0" />
+  <SubImage Name="LeftCrash" Rectangle="1,0,91,196" />
+  <SubImage Name="HiHat" Rectangle="108,0,68,196" />
+  <SubImage Name="Foot" Rectangle="183,0,68,196" />
+  <SubImage Name="Snare" Rectangle="259,0,85,196" />
+  <SubImage Name="Bass" Rectangle="351,0,90,196" />
+  <SubImage Name="Tom1" Rectangle="447,0,72,196" />
+  <SubImage Name="Tom2" Rectangle="520,0,72,196" />
+  <SubImage Name="Tom3" Rectangle="594,0,72,196" />
+  <SubImage Name="RightCrash" Rectangle="683,0,92,196" />
+</Root>

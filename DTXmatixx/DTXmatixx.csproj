@@ -100,6 +100,7 @@
     <Compile Include="ステージ\演奏\コンボ.cs" />
     <Compile Include="ステージ\演奏\チップ光.cs" />
     <Compile Include="ステージ\演奏\ドラムパッド.cs" />
+    <Compile Include="ステージ\演奏\レーンフラッシュ.cs" />
     <Compile Include="ステージ\演奏\レーンフレーム.cs" />
     <Compile Include="ステージ\演奏\判定文字列.cs" />
     <Compile Include="ステージ\演奏\判定種別.cs" />
@@ -388,6 +389,16 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="System\Images\ドラムパッド矩形.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="System\Images\レーンフラッシュ矩形.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="System\Images\レーンフラッシュ.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>

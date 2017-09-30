@@ -23,6 +23,7 @@ namespace DTXmatixx.ステージ.演奏
 				this._パッド絵の矩形リスト = new 矩形リスト( @"$(System)images\ドラムパッド矩形.xml" );
 
 				this._レーンtoパッドContext = new Dictionary<表示レーン種別, パッドContext>();
+
 				foreach( 表示レーン種別 lane in Enum.GetValues( typeof( 表示レーン種別 ) ) )
 				{
 					this._レーンtoパッドContext.Add( lane, new パッドContext() {
@@ -52,23 +53,23 @@ namespace DTXmatixx.ステージ.演奏
 		{
 			foreach( 表示レーン種別 lane in Enum.GetValues( typeof( 表示レーン種別 ) ) )
 			{
-				var context = this._レーンtoパッドContext[ lane ];
+				var drumContext = this._レーンtoパッドContext[ lane ];
 
-				// アニメーション
+				// ドラム側アニメーション
 				float Yオフセットdpx = 0f;
 				float フラッシュ画像の不透明度 = 0f;
 
-				if( context.アニメカウンタ.動作中である )
+				if( drumContext.アニメカウンタ.動作中である )
 				{
-					フラッシュ画像の不透明度 = (float) Math.Sin( Math.PI * context.アニメカウンタ.現在値の割合 );	// 0 → 1 → 0
-					Yオフセットdpx = (float) Math.Sin( Math.PI * context.アニメカウンタ.現在値の割合 ) * 18f;		// 0 → 18 → 0
+					フラッシュ画像の不透明度 = (float) Math.Sin( Math.PI * drumContext.アニメカウンタ.現在値の割合 );    // 0 → 1 → 0
+					Yオフセットdpx = (float) Math.Sin( Math.PI * drumContext.アニメカウンタ.現在値の割合 ) * 18f;     // 0 → 18 → 0
 				}
 
-				// 本体表示
-				this._パッド絵.描画する( gd, context.左上位置dpx.X, context.左上位置dpx.Y + Yオフセットdpx, 1f, 転送元矩形: context.転送元矩形 );
+				// ドラムパッド本体表示
+				this._パッド絵.描画する( gd, drumContext.左上位置dpx.X, drumContext.左上位置dpx.Y + Yオフセットdpx, 1f, 転送元矩形: drumContext.転送元矩形 );
 
-				// フラッシュ表示
-				this._パッド絵.描画する( gd, context.左上位置dpx.X, context.左上位置dpx.Y + Yオフセットdpx, フラッシュ画像の不透明度, 転送元矩形: context.転送元矩形Flush );
+				// ドラムフラッシュ表示
+				this._パッド絵.描画する( gd, drumContext.左上位置dpx.X, drumContext.左上位置dpx.Y + Yオフセットdpx, フラッシュ画像の不透明度, 転送元矩形: drumContext.転送元矩形Flush );
 			}
 		}
 
@@ -80,7 +81,6 @@ namespace DTXmatixx.ステージ.演奏
 			public Vector2 左上位置dpx;
 			public RectangleF 転送元矩形;
 			public RectangleF 転送元矩形Flush;
-
 			public Counter アニメカウンタ;
 		};
 		private Dictionary<表示レーン種別, パッドContext> _レーンtoパッドContext = null;
