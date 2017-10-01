@@ -33,6 +33,7 @@ namespace DTXmatixx.ステージ.選曲
 		{
 			this.子リスト.Add( this._舞台画像 = new 舞台画像( @"$(System)images\舞台_暗.jpg" ) );
 			this.子リスト.Add( this._曲リスト = new 曲リスト() );
+			this.子リスト.Add( this._難易度と成績 = new 難易度と成績() );
 			this.子リスト.Add( this._ステージタイマー = new 画像( @"$(System)images\ステージタイマー.png" ) );
 			this.子リスト.Add( this._青い枠 = new 青い枠() );
 			this.子リスト.Add( this._選択曲枠ランナー = new 選択曲枠ランナー() );
@@ -46,8 +47,6 @@ namespace DTXmatixx.ステージ.選曲
 				this._黒 = new SolidColorBrush( gd.D2DDeviceContext, Color4.Black );
 				this._黒透過 = new SolidColorBrush( gd.D2DDeviceContext, new Color4( Color3.Black, 0.5f ) );
 				this._灰透過 = new SolidColorBrush( gd.D2DDeviceContext, new Color4( 0x80535353 ) );
-				this._ソートタブ上色 = new SolidColorBrush( gd.D2DDeviceContext, new Color4( 0xFF121212 ) );
-				this._ソートタブ下色 = new SolidColorBrush( gd.D2DDeviceContext, new Color4( 0xFF1f1f1f ) );
 
 				this._上に伸びる導線の長さdpx = null;
 				this._左に伸びる導線の長さdpx = null;
@@ -70,8 +69,6 @@ namespace DTXmatixx.ステージ.選曲
 				FDKUtilities.解放する( ref this._黒 );
 				FDKUtilities.解放する( ref this._黒透過 );
 				FDKUtilities.解放する( ref this._灰透過 );
-				FDKUtilities.解放する( ref this._ソートタブ上色 );
-				FDKUtilities.解放する( ref this._ソートタブ下色 );
 			}
 		}
 
@@ -87,10 +84,12 @@ namespace DTXmatixx.ステージ.選曲
 			this._舞台画像.進行描画する( gd );
 			this._曲リスト.進行描画する( gd );
 			this._その他パネルを描画する( gd );
+			this._難易度と成績.描画する( gd );
 			this._プレビュー画像を描画する( gd, App.曲ツリー.フォーカスノード );
 			this._選択曲を囲む枠を描画する( gd );
 			this._選択曲枠ランナー.進行描画する( gd );
 			this._導線を描画する( gd );
+			this._ステージタイマー.描画する( gd, 1689f, 37f );
 
 			App.Keyboard.ポーリングする();
 
@@ -137,13 +136,12 @@ namespace DTXmatixx.ステージ.選曲
 		private bool _初めての進行描画 = true;
 		private 舞台画像 _舞台画像 = null;
 		private 曲リスト _曲リスト = null;
+		private 難易度と成績 _難易度と成績 = null;
 		private 青い枠 _青い枠 = null;
 		private 選択曲枠ランナー _選択曲枠ランナー = null;
 
 		private SolidColorBrush _白 = null;
 		private SolidColorBrush _黒 = null;
-		private SolidColorBrush _ソートタブ上色 = null;
-		private SolidColorBrush _ソートタブ下色 = null;
 		private SolidColorBrush _黒透過 = null;
 		private SolidColorBrush _灰透過 = null;
 		private 画像 _ステージタイマー = null;
@@ -154,9 +152,13 @@ namespace DTXmatixx.ステージ.選曲
 		{
 			gd.D2DBatchDraw( ( dc ) => {
 
-				// 曲リストソートタブ
-				dc.FillRectangle( new RectangleF( 927f, 50f, 993f, 138f ), this._ソートタブ上色 );
-				dc.FillRectangle( new RectangleF( 927f, 142f, 993f, 46f ), this._ソートタブ下色 );
+				using( var ソートタブ上色 = new SolidColorBrush( gd.D2DDeviceContext, new Color4( 0xFF121212 ) ) )
+				using( var ソートタブ下色 = new SolidColorBrush( gd.D2DDeviceContext, new Color4( 0xFF1f1f1f ) ) )
+				{
+					// 曲リストソートタブ
+					dc.FillRectangle( new RectangleF( 927f, 50f, 993f, 138f ), ソートタブ上色 );
+					dc.FillRectangle( new RectangleF( 927f, 142f, 993f, 46f ), ソートタブ下色 );
+				}
 
 				// インフォメーションバー
 				dc.FillRectangle( new RectangleF( 0f, 0f, 1920f, 50f ), this._黒 );
@@ -171,8 +173,6 @@ namespace DTXmatixx.ステージ.選曲
 				dc.DrawLine( new Vector2( 1f, 442f ), new Vector2( 925f, 442f ), this._灰透過, strokeWidth: 1f );
 
 			} );
-
-			this._ステージタイマー.描画する( gd, 1689f, 37f );
 		}
 		private void _プレビュー画像を描画する( グラフィックデバイス gd, Node ノード )
 		{
