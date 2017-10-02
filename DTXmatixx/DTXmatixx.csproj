@@ -97,6 +97,7 @@
     <Compile Include="ステージ\ドラムサウンド.cs" />
     <Compile Include="ステージ\曲ツリー構築\曲ツリー構築ステージ.cs" />
     <Compile Include="ステージ\曲読み込み\曲読み込みステージ.cs" />
+    <Compile Include="ステージ\演奏\カウントマップライン.cs" />
     <Compile Include="ステージ\演奏\コンボ.cs" />
     <Compile Include="ステージ\演奏\チップ光.cs" />
     <Compile Include="ステージ\演奏\ドラムパッド.cs" />
@@ -108,7 +109,7 @@
     <Compile Include="ステージ\演奏\左サイドクリアパネル.cs" />
     <Compile Include="ステージ\演奏\曲名パネル.cs" />
     <Compile Include="ステージ\演奏\演奏ステージ.cs" />
-    <Compile Include="ステージ\演奏\演奏位置パネル.cs" />
+    <Compile Include="ステージ\演奏\フェーズパネル.cs" />
     <Compile Include="ステージ\演奏\演奏パラメータ.cs" />
     <Compile Include="ステージ\演奏\表示レーン種別.cs" />
     <Compile Include="ステージ\結果\演奏パラメータ結果.cs" />

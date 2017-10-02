@@ -58,8 +58,9 @@ namespace DTXmatixx.ステージ.演奏
 			this.子リスト.Add( this._左サイドクリアパネル = new 左サイドクリアパネル() );
 			this.子リスト.Add( this._右サイドクリアパネル = new 右サイドクリアパネル() );
 			this.子リスト.Add( this.演奏判定パラメータ = new 演奏パラメータ() );
-			this.子リスト.Add( this._演奏位置パネル = new 演奏位置パネル() );
+			this.子リスト.Add( this._フェーズパネル = new フェーズパネル() );
 			this.子リスト.Add( this._コンボ = new コンボ() );
+			this.子リスト.Add( this._カウントマップライン = new カウントマップライン() );
 			this.子リスト.Add( this._FPS = new FPS() );
 		}
 		protected override void On活性化( グラフィックデバイス gd )
@@ -304,7 +305,8 @@ namespace DTXmatixx.ステージ.演奏
 						this._レーンフレーム.描画する( gd );
 						this._ドラムパッド.進行描画する( gd );
 						this._背景画像.描画する( gd, 0f, 0f );
-						this._演奏位置パネル.進行描画する( gd );
+						this._カウントマップライン.進行描画する( gd );
+						this._フェーズパネル.進行描画する( gd );
 						this._曲名パネル.描画する( gd );
 						this._ヒットバーを描画する( gd );
 						this._キャプチャ画面を描画する( gd, ( 1.0f - this._フェードインカウンタ.現在値の割合 ) );
@@ -388,15 +390,17 @@ namespace DTXmatixx.ステージ.演奏
 						this._右サイドクリアパネル.描画する( gd );
 
 						this._レーンフラッシュ.進行描画する( gd );
-
-						double 曲の長さsec = App.演奏スコア.チップリスト[ App.演奏スコア.チップリスト.Count - 1 ].描画時刻sec;
-						this._演奏位置パネル.現在位置 = (float) ( 1.0 - ( 曲の長さsec - 演奏時刻sec ) / 曲の長さsec );
-						this._演奏位置パネル.進行描画する( gd );
-
 						this._小節線拍線を描画する( gd, 演奏時刻sec );
 						this._レーンフレーム.描画する( gd );
 						this._ドラムパッド.進行描画する( gd );
 						this._背景画像.描画する( gd, 0f, 0f );
+
+						double 曲の長さsec = App.演奏スコア.チップリスト[ App.演奏スコア.チップリスト.Count - 1 ].描画時刻sec;
+						float 現在位置 = (float) ( 1.0 - ( 曲の長さsec - 演奏時刻sec ) / 曲の長さsec );
+						this._カウントマップライン.カウント値を設定する( 現在位置, this.演奏判定パラメータ.判定toヒット数 );
+						this._カウントマップライン.進行描画する( gd );
+						this._フェーズパネル.現在位置 = 現在位置;
+						this._フェーズパネル.進行描画する( gd );
 						this._曲名パネル.描画する( gd );
 						this._ヒットバーを描画する( gd );
 						this._チップを描画する( gd, 演奏時刻sec );
@@ -473,8 +477,9 @@ namespace DTXmatixx.ステージ.演奏
 		private チップ光 _チップ光 = null;
 		private 左サイドクリアパネル _左サイドクリアパネル = null;
 		private 右サイドクリアパネル _右サイドクリアパネル = null;
-		private 演奏位置パネル _演奏位置パネル = null;
+		private フェーズパネル _フェーズパネル = null;
 		private コンボ _コンボ = null;
+		private カウントマップライン _カウントマップライン = null;
 		private FPS _FPS = null;
 		/// <summary>
 		///		読み込み画面: 0 ～ 1: 演奏画面

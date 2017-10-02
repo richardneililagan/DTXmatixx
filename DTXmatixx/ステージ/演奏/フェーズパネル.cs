@@ -9,7 +9,7 @@ using FDK.カウンタ;
 
 namespace DTXmatixx.ステージ.演奏
 {
-	class 演奏位置パネル : Activity
+	class フェーズパネル : Activity
 	{
 		/// <summary>
 		///		現在の位置を 開始点:0～1:終了点 で示す。
@@ -23,7 +23,7 @@ namespace DTXmatixx.ステージ.演奏
 				=> this._現在位置 = Math.Min( Math.Max( 0.0f, value ), 1.0f );
 		}
 
-		public 演奏位置パネル()
+		public フェーズパネル()
 		{
 			this.子リスト.Add( this._演奏位置カーソル画像 = new 画像( @"$(System)images\演奏位置カーソル.png" ) );
 		}
