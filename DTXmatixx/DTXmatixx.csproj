@@ -115,6 +115,7 @@
     <Compile Include="ステージ\結果\結果ステージ.cs" />
     <Compile Include="ステージ\舞台画像.cs" />
     <Compile Include="ステージ\認証\認証ステージ.cs" />
+    <Compile Include="ステージ\選曲\曲ステータスパネル.cs" />
     <Compile Include="ステージ\選曲\曲リスト.cs" />
     <Compile Include="ステージ\選曲\選択曲枠ランナー.cs" />
     <Compile Include="ステージ\選曲\難易度と成績.cs" />
@@ -418,6 +419,11 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="System\Images\パラメータ用判定種別文字矩形.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="System\Images\選曲画面_曲ステータスパネル.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>

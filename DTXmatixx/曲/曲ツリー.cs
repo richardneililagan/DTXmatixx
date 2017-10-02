@@ -14,6 +14,8 @@ namespace DTXmatixx.曲
 	/// </summary>
 	class 曲ツリー : Activity, IDisposable
 	{
+		// オンメモリ
+
 		/// <summary>
 		///		曲ツリーのルートを表すノード。
 		///		フォーカスリストやフォーカスノードも、このツリーの中に実態がある。
@@ -47,7 +49,6 @@ namespace DTXmatixx.曲
 			get;
 			protected set;
 		} = null;
-
 
 		// 構築・破棄
 

@@ -13,7 +13,7 @@ namespace DTXmatixx.設定
 		/// <summary>
 		///		SSTFのチップ種別を、DTXMatixx の表示レーン種別に変換する。
 		/// </summary>
-		public Dictionary<チップ種別, 表示レーン種別> チップto表示レーン = new Dictionary<チップ種別, 表示レーン種別>() {
+		public readonly Dictionary<チップ種別, 表示レーン種別> チップto表示レーン = new Dictionary<チップ種別, 表示レーン種別>() {
 			{ チップ種別.Unknown, 表示レーン種別.Unknown },
 			{ チップ種別.LeftCrash, 表示レーン種別.LeftCrash },
 			{ チップ種別.Ride, 表示レーン種別.RightCrash },	// Ride は右固定
