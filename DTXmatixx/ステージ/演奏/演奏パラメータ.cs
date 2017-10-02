@@ -162,8 +162,10 @@ namespace DTXmatixx.ステージ.演奏
 				this.MaxComboヒット数++;
 			}
 		}
-		public virtual void 描画する( DeviceContext1 dc, float x, float y )
+		public virtual void 描画する( DeviceContext dc, float x, float y )
 		{
+			dc.Transform = Matrix3x2.Identity;
+
 			var 割合表 = this.判定toヒット割合;
 			int 合計 = 0;
 
@@ -195,7 +197,7 @@ namespace DTXmatixx.ステージ.演奏
 			this.数値を描画する( dc, x + _dr, y, (int) Math.Floor( 100.0 * this.MaxComboヒット数 / 合計 ), 桁数: 3 );    // 切り捨てでいいやもう
 			this._パラメータ文字.描画する( dc, x + _dp, y, "%" );
 		}
-		public void パラメータを一行描画する( DeviceContext1 dc, float x, float y, 判定種別 judge, int ヒット数, int ヒット割合, float 不透明度 = 1.0f )
+		public void パラメータを一行描画する( DeviceContext dc, float x, float y, 判定種別 judge, int ヒット数, int ヒット割合, float 不透明度 = 1.0f )
 		{
 			var 矩形 = (RectangleF) this._判定種別文字の矩形リスト[ judge.ToString() ];
 			this._判定種別文字.描画する( dc, x, y, 不透明度, 転送元矩形: 矩形 );
@@ -216,7 +218,7 @@ namespace DTXmatixx.ステージ.演奏
 		protected 画像 _判定種別文字 = null;
 		protected 矩形リスト _判定種別文字の矩形リスト = null;
 
-		protected void 数値を描画する( DeviceContext1 描画先dc, float x, float y, int 描画する数値, int 桁数, float 不透明度 = 1.0f )
+		protected void 数値を描画する( DeviceContext 描画先dc, float x, float y, int 描画する数値, int 桁数, float 不透明度 = 1.0f )
 		{
 			Debug.Assert( 1 <= 桁数 && 10 >= 桁数 );    // 最大10桁まで
 

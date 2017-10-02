@@ -55,7 +55,7 @@ namespace DTXmatixx.ステージ.演奏
 		/// <param name="全体の中央位置">
 		///		パネル(dc)の左上を原点とする座標。
 		/// </param>
-		public void 進行描画する( DeviceContext1 dc, アニメーション管理 am, Vector2 全体の中央位置 )
+		public void 進行描画する( DeviceContext dc, アニメーション管理 am, Vector2 全体の中央位置 )
 		{
 			int Combo値 = Math.Min( Math.Max( this.現在値, 0 ), 9999 );  // プロパティには制限はないが、表示は9999でカンスト。
 

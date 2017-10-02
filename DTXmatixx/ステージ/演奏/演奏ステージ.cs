@@ -61,6 +61,7 @@ namespace DTXmatixx.ステージ.演奏
 			this.子リスト.Add( this._フェーズパネル = new フェーズパネル() );
 			this.子リスト.Add( this._コンボ = new コンボ() );
 			this.子リスト.Add( this._カウントマップライン = new カウントマップライン() );
+			this.子リスト.Add( this._スコア = new スコア() );
 			this.子リスト.Add( this._FPS = new FPS() );
 		}
 		protected override void On活性化( グラフィックデバイス gd )
@@ -295,6 +296,7 @@ namespace DTXmatixx.ステージ.演奏
 					{
 						this._左サイドクリアパネル.クリアする( gd );
 						this._左サイドクリアパネル.クリアパネル.ビットマップへ描画する( gd, ( dc, bmp ) => {
+							this._スコア.進行描画する( dc, gd.Animation, new Vector2( +280f, +120f ) );
 							this.演奏判定パラメータ.描画する( dc, +118f, +392f );
 						} );
 						this._左サイドクリアパネル.描画する( gd );
@@ -379,6 +381,7 @@ namespace DTXmatixx.ステージ.演奏
 
 						this._左サイドクリアパネル.クリアする( gd );
 						this._左サイドクリアパネル.クリアパネル.ビットマップへ描画する( gd, ( dc, bmp ) => {
+							this._スコア.進行描画する( dc, gd.Animation, new Vector2( +280f, +120f ) );
 							this.演奏判定パラメータ.描画する( dc, +118f, +392f );
 						} );
 						this._左サイドクリアパネル.描画する( gd );
@@ -480,6 +483,7 @@ namespace DTXmatixx.ステージ.演奏
 		private フェーズパネル _フェーズパネル = null;
 		private コンボ _コンボ = null;
 		private カウントマップライン _カウントマップライン = null;
+		private スコア _スコア = null;
 		private FPS _FPS = null;
 		/// <summary>
 		///		読み込み画面: 0 ～ 1: 演奏画面
@@ -739,7 +743,7 @@ namespace DTXmatixx.ステージ.演奏
 
 				if( judge != 判定種別.MISS )
 				{
-					// (A) PERFECT～POOR
+					// (A) PERFECT～OK
 
 					this._コンボ.現在値++;
 					this._チップ光.表示を開始する( 対応表.表示レーン種別 );
@@ -747,6 +751,7 @@ namespace DTXmatixx.ステージ.演奏
 					this._レーンフラッシュ.開始する( 対応表.表示レーン種別 );
 					this._判定文字列.表示を開始する( 対応表.表示レーン種別, judge );
 					this.演奏判定パラメータ.ヒット数を加算する( judge );
+					this._スコア.スコアを更新する( this.演奏判定パラメータ );
 				}
 				else
 				{
@@ -754,7 +759,7 @@ namespace DTXmatixx.ステージ.演奏
 
 					this._コンボ.現在値 = 0;
 					this._判定文字列.表示を開始する( 対応表.表示レーン種別, 判定種別.MISS );
-					//this.ヒットランク別ヒット回数[ hitRankType ]++;
+					this._スコア.スコアを更新する( this.演奏判定パラメータ );
 				}
 				//----------------
 				#endregion

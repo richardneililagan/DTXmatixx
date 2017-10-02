@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<Root>
+  <SubImage Name="0" Rectangle="0,0,50,99" />
+  <SubImage Name="1" Rectangle="50,0,50,99" />
+  <SubImage Name="2" Rectangle="100,0,50,99" />
+  <SubImage Name="3" Rectangle="150,0,50,99" />
+  <SubImage Name="4" Rectangle="0,99,50,99" />
+  <SubImage Name="5" Rectangle="50,99,50,99" />
+  <SubImage Name="6" Rectangle="100,99,50,99" />
+  <SubImage Name="7" Rectangle="150,99,50,99" />
+  <SubImage Name="8" Rectangle="0,198,50,99" />
+  <SubImage Name="9" Rectangle="50,198,50,99" />
+  <SubImage Name=" " Rectangle="100,198,50,99" />
+</Root>

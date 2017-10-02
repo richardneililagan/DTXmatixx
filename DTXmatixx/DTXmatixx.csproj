@@ -99,6 +99,7 @@
     <Compile Include="ステージ\曲読み込み\曲読み込みステージ.cs" />
     <Compile Include="ステージ\演奏\カウントマップライン.cs" />
     <Compile Include="ステージ\演奏\コンボ.cs" />
+    <Compile Include="ステージ\演奏\スコア.cs" />
     <Compile Include="ステージ\演奏\チップ光.cs" />
     <Compile Include="ステージ\演奏\ドラムパッド.cs" />
     <Compile Include="ステージ\演奏\レーンフラッシュ.cs" />
@@ -425,6 +426,16 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="System\Images\選曲画面_曲ステータスパネル.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="System\Images\スコア数字.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="System\Images\スコア数字矩形.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
