@@ -70,7 +70,7 @@ namespace DTXmatixx.ステージ.演奏
 			{
 				this.キャプチャ画面 = null;
 
-				this.成績 = new 成績();
+				this.成績 = new 成績( App.演奏スコア, App.オプション設定 );
 
 				this._描画開始チップ番号 = -1;
 				this._小節線色 = new SolidColorBrush( gd.D2DDeviceContext, Color.White );
@@ -135,6 +135,7 @@ namespace DTXmatixx.ステージ.演奏
 				this.キャプチャ画面 = null;
 			}
 		}
+
 		public override void 高速進行する()
 		{
 			if( this._初めての進行描画 )
@@ -299,7 +300,7 @@ namespace DTXmatixx.ステージ.演奏
 					{
 						this._左サイドクリアパネル.クリアする( gd );
 						this._左サイドクリアパネル.クリアパネル.ビットマップへ描画する( gd, ( dc, bmp ) => {
-							this._スコア.進行描画する( dc, gd.Animation, new Vector2( +280f, +120f ) );
+							this._スコア.進行描画する( dc, gd.Animation, new Vector2( +280f, +120f ), this.成績 );
 							this._判定パラメータ.描画する( dc, +118f, +392f, this.成績 );
 						} );
 						this._左サイドクリアパネル.描画する( gd );
@@ -384,14 +385,14 @@ namespace DTXmatixx.ステージ.演奏
 
 						this._左サイドクリアパネル.クリアする( gd );
 						this._左サイドクリアパネル.クリアパネル.ビットマップへ描画する( gd, ( dc, bmp ) => {
-							this._スコア.進行描画する( dc, gd.Animation, new Vector2( +280f, +120f ) );
+							this._スコア.進行描画する( dc, gd.Animation, new Vector2( +280f, +120f ), this.成績 );
 							this._判定パラメータ.描画する( dc, +118f, +392f, this.成績 );
 						} );
 						this._左サイドクリアパネル.描画する( gd );
 
 						this._右サイドクリアパネル.クリアする( gd );
 						this._右サイドクリアパネル.クリアパネル.ビットマップへ描画する( gd, ( dc, bmp ) => {
-							this._コンボ.進行描画する( dc, gd.Animation, new Vector2( +228f + 264f/2f, +234f ) );
+							this._コンボ.進行描画する( dc, gd.Animation, new Vector2( +228f + 264f/2f, +234f ), this.成績 );
 						} );
 						this._右サイドクリアパネル.描画する( gd );
 
@@ -436,6 +437,7 @@ namespace DTXmatixx.ステージ.演奏
 					break;
 			}
 		}
+
 		public void 演奏を停止する()
 		{
 			using( Log.Block( FDKUtilities.現在のメソッド名 ) )
@@ -748,24 +750,14 @@ namespace DTXmatixx.ステージ.演奏
 
 				if( judge != 判定種別.MISS )
 				{
-					// (A) PERFECT～OK
-
-					this._コンボ.現在値++;
+					// PERFECT～OK
 					this._チップ光.表示を開始する( 対応表.表示レーン種別 );
 					this._ドラムパッド.ヒットする( 対応表.表示レーン種別 );
 					this._レーンフラッシュ.開始する( 対応表.表示レーン種別 );
-					this._判定文字列.表示を開始する( 対応表.表示レーン種別, judge );
-					this.成績.ヒット数を加算する( judge );
-					this._スコア.スコアを更新する( this.成績 );
 				}
-				else
-				{
-					// (B) MISS
 
-					this._コンボ.現在値 = 0;
-					this._判定文字列.表示を開始する( 対応表.表示レーン種別, 判定種別.MISS );
-					this._スコア.スコアを更新する( this.成績 );
-				}
+				this._判定文字列.表示を開始する( 対応表.表示レーン種別, judge );
+				this.成績.ヒット数を加算する( judge );
 				//----------------
 				#endregion
 			}

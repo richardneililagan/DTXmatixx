@@ -2,16 +2,37 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using SSTFormatCurrent = SSTFormat.v3;
+using DTXmatixx.設定;
 
 namespace DTXmatixx.ステージ.演奏
 {
 	/// <summary>
 	///		現在の演奏状態や成績を保存するクラス。
-	///		進行や描画は行わない。
+	///		描画は行わない。
 	/// </summary>
 	internal class 成績
 	{
+		public int Score
+		{
+			get;
+			protected set;
+		} = 0;
+		public int Combo
+		{
+			get;
+			protected set;
+		} = 0;
 		public int MaxCombo
+		{
+			get;
+			protected set;
+		} = 0;
+
+		/// <summary>
+		///		現在の設定において、ヒット対象になるノーツの数を返す。
+		/// </summary>
+		public int 総ノーツ数
 		{
 			get;
 			protected set;
@@ -31,13 +52,24 @@ namespace DTXmatixx.ステージ.演奏
 			=> this._ヒット割合を算出して返す();
 
 
-		public 成績()
+		/// <param name="譜面">単体テスト時に限り null を許す。</param>
+		/// <param name="設定">単体テスト時に限り null を許す。</param>
+		public 成績( SSTFormatCurrent.スコア 譜面 = null, オプション設定 設定 = null )
 		{
+			Debug.Assert( null != 譜面 );
+
+			this.Score = 0;
 			this.MaxCombo = 0;
 
+			this.総ノーツ数 = ( null != 譜面 && null != 設定 ) ? this._総ノーツ数を算出して返す( 譜面, 設定 ) : 0;
+
 			this._判定toヒット数 = new Dictionary<判定種別, int>();
+			this._最後にスコアを更新したときの判定toヒット数 = new Dictionary<判定種別, int>();
 			foreach( 判定種別 judge in Enum.GetValues( typeof( 判定種別 ) ) )
+			{
 				this._判定toヒット数.Add( judge, 0 );
+				this._最後にスコアを更新したときの判定toヒット数.Add( judge, 0 );
+			}
 		}
 
 		public void ヒット数を加算する( 判定種別 judge, int 加算値 = 1 )
@@ -46,16 +78,29 @@ namespace DTXmatixx.ステージ.演奏
 
 			if( judge == 判定種別.OK || judge == 判定種別.MISS )
 			{
-				this.MaxCombo = 0;  // コンボ切れ
+				this.Combo = 0; // コンボ切れ
 			}
 			else
 			{
-				this.MaxCombo++;
+				this.Combo++;
+				this.MaxCombo = Math.Max( this.Combo, this.MaxCombo );
+
+				// スコアを加算する。
+				double 基礎点 = 1000000.0 / ( 1275.0 + 50.0 * ( this.総ノーツ数 - 50 ) );
+				int コンボ数 = Math.Min( this.Combo, 50 );
+				this.Score += (int) Math.Floor( 基礎点 * コンボ数 * this._判定値表[ judge ] );
 			}
 		}
 
-
 		private Dictionary<判定種別, int> _判定toヒット数 = null;
+		private Dictionary<判定種別, int> _最後にスコアを更新したときの判定toヒット数 = null;
+		private readonly Dictionary<判定種別, double> _判定値表 = new Dictionary<判定種別, double>() {
+			{ 判定種別.PERFECT, 1.0 },
+			{ 判定種別.GREAT, 0.5 },
+			{ 判定種別.GOOD, 0.2 },
+			{ 判定種別.OK, 0.0 },
+			{ 判定種別.MISS, 0.0 },
+		};
 
 		private IReadOnlyDictionary<判定種別, int> _ヒット割合を算出して返す()
 		{
@@ -161,6 +206,30 @@ namespace DTXmatixx.ステージ.演奏
 			}
 
 			return ヒット割合_整数;
+		}
+		private int _総ノーツ数を算出して返す( SSTFormatCurrent.スコア score, オプション設定 options )
+		{
+			int 総ノーツ数 = 0;
+
+			foreach( var chip in score.チップリスト )
+			{
+				var チップの対応表 = options.ドラムとチップと入力の対応表[ chip.チップ種別 ];
+
+				// AutoPlay ON のチップは、
+				if( options.AutoPlay[ チップの対応表.AutoPlay種別 ] )
+				{
+					if( !( options.AutoPlayがすべてONである ) )
+						continue;	// すべてがONである場合を除いて、カウントしない。
+				}
+
+				// AutoPlay OFF 時でもユーザヒットの対象にならないチップはカウントしない。
+				if( !( チップの対応表.AutoPlayOFF.ユーザヒット ) )
+					continue;
+
+				総ノーツ数++;
+			}
+
+			return 総ノーツ数;
 		}
 	}
 }

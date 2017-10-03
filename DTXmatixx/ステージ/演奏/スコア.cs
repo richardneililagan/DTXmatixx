@@ -11,41 +11,15 @@ using FDK.カウンタ;
 
 namespace DTXmatixx.ステージ.演奏
 {
+	/// <summary>
+	///		スコアの描画を行う。
+	///		スコアの計算については、<see cref="成績"/> クラスにて実装する。
+	/// </summary>
 	class スコア : Activity
 	{
 		public スコア()
 		{
 			this.子リスト.Add( this._スコア数字画像 = new 画像( @"$(System)images\スコア数字.png" ) );
-		}
-
-		public void スコアを更新する( 成績 現在の成績 )
-		{
-			// 成績の増加分を得る。
-			var 増加値 = new Dictionary<判定種別, int>();
-			foreach( 判定種別 judge in Enum.GetValues( typeof( 判定種別 ) ) )
-				増加値.Add( judge, 現在の成績.判定toヒット数[ judge ] - this._判定toヒット数[ judge ] );
-
-			// hack: スコア（の増分）を計算する。
-
-			// bemani wiki:
-			// http://bemaniwiki.com/index.php?GITADORA%2F%B4%F0%C1%C3%C3%CE%BC%B1#score
-			//
-			// 基礎点: (100万-500xボーナスノーツ数)/{1275+50×(総ノーツ数-50)}
-			// ノーツごとの得点: 基礎点×判定値×コンボ数
-			//		判定値: PERFECT 1.0, GREAT 0.5, GOOD 0.2, OK: 0.0, MISS: 0.0
-			//		コンボ数は50以上は50として計算する。
-			//		小数点以下は切り捨て。
-
-			this._現在のスコア +=
-				増加値[ 判定種別.PERFECT ] * 35 +
-				増加値[ 判定種別.GREAT ] * 20 +
-				増加値[ 判定種別.GOOD ] * 10 +
-				増加値[ 判定種別.OK ] * 0 +
-				増加値[ 判定種別.MISS ] * 0;
-
-			// 成績を保存。
-			foreach( 判定種別 judge in Enum.GetValues( typeof( 判定種別 ) ) )
-				this._判定toヒット数[ judge ] = 現在の成績.判定toヒット数[ judge ];
 		}
 
 		protected override void On活性化( グラフィックデバイス gd )
@@ -55,10 +29,9 @@ namespace DTXmatixx.ステージ.演奏
 				this._スコア数字画像の矩形リスト = new 矩形リスト( @"$(System)images\スコア数字矩形.xml" );
 
 				// 表示用
-				this._現在のスコア = 0;
 				this._現在表示中のスコア = 0;
 				this._前回表示したスコア = 0;
-				this._前回表示した数字 = "         ";
+				this._前回表示した数字 = "        0";
 				this._各桁のアニメ = new 各桁のアニメ[ 9 ];
 				for( int i = 0; i < this._各桁のアニメ.Length; i++ )
 					this._各桁のアニメ[ i ] = new 各桁のアニメ();
@@ -82,13 +55,15 @@ namespace DTXmatixx.ステージ.演奏
 		/// <param name="全体の中央位置">
 		///		パネル(dc)の左上を原点とする座標。
 		/// </param>
-		public void 進行描画する( DeviceContext dc, アニメーション管理 am, Vector2 全体の中央位置 )
+		public void 進行描画する( DeviceContext dc, アニメーション管理 am, Vector2 全体の中央位置, 成績 現在の成績 )
 		{
 			// 追っかけ
-			if( this._現在表示中のスコア < this._現在のスコア )
+			if( this._現在表示中のスコア < 現在の成績.Score )
 			{
-				// todo: 要速度調節。
-				this._現在表示中のスコア = Math.Min( this._現在表示中のスコア + 10, this._現在のスコア );
+				int 増分 = 現在の成績.Score - this._現在表示中のスコア;
+				int 追っかけ分 = Math.Max( (int) ( 増分 * 0.75 ), 1 );	// VPS に依存するけどまあいい
+
+				this._現在表示中のスコア = Math.Min( this._現在表示中のスコア + 追っかけ分, 現在の成績.Score );
 			}
 
 			int スコア値 = Math.Min( Math.Max( this._現在表示中のスコア, 0 ), 999999999 );  // プロパティには制限はないが、表示は999999999（9桁）でカンスト。
@@ -127,10 +102,6 @@ namespace DTXmatixx.ステージ.演奏
 			this._前回表示した数字 = 数字;
 		}
 
-		/// <summary>
-		///		<see cref="スコアを更新する(IReadOnlyDictionary{判定種別, int})"/> で更新される。
-		/// </summary>
-		private int _現在のスコア = 0;
 		/// <summary>
 		///		<see cref="進行描画する(DeviceContext1, Vector2)"/> で更新される。
 		/// </summary>
@@ -180,6 +151,6 @@ namespace DTXmatixx.ステージ.演奏
 			}
 		};
 		private 各桁のアニメ[] _各桁のアニメ = null;
-		private string _前回表示した数字 = "         ";
+		private string _前回表示した数字 = "        0";
 	}
 }

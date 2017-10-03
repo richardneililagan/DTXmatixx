@@ -20,6 +20,19 @@ namespace DTXmatixx.設定
 		[DataMember]
 		public Dictionary<AutoPlay種別, bool> AutoPlay { get; set; }
 
+		public bool AutoPlayがすべてONである
+		{
+			get
+			{
+				bool allON = true;
+
+				for( int i = 0; i < this.AutoPlay.Count; i++ )
+					allON &= this.AutoPlay.ElementAt( i ).Value;
+
+				return allON;
+			}
+		}
+
 		/// <summary>
 		///		チップがヒット判定バーから（上または下に）どれだけ離れていると Perfect ～ Ok 判定になるのかの定義。秒単位。
 		/// </summary>

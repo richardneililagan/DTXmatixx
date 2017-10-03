@@ -29,7 +29,7 @@ namespace DTXmatixx.ステージ.結果
 		}
 
 		// 外部依存アクション; ステージ管理クラスで接続。
-		public Func<成績> 結果を取得する = null;
+		internal Func<成績> 結果を取得する = null;
 
 		public 結果ステージ()
 		{
@@ -170,7 +170,7 @@ namespace DTXmatixx.ステージ.結果
 			var 表示位置dpx = new Vector2( 690f, 820f );
 
 			// 拡大率を計算して描画する。
-			float 最大幅dpx = 555f;
+			float 最大幅dpx = 545f;
 
 			this._曲名画像.描画する(
 				gd,
