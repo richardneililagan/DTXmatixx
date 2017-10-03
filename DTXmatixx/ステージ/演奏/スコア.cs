@@ -18,14 +18,24 @@ namespace DTXmatixx.ステージ.演奏
 			this.子リスト.Add( this._スコア数字画像 = new 画像( @"$(System)images\スコア数字.png" ) );
 		}
 
-		public void スコアを更新する( 演奏パラメータ parameters )
+		public void スコアを更新する( 成績 現在の成績 )
 		{
 			// 成績の増加分を得る。
 			var 増加値 = new Dictionary<判定種別, int>();
 			foreach( 判定種別 judge in Enum.GetValues( typeof( 判定種別 ) ) )
-				増加値.Add( judge, parameters.判定toヒット数[ judge ] - this._判定toヒット数[ judge ] );
+				増加値.Add( judge, 現在の成績.判定toヒット数[ judge ] - this._判定toヒット数[ judge ] );
 
-			// todo: スコアの増分を計算する。
+			// hack: スコア（の増分）を計算する。
+
+			// bemani wiki:
+			// http://bemaniwiki.com/index.php?GITADORA%2F%B4%F0%C1%C3%C3%CE%BC%B1#score
+			//
+			// 基礎点: (100万-500xボーナスノーツ数)/{1275+50×(総ノーツ数-50)}
+			// ノーツごとの得点: 基礎点×判定値×コンボ数
+			//		判定値: PERFECT 1.0, GREAT 0.5, GOOD 0.2, OK: 0.0, MISS: 0.0
+			//		コンボ数は50以上は50として計算する。
+			//		小数点以下は切り捨て。
+
 			this._現在のスコア +=
 				増加値[ 判定種別.PERFECT ] * 35 +
 				増加値[ 判定種別.GREAT ] * 20 +
@@ -35,7 +45,7 @@ namespace DTXmatixx.ステージ.演奏
 
 			// 成績を保存。
 			foreach( 判定種別 judge in Enum.GetValues( typeof( 判定種別 ) ) )
-				this._判定toヒット数[ judge ] = parameters.判定toヒット数[ judge ];
+				this._判定toヒット数[ judge ] = 現在の成績.判定toヒット数[ judge ];
 		}
 
 		protected override void On活性化( グラフィックデバイス gd )

@@ -11,7 +11,7 @@ using DTXmatixx.ステージ.演奏;
 
 namespace DTXmatixx.ステージ.結果
 {
-	class 演奏パラメータ結果 : 演奏.演奏パラメータ
+	class 演奏パラメータ結果 : 演奏.判定パラメータ
 	{
 		public 演奏パラメータ結果()
 		{
@@ -67,10 +67,8 @@ namespace DTXmatixx.ステージ.結果
 			}
 		}
 
-		public void 描画する( グラフィックデバイス gd, float x, float y )
+		public void 描画する( グラフィックデバイス gd, float x, float y, 成績 結果 )
 		{
-			var 結果 = ( (演奏.演奏ステージ) App.ステージ管理.ステージリスト[ nameof( 演奏.演奏ステージ ) ] ).演奏判定パラメータ;
-
 			gd.D2DBatchDraw( ( dc ) => {
 
 				dc.Transform =
@@ -112,8 +110,8 @@ namespace DTXmatixx.ステージ.結果
 				this._判定種別文字.描画する( dc, x, y, 転送元矩形: 矩形, 不透明度0to1: (float) this._パラメータアニメ.不透明度[ 5 ].Value );
 
 				x += 矩形.Width + 16f;
-				this.数値を描画する( dc, x, y, 結果.MaxComboヒット数, 4, (float) this._パラメータアニメ.不透明度[ 5 ].Value );
-				this.数値を描画する( dc, x + _dr, y, (int) Math.Floor( 100.0 * 結果.MaxComboヒット数 / 合計 ), 3, (float) this._パラメータアニメ.不透明度[ 5 ].Value );    // 切り捨てでいいやもう
+				this.数値を描画する( dc, x, y, 結果.MaxCombo, 4, (float) this._パラメータアニメ.不透明度[ 5 ].Value );
+				this.数値を描画する( dc, x + _dr, y, (int) Math.Floor( 100.0 * 結果.MaxCombo / 合計 ), 3, (float) this._パラメータアニメ.不透明度[ 5 ].Value );    // 切り捨てでいいやもう
 				this._パラメータ文字.不透明度 = (float) this._パラメータアニメ.不透明度[ 5 ].Value;
 				this._パラメータ文字.描画する( dc, x + _dp, y, "%" );
 

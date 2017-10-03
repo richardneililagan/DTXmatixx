@@ -10,6 +10,7 @@ using FDK;
 using FDK.メディア;
 using DTXmatixx.曲;
 using DTXmatixx.アイキャッチ;
+using DTXmatixx.ステージ.演奏;
 
 namespace DTXmatixx.ステージ.結果
 {
@@ -26,6 +27,9 @@ namespace DTXmatixx.ステージ.結果
 			get;
 			protected set;
 		}
+
+		// 外部依存アクション; ステージ管理クラスで接続。
+		public Func<成績> 結果を取得する = null;
 
 		public 結果ステージ()
 		{
@@ -51,6 +55,8 @@ namespace DTXmatixx.ステージ.結果
 				var 選択曲 = App.曲ツリー.フォーカスノード as MusicNode;
 				Debug.Assert( null != 選択曲 );
 
+				this._結果 = this.結果を取得する();
+
 				this._曲名画像.表示文字列 = 選択曲.タイトル;
 				this._黒マスクブラシ = new SolidColorBrush( gd.D2DDeviceContext, new Color4( Color3.Black, 0.75f ) );
 				this._プレビュー枠ブラシ = new SolidColorBrush( gd.D2DDeviceContext, new Color4( 0xFF209292 ) );
@@ -62,6 +68,8 @@ namespace DTXmatixx.ステージ.結果
 		{
 			using( Log.Block( FDKUtilities.現在のメソッド名 ) )
 			{
+				this._結果 = null;
+
 				FDKUtilities.解放する( ref this._黒マスクブラシ );
 				FDKUtilities.解放する( ref this._プレビュー枠ブラシ );
 			}
@@ -82,7 +90,7 @@ namespace DTXmatixx.ステージ.結果
 			this._プレビュー画像を描画する( gd );
 			this._曲名パネル.描画する( gd, 660f, 796f );
 			this._曲名を描画する( gd );
-			this._演奏パラメータ結果.描画する( gd, 1317f, 716f );
+			this._演奏パラメータ結果.描画する( gd, 1317f, 716f, this._結果 );
 
 			App.Keyboard.ポーリングする();
 
@@ -108,6 +116,8 @@ namespace DTXmatixx.ステージ.結果
 		}
 
 		private bool _初めての進行描画 = true;
+		private 成績 _結果 = null;
+
 		private 舞台画像 _背景 = null;
 		private 画像 _曲名パネル = null;
 		private 文字列画像 _曲名画像 = null;

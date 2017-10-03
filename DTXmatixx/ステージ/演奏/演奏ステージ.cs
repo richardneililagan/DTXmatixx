@@ -38,7 +38,7 @@ namespace DTXmatixx.ステージ.演奏
 			get;
 			set;
 		} = null;
-		public 演奏パラメータ 演奏判定パラメータ
+		public 成績 成績
 		{
 			get;
 			protected set;
@@ -57,7 +57,7 @@ namespace DTXmatixx.ステージ.演奏
 			this.子リスト.Add( this._チップ光 = new チップ光() );
 			this.子リスト.Add( this._左サイドクリアパネル = new 左サイドクリアパネル() );
 			this.子リスト.Add( this._右サイドクリアパネル = new 右サイドクリアパネル() );
-			this.子リスト.Add( this.演奏判定パラメータ = new 演奏パラメータ() );
+			this.子リスト.Add( this._判定パラメータ = new 判定パラメータ() );
 			this.子リスト.Add( this._フェーズパネル = new フェーズパネル() );
 			this.子リスト.Add( this._コンボ = new コンボ() );
 			this.子リスト.Add( this._カウントマップライン = new カウントマップライン() );
@@ -69,6 +69,9 @@ namespace DTXmatixx.ステージ.演奏
 			using( Log.Block( FDKUtilities.現在のメソッド名 ) )
 			{
 				this.キャプチャ画面 = null;
+
+				this.成績 = new 成績();
+
 				this._描画開始チップ番号 = -1;
 				this._小節線色 = new SolidColorBrush( gd.D2DDeviceContext, Color.White );
 				this._拍線色 = new SolidColorBrush( gd.D2DDeviceContext, Color.LightGray );
@@ -297,7 +300,7 @@ namespace DTXmatixx.ステージ.演奏
 						this._左サイドクリアパネル.クリアする( gd );
 						this._左サイドクリアパネル.クリアパネル.ビットマップへ描画する( gd, ( dc, bmp ) => {
 							this._スコア.進行描画する( dc, gd.Animation, new Vector2( +280f, +120f ) );
-							this.演奏判定パラメータ.描画する( dc, +118f, +392f );
+							this._判定パラメータ.描画する( dc, +118f, +392f, this.成績 );
 						} );
 						this._左サイドクリアパネル.描画する( gd );
 
@@ -382,7 +385,7 @@ namespace DTXmatixx.ステージ.演奏
 						this._左サイドクリアパネル.クリアする( gd );
 						this._左サイドクリアパネル.クリアパネル.ビットマップへ描画する( gd, ( dc, bmp ) => {
 							this._スコア.進行描画する( dc, gd.Animation, new Vector2( +280f, +120f ) );
-							this.演奏判定パラメータ.描画する( dc, +118f, +392f );
+							this._判定パラメータ.描画する( dc, +118f, +392f, this.成績 );
 						} );
 						this._左サイドクリアパネル.描画する( gd );
 
@@ -400,7 +403,7 @@ namespace DTXmatixx.ステージ.演奏
 
 						double 曲の長さsec = App.演奏スコア.チップリスト[ App.演奏スコア.チップリスト.Count - 1 ].描画時刻sec;
 						float 現在位置 = (float) ( 1.0 - ( 曲の長さsec - 演奏時刻sec ) / 曲の長さsec );
-						this._カウントマップライン.カウント値を設定する( 現在位置, this.演奏判定パラメータ.判定toヒット数 );
+						this._カウントマップライン.カウント値を設定する( 現在位置, this.成績.判定toヒット数 );
 						this._カウントマップライン.進行描画する( gd );
 						this._フェーズパネル.現在位置 = 現在位置;
 						this._フェーズパネル.進行描画する( gd );
@@ -471,6 +474,7 @@ namespace DTXmatixx.ステージ.演奏
 		}
 
 		private bool _初めての進行描画 = true;
+
 		private 画像 _背景画像 = null;
 		private レーンフレーム _レーンフレーム = null;
 		private 曲名パネル _曲名パネル = null;
@@ -484,6 +488,7 @@ namespace DTXmatixx.ステージ.演奏
 		private コンボ _コンボ = null;
 		private カウントマップライン _カウントマップライン = null;
 		private スコア _スコア = null;
+		private 判定パラメータ _判定パラメータ = null;
 		private FPS _FPS = null;
 		/// <summary>
 		///		読み込み画面: 0 ～ 1: 演奏画面
@@ -750,8 +755,8 @@ namespace DTXmatixx.ステージ.演奏
 					this._ドラムパッド.ヒットする( 対応表.表示レーン種別 );
 					this._レーンフラッシュ.開始する( 対応表.表示レーン種別 );
 					this._判定文字列.表示を開始する( 対応表.表示レーン種別, judge );
-					this.演奏判定パラメータ.ヒット数を加算する( judge );
-					this._スコア.スコアを更新する( this.演奏判定パラメータ );
+					this.成績.ヒット数を加算する( judge );
+					this._スコア.スコアを更新する( this.成績 );
 				}
 				else
 				{
@@ -759,7 +764,7 @@ namespace DTXmatixx.ステージ.演奏
 
 					this._コンボ.現在値 = 0;
 					this._判定文字列.表示を開始する( 対応表.表示レーン種別, 判定種別.MISS );
-					this._スコア.スコアを更新する( this.演奏判定パラメータ );
+					this._スコア.スコアを更新する( this.成績 );
 				}
 				//----------------
 				#endregion

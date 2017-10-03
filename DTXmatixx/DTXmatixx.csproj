@@ -111,7 +111,8 @@
     <Compile Include="ステージ\演奏\曲名パネル.cs" />
     <Compile Include="ステージ\演奏\演奏ステージ.cs" />
     <Compile Include="ステージ\演奏\フェーズパネル.cs" />
-    <Compile Include="ステージ\演奏\演奏パラメータ.cs" />
+    <Compile Include="ステージ\演奏\成績.cs" />
+    <Compile Include="ステージ\演奏\判定パラメータ.cs" />
     <Compile Include="ステージ\演奏\表示レーン種別.cs" />
     <Compile Include="ステージ\結果\演奏パラメータ結果.cs" />
     <Compile Include="ステージ\結果\結果ステージ.cs" />

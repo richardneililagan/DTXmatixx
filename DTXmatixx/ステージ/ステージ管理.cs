@@ -42,6 +42,9 @@ namespace DTXmatixx.ステージ
 
 		public ステージ管理()
 		{
+			// 各ステージの外部依存アクションを接続。
+			( (結果.結果ステージ) this.ステージリスト[ nameof( 結果.結果ステージ ) ] ).結果を取得する =
+				() => ( (演奏.演奏ステージ) this.ステージリスト[ nameof( 演奏.演奏ステージ ) ] ).成績;
 		}
 		public void Dispose()
 		{
@@ -73,12 +76,15 @@ namespace DTXmatixx.ステージ
 		{
 			using( Log.Block( FDKUtilities.現在のメソッド名 ) )
 			{
+				// 全ステージの初期化
 				if( this.現在のステージ?.活性化していない ?? false )
 					this.現在のステージ?.活性化する( gd );
 
+				// 全アイキャッチの初期化
 				foreach( var kvp in this._アイキャッチリスト )
 					kvp.Value.活性化する( gd );
 
+				// 現在のアイキャッチを設定。
 				this._現在のアイキャッチ = this._アイキャッチリスト.ElementAt( 0 ).Value;
 			}
 		}
