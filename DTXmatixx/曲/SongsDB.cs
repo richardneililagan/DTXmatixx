@@ -8,6 +8,9 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using FDK;
+using SSTFormatCurrent = SSTFormat.v3;
+using DTXmatixx.設定;
+using DTXmatixx.ステージ.演奏;
 
 namespace DTXmatixx.曲
 {
@@ -56,7 +59,7 @@ namespace DTXmatixx.曲
 		///		すでに存在している場合は、必要があればレコードを更新する。
 		/// </summary>
 		/// <param name="曲ファイルパス">曲ファイルへの絶対パス。フォルダ変数使用可。</param>
-		public void 曲を追加する( string 曲ファイルパス )
+		public void 曲を追加または更新する( string 曲ファイルパス, オプション設定 options )
 		{
 			string songFile = Folder.絶対パスに含まれるフォルダ変数を展開して返す( 曲ファイルパス );
 
@@ -70,13 +73,26 @@ namespace DTXmatixx.曲
 					var table = context.GetTable<Song>();
 					var query = from s in table where ( s.Path == songFile ) select s;
 
-					// (A) 同じパスのレコードが存在しなかったら、追加する。
 					if( 0 == query.Count() )
 					{
+						// (A) 同じパスのレコードが存在しなかったら、追加する。
+
+						var ノーツ数 = this._スコアを読み込んでノーツ数をカウントする( songFile, options );
+
 						table.InsertOnSubmit( new Song() {
 							Path = songFile,
 							LastWriteTime = File.GetLastWriteTime( songFile ).ToString( "G" ),
+							LeftCymbalNotes = ノーツ数[ 表示レーン種別.LeftCrash ],
+							HiHatNotes = ノーツ数[ 表示レーン種別.HiHat ],
+							LeftPedalNotes = ノーツ数[ 表示レーン種別.Foot ],
+							SnareNotes = ノーツ数[ 表示レーン種別.Snare ],
+							BassNotes = ノーツ数[ 表示レーン種別.Bass ],
+							HighTomNotes = ノーツ数[ 表示レーン種別.Tom1 ],
+							LowTomNotes = ノーツ数[ 表示レーン種別.Tom2 ],
+							FloorTomNotes = ノーツ数[ 表示レーン種別.Tom3 ],
+							RightCymbalNotes = ノーツ数[ 表示レーン種別.RightCrash ],
 						} );
+
 						Log.Info( $"DBに曲を追加しました。{曲ファイルパス}" );
 					}
 					else
@@ -89,7 +105,19 @@ namespace DTXmatixx.曲
 
 							if( 既存レコードの最終更新日時 != 曲ファイルの最終更新日時 )
 							{
+								var ノーツ数 = this._スコアを読み込んでノーツ数をカウントする( songFile, options );
+
 								song.LastWriteTime = 曲ファイルの最終更新日時;
+								song.LeftCymbalNotes = ノーツ数[ 表示レーン種別.LeftCrash ];
+								song.HiHatNotes = ノーツ数[ 表示レーン種別.HiHat ];
+								song.LeftPedalNotes = ノーツ数[ 表示レーン種別.Foot ];
+								song.SnareNotes = ノーツ数[ 表示レーン種別.Snare ];
+								song.BassNotes = ノーツ数[ 表示レーン種別.Bass ];
+								song.HighTomNotes = ノーツ数[ 表示レーン種別.Tom1 ];
+								song.LowTomNotes = ノーツ数[ 表示レーン種別.Tom2 ];
+								song.FloorTomNotes = ノーツ数[ 表示レーン種別.Tom3 ];
+								song.RightCymbalNotes = ノーツ数[ 表示レーン種別.RightCrash ];
+
 								Log.Info( $"DBの曲の情報を更新しました。{曲ファイルパス}" );
 							}
 						}
@@ -101,9 +129,65 @@ namespace DTXmatixx.曲
 		}
 
 		/// <summary>
+		///		データベースから曲の情報を検索して返す。
+		///		存在しなかったら null を返す。
+		/// </summary>
+		public Song 曲の情報を返す( string 曲ファイルパス )
+		{
+			string songFile = Folder.絶対パスに含まれるフォルダ変数を展開して返す( 曲ファイルパス );
+
+			var DC接続文字列 = new SQLiteConnectionStringBuilder { DataSource = this._DBファイルパス };
+			using( var DB接続 = new SQLiteConnection( DC接続文字列.ToString() ) )
+			{
+				DB接続.Open();
+
+				using( var context = new DataContext( DB接続 ) )
+				{
+					var table = context.GetTable<Song>();
+					var query = from s in table where ( s.Path == songFile ) select s;
+
+					foreach( var s in query )
+						return s;	// あっても1個しかないはずなので即返す。
+				}
+			}
+
+			return null;
+		}
+
+		/// <summary>
 		///		コンストラクタで渡された、データベースファイルの絶対パス。
 		///		フォルダ変数は展開済み。
 		/// </summary>
 		private string _DBファイルパス;
+
+		private Dictionary<表示レーン種別, int> _スコアを読み込んでノーツ数をカウントする( string 曲ファイルパス, オプション設定 options )
+		{
+			var ノーツ数 = new Dictionary<表示レーン種別, int>();
+
+			foreach( 表示レーン種別 lane in Enum.GetValues( typeof( 表示レーン種別 ) ) )
+				ノーツ数.Add( lane, 0 );
+
+			using( var score = new SSTFormatCurrent.スコア( 曲ファイルパス ) )
+			{
+				foreach( var chip in score.チップリスト )
+				{
+					var チップの対応表 = options.ドラムとチップと入力の対応表[ chip.チップ種別 ];
+
+					// AutoPlay ON のチップは、すべてがONである場合を除いて、カウントしない。
+					if( options.AutoPlay[ チップの対応表.AutoPlay種別 ] )
+					{
+						if( !( options.AutoPlayがすべてONである ) )
+							continue;
+					}
+					// AutoPlay OFF 時でもユーザヒットの対象にならないチップはカウントしない。
+					if( !( チップの対応表.AutoPlayOFF.ユーザヒット ) )
+						continue;
+
+					ノーツ数[ チップの対応表.表示レーン種別 ]++;
+				}
+			}
+
+			return ノーツ数;
+		}
 	}
 }
