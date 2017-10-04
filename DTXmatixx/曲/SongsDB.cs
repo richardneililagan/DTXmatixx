@@ -11,6 +11,9 @@ using FDK;
 
 namespace DTXmatixx.曲
 {
+	/// <summary>
+	///		曲の情報をキャッシュしておくデータベースを管理するためのクラス。
+	/// </summary>
 	class SongsDB : IDisposable
 	{
 		public SongsDB( string DBファイルパス )
@@ -37,17 +40,12 @@ namespace DTXmatixx.曲
 
 				using( var command = new SQLiteCommand( DB接続 ) )
 				{
-					// Songs テーブルを作成（Songsテーブルクラスの定義と対応すること）
-					command.CommandText =
-						$@"CREATE TABLE IF NOT EXISTS Songs ( " +
-						$@"id INTEGER NOT NULL PRIMARY KEY," +	// Linq で自動増加させたい場合は、AUTOINCREMENT は使ってはならない。（生SQLからなら、使わないといけない。）
-						$@"path NVARCHAR NOT NULL UNIQUE" +
-						$@");";
+					// Songs テーブルを作成。
+					command.CommandText = Song.CreateTable;
 					command.ExecuteNonQuery();
 
-					// Songs テーブルにインデックスを作成
-					command.CommandText =
-						$@"CREATE INDEX IF NOT EXISTS SongsIndex ON Songs(path);";
+					// Songs テーブルにインデックスを作成。
+					command.CommandText = Song.CreateIndex;
 					command.ExecuteNonQuery();
 				}
 			}
@@ -69,14 +67,32 @@ namespace DTXmatixx.曲
 
 				using( var context = new DataContext( DB接続 ) )
 				{
-					var table = context.GetTable<Songs>();
+					var table = context.GetTable<Song>();
+					var query = from s in table where ( s.Path == songFile ) select s;
 
-					// 同じパスのレコードが存在しなかったら、追加する。
-					var found = from s in table where ( s.Path == songFile ) select s;
-					if( 0 == found.Count() )
+					// (A) 同じパスのレコードが存在しなかったら、追加する。
+					if( 0 == query.Count() )
 					{
-						table.InsertOnSubmit( new Songs() { Path = songFile } );
+						table.InsertOnSubmit( new Song() {
+							Path = songFile,
+							LastWriteTime = File.GetLastWriteTime( songFile ).ToString( "G" ),
+						} );
 						Log.Info( $"DBに曲を追加しました。{曲ファイルパス}" );
+					}
+					else
+					{
+						// (B) 同じパスのレコードが存在する場合、最終更新日時が違ったら、レコードを更新する。
+						foreach( var song in query )	// 1個しかないはずだが First() が使えないので MSDN のマネ。
+						{
+							string 既存レコードの最終更新日時 = song.LastWriteTime;
+							string 曲ファイルの最終更新日時 = File.GetLastWriteTime( songFile ).ToString( "G" );
+
+							if( 既存レコードの最終更新日時 != 曲ファイルの最終更新日時 )
+							{
+								song.LastWriteTime = 曲ファイルの最終更新日時;
+								Log.Info( $"DBの曲の情報を更新しました。{曲ファイルパス}" );
+							}
+						}
 					}
 
 					context.SubmitChanges();
