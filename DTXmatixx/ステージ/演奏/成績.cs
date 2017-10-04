@@ -114,18 +114,12 @@ namespace DTXmatixx.ステージ.演奏
 			判定種別 判定;
 
 			// ヒット数の合計を算出。
-			for( int i = 0; i < this.判定toヒット数.Count; i++ )
-			//foreach( var kvp in this._判定toヒット数 )	--> コレクションが変更されました例外が発生する...
-			{
-				var kvp = this.判定toヒット数.ElementAt( i );
+			foreach( var kvp in this._判定toヒット数 )
 				ヒット数の合計 += kvp.Value;
-			}
 
 			// 各判定のヒット割合（実数）を算出。
-			for( int i = 0; i < this.判定toヒット数.Count; i++ )
-			//foreach( var kvp in this._判定toヒット数 )	--> コレクションが変更されました例外が発生する...
+			foreach( var kvp in this._判定toヒット数 )
 			{
-				var kvp = this.判定toヒット数.ElementAt( i );
 				ヒット割合_実数.Add( kvp.Key, ( 100.0 * kvp.Value ) / ヒット数の合計 );
 				切り捨てした.Add( kvp.Key, false );   // ついでに初期化。
 			}

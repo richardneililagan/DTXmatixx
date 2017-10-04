@@ -24,12 +24,12 @@ namespace DTXmatixx.設定
 		{
 			get
 			{
-				bool allON = true;
+				bool すべてON = true;
 
-				for( int i = 0; i < this.AutoPlay.Count; i++ )
-					allON &= this.AutoPlay.ElementAt( i ).Value;
+				foreach( var kvp in this.AutoPlay )
+					すべてON &= kvp.Value;
 
-				return allON;
+				return すべてON;
 			}
 		}
 
