@@ -55,7 +55,6 @@ namespace DTXmatixx.曲
 		public 曲ツリー()
 		{
 		}
-
 		protected override void On活性化( グラフィックデバイス gd )
 		{
 			Debug.Assert( this.活性化していない );
@@ -67,7 +66,6 @@ namespace DTXmatixx.曲
 					node.活性化する( gd );
 			}
 		}
-
 		protected override void On非活性化( グラフィックデバイス gd )
 		{
 			Debug.Assert( this.活性化している );
@@ -79,7 +77,6 @@ namespace DTXmatixx.曲
 					node.非活性化する( gd );
 			}
 		}
-
 		public void Dispose()
 		{
 			this.すべてのノードを削除する();
@@ -107,6 +104,9 @@ namespace DTXmatixx.曲
 			foreach( var fileInfo in dirInfo.GetFiles( "*.sstf", SearchOption.TopDirectoryOnly ) )
 			{
 				親ノード.子ノードリスト.Add( new MusicNode( fileInfo.FullName, 親ノード ) );
+
+				// DBにも（まだ存在してなければ）追加する。
+				App.SongsDB.曲を追加する( fileInfo.FullName );
 			}
 
 			// (2) このフォルダのすべてのサブフォルダについて再帰処理。
@@ -129,7 +129,6 @@ namespace DTXmatixx.曲
 				}
 			}
 		}
-
 		public void すべてのノードを削除する()
 		{
 			Debug.Assert( this.活性化していない );	// 活性化状態のノードが存在していないこと。

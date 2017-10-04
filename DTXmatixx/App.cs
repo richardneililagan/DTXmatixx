@@ -69,6 +69,11 @@ namespace DTXmatixx
 			get;
 			protected set;
 		} = null;
+		public static SongsDB SongsDB
+		{
+			get;
+			protected set;
+		} = null;
 		/// <remarks>
 		///		SharpDX.Mathematics パッケージを参照し、かつ SharpDX 名前空間を using しておくと、
 		///		SharpDX で定義する追加の拡張メソッド（NextFloatなど）を使えるようになる。
@@ -101,6 +106,7 @@ namespace DTXmatixx
 			App.システム設定 = new システム設定();
 			App.オプション設定 = オプション設定.復元する( Folder.フォルダ変数の内容を返す( "AppData" ) );
 			App.ドラムサウンド = new ドラムサウンド();
+			App.SongsDB = new SongsDB( @"$(AppData)Songs.sqlite3" );
 
 			this._活性化する();
 
@@ -114,6 +120,9 @@ namespace DTXmatixx
 			using( Log.Block( FDKUtilities.現在のメソッド名 ) )
 			{
 				this._非活性化する();
+
+				App.SongsDB?.Dispose();
+				App.SongsDB = null;
 
 				App.ドラムサウンド?.Dispose();
 				App.ドラムサウンド = null;
