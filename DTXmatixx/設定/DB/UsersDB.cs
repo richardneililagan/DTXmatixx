@@ -43,9 +43,14 @@ namespace DTXmatixx.設定.DB
 					// Users テーブルにインデックスを作成。
 					command.CommandText = User.CreateIndex;
 					command.ExecuteNonQuery();
+
+					// Records テーブルを作成。
+					command.CommandText = Record.CreateTable;
+					command.ExecuteNonQuery();
 				}
 
-				// Users テーブルに "AutoPlayer" ユーザがいないなら、追加する。
+				#region " Users テーブルに "AutoPlayer" ユーザがいないなら、追加する。"
+				//----------------
 				using( var context = new DataContext( DB接続 ) )
 				{
 					var table = context.GetTable<User>();
@@ -76,6 +81,8 @@ namespace DTXmatixx.設定.DB
 
 					context.SubmitChanges();
 				}
+				//----------------
+				#endregion
 			}
 		}
 
@@ -97,6 +104,30 @@ namespace DTXmatixx.設定.DB
 
 					foreach( var u in query )
 						return u;   // あっても1個しかないはずなので即返す。
+				}
+			}
+
+			return null;
+		}
+
+		/// <summary>
+		///		データベースから成績の情報を検索して返す。
+		///		存在しなかったら null を返す。
+		/// </summary>
+		public Record 成績の情報を返す( string user_id, string song_hash_id )
+		{
+			var DC接続文字列 = new SQLiteConnectionStringBuilder { DataSource = this._DBファイルパス };
+			using( var DB接続 = new SQLiteConnection( DC接続文字列.ToString() ) )
+			{
+				DB接続.Open();
+
+				using( var context = new DataContext( DB接続 ) )
+				{
+					var table = context.GetTable<Record>();
+					var query = from r in table where ( r.UserId == user_id && r.SongHashId == song_hash_id ) select r;
+
+					foreach( var r in query )
+						return r;   // あっても1個しかないはずなので即返す。
 				}
 			}
 

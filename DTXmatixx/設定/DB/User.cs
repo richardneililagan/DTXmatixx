@@ -9,7 +9,7 @@ namespace DTXmatixx.設定.DB
 {
 	/// <summary>
 	///		Users テーブルの Linq 用スキーマ。
-	///		UsersDB 内で、ユーザの情報や成績などを管理する。
+	///		UsersDB 内で、ユーザの情報やオプション設定などを管理する。
 	/// </summary>
 	[Table( Name = "Users" )]   // テーブル名は複数形
 	public class User	// クラスは単数形

@@ -154,6 +154,7 @@
     <Compile Include="曲\曲ツリー.cs" />
     <Compile Include="曲\難易度種別.cs" />
     <Compile Include="設定\AutoPlay種別.cs" />
+    <Compile Include="設定\DB\Record.cs" />
     <Compile Include="設定\DB\User.cs" />
     <Compile Include="設定\DB\UsersDB.cs" />
     <Compile Include="設定\ユーザ設定.cs" />
