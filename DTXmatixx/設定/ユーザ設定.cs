@@ -74,6 +74,7 @@ namespace DTXmatixx.設定
 			this.ID = user.Id;
 			this.ユーザ名 = user.Name;
 			this.AutoPlay = new Dictionary<AutoPlay種別, bool>() {
+				{ AutoPlay種別.Unknown, true },
 				{ AutoPlay種別.LeftCrash, ( 0 != user.AutoPlayLeftCymbal ) },
 				{ AutoPlay種別.HiHat, ( 0 != user.AutoPlayHiHat ) },
 				{ AutoPlay種別.Foot, ( 0 != user.AutoPlayLeftPedal ) },
