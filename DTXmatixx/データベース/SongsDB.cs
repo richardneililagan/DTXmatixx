@@ -64,7 +64,7 @@ namespace DTXmatixx.データベース
 		/// <param name="曲ファイルパス">曲ファイルへの絶対パス。フォルダ変数使用可。</param>
 		public void 曲を追加または更新する( string 曲ファイルパス, オプション設定 options )
 		{
-			string songFile = Folder.絶対パスに含まれるフォルダ変数を展開して返す( 曲ファイルパス );
+			string 調べる曲のパス = Folder.絶対パスに含まれるフォルダ変数を展開して返す( 曲ファイルパス );
 
 			var DC接続文字列 = new SQLiteConnectionStringBuilder { DataSource = this._DBファイルパス };
 			using( var DB接続 = new SQLiteConnection( DC接続文字列.ToString() ) )
@@ -74,64 +74,116 @@ namespace DTXmatixx.データベース
 				using( var context = new DataContext( DB接続 ) )
 				{
 					var table = context.GetTable<Song>();
-					var query = from s in table where ( s.Path == songFile ) select s;
 
-					if( 0 == query.Count() )
+					var 同一パス検索クエリ = from s in table where ( s.Path == 調べる曲のパス ) select s;
+
+					if( 0 == 同一パス検索クエリ.Count() )
 					{
-						// (A) 同じパスのレコードが存在しなかったら、追加する。
+						// (A) 同一パスを持つレコードがDBになかった
 
-						using( var score = new SSTFormatCurrent.スコア( 曲ファイルパス ) )
+						var 調べる曲のハッシュ = this._ファイルのハッシュを算出して返す( 調べる曲のパス );
+						var 同一ハッシュ検索クエリ = from s in table where ( s.HashId == 調べる曲のハッシュ ) select s;
+
+						if( 0 == 同一ハッシュ検索クエリ.Count() )
 						{
-							var ノーツ数 = this._ノーツ数を算出して返す( score, options );
+							#region " (A-a) 同一ハッシュを持つレコードがDBになかった → 新規追加 "
+							//----------------
+							using( var score = new SSTFormatCurrent.スコア( 曲ファイルパス ) )
+							{
+								var ノーツ数 = this._ノーツ数を算出して返す( score, options );
 
-							table.InsertOnSubmit( new Song() {
-								Path = songFile,
-								LastWriteTime = File.GetLastWriteTime( songFile ).ToString( "G" ),
-								HashId = this._ファイルのハッシュを算出して返す( songFile ),
-								Title = score.Header.曲名,
+								table.InsertOnSubmit( new Song() {
 
-								LeftCymbalNotes = ノーツ数[ 表示レーン種別.LeftCrash ],
-								HiHatNotes = ノーツ数[ 表示レーン種別.HiHat ],
-								LeftPedalNotes = ノーツ数[ 表示レーン種別.Foot ],
-								SnareNotes = ノーツ数[ 表示レーン種別.Snare ],
-								BassNotes = ノーツ数[ 表示レーン種別.Bass ],
-								HighTomNotes = ノーツ数[ 表示レーン種別.Tom1 ],
-								LowTomNotes = ノーツ数[ 表示レーン種別.Tom2 ],
-								FloorTomNotes = ノーツ数[ 表示レーン種別.Tom3 ],
-								RightCymbalNotes = ノーツ数[ 表示レーン種別.RightCrash ],
-							} );
+									Id = null,
+									HashId = this._ファイルのハッシュを算出して返す( 調べる曲のパス ),
+									Title = score.Header.曲名,
+									Path = 調べる曲のパス,
+									LastWriteTime = File.GetLastWriteTime( 調べる曲のパス ).ToString( "G" ),
+
+									LeftCymbalNotes = ノーツ数[ 表示レーン種別.LeftCrash ],
+									HiHatNotes = ノーツ数[ 表示レーン種別.HiHat ],
+									LeftPedalNotes = ノーツ数[ 表示レーン種別.Foot ],
+									SnareNotes = ノーツ数[ 表示レーン種別.Snare ],
+									BassNotes = ノーツ数[ 表示レーン種別.Bass ],
+									HighTomNotes = ノーツ数[ 表示レーン種別.Tom1 ],
+									LowTomNotes = ノーツ数[ 表示レーン種別.Tom2 ],
+									FloorTomNotes = ノーツ数[ 表示レーン種別.Tom3 ],
+									RightCymbalNotes = ノーツ数[ 表示レーン種別.RightCrash ],
+
+								} );
+							}
+
+							Log.Info( $"DBに曲を追加しました。{曲ファイルパス}" );
+							//----------------
+							#endregion
 						}
-						Log.Info( $"DBに曲を追加しました。{曲ファイルパス}" );
+						else
+						{
+							#region " (A-b) 同一ハッシュを持つレコードがDBにあった → 更新 "
+							//----------------
+							foreach( var record in 同一ハッシュ検索クエリ )
+							{
+								using( var score = new SSTFormatCurrent.スコア( 調べる曲のパス ) )
+								{
+									record.Title = score.Header.曲名;
+									record.Path = 調べる曲のパス;
+									record.LastWriteTime = File.GetLastWriteTime( 調べる曲のパス ).ToString( "G" );
+
+									var ノーツ数 = this._ノーツ数を算出して返す( score, options );
+									record.LeftCymbalNotes = ノーツ数[ 表示レーン種別.LeftCrash ];
+									record.HiHatNotes = ノーツ数[ 表示レーン種別.HiHat ];
+									record.LeftPedalNotes = ノーツ数[ 表示レーン種別.Foot ];
+									record.SnareNotes = ノーツ数[ 表示レーン種別.Snare ];
+									record.BassNotes = ノーツ数[ 表示レーン種別.Bass ];
+									record.HighTomNotes = ノーツ数[ 表示レーン種別.Tom1 ];
+									record.LowTomNotes = ノーツ数[ 表示レーン種別.Tom2 ];
+									record.FloorTomNotes = ノーツ数[ 表示レーン種別.Tom3 ];
+									record.RightCymbalNotes = ノーツ数[ 表示レーン種別.RightCrash ];
+								}
+							}
+							Log.Info( $"パスが異なりハッシュが同一であるレコードが検出されたため、曲の情報を更新しました。{曲ファイルパス}" );
+							//----------------
+							#endregion
+						}
 					}
 					else
 					{
-						// (B) 同じパスのレコードが存在する場合、最終更新日時が違ったら、レコードを更新する。
-						foreach( var song in query )	// 1個しかないはずだが First() が使えないので MSDN のマネ。
+						// (B) 同一パスを持つレコードがDBにあった
+
+						foreach( var record in 同一パス検索クエリ )
 						{
-							string 既存レコードの最終更新日時 = song.LastWriteTime;
-							string 曲ファイルの最終更新日時 = File.GetLastWriteTime( songFile ).ToString( "G" );
+							string レコードの最終更新日時 = record.LastWriteTime;
+							string 調べる曲の最終更新日時 = File.GetLastWriteTime( 調べる曲のパス ).ToString( "G" );
 
-							if( 既存レコードの最終更新日時 != 曲ファイルの最終更新日時 )
+							if( レコードの最終更新日時 != 調べる曲の最終更新日時 )
 							{
-								song.LastWriteTime = 曲ファイルの最終更新日時;
-								song.HashId = this._ファイルのハッシュを算出して返す( songFile );
-
-								using( var score = new SSTFormatCurrent.スコア( 曲ファイルパス ) )
+								#region " (B-a) 最終更新日時が変更されている → 更新 "
+								//----------------
+								using( var score = new SSTFormatCurrent.スコア( 調べる曲のパス ) )
 								{
-									song.Title = score.Header.曲名;
+									record.HashId = this._ファイルのハッシュを算出して返す( 調べる曲のパス );
+									record.Title = score.Header.曲名;
+									record.LastWriteTime = 調べる曲の最終更新日時;
 
 									var ノーツ数 = this._ノーツ数を算出して返す( score, options );
-									song.LeftCymbalNotes = ノーツ数[ 表示レーン種別.LeftCrash ];
-									song.HiHatNotes = ノーツ数[ 表示レーン種別.HiHat ];
-									song.LeftPedalNotes = ノーツ数[ 表示レーン種別.Foot ];
-									song.SnareNotes = ノーツ数[ 表示レーン種別.Snare ];
-									song.BassNotes = ノーツ数[ 表示レーン種別.Bass ];
-									song.HighTomNotes = ノーツ数[ 表示レーン種別.Tom1 ];
-									song.LowTomNotes = ノーツ数[ 表示レーン種別.Tom2 ];
-									song.FloorTomNotes = ノーツ数[ 表示レーン種別.Tom3 ];
-									song.RightCymbalNotes = ノーツ数[ 表示レーン種別.RightCrash ];
+									record.LeftCymbalNotes = ノーツ数[ 表示レーン種別.LeftCrash ];
+									record.HiHatNotes = ノーツ数[ 表示レーン種別.HiHat ];
+									record.LeftPedalNotes = ノーツ数[ 表示レーン種別.Foot ];
+									record.SnareNotes = ノーツ数[ 表示レーン種別.Snare ];
+									record.BassNotes = ノーツ数[ 表示レーン種別.Bass ];
+									record.HighTomNotes = ノーツ数[ 表示レーン種別.Tom1 ];
+									record.LowTomNotes = ノーツ数[ 表示レーン種別.Tom2 ];
+									record.FloorTomNotes = ノーツ数[ 表示レーン種別.Tom3 ];
+									record.RightCymbalNotes = ノーツ数[ 表示レーン種別.RightCrash ];
 								}
-								Log.Info( $"DBの曲の情報を更新しました。{曲ファイルパス}" );
+
+								Log.Info( $"最終更新日時が変更されているため、曲の情報を更新しました。{曲ファイルパス}" );
+								//----------------
+								#endregion
+							}
+							else
+							{
+								// (B-b) それ以外 → 何もしない
 							}
 						}
 					}
@@ -166,6 +218,7 @@ namespace DTXmatixx.データベース
 
 			return null;
 		}
+
 
 		/// <summary>
 		///		コンストラクタで渡された、データベースファイルの絶対パス。
