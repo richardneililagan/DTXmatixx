@@ -25,6 +25,15 @@ namespace DTXmatixx.曲
 		} = null;
 
 		/// <summary>
+		///		この曲ノードに対応する曲ファイルのハッシュ値。
+		/// </summary>
+		public string 曲ファイルハッシュ
+		{
+			get;
+			protected set;
+		} = null;
+
+		/// <summary>
 		///		この曲ノードに対応する動画ファイル。
 		/// </summary>
 		public string 動画ファイルパス
@@ -33,11 +42,13 @@ namespace DTXmatixx.曲
 			protected set;
 		} = null;
 
-
 		public MusicNode( string 曲ファイルパス, Node 親ノード )
 		{
 			this.親ノード = 親ノード;
 			this.曲ファイルパス = Folder.絶対パスに含まれるフォルダ変数を展開して返す( 曲ファイルパス );
+
+			// （まだ存在してなければ）曲DBに追加する。
+			App.SongsDB.曲を追加または更新する( this.曲ファイルパス, App.オプション設定 );
 
 			// 曲ファイルから情報を取得する。
 			using( var score = new スコア() )

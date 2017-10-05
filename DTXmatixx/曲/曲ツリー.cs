@@ -104,9 +104,6 @@ namespace DTXmatixx.曲
 			foreach( var fileInfo in dirInfo.GetFiles( "*.sstf", SearchOption.TopDirectoryOnly ) )
 			{
 				親ノード.子ノードリスト.Add( new MusicNode( fileInfo.FullName, 親ノード ) );
-
-				// DBにも（まだ存在してなければ）追加する。
-				App.SongsDB.曲を追加または更新する( fileInfo.FullName, App.オプション設定 );
 			}
 
 			// (2) このフォルダのすべてのサブフォルダについて再帰処理。
