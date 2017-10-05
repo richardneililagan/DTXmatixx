@@ -24,6 +24,13 @@ namespace DTXmatixx.曲
 		public Int32? Id { get; set; } = null;
 
 		/// <summary>
+		///		曲譜面ファイルのハッシュ値。
+		///		正確には一意じゃないけど、主キーとして扱う。
+		/// </summary>
+		[Column( Name = "hash_id", DbType = "NVARCHAR", CanBeNull = false, UpdateCheck = UpdateCheck.Never )]
+		public String HashId { get; set; }
+
+		/// <summary>
 		///		曲譜面ファイルへの絶対パス。
 		///		これも一意とする。（テーブル生成SQLで UNIQUE を付与している。）
 		/// </summary>
@@ -92,6 +99,7 @@ namespace DTXmatixx.曲
 		public static readonly string CreateTable = 
 			@"CREATE TABLE IF NOT EXISTS Songs " +
 			@"( id INTEGER NOT NULL PRIMARY KEY" +  // Linq で自動増加させたい場合は、AUTOINCREMENT は使ってはならない。（生SQLからなら、使わないといけない。）
+			@", hash_id NVARCHAR NOT NULL" +
 			@", path NVARCHAR NOT NULL UNIQUE" +
 			@", last_write_time NVARCHAR NOT NULL" +
 			@", left_cymbal_notes INTEGER NOT NULL" +

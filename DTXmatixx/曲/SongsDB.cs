@@ -7,6 +7,8 @@ using System.Data.SQLite;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
+using System.Text;
 using FDK;
 using SSTFormatCurrent = SSTFormat.v3;
 using DTXmatixx.設定;
@@ -77,11 +79,12 @@ namespace DTXmatixx.曲
 					{
 						// (A) 同じパスのレコードが存在しなかったら、追加する。
 
-						var ノーツ数 = this._スコアを読み込んでノーツ数をカウントする( songFile, options );
+						var ノーツ数 = this._スコアを読み込んで情報を返す( songFile, options );
 
 						table.InsertOnSubmit( new Song() {
 							Path = songFile,
 							LastWriteTime = File.GetLastWriteTime( songFile ).ToString( "G" ),
+							HashId = this._ファイルのハッシュを算出して返す( songFile ),
 							LeftCymbalNotes = ノーツ数[ 表示レーン種別.LeftCrash ],
 							HiHatNotes = ノーツ数[ 表示レーン種別.HiHat ],
 							LeftPedalNotes = ノーツ数[ 表示レーン種別.Foot ],
@@ -105,9 +108,10 @@ namespace DTXmatixx.曲
 
 							if( 既存レコードの最終更新日時 != 曲ファイルの最終更新日時 )
 							{
-								var ノーツ数 = this._スコアを読み込んでノーツ数をカウントする( songFile, options );
-
 								song.LastWriteTime = 曲ファイルの最終更新日時;
+								song.HashId = this._ファイルのハッシュを算出して返す( songFile );
+
+								var ノーツ数 = this._スコアを読み込んで情報を返す( songFile, options );
 								song.LeftCymbalNotes = ノーツ数[ 表示レーン種別.LeftCrash ];
 								song.HiHatNotes = ノーツ数[ 表示レーン種別.HiHat ];
 								song.LeftPedalNotes = ノーツ数[ 表示レーン種別.Foot ];
@@ -160,7 +164,7 @@ namespace DTXmatixx.曲
 		/// </summary>
 		private string _DBファイルパス;
 
-		private Dictionary<表示レーン種別, int> _スコアを読み込んでノーツ数をカウントする( string 曲ファイルパス, オプション設定 options )
+		private Dictionary<表示レーン種別, int> _スコアを読み込んで情報を返す( string 曲ファイルパス, オプション設定 options )
 		{
 			var ノーツ数 = new Dictionary<表示レーン種別, int>();
 
@@ -188,6 +192,20 @@ namespace DTXmatixx.曲
 			}
 
 			return ノーツ数;
+		}
+		private string _ファイルのハッシュを算出して返す( string 曲ファイルパス )
+		{
+			var sha512 = new SHA512CryptoServiceProvider();
+			byte[] hash = null;
+
+			using( var fs = new FileStream( 曲ファイルパス, FileMode.Open ) )
+				hash = sha512.ComputeHash( fs );
+
+			var hashString = new StringBuilder();
+			foreach( byte b in hash )
+				hashString.Append( b.ToString( "X2" ) );
+
+			return hashString.ToString();
 		}
 	}
 }
