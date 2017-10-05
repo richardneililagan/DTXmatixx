@@ -18,6 +18,7 @@ namespace DTXmatixx.データベース
 {
 	/// <summary>
 	///		曲の情報をキャッシュしておくデータベースを管理するためのクラス。
+	///		<see cref="Song"/> テーブルを包含。
 	/// </summary>
 	class SongsDB : IDisposable
 	{
@@ -79,23 +80,27 @@ namespace DTXmatixx.データベース
 					{
 						// (A) 同じパスのレコードが存在しなかったら、追加する。
 
-						var ノーツ数 = this._スコアを読み込んで情報を返す( songFile, options );
+						using( var score = new SSTFormatCurrent.スコア( 曲ファイルパス ) )
+						{
+							var ノーツ数 = this._ノーツ数を算出して返す( score, options );
 
-						table.InsertOnSubmit( new Song() {
-							Path = songFile,
-							LastWriteTime = File.GetLastWriteTime( songFile ).ToString( "G" ),
-							HashId = this._ファイルのハッシュを算出して返す( songFile ),
-							LeftCymbalNotes = ノーツ数[ 表示レーン種別.LeftCrash ],
-							HiHatNotes = ノーツ数[ 表示レーン種別.HiHat ],
-							LeftPedalNotes = ノーツ数[ 表示レーン種別.Foot ],
-							SnareNotes = ノーツ数[ 表示レーン種別.Snare ],
-							BassNotes = ノーツ数[ 表示レーン種別.Bass ],
-							HighTomNotes = ノーツ数[ 表示レーン種別.Tom1 ],
-							LowTomNotes = ノーツ数[ 表示レーン種別.Tom2 ],
-							FloorTomNotes = ノーツ数[ 表示レーン種別.Tom3 ],
-							RightCymbalNotes = ノーツ数[ 表示レーン種別.RightCrash ],
-						} );
+							table.InsertOnSubmit( new Song() {
+								Path = songFile,
+								LastWriteTime = File.GetLastWriteTime( songFile ).ToString( "G" ),
+								HashId = this._ファイルのハッシュを算出して返す( songFile ),
+								Title = score.Header.曲名,
 
+								LeftCymbalNotes = ノーツ数[ 表示レーン種別.LeftCrash ],
+								HiHatNotes = ノーツ数[ 表示レーン種別.HiHat ],
+								LeftPedalNotes = ノーツ数[ 表示レーン種別.Foot ],
+								SnareNotes = ノーツ数[ 表示レーン種別.Snare ],
+								BassNotes = ノーツ数[ 表示レーン種別.Bass ],
+								HighTomNotes = ノーツ数[ 表示レーン種別.Tom1 ],
+								LowTomNotes = ノーツ数[ 表示レーン種別.Tom2 ],
+								FloorTomNotes = ノーツ数[ 表示レーン種別.Tom3 ],
+								RightCymbalNotes = ノーツ数[ 表示レーン種別.RightCrash ],
+							} );
+						}
 						Log.Info( $"DBに曲を追加しました。{曲ファイルパス}" );
 					}
 					else
@@ -111,17 +116,21 @@ namespace DTXmatixx.データベース
 								song.LastWriteTime = 曲ファイルの最終更新日時;
 								song.HashId = this._ファイルのハッシュを算出して返す( songFile );
 
-								var ノーツ数 = this._スコアを読み込んで情報を返す( songFile, options );
-								song.LeftCymbalNotes = ノーツ数[ 表示レーン種別.LeftCrash ];
-								song.HiHatNotes = ノーツ数[ 表示レーン種別.HiHat ];
-								song.LeftPedalNotes = ノーツ数[ 表示レーン種別.Foot ];
-								song.SnareNotes = ノーツ数[ 表示レーン種別.Snare ];
-								song.BassNotes = ノーツ数[ 表示レーン種別.Bass ];
-								song.HighTomNotes = ノーツ数[ 表示レーン種別.Tom1 ];
-								song.LowTomNotes = ノーツ数[ 表示レーン種別.Tom2 ];
-								song.FloorTomNotes = ノーツ数[ 表示レーン種別.Tom3 ];
-								song.RightCymbalNotes = ノーツ数[ 表示レーン種別.RightCrash ];
+								using( var score = new SSTFormatCurrent.スコア( 曲ファイルパス ) )
+								{
+									song.Title = score.Header.曲名;
 
+									var ノーツ数 = this._ノーツ数を算出して返す( score, options );
+									song.LeftCymbalNotes = ノーツ数[ 表示レーン種別.LeftCrash ];
+									song.HiHatNotes = ノーツ数[ 表示レーン種別.HiHat ];
+									song.LeftPedalNotes = ノーツ数[ 表示レーン種別.Foot ];
+									song.SnareNotes = ノーツ数[ 表示レーン種別.Snare ];
+									song.BassNotes = ノーツ数[ 表示レーン種別.Bass ];
+									song.HighTomNotes = ノーツ数[ 表示レーン種別.Tom1 ];
+									song.LowTomNotes = ノーツ数[ 表示レーン種別.Tom2 ];
+									song.FloorTomNotes = ノーツ数[ 表示レーン種別.Tom3 ];
+									song.RightCymbalNotes = ノーツ数[ 表示レーン種別.RightCrash ];
+								}
 								Log.Info( $"DBの曲の情報を更新しました。{曲ファイルパス}" );
 							}
 						}
@@ -164,31 +173,28 @@ namespace DTXmatixx.データベース
 		/// </summary>
 		private string _DBファイルパス;
 
-		private Dictionary<表示レーン種別, int> _スコアを読み込んで情報を返す( string 曲ファイルパス, オプション設定 options )
+		private Dictionary<表示レーン種別, int> _ノーツ数を算出して返す( SSTFormatCurrent.スコア score, オプション設定 options )
 		{
 			var ノーツ数 = new Dictionary<表示レーン種別, int>();
 
 			foreach( 表示レーン種別 lane in Enum.GetValues( typeof( 表示レーン種別 ) ) )
 				ノーツ数.Add( lane, 0 );
 
-			using( var score = new SSTFormatCurrent.スコア( 曲ファイルパス ) )
+			foreach( var chip in score.チップリスト )
 			{
-				foreach( var chip in score.チップリスト )
+				var チップの対応表 = options.ドラムとチップと入力の対応表[ chip.チップ種別 ];
+
+				// AutoPlay ON のチップは、すべてがONである場合を除いて、カウントしない。
+				if( options.AutoPlay[ チップの対応表.AutoPlay種別 ] )
 				{
-					var チップの対応表 = options.ドラムとチップと入力の対応表[ chip.チップ種別 ];
-
-					// AutoPlay ON のチップは、すべてがONである場合を除いて、カウントしない。
-					if( options.AutoPlay[ チップの対応表.AutoPlay種別 ] )
-					{
-						if( !( options.AutoPlayがすべてONである ) )
-							continue;
-					}
-					// AutoPlay OFF 時でもユーザヒットの対象にならないチップはカウントしない。
-					if( !( チップの対応表.AutoPlayOFF.ユーザヒット ) )
+					if( !( options.AutoPlayがすべてONである ) )
 						continue;
-
-					ノーツ数[ チップの対応表.表示レーン種別 ]++;
 				}
+				// AutoPlay OFF 時でもユーザヒットの対象にならないチップはカウントしない。
+				if( !( チップの対応表.AutoPlayOFF.ユーザヒット ) )
+					continue;
+
+				ノーツ数[ チップの対応表.表示レーン種別 ]++;
 			}
 
 			return ノーツ数;

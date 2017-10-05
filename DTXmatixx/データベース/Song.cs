@@ -31,6 +31,12 @@ namespace DTXmatixx.データベース
 		public String HashId { get; set; }
 
 		/// <summary>
+		///		曲のタイトル。
+		/// </summary>
+		[Column( Name = "title", DbType = "NVARCHAR", CanBeNull = false, UpdateCheck = UpdateCheck.Never )]
+		public String Title { get; set; }
+
+		/// <summary>
 		///		曲譜面ファイルへの絶対パス。
 		///		これも一意とする。（テーブル生成SQLで UNIQUE を付与している。）
 		/// </summary>
@@ -100,6 +106,7 @@ namespace DTXmatixx.データベース
 			@"CREATE TABLE IF NOT EXISTS Songs " +
 			@"( id INTEGER NOT NULL PRIMARY KEY" +  // Linq で自動増加させたい場合は、AUTOINCREMENT は使ってはならない。（生SQLからなら、使わないといけない。）
 			@", hash_id NVARCHAR NOT NULL" +
+			@", title NVARCHAR NOT NULL" +
 			@", path NVARCHAR NOT NULL UNIQUE" +
 			@", last_write_time NVARCHAR NOT NULL" +
 			@", left_cymbal_notes INTEGER NOT NULL" +

@@ -50,12 +50,9 @@ namespace DTXmatixx.曲
 			// （まだ存在してなければ）曲DBに追加する。
 			App.SongsDB.曲を追加または更新する( this.曲ファイルパス, App.オプション設定 );
 
-			// 曲ファイルから情報を取得する。
-			using( var score = new スコア() )
-			{
-				score.曲データファイルを読み込む_ヘッダだけ( this.曲ファイルパス );
-				this.タイトル = score.Header.曲名;
-			}
+			// 曲DBから情報を取得する。
+			var song = App.SongsDB.曲の情報を返す( this.曲ファイルパス );
+			this.タイトル = song.Title;
 
 			// 曲ファイルと同じ場所に画像ファイルがあるなら、それをノード画像として採用する。
 			var サムネイル画像ファイルパス =
