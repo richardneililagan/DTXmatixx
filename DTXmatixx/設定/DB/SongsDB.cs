@@ -11,10 +11,9 @@ using System.Security.Cryptography;
 using System.Text;
 using FDK;
 using SSTFormatCurrent = SSTFormat.v3;
-using DTXmatixx.設定;
 using DTXmatixx.ステージ.演奏;
 
-namespace DTXmatixx.データベース
+namespace DTXmatixx.設定.DB
 {
 	/// <summary>
 	///		曲の情報をキャッシュしておくデータベースを管理するためのクラス。
@@ -62,7 +61,7 @@ namespace DTXmatixx.データベース
 		///		すでに存在している場合は、必要があればレコードを更新する。
 		/// </summary>
 		/// <param name="曲ファイルパス">曲ファイルへの絶対パス。フォルダ変数使用可。</param>
-		public void 曲を追加または更新する( string 曲ファイルパス, オプション設定 options )
+		public void 曲を追加または更新する( string 曲ファイルパス, ユーザ設定 options )
 		{
 			string 調べる曲のパス = Folder.絶対パスに含まれるフォルダ変数を展開して返す( 曲ファイルパス );
 
@@ -226,7 +225,7 @@ namespace DTXmatixx.データベース
 		/// </summary>
 		private string _DBファイルパス;
 
-		private Dictionary<表示レーン種別, int> _ノーツ数を算出して返す( SSTFormatCurrent.スコア score, オプション設定 options )
+		private Dictionary<表示レーン種別, int> _ノーツ数を算出して返す( SSTFormatCurrent.スコア score, ユーザ設定 options )
 		{
 			var ノーツ数 = new Dictionary<表示レーン種別, int>();
 

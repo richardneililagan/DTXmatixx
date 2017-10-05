@@ -18,13 +18,22 @@ using FDK.同期;
 using DTXmatixx.ステージ;
 using DTXmatixx.曲;
 using DTXmatixx.設定;
-using DTXmatixx.データベース;
+using DTXmatixx.設定.DB;
 using SSTFormat.v3;
 
 namespace DTXmatixx
 {
 	class App : ApplicationForm, IDisposable
 	{
+		/// <remarks>
+		///		SharpDX.Mathematics パッケージを参照し、かつ SharpDX 名前空間を using しておくと、
+		///		SharpDX で定義する追加の拡張メソッド（NextFloatなど）を使えるようになる。
+		/// </remarks>
+		public static Random 乱数
+		{
+			get;
+			protected set;
+		} = null;
 		public static ステージ管理 ステージ管理
 		{
 			get;
@@ -60,7 +69,7 @@ namespace DTXmatixx
 			get;
 			protected set;
 		} = null;
-		public static オプション設定 オプション設定
+		public static ユーザ設定 ユーザ設定
 		{
 			get;
 			protected set;
@@ -70,16 +79,12 @@ namespace DTXmatixx
 			get;
 			protected set;
 		} = null;
-		public static SongsDB SongsDB
+		public static SongsDB 曲DB
 		{
 			get;
 			protected set;
 		} = null;
-		/// <remarks>
-		///		SharpDX.Mathematics パッケージを参照し、かつ SharpDX 名前空間を using しておくと、
-		///		SharpDX で定義する追加の拡張メソッド（NextFloatなど）を使えるようになる。
-		/// </remarks>
-		public static Random 乱数
+		public static UsersDB ユーザDB
 		{
 			get;
 			protected set;
@@ -105,13 +110,14 @@ namespace DTXmatixx
 			App.サウンドデバイス = new FDK.メディア.サウンド.WASAPI.Device( CSCore.CoreAudioAPI.AudioClientShareMode.Shared );
 			App.サウンドタイマ = new FDK.メディア.サウンド.WASAPI.SoundTimer( App.サウンドデバイス );
 			App.システム設定 = new システム設定();
-			App.オプション設定 = オプション設定.復元する( Folder.フォルダ変数の内容を返す( "AppData" ) );
 			App.ドラムサウンド = new ドラムサウンド();
-			App.SongsDB = new SongsDB( @"$(AppData)Songs.sqlite3" );
+			App.曲DB = new SongsDB( @"$(AppData)Songs.sqlite3" );
+			App.ユーザDB = new UsersDB( @"$(AppData)Users.sqlite3" );
+			App.ユーザ設定 = new ユーザ設定( App.ユーザDB.ユーザの情報を返す( "AutoPlayer" ) );		// 最初は、ユーザ "AutoPlayer" を選択。
 
 			this._活性化する();
 
-			base.全画面モード = App.オプション設定.全画面モードである;
+			base.全画面モード = App.ユーザ設定.全画面モードである;
 
 			// 最初のステージへ遷移する。
 			App.ステージ管理.ステージを遷移する( App.グラフィックデバイス, App.ステージ管理.最初のステージ名 );
@@ -122,13 +128,14 @@ namespace DTXmatixx
 			{
 				this._非活性化する();
 
-				App.SongsDB?.Dispose();
-				App.SongsDB = null;
+				App.ユーザDB?.Dispose();
+				App.ユーザDB = null;
+
+				App.曲DB?.Dispose();
+				App.曲DB = null;
 
 				App.ドラムサウンド?.Dispose();
 				App.ドラムサウンド = null;
-
-				App.オプション設定.保存する( Folder.フォルダ変数の内容を返す( "AppData" ) );
 
 				App.サウンドタイマ?.Dispose();
 				App.サウンドタイマ = null;
@@ -197,7 +204,7 @@ namespace DTXmatixx
 			if( e.KeyCode == Keys.F11 )
 			{
 				this.全画面モード = !( this.全画面モード );
-				App.オプション設定.全画面モードである = this.全画面モード;
+				App.ユーザ設定.全画面モードである = this.全画面モード;
 			}
 		}
 

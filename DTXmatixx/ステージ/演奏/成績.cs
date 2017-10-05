@@ -54,7 +54,7 @@ namespace DTXmatixx.ステージ.演奏
 
 		/// <param name="譜面">単体テスト時に限り null を許す。</param>
 		/// <param name="設定">単体テスト時に限り null を許す。</param>
-		public 成績( SSTFormatCurrent.スコア 譜面 = null, オプション設定 設定 = null )
+		public 成績( SSTFormatCurrent.スコア 譜面 = null, ユーザ設定 設定 = null )
 		{
 			Debug.Assert( null != 譜面 );
 
@@ -201,7 +201,7 @@ namespace DTXmatixx.ステージ.演奏
 
 			return ヒット割合_整数;
 		}
-		private int _総ノーツ数を算出して返す( SSTFormatCurrent.スコア score, オプション設定 options )
+		private int _総ノーツ数を算出して返す( SSTFormatCurrent.スコア score, ユーザ設定 options )
 		{
 			int 総ノーツ数 = 0;
 

@@ -4,18 +4,17 @@ using System.Diagnostics;
 using System.Linq;
 using System.Data.Linq.Mapping;
 
-namespace DTXmatixx.データベース
+namespace DTXmatixx.設定.DB
 {
 	/// <summary>
 	///		Songs テーブルの Linq 用スキーマ。
 	///		SongDB 内で、曲の静的情報をキャッシュする。
 	/// </summary>
-	/// <remarks>
-	///		整数型は、SQLなら "INTEGER" だが、DbTypeプロパティは "INT" としないとエラーになるので注意。
-	/// </remarks>
 	[Table( Name = "Songs" )]	// テーブル名は複数形
 	public class Song	// クラスは単数形
 	{
+		// !!! 整数型は、SQLなら "INTEGER" だが、DbTypeプロパティは "INT" としないとエラーになるので注意。 !!!
+
 		/// <summary>
 		///		一意な ID。
 		///		値はDB側で自動生成されるので、INSERT 時は null を設定しておくこと。

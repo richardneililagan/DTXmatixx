@@ -58,7 +58,7 @@ namespace DTXmatixx.ステージ.選曲
 
 				if( this._現在表示しているノード is MusicNode musicNode )
 				{
-					var song = App.SongsDB.曲の情報を返す( musicNode.曲ファイルパス );
+					var song = App.曲DB.曲の情報を返す( musicNode.曲ファイルパス );
 
 					if( null != song )
 					{

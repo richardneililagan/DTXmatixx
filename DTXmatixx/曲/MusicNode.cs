@@ -48,10 +48,10 @@ namespace DTXmatixx.曲
 			this.曲ファイルパス = Folder.絶対パスに含まれるフォルダ変数を展開して返す( 曲ファイルパス );
 
 			// （まだ存在してなければ）曲DBに追加する。
-			App.SongsDB.曲を追加または更新する( this.曲ファイルパス, App.オプション設定 );
+			App.曲DB.曲を追加または更新する( this.曲ファイルパス, App.ユーザ設定 );
 
 			// 曲DBから情報を取得する。
-			var song = App.SongsDB.曲の情報を返す( this.曲ファイルパス );
+			var song = App.曲DB.曲の情報を返す( this.曲ファイルパス );
 			this.タイトル = song.Title;
 
 			// 曲ファイルと同じ場所に画像ファイルがあるなら、それをノード画像として採用する。

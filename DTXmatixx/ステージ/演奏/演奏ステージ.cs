@@ -70,13 +70,13 @@ namespace DTXmatixx.ステージ.演奏
 			{
 				this.キャプチャ画面 = null;
 
-				this.成績 = new 成績( App.演奏スコア, App.オプション設定 );
+				this.成績 = new 成績( App.演奏スコア, App.ユーザ設定 );
 
 				this._描画開始チップ番号 = -1;
 				this._小節線色 = new SolidColorBrush( gd.D2DDeviceContext, Color.White );
 				this._拍線色 = new SolidColorBrush( gd.D2DDeviceContext, Color.LightGray );
 				this._ドラムチップ画像の矩形リスト = new 矩形リスト( @"$(System)images\ドラムチップ矩形.xml" );      // デバイスリソースは持たないので、子Activityではない。
-				this._現在進行描画中の譜面スクロール速度の倍率 = App.オプション設定.譜面スクロール速度の倍率;
+				this._現在進行描画中の譜面スクロール速度の倍率 = App.ユーザ設定.譜面スクロール速度の倍率;
 				this._ドラムチップアニメ = new LoopCounter( 0, 200, 3 );
 				this._背景動画 = null;
 				this._BGM = null;
@@ -183,7 +183,7 @@ namespace DTXmatixx.ステージ.演奏
 					//----------------
 					this._描画範囲のチップに処理を適用する( 現在の演奏時刻sec, ( chip, index, ヒット判定バーと描画との時間sec, ヒット判定バーと発声との時間sec, ヒット判定バーとの距離 ) => {
 
-						var オプション設定 = App.オプション設定;
+						var オプション設定 = App.ユーザ設定;
 						var 対応表 = オプション設定.ドラムとチップと入力の対応表[ chip.チップ種別 ];
 						var AutoPlay = オプション設定.AutoPlay[ 対応表.AutoPlay種別 ];
 
@@ -271,7 +271,7 @@ namespace DTXmatixx.ステージ.演奏
 						#region " 上 → 譜面スクロールを加速 "
 						//----------------
 						const double 最大倍率 = 8.0;
-						App.オプション設定.譜面スクロール速度の倍率 = Math.Min( App.オプション設定.譜面スクロール速度の倍率 + 0.5, 最大倍率 );
+						App.ユーザ設定.譜面スクロール速度の倍率 = Math.Min( App.ユーザ設定.譜面スクロール速度の倍率 + 0.5, 最大倍率 );
 						//----------------
 						#endregion
 					}
@@ -280,7 +280,7 @@ namespace DTXmatixx.ステージ.演奏
 						#region " 下 → 譜面スクロールを減速 "
 						//----------------
 						const double 最小倍率 = 0.5;
-						App.オプション設定.譜面スクロール速度の倍率 = Math.Max( App.オプション設定.譜面スクロール速度の倍率 - 0.5, 最小倍率 );
+						App.ユーザ設定.譜面スクロール速度の倍率 = Math.Max( App.ユーザ設定.譜面スクロール速度の倍率 - 0.5, 最小倍率 );
 						//----------------
 						#endregion
 					}
@@ -327,7 +327,7 @@ namespace DTXmatixx.ステージ.演奏
 						{
 							double 倍率 = this._現在進行描画中の譜面スクロール速度の倍率;
 
-							if( 倍率 < App.オプション設定.譜面スクロール速度の倍率 )
+							if( 倍率 < App.ユーザ設定.譜面スクロール速度の倍率 )
 							{
 								if( 0 > this._スクロール倍率追い付き用_最後の値 )
 								{
@@ -342,10 +342,10 @@ namespace DTXmatixx.ステージ.演奏
 										this._スクロール倍率追い付き用_最後の値++;
 									}
 
-									this._現在進行描画中の譜面スクロール速度の倍率 = Math.Min( 倍率, App.オプション設定.譜面スクロール速度の倍率 );
+									this._現在進行描画中の譜面スクロール速度の倍率 = Math.Min( 倍率, App.ユーザ設定.譜面スクロール速度の倍率 );
 								}
 							}
-							else if( 倍率 > App.オプション設定.譜面スクロール速度の倍率 )
+							else if( 倍率 > App.ユーザ設定.譜面スクロール速度の倍率 )
 							{
 								if( 0 > this._スクロール倍率追い付き用_最後の値 )
 								{
@@ -360,7 +360,7 @@ namespace DTXmatixx.ステージ.演奏
 										this._スクロール倍率追い付き用_最後の値++;
 									}
 
-									this._現在進行描画中の譜面スクロール速度の倍率 = Math.Max( 倍率, App.オプション設定.譜面スクロール速度の倍率 );
+									this._現在進行描画中の譜面スクロール速度の倍率 = Math.Max( 倍率, App.ユーザ設定.譜面スクロール速度の倍率 );
 								}
 							}
 							else
@@ -746,7 +746,7 @@ namespace DTXmatixx.ステージ.演奏
 			{
 				#region " チップの判定処理を行う。"
 				//----------------
-				var 対応表 = App.オプション設定.ドラムとチップと入力の対応表[ chip.チップ種別 ];
+				var 対応表 = App.ユーザ設定.ドラムとチップと入力の対応表[ chip.チップ種別 ];
 
 				if( judge != 判定種別.MISS )
 				{
