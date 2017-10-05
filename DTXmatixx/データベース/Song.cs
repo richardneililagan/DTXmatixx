@@ -4,7 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Data.Linq.Mapping;
 
-namespace DTXmatixx.曲
+namespace DTXmatixx.データベース
 {
 	/// <summary>
 	///		Songs テーブルの Linq 用スキーマ。

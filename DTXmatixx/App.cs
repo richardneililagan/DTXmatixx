@@ -18,6 +18,7 @@ using FDK.同期;
 using DTXmatixx.ステージ;
 using DTXmatixx.曲;
 using DTXmatixx.設定;
+using DTXmatixx.データベース;
 using SSTFormat.v3;
 
 namespace DTXmatixx

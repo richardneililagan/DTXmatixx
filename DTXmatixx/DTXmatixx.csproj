@@ -157,8 +157,8 @@
     <Compile Include="設定\オプション設定.cs" />
     <Compile Include="設定\システム設定.cs" />
     <Compile Include="設定\ドラムとチップと入力の対応表.cs" />
-    <Compile Include="曲\SongsDB.cs" />
-    <Compile Include="曲\Song.cs" />
+    <Compile Include="データベース\SongsDB.cs" />
+    <Compile Include="データベース\Song.cs" />
     <Compile Include="設定\表示レーンの左右.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

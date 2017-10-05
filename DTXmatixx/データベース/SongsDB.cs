@@ -14,7 +14,7 @@ using SSTFormatCurrent = SSTFormat.v3;
 using DTXmatixx.設定;
 using DTXmatixx.ステージ.演奏;
 
-namespace DTXmatixx.曲
+namespace DTXmatixx.データベース
 {
 	/// <summary>
 	///		曲の情報をキャッシュしておくデータベースを管理するためのクラス。
