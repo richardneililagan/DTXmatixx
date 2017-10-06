@@ -154,6 +154,7 @@ namespace DTXmatixx.設定
 				}
 			}
 		}
+
 		/// <summary>
 		///		指定されたパスに対応する曲を曲データベースから取得して返す。
 		///		見つからなければ null 。
@@ -174,6 +175,36 @@ namespace DTXmatixx.設定
 
 			return null;
 		}
+
+		/// <summary>
+		///		指定されたユーザIDと曲（パスで指定）に対応する成績をデータベースから取得して返す。
+		///		見つからなければ null。
+		/// </summary>
+		public static Record ユーザと曲ファイルのパスから成績を取得する( string ユーザID, string 曲ファイルパス )
+		{
+			var song = 曲を取得する( 曲ファイルパス );
+			return ( null != song ) ? ユーザと曲ファイルのハッシュから成績を取得する( ユーザID, song.HashId ) : null;
+		}
+		
+		/// <summary>
+		///		指定されたユーザIDと曲（ハッシュで指定）に対応する成績をデータベースから取得して返す。
+		///		見つからなければ null。
+		/// </summary>
+		public static Record ユーザと曲ファイルのハッシュから成績を取得する( string ユーザID, string 曲ファイルハッシュ )
+		{
+			using( var userdb = new UserDB() )
+			{
+				var query = from record in userdb.Records
+							where ( record.UserId == ユーザID && record.SongHashId == 曲ファイルハッシュ )
+							select record;
+
+				foreach( var song in query )
+					return song;   // あっても1個しかないはずなので即返す。
+			}
+
+			return null;
+		}
+
 
 		private static Dictionary<表示レーン種別, int> _ノーツ数を算出して返す( SSTFormatCurrent.スコア score, ユーザ設定 ユーザ設定 )
 		{
