@@ -10,7 +10,7 @@ using FDK.メディア;
 
 namespace DTXmatixx.曲
 {
-	class キャプションテクスチャ : ビットマップ付きテクスチャ
+	class 曲名 : ビットマップ付きテクスチャ
 	{
 		/// <summary>
 		///		このメンバを set すれば、次回の進行描画時に画像が更新される。
@@ -31,7 +31,7 @@ namespace DTXmatixx.曲
 		} = null;
 
 
-		public キャプションテクスチャ()
+		public 曲名()
 			: base( new Size2( (int) Node.全体サイズ.Width, (int) Node.全体サイズ.Height ) )
 		{
 			this._fontName = "Arial";

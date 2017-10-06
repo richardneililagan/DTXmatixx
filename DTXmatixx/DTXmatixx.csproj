@@ -121,6 +121,7 @@
     <Compile Include="ステージ\演奏\スコア.cs" />
     <Compile Include="ステージ\演奏\チップ光.cs" />
     <Compile Include="ステージ\演奏\ドラムパッド.cs" />
+    <Compile Include="ステージ\演奏\プレイヤー名.cs" />
     <Compile Include="ステージ\演奏\レーンフラッシュ.cs" />
     <Compile Include="ステージ\演奏\レーンフレーム.cs" />
     <Compile Include="ステージ\演奏\判定文字列.cs" />
@@ -150,7 +151,7 @@
     <Compile Include="曲\MusicNode.cs" />
     <Compile Include="曲\Node.cs" />
     <Compile Include="曲\RootNode.cs" />
-    <Compile Include="曲\キャプションテクスチャ.cs" />
+    <Compile Include="曲\曲名.cs" />
     <Compile Include="曲\曲ツリー.cs" />
     <Compile Include="曲\難易度種別.cs" />
     <Compile Include="設定\AutoPlay種別.cs" />

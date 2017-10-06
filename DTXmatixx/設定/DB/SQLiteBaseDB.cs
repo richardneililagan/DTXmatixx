@@ -40,9 +40,7 @@ namespace DTXmatixx.設定.DB
 
 			this._DBファイルパス = DBファイルパス;
 
-			this._DB接続文字列 = new SQLiteConnectionStringBuilder() {
-				DataSource = Folder.絶対パスに含まれるフォルダ変数を展開して返す( this._DBファイルパス )
-			}.ToString();
+			this._DB接続文字列 = new SQLiteConnectionStringBuilder() { DataSource = Folder.絶対パスに含まれるフォルダ変数を展開して返す( this._DBファイルパス ) }.ToString();
 
 			this.Connection = new SQLiteConnection( this._DB接続文字列 );
 			this.Connection.Open();
@@ -55,7 +53,7 @@ namespace DTXmatixx.設定.DB
 
 			if( 実DBのバージョン == Version )
 			{
-				// (A) 不要　→　何もしない。
+				// (A) マイグレーション不要。
 			}
 			else if( 実DBのバージョン == 0 )
 			{

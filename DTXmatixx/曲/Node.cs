@@ -137,7 +137,7 @@ namespace DTXmatixx.曲
 		public Node()
 		{
 			//this.子リスト.Add( this._ノード画像 );	--> 派生クラスのコンストラクタで追加することができる。
-			this.子リスト.Add( this._キャプション画像 = new キャプションテクスチャ() );
+			this.子リスト.Add( this._曲名テクスチャ = new 曲名() );
 		}
 
 		protected override void On活性化( グラフィックデバイス gd )
@@ -180,13 +180,13 @@ namespace DTXmatixx.曲
 			if( キャプション表示 )
 			{
 				ワールド変換行列 *= Matrix.Translation( 0f, 0f, 1f );    // ノード画像よりZ方向手前にほんのり移動
-				this._キャプション画像.タイトル = this.タイトル;
-				this._キャプション画像.サブタイトル = this.サブタイトル;
-				this._キャプション画像.描画する( gd, ワールド変換行列, new RectangleF( 0f, 138f, Node.全体サイズ.Width, Node.全体サイズ.Height - 138f + 27f ) );
+				this._曲名テクスチャ.タイトル = this.タイトル;
+				this._曲名テクスチャ.サブタイトル = this.サブタイトル;
+				this._曲名テクスチャ.描画する( gd, ワールド変換行列, new RectangleF( 0f, 138f, Node.全体サイズ.Width, Node.全体サイズ.Height - 138f + 27f ) );
 			}
 		}
 
 
-		protected キャプションテクスチャ _キャプション画像 = null;
+		protected 曲名 _曲名テクスチャ = null;
 	}
 }

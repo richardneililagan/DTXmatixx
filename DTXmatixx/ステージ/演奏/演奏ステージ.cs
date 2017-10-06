@@ -62,6 +62,7 @@ namespace DTXmatixx.ステージ.演奏
 			this.子リスト.Add( this._コンボ = new コンボ() );
 			this.子リスト.Add( this._カウントマップライン = new カウントマップライン() );
 			this.子リスト.Add( this._スコア = new スコア() );
+			this.子リスト.Add( this._プレイヤー名 = new プレイヤー名() );
 			this.子リスト.Add( this._FPS = new FPS() );
 		}
 		protected override void On活性化( グラフィックデバイス gd )
@@ -83,6 +84,7 @@ namespace DTXmatixx.ステージ.演奏
 				this._背景動画開始済み = false;
 				this._BGM再生開始済み = false;
 				//this._デコード済みWaveSource = null;	--> キャッシュなので消さない。
+				this._プレイヤー名.名前 = App.ユーザ設定.ユーザ名;
 
 				#region " 背景動画とBGMを生成する。"
 				//----------------
@@ -300,6 +302,7 @@ namespace DTXmatixx.ステージ.演奏
 					{
 						this._左サイドクリアパネル.クリアする( gd );
 						this._左サイドクリアパネル.クリアパネル.ビットマップへ描画する( gd, ( dc, bmp ) => {
+							this._プレイヤー名.進行描画する( dc );
 							this._スコア.進行描画する( dc, gd.Animation, new Vector2( +280f, +120f ), this.成績 );
 							this._判定パラメータ.描画する( dc, +118f, +392f, this.成績 );
 						} );
@@ -385,6 +388,7 @@ namespace DTXmatixx.ステージ.演奏
 
 						this._左サイドクリアパネル.クリアする( gd );
 						this._左サイドクリアパネル.クリアパネル.ビットマップへ描画する( gd, ( dc, bmp ) => {
+							this._プレイヤー名.進行描画する( dc );
 							this._スコア.進行描画する( dc, gd.Animation, new Vector2( +280f, +120f ), this.成績 );
 							this._判定パラメータ.描画する( dc, +118f, +392f, this.成績 );
 						} );
@@ -491,6 +495,7 @@ namespace DTXmatixx.ステージ.演奏
 		private カウントマップライン _カウントマップライン = null;
 		private スコア _スコア = null;
 		private 判定パラメータ _判定パラメータ = null;
+		private プレイヤー名 _プレイヤー名 = null;
 		private FPS _FPS = null;
 		/// <summary>
 		///		読み込み画面: 0 ～ 1: 演奏画面
