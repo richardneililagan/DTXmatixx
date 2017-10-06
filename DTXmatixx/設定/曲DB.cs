@@ -30,20 +30,17 @@ namespace DTXmatixx.設定
 
 			using( var songdb = new SongDB() )
 			{
-				var 同一パス検索クエリ =
-					from song in songdb.Songs
-					where ( song.Path == 調べる曲のパス )
-					select song;
+				var 同一パス検索クエリ = songdb.Songs.Where( 
+					( song ) => ( song.Path == 調べる曲のパス ) );
 
 				if( 0 == 同一パス検索クエリ.Count() )
 				{
 					// (A) 同一パスを持つレコードがDBになかった
 
 					var 調べる曲のハッシュ = _ファイルのハッシュを算出して返す( 調べる曲のパス );
-					var 同一ハッシュ検索クエリ =
-						from song in songdb.Songs
-						where ( song.HashId == 調べる曲のハッシュ )
-						select song;
+
+					var 同一ハッシュ検索クエリ = songdb.Songs.Where(
+						( song ) => ( song.HashId == 調べる曲のハッシュ ) );
 
 					if( 0 == 同一ハッシュ検索クエリ.Count() )
 					{
@@ -81,27 +78,25 @@ namespace DTXmatixx.設定
 					{
 						#region " (A-b) 同一ハッシュを持つレコードがDBにあった → 更新 "
 						//----------------
-						foreach( var record in 同一ハッシュ検索クエリ )
+						var record = 同一ハッシュ検索クエリ.Single();
+						using( var score = new SSTFormatCurrent.スコア( 調べる曲のパス ) )
 						{
-							using( var score = new SSTFormatCurrent.スコア( 調べる曲のパス ) )
-							{
-								record.Title = score.Header.曲名;
-								record.Path = 調べる曲のパス;
-								record.LastWriteTime = File.GetLastWriteTime( 調べる曲のパス ).ToString( "G" );
+							record.Title = score.Header.曲名;
+							record.Path = 調べる曲のパス;
+							record.LastWriteTime = File.GetLastWriteTime( 調べる曲のパス ).ToString( "G" );
 
-								var ノーツ数 = _ノーツ数を算出して返す( score, ユーザ設定 );
-								record.LeftCymbalNotes = ノーツ数[ 表示レーン種別.LeftCrash ];
-								record.HiHatNotes = ノーツ数[ 表示レーン種別.HiHat ];
-								record.LeftPedalNotes = ノーツ数[ 表示レーン種別.Foot ];
-								record.SnareNotes = ノーツ数[ 表示レーン種別.Snare ];
-								record.BassNotes = ノーツ数[ 表示レーン種別.Bass ];
-								record.HighTomNotes = ノーツ数[ 表示レーン種別.Tom1 ];
-								record.LowTomNotes = ノーツ数[ 表示レーン種別.Tom2 ];
-								record.FloorTomNotes = ノーツ数[ 表示レーン種別.Tom3 ];
-								record.RightCymbalNotes = ノーツ数[ 表示レーン種別.RightCrash ];
-							}
-							songdb.DataContext.SubmitChanges();
+							var ノーツ数 = _ノーツ数を算出して返す( score, ユーザ設定 );
+							record.LeftCymbalNotes = ノーツ数[ 表示レーン種別.LeftCrash ];
+							record.HiHatNotes = ノーツ数[ 表示レーン種別.HiHat ];
+							record.LeftPedalNotes = ノーツ数[ 表示レーン種別.Foot ];
+							record.SnareNotes = ノーツ数[ 表示レーン種別.Snare ];
+							record.BassNotes = ノーツ数[ 表示レーン種別.Bass ];
+							record.HighTomNotes = ノーツ数[ 表示レーン種別.Tom1 ];
+							record.LowTomNotes = ノーツ数[ 表示レーン種別.Tom2 ];
+							record.FloorTomNotes = ノーツ数[ 表示レーン種別.Tom3 ];
+							record.RightCymbalNotes = ノーツ数[ 表示レーン種別.RightCrash ];
 						}
+						songdb.DataContext.SubmitChanges();
 
 						Log.Info( $"パスが異なりハッシュが同一であるレコードが検出されたため、曲の情報を更新しました。{曲ファイルパス}" );
 						//----------------
@@ -112,44 +107,41 @@ namespace DTXmatixx.設定
 				{
 					// (B) 同一パスを持つレコードがDBにあった
 
-					foreach( var record in 同一パス検索クエリ )
+					var record = 同一パス検索クエリ.Single();
+
+					string レコードの最終更新日時 = record.LastWriteTime;
+					string 調べる曲の最終更新日時 = File.GetLastWriteTime( 調べる曲のパス ).ToString( "G" );
+
+					if( レコードの最終更新日時 != 調べる曲の最終更新日時 )
 					{
-						string レコードの最終更新日時 = record.LastWriteTime;
-						string 調べる曲の最終更新日時 = File.GetLastWriteTime( 調べる曲のパス ).ToString( "G" );
-
-						if( レコードの最終更新日時 != 調べる曲の最終更新日時 )
+						#region " (B-a) 最終更新日時が変更されている → 更新 "
+						//----------------
+						using( var score = new SSTFormatCurrent.スコア( 調べる曲のパス ) )
 						{
-							#region " (B-a) 最終更新日時が変更されている → 更新 "
-							//----------------
-							using( var score = new SSTFormatCurrent.スコア( 調べる曲のパス ) )
-							{
-								record.HashId = _ファイルのハッシュを算出して返す( 調べる曲のパス );
-								record.Title = score.Header.曲名;
-								record.LastWriteTime = 調べる曲の最終更新日時;
+							record.HashId = _ファイルのハッシュを算出して返す( 調べる曲のパス );
+							record.Title = score.Header.曲名;
+							record.LastWriteTime = 調べる曲の最終更新日時;
 
-								var ノーツ数 = _ノーツ数を算出して返す( score, ユーザ設定 );
-								record.LeftCymbalNotes = ノーツ数[ 表示レーン種別.LeftCrash ];
-								record.HiHatNotes = ノーツ数[ 表示レーン種別.HiHat ];
-								record.LeftPedalNotes = ノーツ数[ 表示レーン種別.Foot ];
-								record.SnareNotes = ノーツ数[ 表示レーン種別.Snare ];
-								record.BassNotes = ノーツ数[ 表示レーン種別.Bass ];
-								record.HighTomNotes = ノーツ数[ 表示レーン種別.Tom1 ];
-								record.LowTomNotes = ノーツ数[ 表示レーン種別.Tom2 ];
-								record.FloorTomNotes = ノーツ数[ 表示レーン種別.Tom3 ];
-								record.RightCymbalNotes = ノーツ数[ 表示レーン種別.RightCrash ];
-							}
-							songdb.DataContext.SubmitChanges();
-
-							Log.Info( $"最終更新日時が変更されているため、曲の情報を更新しました。{曲ファイルパス}" );
-							//----------------
-							#endregion
+							var ノーツ数 = _ノーツ数を算出して返す( score, ユーザ設定 );
+							record.LeftCymbalNotes = ノーツ数[ 表示レーン種別.LeftCrash ];
+							record.HiHatNotes = ノーツ数[ 表示レーン種別.HiHat ];
+							record.LeftPedalNotes = ノーツ数[ 表示レーン種別.Foot ];
+							record.SnareNotes = ノーツ数[ 表示レーン種別.Snare ];
+							record.BassNotes = ノーツ数[ 表示レーン種別.Bass ];
+							record.HighTomNotes = ノーツ数[ 表示レーン種別.Tom1 ];
+							record.LowTomNotes = ノーツ数[ 表示レーン種別.Tom2 ];
+							record.FloorTomNotes = ノーツ数[ 表示レーン種別.Tom3 ];
+							record.RightCymbalNotes = ノーツ数[ 表示レーン種別.RightCrash ];
 						}
-						else
-						{
-							// (B-b) それ以外 → 何もしない
-						}
+						songdb.DataContext.SubmitChanges();
 
-						break;	// 1つしか存在しないはずだが念のため。
+						Log.Info( $"最終更新日時が変更されているため、曲の情報を更新しました。{曲ファイルパス}" );
+						//----------------
+						#endregion
+					}
+					else
+					{
+						// (B-b) それ以外 → 何もしない
 					}
 				}
 			}
@@ -165,15 +157,10 @@ namespace DTXmatixx.設定
 
 			using( var songdb = new SongDB() )
 			{
-				var query = from song in songdb.Songs
-							where ( song.Path == filePath )
-							select song;
-
-				foreach( var song in query )
-					return song;   // あっても1個しかないはずなので即返す。
+				return songdb.Songs.Where(
+					( song ) => ( song.Path == filePath )
+					).SingleOrDefault();
 			}
-
-			return null;
 		}
 
 		/// <summary>
@@ -194,15 +181,10 @@ namespace DTXmatixx.設定
 		{
 			using( var userdb = new UserDB() )
 			{
-				var query = from record in userdb.Records
-							where ( record.UserId == ユーザID && record.SongHashId == 曲ファイルハッシュ )
-							select record;
-
-				foreach( var song in query )
-					return song;   // あっても1個しかないはずなので即返す。
+				return userdb.Records.Where( 
+					( record ) => ( record.UserId == ユーザID && record.SongHashId == 曲ファイルハッシュ )
+					).SingleOrDefault();
 			}
-
-			return null;
 		}
 
 

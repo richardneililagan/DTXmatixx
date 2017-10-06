@@ -131,18 +131,16 @@ namespace DTXmatixx.ステージ.演奏
 				//----------------
 				using( var userdb = new UserDB() )
 				{
-					var query = from user in userdb.Users
-								where ( user.Id == App.ユーザ設定.ID )
-								select user;
+					var user = userdb.Users.Where(
+						( u ) => ( u.Id == App.ユーザ設定.ID )
+						).SingleOrDefault();
 
-					foreach( var user in query )
+					if( null != user )
 					{
 						user.ScrollSpeed = App.ユーザ設定.譜面スクロール速度の倍率;
 						userdb.DataContext.SubmitChanges();
 
 						Log.Info( $"現在の譜面スクロール速度({App.ユーザ設定.譜面スクロール速度の倍率})をDBに保存しました。[UserID={user.Id}]" );
-
-						break;	// 1つしかないはずだが念のため。
 					}
 				}
 				//----------------

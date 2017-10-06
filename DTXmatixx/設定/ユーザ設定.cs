@@ -92,11 +92,13 @@ namespace DTXmatixx.設定
 		{
 			using( var userdb = new DB.UserDB() )
 			{
-				var users = from user in userdb.Users where ( user.Name == "AutoPlayer" ) select user;
-				foreach( var user in users )
+				var user = userdb.Users.Where(
+					( u ) => ( u.Name == "AutoPlayer" ) 
+					).SingleOrDefault();
+
+				if( null != user )
 				{
 					this._コピーする( user );
-					break;	// 1つしかないはずだが念のため。
 				}
 			}
 		}
