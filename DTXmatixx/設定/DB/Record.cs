@@ -1,55 +1,77 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.Linq.Mapping;
+using System.Data.SQLite;
 using System.Diagnostics;
 using System.Linq;
 
 namespace DTXmatixx.設定.DB
 {
 	/// <summary>
-	///		Records テーブルの Linq 用スキーマ。
-	///		UsersDB 内で、ユーザの演奏成績を管理する。
+	///		成績テーブルのエンティティクラス。
 	/// </summary>
 	[Table( Name = "Records" )]   // テーブル名は複数形
 	public class Record	// クラス名は単数形
 	{
 		/// <summary>
+		///		一意な ID。
+		///		値はDB側で自動生成されるので、INSERT 時は null を設定しておくこと。
+		/// </summary>
+		[Column( DbType = "INT", CanBeNull = false, IsPrimaryKey = true )] // Linq で自動増加させたい場合は、IsDbGenerate を指定してはならない。
+		public int? Id { get; set; } = null;
+
+		/// <summary>
 		///		ユーザを一意に識別するID。
 		/// </summary>
-		[Column( Name = "user_id", DbType = "NVARCHAR", CanBeNull = false )]
-		public String UserId { get; set; }
+		[Column( DbType = "NVARCHAR", CanBeNull = false )]
+		public string UserId { get; set; }
 
 		/// <summary>
 		///		曲譜面ファイルのハッシュ値。
 		/// </summary>
-		[Column( Name = "song_hash_id", DbType = "NVARCHAR", CanBeNull = false, UpdateCheck = UpdateCheck.Never )]
-		public String SongHashId { get; set; }
+		[Column( DbType = "NVARCHAR", CanBeNull = false )]
+		public string SongHashId { get; set; }
 
 		/// <summary>
 		///		スコア。
 		/// </summary>
-		[Column( Name = "score", DbType = "INT", CanBeNull = false )]
-		public Int32 Score { get; set; }
+		[Column( DbType = "INT", CanBeNull = false )]
+		public int Score { get; set; }
 
 		/// <summary>
 		///		カウントマップラインのデータ。
 		///		１ブロックを１文字（'0':0～'C':12）で表し、<see cref="DTXmatixx.ステージ.演奏.カウントマップライン.カウントマップの最大要素数"/> 個の文字が並ぶ。
 		///		もし不足分があれば、'0' とみなされる。
 		/// </summary>
-		[Column( Name = "count_map", DbType = "NVARCHAR", CanBeNull = true, UpdateCheck = UpdateCheck.Never )]
-		public String CountMap { get; set; } = null;
+		[Column( DbType = "NVARCHAR", CanBeNull = false )]
+		public string CountMap { get; set; }
+
+		///////////////////////////
+
+		/// <summary>
+		///		規定値で初期化。
+		/// </summary>
+		public Record()
+		{
+			this.Id = null;
+			this.UserId = "Anonymous";
+			this.SongHashId = "";
+			this.Score = 0;
+			this.CountMap = "";
+		}
 
 		///////////////////////////
 
 		/// <summary>
 		///		テーブル作成用のSQL。
 		/// </summary>
-		public static readonly string CreateTable =
+		public static readonly string CreateTableSQL =
 			@"CREATE TABLE IF NOT EXISTS Records " +
-			@"( user_id NVARCHAR NOT NULL" +
-			@", song_hash_id NVARCHAR NOT NULL" +
-			@", score INTEGER NOT NULL" +
-			@", count_map NVARCHAR" +
+			@"( Id INTEGER NOT NULL PRIMARY KEY" +
+			@", UserId NVARCHAR NOT NULL" +
+			@", SongHashId NVARCHAR NOT NULL" +
+			@", Score INTEGER NOT NULL" +
+			@", CountMap NVARCHAR NOT NULL" +
 			@");";
 	}
 }

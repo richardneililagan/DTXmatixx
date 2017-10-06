@@ -69,22 +69,12 @@ namespace DTXmatixx
 			get;
 			protected set;
 		} = null;
-		public static ユーザ設定 ユーザ設定
-		{
-			get;
-			protected set;
-		} = null;
 		public static ドラムサウンド ドラムサウンド
 		{
 			get;
 			protected set;
 		} = null;
-		public static SongsDB 曲DB
-		{
-			get;
-			protected set;
-		} = null;
-		public static UsersDB ユーザDB
+		public static ユーザ設定 ユーザ設定
 		{
 			get;
 			protected set;
@@ -111,9 +101,7 @@ namespace DTXmatixx
 			App.サウンドタイマ = new FDK.メディア.サウンド.WASAPI.SoundTimer( App.サウンドデバイス );
 			App.システム設定 = new システム設定();
 			App.ドラムサウンド = new ドラムサウンド();
-			App.曲DB = new SongsDB( @"$(AppData)Songs.sqlite3" );
-			App.ユーザDB = new UsersDB( @"$(AppData)Users.sqlite3" );
-			App.ユーザ設定 = new ユーザ設定( App.ユーザDB.ユーザの情報を返す( "AutoPlayer" ) );		// 最初は、ユーザ "AutoPlayer" を選択。
+			App.ユーザ設定 = new ユーザ設定( "AutoPlayer" );
 
 			this._活性化する();
 
@@ -128,11 +116,7 @@ namespace DTXmatixx
 			{
 				this._非活性化する();
 
-				App.ユーザDB?.Dispose();
-				App.ユーザDB = null;
-
-				App.曲DB?.Dispose();
-				App.曲DB = null;
+				App.ユーザ設定 = null;
 
 				App.ドラムサウンド?.Dispose();
 				App.ドラムサウンド = null;

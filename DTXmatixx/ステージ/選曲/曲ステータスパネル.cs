@@ -9,6 +9,7 @@ using SharpDX.Direct2D1;
 using FDK;
 using FDK.メディア;
 using DTXmatixx.曲;
+using DTXmatixx.設定;
 using DTXmatixx.ステージ.演奏;
 
 namespace DTXmatixx.ステージ.選曲
@@ -58,7 +59,7 @@ namespace DTXmatixx.ステージ.選曲
 
 				if( this._現在表示しているノード is MusicNode musicNode )
 				{
-					var song = App.曲DB.曲の情報を返す( musicNode.曲ファイルパス );
+					var song = 曲DB.曲を取得する( musicNode.曲ファイルパス );
 
 					if( null != song )
 					{

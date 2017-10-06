@@ -1,17 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Linq;
+using System.Data.Linq.Mapping;
+using System.Data.SQLite;
 using System.Diagnostics;
-using System.IO;
 using System.Linq;
 using FDK;
-using DTXmatixx.設定.DB;
 using DTXmatixx.ステージ.演奏;
 
 namespace DTXmatixx.設定
 {
-	/// <summary>
-	///		<see cref="User"/> クラスを使いやすくするためのクラス。
-	/// </summary>
 	class ユーザ設定
 	{
 		public string ID
@@ -19,6 +17,7 @@ namespace DTXmatixx.設定
 			get;
 			protected set;
 		} = null;
+
 		public string ユーザ名
 		{
 			get;
@@ -66,10 +65,44 @@ namespace DTXmatixx.設定
 			protected set;
 		} = null;
 
+		public ユーザ設定()
+		{
+			this.ドラムとチップと入力の対応表 = new ドラムとチップと入力の対応表(
+				new 表示レーンの左右() {	// 使わないので固定。
+					Chinaは左 = false,
+					Rideは左 = false,
+					Splashは左 = true,
+				} );
+		}
+
 		/// <summary>
-		///		<see cref="User"/> インスタンスから生成する。
+		///		User 情報を使って初期化する。
 		/// </summary>
-		public ユーザ設定( User user )
+		public ユーザ設定( DB.User user )
+			: base()
+		{
+			this._コピーする( user );
+		}
+
+		/// <summary>
+		///		ユーザ名で User テーブルを検索し、得られた User 情報を使って初期化する。
+		/// </summary>
+		public ユーザ設定( string ユーザ名 )
+			: base()
+		{
+			using( var userdb = new DB.UserDB() )
+			{
+				var users = from user in userdb.Users where ( user.Name == "AutoPlayer" ) select user;
+				foreach( var user in users )
+				{
+					this._コピーする( user );
+					break;	// 1つしかないはずだが念のため。
+				}
+			}
+		}
+
+
+		private void _コピーする( DB.User user )
 		{
 			this.ID = user.Id;
 			this.ユーザ名 = user.Name;
