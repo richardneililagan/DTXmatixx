@@ -11,6 +11,7 @@ using FDK.メディア.サウンド.WASAPI;
 using FDK.カウンタ;
 using SSTFormat.v3;
 using DTXmatixx.設定;
+using DTXmatixx.設定.DB;
 
 namespace DTXmatixx.ステージ.演奏
 {
@@ -126,6 +127,27 @@ namespace DTXmatixx.ステージ.演奏
 		{
 			using( Log.Block( FDKUtilities.現在のメソッド名 ) )
 			{
+				#region " 現在の譜面スクロール速度をDBに保存。"
+				//----------------
+				using( var userdb = new UserDB() )
+				{
+					var query = from user in userdb.Users
+								where ( user.Id == App.ユーザ設定.ID )
+								select user;
+
+					foreach( var user in query )
+					{
+						user.ScrollSpeed = App.ユーザ設定.譜面スクロール速度の倍率;
+						userdb.DataContext.SubmitChanges();
+
+						Log.Info( $"現在の譜面スクロール速度({App.ユーザ設定.譜面スクロール速度の倍率})をDBに保存しました。[UserID={user.Id}]" );
+
+						break;	// 1つしかないはずだが念のため。
+					}
+				}
+				//----------------
+				#endregion
+
 				// 背景動画を生成した場合は子リストから削除。
 				if( null != this._背景動画 )
 					this.子リスト.Remove( this._背景動画 );
@@ -138,6 +160,9 @@ namespace DTXmatixx.ステージ.演奏
 			}
 		}
 
+		/// <summary>
+		///		進行と入力。
+		/// </summary>
 		public override void 高速進行する()
 		{
 			if( this._初めての進行描画 )
@@ -289,6 +314,11 @@ namespace DTXmatixx.ステージ.演奏
 					break;
 			}
 		}
+
+		/// <summary>
+		///		描画。
+		/// </summary>
+		/// <param name="gd"></param>
 		public override void 進行描画する( グラフィックデバイス gd )
 		{
 			// 進行描画
