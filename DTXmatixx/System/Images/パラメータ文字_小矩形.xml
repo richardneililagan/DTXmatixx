@@ -13,4 +13,5 @@
   <SubImage Name="o" Rectangle="0,64,17,32" /><!-- o は グレーのゼロ -->
   <SubImage Name="." Rectangle="17,64,17,32" />
   <SubImage Name="%" Rectangle="34,64,17,32" />
+  <SubImage Name=" " Rectangle="51,64,17,32" />
 </Root>

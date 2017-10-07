@@ -135,6 +135,7 @@
     <Compile Include="ステージ\演奏\判定パラメータ表示.cs" />
     <Compile Include="ステージ\演奏\表示レーン種別.cs" />
     <Compile Include="ステージ\演奏\譜面スクロール速度表示.cs" />
+    <Compile Include="ステージ\演奏\達成率表示.cs" />
     <Compile Include="ステージ\結果\演奏パラメータ結果.cs" />
     <Compile Include="ステージ\結果\結果ステージ.cs" />
     <Compile Include="ステージ\舞台画像.cs" />
@@ -404,12 +405,12 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <None Include="System\Images\パラメータ文字.png">
+    <None Include="System\Images\パラメータ文字_小.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
   <ItemGroup>
-    <None Include="System\Images\パラメータ文字矩形.xml">
+    <None Include="System\Images\パラメータ文字_小矩形.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
@@ -471,7 +472,19 @@
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="System\Images\パラメータ文字_大.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="System\Images\パラメータ文字_大矩形.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="System\Images\達成率ロゴ.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\System.Data.SQLite.Core.1.0.105.2\build\net451\System.Data.SQLite.Core.targets" Condition="Exists('..\packages\System.Data.SQLite.Core.1.0.105.2\build\net451\System.Data.SQLite.Core.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

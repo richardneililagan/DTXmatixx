@@ -18,16 +18,24 @@ namespace DTXmatixx.ステージ.演奏
 			get;
 			protected set;
 		} = 0;
+
 		public int Combo
 		{
 			get;
 			protected set;
 		} = 0;
+
 		public int MaxCombo
 		{
 			get;
 			protected set;
 		} = 0;
+
+		public float 達成率
+		{
+			get;
+			protected set;
+		} = 0.0f;
 
 		/// <summary>
 		///		現在の設定において、ヒット対象になるノーツの数を返す。
@@ -37,7 +45,7 @@ namespace DTXmatixx.ステージ.演奏
 			get;
 			protected set;
 		} = 0;
-
+		
 		/// <summary>
 		///		判定種別ごとのヒット数。
 		/// </summary>
@@ -60,7 +68,7 @@ namespace DTXmatixx.ステージ.演奏
 
 			this.Score = 0;
 			this.MaxCombo = 0;
-
+			this.達成率 = 0.0f;
 			this.総ノーツ数 = ( null != 譜面 && null != 設定 ) ? this._総ノーツ数を算出して返す( 譜面, 設定 ) : 0;
 
 			this._判定toヒット数 = new Dictionary<判定種別, int>();
@@ -70,27 +78,49 @@ namespace DTXmatixx.ステージ.演奏
 				this._判定toヒット数.Add( judge, 0 );
 				this._最後にスコアを更新したときの判定toヒット数.Add( judge, 0 );
 			}
+
+			// todo: AutoPlay の状態から、達成率用のオプション補正を算出。
+			this._オプション補正 = 1.0;
 		}
 
 		public void ヒット数を加算する( 判定種別 judge, int 加算値 = 1 )
 		{
+			// (1) ヒット数を加算する。
 			this._判定toヒット数[ judge ] += 加算値;
 
-			if( judge == 判定種別.OK || judge == 判定種別.MISS )
+			// (2) コンボを加算する。
 			{
-				this.Combo = 0; // コンボ切れ
-			}
-			else
-			{
-				this.Combo++;
-				this.MaxCombo = Math.Max( this.Combo, this.MaxCombo );
+				bool コンボ切れ = ( judge == 判定種別.OK || judge == 判定種別.MISS );
 
-				// スコアを加算する。
+				if( コンボ切れ )
+				{
+					this.Combo = 0;
+				}
+				else
+				{
+					this.Combo++;
+					this.MaxCombo = Math.Max( this.Combo, this.MaxCombo );
+				}
+			}
+
+			// (3) スコアを加算する。
+			{
 				double 基礎点 = 1000000.0 / ( 1275.0 + 50.0 * ( this.総ノーツ数 - 50 ) );
 				int コンボ数 = Math.Min( this.Combo, 50 );
+
 				this.Score += (int) Math.Floor( 基礎点 * コンボ数 * this._判定値表[ judge ] );
 			}
+
+			// (4) 達成率を更新する。
+			{
+				double 判定値 = Math.Floor( 100.0 * ( ( this._判定toヒット数[ 判定種別.PERFECT ] * 85.0 + this._判定toヒット数[ 判定種別.GREAT ] * 35.0 ) / this.総ノーツ数 ) ) / 100.0;    // 小数第3位以下切り捨て
+				double フレーズコンボ成功率 = 0.0;    // 未対応
+				double COMBO値 = Math.Floor( 100.0 * ( ( this.MaxCombo * 5.0 / this.総ノーツ数 ) + ( フレーズコンボ成功率 * 10.0 ) ) ) / 100.0; // 小数第3位以下切り捨て
+
+				this.達成率 = (float) ( Math.Floor( 100.0 * ( ( 判定値 + COMBO値 ) * this._オプション補正 ) ) / 100.0 );    // 小数第3位以下切り捨て
+			}
 		}
+
 
 		private Dictionary<判定種別, int> _判定toヒット数 = null;
 		private Dictionary<判定種別, int> _最後にスコアを更新したときの判定toヒット数 = null;
@@ -101,6 +131,7 @@ namespace DTXmatixx.ステージ.演奏
 			{ 判定種別.OK, 0.0 },
 			{ 判定種別.MISS, 0.0 },
 		};
+		private double _オプション補正 = 1.0;
 
 		private IReadOnlyDictionary<判定種別, int> _ヒット割合を算出して返す()
 		{
@@ -201,6 +232,7 @@ namespace DTXmatixx.ステージ.演奏
 
 			return ヒット割合_整数;
 		}
+
 		private int _総ノーツ数を算出して返す( SSTFormatCurrent.スコア score, ユーザ設定 options )
 		{
 			int 総ノーツ数 = 0;

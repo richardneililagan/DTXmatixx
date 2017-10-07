@@ -47,7 +47,7 @@ namespace DTXmatixx.ステージ.演奏
 
 		public void 進行描画する( DeviceContext dc )
 		{
-			var 描画矩形 = new RectangleF( 122f, 333f, 240f, 30f );
+			var 描画矩形 = new RectangleF( 122f, 313f, 240f, 30f );
 
 			// 初回または名前が変更された場合に TextLayout を再構築する。
 			if( ( null == this._TextLayout ) || ( this._前回表示した名前 != this.名前 ) )
