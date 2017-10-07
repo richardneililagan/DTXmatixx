@@ -11,7 +11,7 @@ using DTXmatixx.ステージ.演奏;
 
 namespace DTXmatixx.ステージ.結果
 {
-	class 演奏パラメータ結果 : 演奏.判定パラメータ
+	class 演奏パラメータ結果 : 演奏.判定パラメータ表示
 	{
 		public 演奏パラメータ結果()
 		{

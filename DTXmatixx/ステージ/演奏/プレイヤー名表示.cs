@@ -13,11 +13,11 @@ namespace DTXmatixx.ステージ.演奏
 	/// <summary>
 	///		プレイヤー名の表示。
 	/// </summary>
-	class プレイヤー名 : Activity
+	class プレイヤー名表示 : Activity
 	{
 		public string 名前 { get; set; }
 
-		public プレイヤー名()
+		public プレイヤー名表示()
 		{
 		}
 

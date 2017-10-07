@@ -11,9 +11,9 @@ using FDK.カウンタ;
 
 namespace DTXmatixx.ステージ.演奏
 {
-	class コンボ : Activity
+	class コンボ表示 : Activity
 	{
-		public コンボ()
+		public コンボ表示()
 		{
 			this.子リスト.Add( this._コンボ文字画像 = new 画像( @"$(System)images\コンボ文字.png" ) );
 		}

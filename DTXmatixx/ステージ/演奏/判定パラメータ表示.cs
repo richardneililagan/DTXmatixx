@@ -8,9 +8,9 @@ using FDK;
 using FDK.メディア;
 namespace DTXmatixx.ステージ.演奏
 {
-	class 判定パラメータ : Activity
+	class 判定パラメータ表示 : Activity
 	{
-		public 判定パラメータ()
+		public 判定パラメータ表示()
 		{
 			this.子リスト.Add( this._パラメータ文字 = new 画像フォント( @"$(System)images\パラメータ文字.png", @"$(System)images\パラメータ文字矩形.xml" ) );
 			this.子リスト.Add( this._判定種別文字 = new 画像( @"$(System)images\パラメータ用判定種別文字.png" ) );

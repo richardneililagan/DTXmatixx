@@ -15,9 +15,9 @@ namespace DTXmatixx.ステージ.演奏
 	///		スコアの描画を行う。
 	///		スコアの計算については、<see cref="成績"/> クラスにて実装する。
 	/// </summary>
-	class スコア : Activity
+	class スコア表示 : Activity
 	{
-		public スコア()
+		public スコア表示()
 		{
 			this.子リスト.Add( this._スコア数字画像 = new 画像( @"$(System)images\スコア数字.png" ) );
 		}
