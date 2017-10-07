@@ -163,7 +163,7 @@ namespace DTXmatixx.ステージ.曲読み込み
 					chip.発声時刻ms -= (long) 再生時遅延ms;
 
 				Log.Info( $"曲ファイルを読み込みました。" );
-				Log.Info( $"曲名: {App.演奏スコア.Header.曲名}" );
+				Log.Info( $"曲名: {App.演奏スコア.曲名}" );
 			}
 		}
 	}

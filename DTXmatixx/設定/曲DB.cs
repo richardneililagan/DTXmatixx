@@ -54,7 +54,7 @@ namespace DTXmatixx.設定
 								new Song() {
 									Id = null,
 									HashId = _ファイルのハッシュを算出して返す( 調べる曲のパス ),
-									Title = score.Header.曲名,
+									Title = score.曲名,
 									Path = 調べる曲のパス,
 									LastWriteTime = File.GetLastWriteTime( 調べる曲のパス ).ToString( "G" ),
 									LeftCymbalNotes = ノーツ数[ 表示レーン種別.LeftCrash ],
@@ -81,7 +81,7 @@ namespace DTXmatixx.設定
 						var record = 同一ハッシュ検索クエリ.Single();
 						using( var score = new SSTFormatCurrent.スコア( 調べる曲のパス ) )
 						{
-							record.Title = score.Header.曲名;
+							record.Title = score.曲名;
 							record.Path = 調べる曲のパス;
 							record.LastWriteTime = File.GetLastWriteTime( 調べる曲のパス ).ToString( "G" );
 
@@ -119,7 +119,7 @@ namespace DTXmatixx.設定
 						using( var score = new SSTFormatCurrent.スコア( 調べる曲のパス ) )
 						{
 							record.HashId = _ファイルのハッシュを算出して返す( 調べる曲のパス );
-							record.Title = score.Header.曲名;
+							record.Title = score.曲名;
 							record.LastWriteTime = 調べる曲の最終更新日時;
 
 							var ノーツ数 = _ノーツ数を算出して返す( score, ユーザ設定 );
