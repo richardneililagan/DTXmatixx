@@ -68,7 +68,47 @@ namespace DTXmatixx.ステージ.演奏
 						{
 							status.アニメ用メンバを解放する();
 
-							#region " (1) 判定文字（影）"
+							#region " (1) 光 "
+							//----------------
+							if( status.判定種別 == 判定種別.PERFECT )   // 今のところ、光はPERFECT時のみ表示。
+							{
+								// 初期状態
+								status.光の回転角 = new Variable( gd.Animation.Manager, initialValue: 0 );
+								status.光のX方向拡大率 = new Variable( gd.Animation.Manager, initialValue: 1.2 );
+								status.光のY方向拡大率 = new Variable( gd.Animation.Manager, initialValue: 0.25 );
+								status.光のストーリーボード = new Storyboard( gd.Animation.Manager );
+
+								double 期間sec;
+
+								// シーン1. 小さい状態からすばやく展開
+								期間sec = 0.03;
+								using( var 回転角の遷移 = gd.Animation.TrasitionLibrary.Linear( duration: 期間sec, finalValue: -100.0 ) )       // [degree]
+								using( var X方向拡大率の遷移 = gd.Animation.TrasitionLibrary.Linear( duration: 期間sec, finalValue: 1.0 ) )
+								using( var Y方向拡大率の遷移 = gd.Animation.TrasitionLibrary.Linear( duration: 期間sec, finalValue: 1.0 ) )
+								{
+									status.光のストーリーボード.AddTransition( status.光の回転角, 回転角の遷移 );
+									status.光のストーリーボード.AddTransition( status.光のX方向拡大率, X方向拡大率の遷移 );
+									status.光のストーリーボード.AddTransition( status.光のY方向拡大率, Y方向拡大率の遷移 );
+								}
+
+								// シーン2. 大きい状態でゆっくり消える
+								期間sec = 0.29;
+								using( var 回転角の遷移 = gd.Animation.TrasitionLibrary.Linear( duration: 期間sec, finalValue: -140.0 ) )       // [degree]
+								using( var X方向拡大率の遷移 = gd.Animation.TrasitionLibrary.Linear( duration: 期間sec, finalValue: 0.0 ) )
+								using( var Y方向拡大率の遷移 = gd.Animation.TrasitionLibrary.Constant( duration: 期間sec ) )
+								{
+									status.光のストーリーボード.AddTransition( status.光の回転角, 回転角の遷移 );
+									status.光のストーリーボード.AddTransition( status.光のX方向拡大率, X方向拡大率の遷移 );
+									status.光のストーリーボード.AddTransition( status.光のY方向拡大率, Y方向拡大率の遷移 );
+								}
+
+								// 開始
+								status.光のストーリーボード.Schedule( gd.Animation.Timer.Time );
+							}
+							//----------------
+							#endregion
+
+							#region " (2) 判定文字（影）"
 							//----------------
 							{
 								// 初期状態
@@ -104,7 +144,7 @@ namespace DTXmatixx.ステージ.演奏
 							//----------------
 							#endregion
 
-							#region " (2) 判定文字（本体）"
+							#region " (3) 判定文字（本体）"
 							//----------------
 							{
 								// 初期状態
@@ -187,46 +227,6 @@ namespace DTXmatixx.ステージ.演奏
 							//----------------
 							#endregion
 
-							#region " (3) 光 "
-							//----------------
-							if( status.判定種別 == 判定種別.PERFECT )   // 今のところ、光はPERFECT時のみ表示。
-							{
-								// 初期状態
-								status.光の回転角 = new Variable( gd.Animation.Manager, initialValue: 0 );
-								status.光のX方向拡大率 = new Variable( gd.Animation.Manager, initialValue: 1.2 );
-								status.光のY方向拡大率 = new Variable( gd.Animation.Manager, initialValue: 0.25 );
-								status.光のストーリーボード = new Storyboard( gd.Animation.Manager );
-
-								double 期間sec;
-
-								// シーン1. 小さい状態からすばやく展開
-								期間sec = 0.03;
-								using( var 回転角の遷移 = gd.Animation.TrasitionLibrary.Linear( duration: 期間sec, finalValue: -100.0 ) )		// [degree]
-								using( var X方向拡大率の遷移 = gd.Animation.TrasitionLibrary.Linear( duration: 期間sec, finalValue: 1.0 ) )
-								using( var Y方向拡大率の遷移 = gd.Animation.TrasitionLibrary.Linear( duration: 期間sec, finalValue: 1.0 ) )
-								{
-									status.光のストーリーボード.AddTransition( status.光の回転角, 回転角の遷移 );
-									status.光のストーリーボード.AddTransition( status.光のX方向拡大率, X方向拡大率の遷移 );
-									status.光のストーリーボード.AddTransition( status.光のY方向拡大率, Y方向拡大率の遷移 );
-								}
-
-								// シーン2. 大きい状態でゆっくり消える
-								期間sec = 0.29;
-								using( var 回転角の遷移 = gd.Animation.TrasitionLibrary.Linear( duration: 期間sec, finalValue: -140.0 ) )		// [degree]
-								using( var X方向拡大率の遷移 = gd.Animation.TrasitionLibrary.Linear( duration: 期間sec, finalValue: 0.0 ) )
-								using( var Y方向拡大率の遷移 = gd.Animation.TrasitionLibrary.Constant( duration: 期間sec ) )
-								{
-									status.光のストーリーボード.AddTransition( status.光の回転角, 回転角の遷移 );
-									status.光のストーリーボード.AddTransition( status.光のX方向拡大率, X方向拡大率の遷移 );
-									status.光のストーリーボード.AddTransition( status.光のY方向拡大率, Y方向拡大率の遷移 );
-								}
-
-								// 開始
-								status.光のストーリーボード.Schedule( gd.Animation.Timer.Time );
-							}
-							//----------------
-							#endregion
-
 							status.現在の状態 = 表示レーンステータス.状態.表示中;
 						}
 						//----------------
@@ -237,7 +237,31 @@ namespace DTXmatixx.ステージ.演奏
 						#region " 開始完了、表示中 "
 						//----------------
 						{
-							#region " (1) 判定文字列（影）"
+							#region " (1) 光 "
+							//----------------
+							if( null != status.光のストーリーボード )
+							{
+								var 転送元矩形 = (RectangleF) this._判定文字列の矩形リスト[ "PERFECT光" ];
+								var 転送元矩形の中心dpx = new Vector2( 転送元矩形.Width / 2f, 転送元矩形.Height / 2f );
+
+								var 変換行列2D =
+									Matrix3x2.Scaling(
+										x: (float) status.光のX方向拡大率.Value,
+										y: (float) status.光のY方向拡大率.Value,
+										center: 転送元矩形の中心dpx ) *
+									Matrix3x2.Rotation(
+										angle: MathUtil.DegreesToRadians( (float) status.光の回転角.Value ),
+										center: 転送元矩形の中心dpx ) *
+									Matrix3x2.Translation(
+										status.表示中央位置dpx.X - 転送元矩形.Width / 2f,
+										status.表示中央位置dpx.Y - 転送元矩形.Height / 2f );
+
+								this._判定文字列画像.描画する( gd, 変換行列2D, 転送元矩形: 転送元矩形 );
+							}
+							//----------------
+							#endregion
+
+							#region " (2) 判定文字列（影）"
 							//----------------
 							if( null != status.文字列影のストーリーボード )
 							{
@@ -257,7 +281,7 @@ namespace DTXmatixx.ステージ.演奏
 							//----------------
 							#endregion
 
-							#region " (2) 判定文字列（本体）"
+							#region " (3) 判定文字列（本体）"
 							//----------------
 							if( null != status.文字列本体のストーリーボード )
 							{
@@ -277,30 +301,6 @@ namespace DTXmatixx.ステージ.演奏
 									変換行列2D, 
 									転送元矩形: 転送元矩形, 
 									不透明度0to1: (float) status.文字列本体の不透明度.Value );
-							}
-							//----------------
-							#endregion
-
-							#region " (3) 光 "
-							//----------------
-							if( null != status.光のストーリーボード )
-							{
-								var 転送元矩形 = (RectangleF) this._判定文字列の矩形リスト[ "PERFECT光" ];
-								var 転送元矩形の中心dpx = new Vector2( 転送元矩形.Width / 2f, 転送元矩形.Height / 2f );
-
-								var 変換行列2D =
-									Matrix3x2.Scaling(
-										x: (float) status.光のX方向拡大率.Value, 
-										y: (float) status.光のY方向拡大率.Value,
-										center: 転送元矩形の中心dpx ) *
-									Matrix3x2.Rotation(
-										angle: MathUtil.DegreesToRadians( (float) status.光の回転角.Value ),
-										center: 転送元矩形の中心dpx ) *
-									Matrix3x2.Translation(
-										status.表示中央位置dpx.X - 転送元矩形.Width / 2f,
-										status.表示中央位置dpx.Y - 転送元矩形.Height / 2f );
-
-								this._判定文字列画像.描画する( gd, 変換行列2D, 転送元矩形: 転送元矩形 );
 							}
 							//----------------
 							#endregion
