@@ -134,6 +134,7 @@
     <Compile Include="ステージ\演奏\成績.cs" />
     <Compile Include="ステージ\演奏\判定パラメータ.cs" />
     <Compile Include="ステージ\演奏\表示レーン種別.cs" />
+    <Compile Include="ステージ\演奏\譜面スクロール速度表示.cs" />
     <Compile Include="ステージ\結果\演奏パラメータ結果.cs" />
     <Compile Include="ステージ\結果\結果ステージ.cs" />
     <Compile Include="ステージ\舞台画像.cs" />

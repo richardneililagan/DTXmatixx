@@ -64,6 +64,7 @@ namespace DTXmatixx.ステージ.演奏
 			this.子リスト.Add( this._カウントマップライン = new カウントマップライン() );
 			this.子リスト.Add( this._スコア = new スコア() );
 			this.子リスト.Add( this._プレイヤー名 = new プレイヤー名() );
+			this.子リスト.Add( this._譜面スクロール速度表示 = new 譜面スクロール速度表示() );
 			this.子リスト.Add( this._FPS = new FPS() );
 		}
 		protected override void On活性化( グラフィックデバイス gd )
@@ -342,6 +343,8 @@ namespace DTXmatixx.ステージ.演奏
 						this._レーンフレーム.描画する( gd );
 						this._ドラムパッド.進行描画する( gd );
 						this._背景画像.描画する( gd, 0f, 0f );
+						this._譜面スクロール速度表示.進行描画する( gd );
+
 						this._カウントマップライン.進行描画する( gd );
 						this._フェーズパネル.進行描画する( gd );
 						this._曲名パネル.描画する( gd );
@@ -433,6 +436,7 @@ namespace DTXmatixx.ステージ.演奏
 						this._レーンフレーム.描画する( gd );
 						this._ドラムパッド.進行描画する( gd );
 						this._背景画像.描画する( gd, 0f, 0f );
+						this._譜面スクロール速度表示.進行描画する( gd );
 
 						double 曲の長さsec = App.演奏スコア.チップリスト[ App.演奏スコア.チップリスト.Count - 1 ].描画時刻sec;
 						float 現在位置 = (float) ( 1.0 - ( 曲の長さsec - 演奏時刻sec ) / 曲の長さsec );
@@ -524,6 +528,7 @@ namespace DTXmatixx.ステージ.演奏
 		private スコア _スコア = null;
 		private 判定パラメータ _判定パラメータ = null;
 		private プレイヤー名 _プレイヤー名 = null;
+		private 譜面スクロール速度表示 _譜面スクロール速度表示 = null;
 		private FPS _FPS = null;
 		/// <summary>
 		///		読み込み画面: 0 ～ 1: 演奏画面
