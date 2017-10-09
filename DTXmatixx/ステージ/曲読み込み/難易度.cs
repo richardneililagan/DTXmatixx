@@ -42,6 +42,8 @@ namespace DTXmatixx.ステージ.曲読み込み
 			// todo: 今はMASTERで固定。
 			gd.D2DBatchDraw( ( dc ) => {
 
+				var pretrans = dc.Transform;
+
 				using( var 黒ブラシ = new SolidColorBrush( dc, Color4.Black ) )
 				using( var MASTER色ブラシ = new SolidColorBrush( dc, new Color4( 0xfffe55c6 ) ) )
 				{
@@ -53,13 +55,15 @@ namespace DTXmatixx.ステージ.曲読み込み
 						// 小数部を描画する
 						dc.Transform =
 							Matrix3x2.Scaling( 2.2f, 2.2f ) *
-							Matrix3x2.Translation( ボディ描画領域.X + 180f, ボディ描画領域.Y );
+							Matrix3x2.Translation( ボディ描画領域.X + 180f, ボディ描画領域.Y ) *
+							pretrans;
 						this._数字画像.描画する( dc, 0f, 0f, this._難易度文字列.Substring( 2 ) );
 
 						// 整数部を描画する（'.'含む）
 						dc.Transform =
 							Matrix3x2.Scaling( 2.2f, 2.2f ) *
-							Matrix3x2.Translation( ボディ描画領域.X + 20f, ボディ描画領域.Y );
+							Matrix3x2.Translation( ボディ描画領域.X + 20f, ボディ描画領域.Y ) *
+							pretrans;
 						this._数字画像.描画する( dc, 0f, 0f, this._難易度文字列.Substring( 0, 2 ) );
 					}
 				}
