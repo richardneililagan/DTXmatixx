@@ -41,6 +41,7 @@ namespace DTXmatixx.ステージ.曲読み込み
 				前景色 = Color4.Black,
 				背景色 = Color4.White,
 			} );
+			this.子リスト.Add( this._プレビュー画像 = new プレビュー画像() );
 		}
 
 		protected override void On活性化( グラフィックデバイス gd )
@@ -74,7 +75,7 @@ namespace DTXmatixx.ステージ.曲読み込み
 
 			this._舞台画像.進行描画する( gd );
 			this._注意文.描画する( gd, 0f, 760f );
-			this._プレビュー画像を描画する( gd );
+			this._プレビュー画像.描画する( gd );
 			this._曲名を描画する( gd );
 
 			switch( this.現在のフェーズ )
@@ -100,34 +101,8 @@ namespace DTXmatixx.ステージ.曲読み込み
 		private 舞台画像 _舞台画像 = null;
 		private 画像 _注意文 = null;
 		private 文字列画像 _曲名画像 = null;
+		private プレビュー画像 _プレビュー画像 = null;
 
-		private readonly Vector3 _プレビュー画像表示位置dpx = new Vector3( 150f, 117f, 0f );
-		private readonly Vector3 _プレビュー画像表示サイズdpx = new Vector3( 576f, 576f, 0f );
-
-		private void _プレビュー画像を描画する( グラフィックデバイス gd )
-		{
-			var 選択曲 = App.曲ツリー.フォーカスノード as MusicNode;
-			Debug.Assert( null != 選択曲 );
-
-			var プレビュー画像 = 選択曲.ノード画像 ?? Node.既定のノード画像;
-			Debug.Assert( null != プレビュー画像 );
-
-			// テクスチャは画面中央が (0,0,0) で、Xは右がプラス方向, Yは上がプラス方向, Zは奥がプラス方向+。
-
-			var 画面左上dpx = new Vector3(  // 3D視点で見る画面左上の座標。
-				-gd.設計画面サイズ.Width / 2f,
-				+gd.設計画面サイズ.Height / 2f,
-				0f );
-
-			var 変換行列 =
-				Matrix.Scaling( this._プレビュー画像表示サイズdpx ) *
-				Matrix.Translation(
-					画面左上dpx.X + this._プレビュー画像表示位置dpx.X + this._プレビュー画像表示サイズdpx.X / 2f,
-					画面左上dpx.Y - this._プレビュー画像表示位置dpx.Y - this._プレビュー画像表示サイズdpx.Y / 2f,
-					0f );
-
-			プレビュー画像.描画する( gd, 変換行列 );
-		}
 		private void _曲名を描画する( グラフィックデバイス gd )
 		{
 			var 表示位置dpx = new Vector2( 782f, 409f );
@@ -141,7 +116,6 @@ namespace DTXmatixx.ステージ.曲読み込み
 				表示位置dpx.Y,
 				X方向拡大率: ( this._曲名画像.サイズ.Width <= 最大幅dpx ) ? 1f : 最大幅dpx / this._曲名画像.サイズ.Width );
 		}
-
 		private void _スコアを読み込む()
 		{
 			using( Log.Block( FDKUtilities.現在のメソッド名 ) )
