@@ -55,14 +55,14 @@ namespace DTXmatixx.ステージ.曲読み込み
 						// 小数部を描画する
 						dc.Transform =
 							Matrix3x2.Scaling( 2.2f, 2.2f ) *
-							Matrix3x2.Translation( ボディ描画領域.X + 180f, ボディ描画領域.Y ) *
+							Matrix3x2.Translation( ボディ描画領域.X + 175f, ボディ描画領域.Y ) *
 							pretrans;
 						this._数字画像.描画する( dc, 0f, 0f, this._難易度文字列.Substring( 2 ) );
 
 						// 整数部を描画する（'.'含む）
 						dc.Transform =
 							Matrix3x2.Scaling( 2.2f, 2.2f ) *
-							Matrix3x2.Translation( ボディ描画領域.X + 20f, ボディ描画領域.Y ) *
+							Matrix3x2.Translation( ボディ描画領域.X + 15f, ボディ描画領域.Y ) *
 							pretrans;
 						this._数字画像.描画する( dc, 0f, 0f, this._難易度文字列.Substring( 0, 2 ) );
 					}
