@@ -132,7 +132,7 @@ namespace DTXmatixx.ステージ.演奏
 			}
 
 			// (5) SKILL値を更新する。
-			this.Skill = (float) ( Math.Floor( 100.0 * ( ( this.達成率 / 100.0 ) * this._譜面レベル * 20.0 ) ) / 100.0 );		// 小数第3位以下切り捨て
+			this.Skill = (float) ( Math.Floor( 100.0 * ( ( this.達成率 * this._譜面レベル * 20.0 ) / 100.0 ) ) / 100.0 );		// 小数第3位以下切り捨て
 		}
 
 
