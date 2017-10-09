@@ -32,14 +32,14 @@ namespace DTXmatixx.ステージ.演奏
 
 		public void 進行描画する( DeviceContext dc, float スキル値 )
 		{
-			var 描画領域 = new RectangleF( 108f, 786f, 275f, 98f );
+			var 描画領域 = new RectangleF( 108f, 780f, 275f, 98f );
 
 			string スキル値文字列 = スキル値.ToString( "0.00" ).PadLeft( 6 ).Replace( ' ', 'o' );  // 右詰め、余白は'o'。
 
 			// 曲別SKILLアイコンを描画する
 			dc.Transform =
-				Matrix3x2.Scaling( 0.65f, 1.0f ) *
-				Matrix3x2.Translation( 描画領域.X + 10f, 描画領域.Y );
+				Matrix3x2.Scaling( 0.375f, 0.5f ) *
+				Matrix3x2.Translation( 描画領域.X, 描画領域.Y );
 			this._ロゴ画像.描画する( dc, 0f, 0f );
 
 			// 小数部を描画する

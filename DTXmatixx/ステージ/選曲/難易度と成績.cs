@@ -80,13 +80,14 @@ namespace DTXmatixx.ステージ.選曲
 				using( var BASIC色ブラシ = new SolidColorBrush( dc, new Color4( 0xfffe9551 ) ) )
 				{
 					// 背景
+					dc.Transform = Matrix3x2.Identity;
 					dc.FillRectangle( 領域dpx, 黒透過ブラシ );
 
 					// MASTER
-					dc.FillRectangle( new RectangleF( 領域dpx.X + 156f, 領域dpx.Y + 29f, 157f, 24f ), MASTER色ブラシ );
-					dc.FillRectangle( new RectangleF( 領域dpx.X + 156f, 領域dpx.Y + 53f, 157f, 78f ), 黒ブラシ );
-					if( this._Level_MASTER.Nullでも空でもない() )
 					{
+						dc.FillRectangle( new RectangleF( 領域dpx.X + 156f, 領域dpx.Y + 29f, 157f, 24f ), MASTER色ブラシ );
+						dc.FillRectangle( new RectangleF( 領域dpx.X + 156f, 領域dpx.Y + 53f, 157f, 78f ), 黒ブラシ );
+
 						// 小数部を描画する
 						dc.Transform =
 							Matrix3x2.Scaling( 0.5f, 0.5f ) *
@@ -101,14 +102,17 @@ namespace DTXmatixx.ステージ.選曲
 					}
 
 					// EXTREME
+					dc.Transform = Matrix3x2.Identity;
 					dc.FillRectangle( new RectangleF( 領域dpx.X + 156f, 領域dpx.Y + 149f, 157f, 24f ), EXTREME色ブラシ );
 					dc.FillRectangle( new RectangleF( 領域dpx.X + 156f, 領域dpx.Y + 173f, 157f, 78f ), 黒ブラシ );
 
 					// ADVANCED
+					dc.Transform = Matrix3x2.Identity;
 					dc.FillRectangle( new RectangleF( 領域dpx.X + 156f, 領域dpx.Y + 269f, 157f, 24f ), ADVANCED色ブラシ );
 					dc.FillRectangle( new RectangleF( 領域dpx.X + 156f, 領域dpx.Y + 293f, 157f, 78f ), 黒ブラシ );
 
 					// BASIC
+					dc.Transform = Matrix3x2.Identity;
 					dc.FillRectangle( new RectangleF( 領域dpx.X + 156f, 領域dpx.Y + 389f, 157f, 24f ), BASIC色ブラシ );
 					dc.FillRectangle( new RectangleF( 領域dpx.X + 156f, 領域dpx.Y + 413f, 157f, 78f ), 黒ブラシ );
 				}
