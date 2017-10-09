@@ -117,6 +117,7 @@
     <Compile Include="ステージ\曲ツリー構築\曲ツリー構築ステージ.cs" />
     <Compile Include="ステージ\曲読み込み\プレビュー画像.cs" />
     <Compile Include="ステージ\曲読み込み\曲読み込みステージ.cs" />
+    <Compile Include="ステージ\曲読み込み\難易度.cs" />
     <Compile Include="ステージ\演奏\カウントマップライン.cs" />
     <Compile Include="ステージ\演奏\コンボ表示.cs" />
     <Compile Include="ステージ\演奏\スコア表示.cs" />

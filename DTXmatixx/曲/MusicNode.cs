@@ -43,6 +43,17 @@ namespace DTXmatixx.曲
 			protected set;
 		} = null;
 
+		/// <summary>
+		///		この曲ノードに対応する難易度。
+		///		0.00～9.99。
+		/// </summary>
+		public float 難易度
+		{
+			get;
+			protected set;
+		} = 5.0f;
+
+
 		public MusicNode( string 曲ファイルパス, Node 親ノード )
 		{
 			this.親ノード = 親ノード;
@@ -54,6 +65,7 @@ namespace DTXmatixx.曲
 			// 曲DBから情報を取得する。
 			var song = 曲DB.曲を取得する( this.曲ファイルパス );
 			this.タイトル = song.Title;
+			this.難易度 = (float) song.Level;
 
 			// 曲ファイルと同じ場所に画像ファイルがあるなら、それをノード画像として採用する。
 			var サムネイル画像ファイルパス =

@@ -42,6 +42,7 @@ namespace DTXmatixx.ステージ.曲読み込み
 				背景色 = Color4.White,
 			} );
 			this.子リスト.Add( this._プレビュー画像 = new プレビュー画像() );
+			this.子リスト.Add( this._難易度 = new 難易度() );
 		}
 
 		protected override void On活性化( グラフィックデバイス gd )
@@ -76,6 +77,7 @@ namespace DTXmatixx.ステージ.曲読み込み
 			this._舞台画像.進行描画する( gd );
 			this._注意文.描画する( gd, 0f, 760f );
 			this._プレビュー画像.描画する( gd );
+			this._難易度.描画する( gd );
 			this._曲名を描画する( gd );
 
 			switch( this.現在のフェーズ )
@@ -102,6 +104,7 @@ namespace DTXmatixx.ステージ.曲読み込み
 		private 画像 _注意文 = null;
 		private 文字列画像 _曲名画像 = null;
 		private プレビュー画像 _プレビュー画像 = null;
+		private 難易度 _難易度 = null;
 
 		private void _曲名を描画する( グラフィックデバイス gd )
 		{

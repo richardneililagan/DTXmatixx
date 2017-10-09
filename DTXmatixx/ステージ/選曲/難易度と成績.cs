@@ -23,10 +23,11 @@ namespace DTXmatixx.ステージ.選曲
 		{
 			using( Log.Block( FDKUtilities.現在のメソッド名 ) )
 			{
+				this._現在表示しているノード = null;
 				this._Level_MASTER = "";
-				this._Level_EXTREME = "";
-				this._Level_ADVANCED = "";
-				this._Level_BASIC = "";
+				//this._Level_EXTREME = "";
+				//this._Level_ADVANCED = "";
+				//this._Level_BASIC = "";
 			}
 		}
 		protected override void On非活性化( グラフィックデバイス gd )
@@ -51,17 +52,17 @@ namespace DTXmatixx.ステージ.選曲
 					if( null != song )
 					{
 						this._Level_MASTER = song.Level.ToString( "0.00" ); // todo: 今のところ MASTER だけ。
-						this._Level_EXTREME = "";
-						this._Level_ADVANCED = "";
-						this._Level_BASIC = "";
+						//this._Level_EXTREME = "";
+						//this._Level_ADVANCED = "";
+						//this._Level_BASIC = "";
 					}
 				}
 				else
 				{
 					this._Level_MASTER = "";
-					this._Level_EXTREME = "";
-					this._Level_ADVANCED = "";
-					this._Level_BASIC = "";
+					//this._Level_EXTREME = "";
+					//this._Level_ADVANCED = "";
+					//this._Level_BASIC = "";
 				}
 			}
 			//----------------
@@ -82,11 +83,11 @@ namespace DTXmatixx.ステージ.選曲
 					dc.FillRectangle( 領域dpx, 黒透過ブラシ );
 
 					// MASTER
+					dc.FillRectangle( new RectangleF( 領域dpx.X + 156f, 領域dpx.Y + 29f, 157f, 24f ), MASTER色ブラシ );
+					dc.FillRectangle( new RectangleF( 領域dpx.X + 156f, 領域dpx.Y + 53f, 157f, 78f ), 黒ブラシ );
+					if( this._Level_MASTER.Nullでも空でもない() )
 					{
-						dc.FillRectangle( new RectangleF( 領域dpx.X + 156f, 領域dpx.Y + 29f, 157f, 24f ), MASTER色ブラシ );
-						dc.FillRectangle( new RectangleF( 領域dpx.X + 156f, 領域dpx.Y + 53f, 157f, 78f ), 黒ブラシ );
-
-						// 小数部を描画する（'%'含む）
+						// 小数部を描画する
 						dc.Transform =
 							Matrix3x2.Scaling( 0.5f, 0.5f ) *
 							Matrix3x2.Translation( 領域dpx.X + 240f, 領域dpx.Y + 73f );
@@ -118,8 +119,8 @@ namespace DTXmatixx.ステージ.選曲
 		private 画像フォント _数字画像 = null;
 		private Node _現在表示しているノード = null;
 		private string _Level_MASTER;
-		private string _Level_EXTREME;
-		private string _Level_ADVANCED;
-		private string _Level_BASIC;
+		//private string _Level_EXTREME;
+		//private string _Level_ADVANCED;
+		//private string _Level_BASIC;
 	}
 }
