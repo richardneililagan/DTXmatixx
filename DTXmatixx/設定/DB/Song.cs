@@ -93,6 +93,12 @@ namespace DTXmatixx.設定.DB
 		[Column( DbType = "INT", CanBeNull = false )]
 		public int RightCymbalNotes { get; set; }
 
+		/// <summary>
+		///		曲の難易度。0.00～9.99。
+		/// </summary>
+		[Column( DbType = "REAL", CanBeNull = false )]
+		public double Level { get; set; }
+
 		///////////////////////////
 
 		/// <summary>
@@ -114,6 +120,7 @@ namespace DTXmatixx.設定.DB
 			this.LowTomNotes = 0;
 			this.FloorTomNotes = 0;
 			this.RightCymbalNotes = 0;
+			this.Level = 5.00;
 		}
 
 		///////////////////////////
@@ -137,6 +144,7 @@ namespace DTXmatixx.設定.DB
 			@", LowTomNotes INTEGER NOT NULL" +
 			@", FloorTomNotes INTEGER NOT NULL" +
 			@", RightCymbalNotes INTEGER NOT NULL" +
+			@", Level REAL NOT NULL CHECK(0.0 <= Level AND Level < 10.0)" +
 			@");";
 	}
 }

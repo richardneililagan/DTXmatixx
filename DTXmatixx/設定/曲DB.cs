@@ -24,6 +24,10 @@ namespace DTXmatixx.設定
 		{
 		}
 
+		/// <summary>
+		///		指定した曲ファイルに対応するレコードがデータベースになければレコードを追加し、
+		///		あればそのレコードを更新する。
+		/// </summary>
 		public static void 曲を追加または更新する( string 曲ファイルパス, ユーザ設定 ユーザ設定 )
 		{
 			string 調べる曲のパス = Folder.絶対パスに含まれるフォルダ変数を展開して返す( 曲ファイルパス );
@@ -66,6 +70,7 @@ namespace DTXmatixx.設定
 									LowTomNotes = ノーツ数[ 表示レーン種別.Tom2 ],
 									FloorTomNotes = ノーツ数[ 表示レーン種別.Tom3 ],
 									RightCymbalNotes = ノーツ数[ 表示レーン種別.RightCrash ],
+									Level = score.難易度,
 								} );
 							songdb.DataContext.SubmitChanges();
 						}
@@ -95,6 +100,8 @@ namespace DTXmatixx.設定
 							record.LowTomNotes = ノーツ数[ 表示レーン種別.Tom2 ];
 							record.FloorTomNotes = ノーツ数[ 表示レーン種別.Tom3 ];
 							record.RightCymbalNotes = ノーツ数[ 表示レーン種別.RightCrash ];
+
+							record.Level = score.難易度;
 						}
 						songdb.DataContext.SubmitChanges();
 
@@ -132,6 +139,8 @@ namespace DTXmatixx.設定
 							record.LowTomNotes = ノーツ数[ 表示レーン種別.Tom2 ];
 							record.FloorTomNotes = ノーツ数[ 表示レーン種別.Tom3 ];
 							record.RightCymbalNotes = ノーツ数[ 表示レーン種別.RightCrash ];
+
+							record.Level = score.難易度;
 						}
 						songdb.DataContext.SubmitChanges();
 
@@ -141,7 +150,10 @@ namespace DTXmatixx.設定
 					}
 					else
 					{
-						// (B-b) それ以外 → 何もしない
+						#region " (B-b) それ以外 → 何もしない "
+						//----------------
+						//----------------
+						#endregion
 					}
 				}
 			}
