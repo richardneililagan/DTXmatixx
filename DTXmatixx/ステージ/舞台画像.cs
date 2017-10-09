@@ -57,7 +57,7 @@ namespace DTXmatixx.ステージ
 			if( this.ぼかしと縮小を適用中 )
 			{
 				using( var 割合遷移 = ( 0.0 == 完了までの最大時間sec ) ?
-					gd.Animation.TrasitionLibrary.Instantaneous( finalValue: 1.0 ) :
+					gd.Animation.TrasitionLibrary.Instantaneous( finalValue: 0.0 ) :
 					gd.Animation.TrasitionLibrary.SmoothStop( 完了までの最大時間sec, finalValue: 0.0 ) )
 				{
 					this._ストーリーボード?.Abandon();
