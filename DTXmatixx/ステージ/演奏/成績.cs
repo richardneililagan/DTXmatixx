@@ -37,6 +37,12 @@ namespace DTXmatixx.ステージ.演奏
 			protected set;
 		} = 0.0f;
 
+		public float Skill
+		{
+			get;
+			protected set;
+		} = 0.0f;
+
 		/// <summary>
 		///		現在の設定において、ヒット対象になるノーツの数を返す。
 		/// </summary>
@@ -81,8 +87,13 @@ namespace DTXmatixx.ステージ.演奏
 
 			// todo: AutoPlay の状態から、達成率用のオプション補正を算出。
 			this._オプション補正 = 1.0;
+
+			this._譜面レベル = 譜面.難易度;
 		}
 
+		/// <summary>
+		///		ヒット数を加算し、各プロパティを更新する。
+		/// </summary>
 		public void ヒット数を加算する( 判定種別 judge, int 加算値 = 1 )
 		{
 			// (1) ヒット数を加算する。
@@ -119,6 +130,9 @@ namespace DTXmatixx.ステージ.演奏
 
 				this.達成率 = (float) ( Math.Floor( 100.0 * ( ( 判定値 + COMBO値 ) * this._オプション補正 ) ) / 100.0 );    // 小数第3位以下切り捨て
 			}
+
+			// (5) SKILL値を更新する。
+			this.Skill = (float) ( Math.Floor( 100.0 * ( ( this.達成率 / 100.0 ) * this._譜面レベル * 20.0 ) ) / 100.0 );		// 小数第3位以下切り捨て
 		}
 
 
@@ -132,6 +146,7 @@ namespace DTXmatixx.ステージ.演奏
 			{ 判定種別.MISS, 0.0 },
 		};
 		private double _オプション補正 = 1.0;
+		private double _譜面レベル = 5.0;
 
 		private IReadOnlyDictionary<判定種別, int> _ヒット割合を算出して返す()
 		{

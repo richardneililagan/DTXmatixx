@@ -128,6 +128,7 @@
     <Compile Include="ステージ\演奏\判定種別.cs" />
     <Compile Include="ステージ\演奏\右サイドクリアパネル.cs" />
     <Compile Include="ステージ\演奏\左サイドクリアパネル.cs" />
+    <Compile Include="ステージ\演奏\曲別SKILL.cs" />
     <Compile Include="ステージ\演奏\曲名パネル.cs" />
     <Compile Include="ステージ\演奏\演奏ステージ.cs" />
     <Compile Include="ステージ\演奏\フェーズパネル.cs" />
@@ -482,6 +483,19 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="System\Images\達成率ロゴ.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="System\Images\パラメータ文字_大太斜.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="System\Images\パラメータ文字_大太斜矩形.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="System\Images\曲別SKILLアイコン.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
