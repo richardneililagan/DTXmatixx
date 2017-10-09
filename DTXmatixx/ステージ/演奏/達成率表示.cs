@@ -38,8 +38,10 @@ namespace DTXmatixx.ステージ.演奏
 			string 達成率文字列 = ( 達成率.ToString( "0.00" ) + '%' ).PadLeft( 6 ).Replace( ' ', 'o' );  // 右詰め、余白は'o'。例:"99.00%", "o8.12%", "o0.00%"
 
 			// 達成率ロゴを描画する
-			dc.Transform = Matrix3x2.Identity;
-			this._達成率ロゴ画像.描画する( dc, 描画領域.X - 50f, 描画領域.Y - 75f );
+			dc.Transform =
+				Matrix3x2.Scaling( 0.4f, 0.5f ) *
+				Matrix3x2.Translation( 描画領域.X - 30f, 描画領域.Y - 60f );
+			this._達成率ロゴ画像.描画する( dc, 0f, 0f );
 
 			// 小数部を描画する（'%'含む）
 			dc.Transform =
