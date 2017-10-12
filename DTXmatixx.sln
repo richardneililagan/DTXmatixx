@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SSTFormat", "..\..\@StrokeS
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DTXmatixxTests", "DTXmatixxTests\DTXmatixxTests.csproj", "{8102B4E0-F490-4FFE-A0C5-478128E88DCC}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SSTFormatTests", "..\..\@StrokeStyleT\リポジトリ (CsWin10Desktop3)\SSTFormatTests\SSTFormatTests.csproj", "{6B948694-7A83-4449-8A70-03F8B9F6B07B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -42,6 +44,12 @@ Global
 		{8102B4E0-F490-4FFE-A0C5-478128E88DCC}.Release|Any CPU.Build.0 = Release|Any CPU
 		{8102B4E0-F490-4FFE-A0C5-478128E88DCC}.RemoteDebug|Any CPU.ActiveCfg = Debug|Any CPU
 		{8102B4E0-F490-4FFE-A0C5-478128E88DCC}.RemoteDebug|Any CPU.Build.0 = Debug|Any CPU
+		{6B948694-7A83-4449-8A70-03F8B9F6B07B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6B948694-7A83-4449-8A70-03F8B9F6B07B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6B948694-7A83-4449-8A70-03F8B9F6B07B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6B948694-7A83-4449-8A70-03F8B9F6B07B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6B948694-7A83-4449-8A70-03F8B9F6B07B}.RemoteDebug|Any CPU.ActiveCfg = RemoteDebug|Any CPU
+		{6B948694-7A83-4449-8A70-03F8B9F6B07B}.RemoteDebug|Any CPU.Build.0 = RemoteDebug|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

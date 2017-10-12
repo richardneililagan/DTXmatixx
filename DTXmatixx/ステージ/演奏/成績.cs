@@ -70,8 +70,6 @@ namespace DTXmatixx.ステージ.演奏
 		/// <param name="設定">単体テスト時に限り null を許す。</param>
 		public 成績( SSTFormatCurrent.スコア 譜面 = null, ユーザ設定 設定 = null )
 		{
-			Debug.Assert( null != 譜面 );
-
 			this.Score = 0;
 			this.MaxCombo = 0;
 			this.達成率 = 0.0f;
@@ -88,7 +86,7 @@ namespace DTXmatixx.ステージ.演奏
 			// todo: AutoPlay の状態から、達成率用のオプション補正を算出。
 			this._オプション補正 = 1.0;
 
-			this._譜面レベル = 譜面.難易度;
+			this._譜面レベル = 譜面?.難易度 ?? 0.5;	// 単体テスト時は 0.5固定
 		}
 
 		/// <summary>
