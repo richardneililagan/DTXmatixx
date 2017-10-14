@@ -100,11 +100,11 @@ namespace DTXmatixx.曲
 			Log.Info( $"曲検索: {ログ用フォルダパス}" );
 			var dirInfo = new DirectoryInfo( フォルダパス );
 
-			// (1) このフォルダにあるすべてのsstfファイルから、曲ノードを作成する。
-			foreach( var fileInfo in dirInfo.GetFiles( "*.sstf", SearchOption.TopDirectoryOnly ) )
-			{
+			// (1) このフォルダにあるすべてのsstf/dtxファイルから、曲ノードを作成する。
+			var fileInfos = dirInfo.GetFiles( "*.*", SearchOption.TopDirectoryOnly )
+				.Where( ( fileInfo ) => new string[] { ".sstf", ".dtx" }.Any( 拡張子名 => ( Path.GetExtension( fileInfo.Name ).ToLower() == 拡張子名 ) ) );
+			foreach( var fileInfo in fileInfos )
 				親ノード.子ノードリスト.Add( new MusicNode( fileInfo.FullName, 親ノード ) );
-			}
 
 			// (2) このフォルダのすべてのサブフォルダについて再帰処理。
 			foreach( var subDirInfo in dirInfo.GetDirectories() )

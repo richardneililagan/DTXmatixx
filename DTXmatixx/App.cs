@@ -54,6 +54,11 @@ namespace DTXmatixx
 			get;
 			set;
 		} = null;
+		public static WAV管理 WAV管理
+		{
+			get;
+			set;
+		} = null;
 		public static FDK.メディア.サウンド.WASAPI.Device サウンドデバイス
 		{
 			get;
@@ -94,9 +99,11 @@ namespace DTXmatixx
 				Directory.CreateDirectory( Folder.フォルダ変数の内容を返す( "AppData" ) );  // なければ作成。
 
 			App.乱数 = new Random( DateTime.Now.Millisecond );
-			App.Keyboard = new Keyboard( this.Handle );
 			App.ステージ管理 = new ステージ管理();
 			App.曲ツリー = new 曲ツリー();
+			App.Keyboard = new Keyboard( this.Handle );
+			App.演奏スコア = null;
+			App.WAV管理 = null;
 			App.サウンドデバイス = new FDK.メディア.サウンド.WASAPI.Device( CSCore.CoreAudioAPI.AudioClientShareMode.Shared );
 			App.サウンドタイマ = new FDK.メディア.サウンド.WASAPI.SoundTimer( App.サウンドデバイス );
 			App.システム設定 = new システム設定();
@@ -126,6 +133,9 @@ namespace DTXmatixx
 
 				App.サウンドデバイス?.Dispose();
 				App.サウンドデバイス = null;
+
+				App.WAV管理?.Dispose();
+				App.WAV管理 = null;
 
 				App.曲ツリー.Dispose();
 				App.曲ツリー = null;

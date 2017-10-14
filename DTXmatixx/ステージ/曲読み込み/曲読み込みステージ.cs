@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using SharpDX;
 using SharpDX.Direct2D1;
@@ -132,7 +133,21 @@ namespace DTXmatixx.ステージ.曲読み込み
 				string 選択曲ファイルパス = 選択曲.曲ファイルパス;
 				Debug.Assert( 選択曲ファイルパス.Nullでも空でもない() );
 
-				App.演奏スコア = new スコア( Folder.絶対パスに含まれるフォルダ変数を展開して返す( 選択曲ファイルパス ) );
+				var path = Folder.絶対パスに含まれるフォルダ変数を展開して返す( 選択曲ファイルパス );
+				var 拡張子名 = Path.GetExtension( path );
+
+				if( ".sstf" == 拡張子名 )
+				{
+					App.演奏スコア = new スコア( path );
+				}
+				else if( ".dtx" == 拡張子名 )
+				{
+					App.演奏スコア = DTXReader.ReadFromFile( path );
+				}
+				else
+				{
+					throw new Exception( $"未対応のフォーマットファイルです。[{選択曲ファイルパス}]" );
+				}
 
 				// サウンドデバイス遅延を取得し、全チップの発声時刻へ反映する。
 				float 再生時遅延ms = (float) ( App.サウンドデバイス.遅延sec * 1000.0 );

@@ -84,6 +84,7 @@ namespace DTXmatixx.ステージ.選曲
 					dc.FillRectangle( 領域dpx, 黒透過ブラシ );
 
 					// MASTER
+					if( this._Level_MASTER.Nullでも空でもない() )
 					{
 						dc.FillRectangle( new RectangleF( 領域dpx.X + 156f, 領域dpx.Y + 29f, 157f, 24f ), MASTER色ブラシ );
 						dc.FillRectangle( new RectangleF( 領域dpx.X + 156f, 領域dpx.Y + 53f, 157f, 78f ), 黒ブラシ );

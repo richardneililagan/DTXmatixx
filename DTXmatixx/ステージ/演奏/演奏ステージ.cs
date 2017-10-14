@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using SharpDX;
 using SharpDX.Direct2D1;
@@ -121,6 +122,23 @@ namespace DTXmatixx.ステージ.演奏
 				}
 				//----------------
 				#endregion
+				#region " WAVを生成する（ある場合）。"
+				//----------------
+				App.WAV管理 = new 曲.WAV管理();
+				if( null != App.演奏スコア )
+				{
+					foreach( var wav in App.演奏スコア.dicWAVファイルパス )
+					{
+						var path = Path.Combine( App.演奏スコア.PATH_WAV, wav.Value );
+						var ext = Path.GetExtension( path );
+
+						// 対応する拡張子のみ追加する。さもないとMediaFoundationが落ちる。
+						if( ".wav" == ext )
+							App.WAV管理.追加する( App.サウンドデバイス, wav.Key, path );
+					}
+				}
+				//----------------
+				#endregion
 
 				this.現在のフェーズ = フェーズ.フェードイン;
 				this._初めての進行描画 = true;
@@ -152,6 +170,9 @@ namespace DTXmatixx.ステージ.演奏
 				// 背景動画を生成した場合は子リストから削除。
 				if( null != this._背景動画 )
 					this.子リスト.Remove( this._背景動画 );
+
+				//App.WAV管理?.Dispose();	--> ここではまだ解放しない。結果ステージの非活性化時に解放する。
+				//App.WAV管理 = null;
 
 				FDKUtilities.解放する( ref this._拍線色 );
 				FDKUtilities.解放する( ref this._小節線色 );
@@ -832,15 +853,23 @@ namespace DTXmatixx.ステージ.演奏
 
 			if( chip.チップ種別 == チップ種別.背景動画 )
 			{
-				App.サウンドタイマ.一時停止する();		// 止めても止めなくてもカクつくだろうが、止めておけば譜面は再開時にワープしない。
+				App.サウンドタイマ.一時停止する();       // 止めても止めなくてもカクつくだろうが、止めておけば譜面は再開時にワープしない。
 
-				// 背景動画の再生を開始する。
-				this._背景動画?.再生を開始する();
-				this._背景動画開始済み = true;
+				if( 0 == chip.チップサブID )
+				{
+					// 背景動画の再生を開始する。
+					this._背景動画?.再生を開始する();
+					this._背景動画開始済み = true;
 
-				// BGMの再生を開始する。
-				this._BGM?.Play( 再生開始位置sec );
-				this._BGM再生開始済み = true;
+					// BGMの再生を開始する。
+					this._BGM?.Play( 再生開始位置sec );
+					this._BGM再生開始済み = true;
+				}
+				else
+				{
+					// todo: ch.01 のサウンドの再生を開始する。
+					//App.WAV管理.再生する( chip.チップサブID );
+				}
 
 				App.サウンドタイマ.再開する();
 			}

@@ -72,6 +72,9 @@ namespace DTXmatixx.ステージ.結果
 
 				FDKUtilities.解放する( ref this._黒マスクブラシ );
 				FDKUtilities.解放する( ref this._プレビュー枠ブラシ );
+
+				App.WAV管理?.Dispose();
+				App.WAV管理 = null;
 			}
 		}
 

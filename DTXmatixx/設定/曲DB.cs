@@ -50,7 +50,22 @@ namespace DTXmatixx.設定
 					{
 						#region " (A-a) 同一ハッシュを持つレコードがDBになかった → 新規追加 "
 						//----------------
-						using( var score = new SSTFormatCurrent.スコア( 曲ファイルパス ) )
+						var 拡張子名 = Path.GetExtension( 調べる曲のパス );
+						var score = (SSTFormatCurrent.スコア) null;
+
+						if( ".sstf" == 拡張子名 )
+						{
+							score = new SSTFormatCurrent.スコア( 調べる曲のパス );
+						}
+						else if( ".dtx" == 拡張子名 )
+						{
+							score = SSTFormatCurrent.DTXReader.ReadFromFile( 調べる曲のパス );
+						}
+						else
+						{
+							throw new Exception( $"未対応のフォーマットファイルです。[{曲ファイルパス}]" );
+						}
+						using( score )
 						{
 							var ノーツ数 = _ノーツ数を算出して返す( score, ユーザ設定 );
 
