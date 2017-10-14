@@ -323,9 +323,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <None Include="System\sounds\drums\Bass.ogg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
     <None Include="System\sounds\drums\Bass.wav">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

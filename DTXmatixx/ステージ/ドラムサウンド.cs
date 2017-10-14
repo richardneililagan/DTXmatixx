@@ -64,8 +64,7 @@ namespace DTXmatixx.ステージ
 					this.登録する( チップ種別.Snare_OpenRim, 0, @"$(System)sounds\drums\SnareOpenRim.wav" );
 					this.登録する( チップ種別.Snare_ClosedRim, 0, @"$(System)sounds\drums\SnareClosedRim.wav" );
 					this.登録する( チップ種別.Snare_Ghost, 0, @"$(System)sounds\drums\SnareGhost.wav" );
-					//this.登録する( チップ種別.Bass, 0, @"$(System)sounds\drums\Bass.wav" );
-					this.登録する( チップ種別.Bass, 0, @"$(System)sounds\drums\Bass.ogg" );
+					this.登録する( チップ種別.Bass, 0, @"$(System)sounds\drums\Bass.wav" );
 					this.登録する( チップ種別.Tom1, 0, @"$(System)sounds\drums\Tom1.wav" );
 					this.登録する( チップ種別.Tom1_Rim, 0, @"$(System)sounds\drums\Tom1Rim.wav" );
 					this.登録する( チップ種別.Tom2, 0, @"$(System)sounds\drums\Tom2.wav" );
