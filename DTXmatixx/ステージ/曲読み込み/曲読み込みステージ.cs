@@ -150,7 +150,7 @@ namespace DTXmatixx.ステージ.曲読み込み
 				}
 
 				// サウンドデバイス遅延を取得し、全チップの発声時刻へ反映する。
-				float 再生時遅延ms = (float) ( App.サウンドデバイス.遅延sec * 1000.0 );
+				float 再生時遅延ms = (float) ( App.サウンドデバイス.再生遅延sec * 1000.0 );
 				foreach( var chip in App.演奏スコア.チップリスト )
 					chip.発声時刻ms -= (long) 再生時遅延ms;
 

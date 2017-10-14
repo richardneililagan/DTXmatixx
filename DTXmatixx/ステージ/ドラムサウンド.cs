@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using CSCore;
 using FDK;
 using FDK.メディア.サウンド.WASAPI;
 using SSTFormat.v3;
@@ -13,35 +14,7 @@ namespace DTXmatixx.ステージ
 	{
 		public ドラムサウンド()
 		{
-			using( Log.Block( FDKUtilities.現在のメソッド名 ) )
-			{
-				this._チップtoコンテキスト = new Dictionary<(チップ種別 chipType, int サブチップID), Cコンテキスト>();
-
-				// SSTの既定のサウンドを、subChipId = 0 としてプリセット登録する。
-				this.登録する( チップ種別.LeftCrash, 0, @"$(System)sounds\drums\LeftCrash.wav" );
-				this.登録する( チップ種別.Ride, 0, @"$(System)sounds\drums\Ride.wav" );
-				this.登録する( チップ種別.Ride_Cup, 0, @"$(System)sounds\drums\RideCup.wav" );
-				this.登録する( チップ種別.China, 0, @"$(System)sounds\drums\China.wav" );
-				this.登録する( チップ種別.Splash, 0, @"$(System)sounds\drums\Splash.wav" );
-				this.登録する( チップ種別.HiHat_Open, 0, @"$(System)sounds\drums\HiHatOpen.wav" );
-				this.登録する( チップ種別.HiHat_HalfOpen, 0, @"$(System)sounds\drums\HiHatHalfOpen.wav" );
-				this.登録する( チップ種別.HiHat_Close, 0, @"$(System)sounds\drums\HiHatClose.wav" );
-				this.登録する( チップ種別.HiHat_Foot, 0, @"$(System)sounds\drums\HiHatFoot.wav" );
-				this.登録する( チップ種別.Snare, 0, @"$(System)sounds\drums\Snare.wav" );
-				this.登録する( チップ種別.Snare_OpenRim, 0, @"$(System)sounds\drums\SnareOpenRim.wav" );
-				this.登録する( チップ種別.Snare_ClosedRim, 0, @"$(System)sounds\drums\SnareClosedRim.wav" );
-				this.登録する( チップ種別.Snare_Ghost, 0, @"$(System)sounds\drums\SnareGhost.wav" );
-				this.登録する( チップ種別.Bass, 0, @"$(System)sounds\drums\Bass.wav" );
-				this.登録する( チップ種別.Tom1, 0, @"$(System)sounds\drums\Tom1.wav" );
-				this.登録する( チップ種別.Tom1_Rim, 0, @"$(System)sounds\drums\Tom1Rim.wav" );
-				this.登録する( チップ種別.Tom2, 0, @"$(System)sounds\drums\Tom2.wav" );
-				this.登録する( チップ種別.Tom2_Rim, 0, @"$(System)sounds\drums\Tom2Rim.wav" );
-				this.登録する( チップ種別.Tom3, 0, @"$(System)sounds\drums\Tom3.wav" );
-				this.登録する( チップ種別.Tom3_Rim, 0, @"$(System)sounds\drums\Tom3Rim.wav" );
-				this.登録する( チップ種別.RightCrash, 0, @"$(System)sounds\drums\RightCrash.wav" );
-				this.登録する( チップ種別.LeftCymbal_Mute, 0, @"$(System)sounds\drums\LeftCymbalMute.wav" );
-				this.登録する( チップ種別.RightCymbal_Mute, 0, @"$(System)sounds\drums\RightCymbalMute.wav" );
-			}
+			this.初期化する();
 		}
 		public void Dispose()
 		{
@@ -54,11 +27,56 @@ namespace DTXmatixx.ステージ
 						foreach( var kvp in this._チップtoコンテキスト )
 							kvp.Value.Dispose();
 						this._チップtoコンテキスト.Clear();
+						this._チップtoコンテキスト = null;
 					}
 				}
 			}
 		}
 
+		/// <summary>
+		///		サブチップID = 0（SSTの規定ドラムサウンド）以外をクリアする。
+		/// </summary>
+		public void 初期化する()
+		{
+			using( Log.Block( FDKUtilities.現在のメソッド名 ) )
+			{
+				lock( this._Sound利用権 )
+				{
+					if( null != this._チップtoコンテキスト )
+					{
+						foreach( var kvp in this._チップtoコンテキスト )
+							kvp.Value.Dispose();
+					}
+
+					this._チップtoコンテキスト = new Dictionary<(チップ種別 chipType, int サブチップID), Cコンテキスト>();
+
+					// SSTの既定のサウンドを、subChipId = 0 としてプリセット登録する。
+					this.登録する( チップ種別.LeftCrash, 0, @"$(System)sounds\drums\LeftCrash.wav" );
+					this.登録する( チップ種別.Ride, 0, @"$(System)sounds\drums\Ride.wav" );
+					this.登録する( チップ種別.Ride_Cup, 0, @"$(System)sounds\drums\RideCup.wav" );
+					this.登録する( チップ種別.China, 0, @"$(System)sounds\drums\China.wav" );
+					this.登録する( チップ種別.Splash, 0, @"$(System)sounds\drums\Splash.wav" );
+					this.登録する( チップ種別.HiHat_Open, 0, @"$(System)sounds\drums\HiHatOpen.wav" );
+					this.登録する( チップ種別.HiHat_HalfOpen, 0, @"$(System)sounds\drums\HiHatHalfOpen.wav" );
+					this.登録する( チップ種別.HiHat_Close, 0, @"$(System)sounds\drums\HiHatClose.wav" );
+					this.登録する( チップ種別.HiHat_Foot, 0, @"$(System)sounds\drums\HiHatFoot.wav" );
+					this.登録する( チップ種別.Snare, 0, @"$(System)sounds\drums\Snare.wav" );
+					this.登録する( チップ種別.Snare_OpenRim, 0, @"$(System)sounds\drums\SnareOpenRim.wav" );
+					this.登録する( チップ種別.Snare_ClosedRim, 0, @"$(System)sounds\drums\SnareClosedRim.wav" );
+					this.登録する( チップ種別.Snare_Ghost, 0, @"$(System)sounds\drums\SnareGhost.wav" );
+					this.登録する( チップ種別.Bass, 0, @"$(System)sounds\drums\Bass.wav" );
+					this.登録する( チップ種別.Tom1, 0, @"$(System)sounds\drums\Tom1.wav" );
+					this.登録する( チップ種別.Tom1_Rim, 0, @"$(System)sounds\drums\Tom1Rim.wav" );
+					this.登録する( チップ種別.Tom2, 0, @"$(System)sounds\drums\Tom2.wav" );
+					this.登録する( チップ種別.Tom2_Rim, 0, @"$(System)sounds\drums\Tom2Rim.wav" );
+					this.登録する( チップ種別.Tom3, 0, @"$(System)sounds\drums\Tom3.wav" );
+					this.登録する( チップ種別.Tom3_Rim, 0, @"$(System)sounds\drums\Tom3Rim.wav" );
+					this.登録する( チップ種別.RightCrash, 0, @"$(System)sounds\drums\RightCrash.wav" );
+					this.登録する( チップ種別.LeftCymbal_Mute, 0, @"$(System)sounds\drums\LeftCymbalMute.wav" );
+					this.登録する( チップ種別.RightCymbal_Mute, 0, @"$(System)sounds\drums\RightCymbalMute.wav" );
+				}
+			}
+		}
 		public void 登録する( チップ種別 chipType, int subChipId, string サウンドファイルパス )
 		{
 			var path = Folder.絶対パスに含まれるフォルダ変数を展開して返す( サウンドファイルパス );
@@ -81,11 +99,12 @@ namespace DTXmatixx.ステージ
 						次に再生するSound番号 = 0,
 					};
 
+					// サウンドファイルを読み込んでデコードする。
+					context.SampleSource = SampleSourceFactory.Create( App.サウンドデバイス, path );
+
 					// 多重度分のサウンドを生成する。
 					for( int i = 0; i < context.Sounds.Length; i++ )
-					{
-						context.Sounds[ i ] = App.サウンドデバイス.サウンドを生成する( path );
-					}
+						context.Sounds[ i ] = new Sound( App.サウンドデバイス, context.SampleSource );
 
 					// コンテキストを辞書に追加する。
 					this._チップtoコンテキスト.Add( (chipType, subChipId), context );
@@ -146,19 +165,16 @@ namespace DTXmatixx.ステージ
 		private const int _多重度 = 2;
 		private class Cコンテキスト : IDisposable
 		{
+			public ISampleSource SampleSource = null;
 			public Sound[] Sounds = new Sound[ _多重度 ];
 			public int 次に再生するSound番号 = 0;
 
 			public void Dispose()
 			{
-				if( null != this.Sounds )
-				{
-					for( int i = 0; i < this.Sounds.Length; i++ )
-					{
-						this.Sounds[ i ].Stop();
-						FDKUtilities.解放する( ref this.Sounds[ i ] );
-					}
-				}
+				FDKUtilities.解放する( ref this.SampleSource );
+
+				for( int i = 0; i < this.Sounds.Length; i++ )
+					FDKUtilities.解放する( ref this.Sounds[ i ] );
 			}
 		};
 

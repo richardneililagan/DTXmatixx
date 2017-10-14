@@ -6,6 +6,7 @@ using System.Linq;
 using SharpDX;
 using SharpDX.Direct2D1;
 using SharpDX.DirectInput;
+using CSCore;
 using FDK;
 using FDK.メディア;
 using FDK.メディア.サウンド.WASAPI;
@@ -101,20 +102,22 @@ namespace DTXmatixx.ステージ.演奏
 					this.子リスト.Add( this._背景動画 = new 動画( App.演奏スコア.背景動画ファイル名 ) );
 
 					// 動画から音声パートを抽出して BGM を作成。
-					if( ( null != this._デコード済みWaveSource ) && this._デコード済みWaveSource.Path.Equals( App.演奏スコア.背景動画ファイル名 ) )
-					{
-						// (A) 前回生成したBGMとパスが同じなので、前回のデコード済み WaveSource をキャッシュとして再利用する。
-						Log.Info( "前回生成したサウンドデータを再利用します。" );
-					}
-					else
+
+					// todo: キャッシュへの対応
+					//if( ( null != this._デコード済みWaveSource ) && this._デコード済みWaveSource.Path.Equals( App.演奏スコア.背景動画ファイル名 ) )
+					//{
+					//	// (A) 前回生成したBGMとパスが同じなので、前回のデコード済み WaveSource をキャッシュとして再利用する。
+					//	Log.Info( "前回生成したサウンドデータを再利用します。" );
+					//}
+					//else
 					{
 						// (B) 初めての生成か、または前回生成したBGMとパスが違うので、新しくデコード済み WaveSource を生成する。
 						this._デコード済みWaveSource?.Dispose();
-						this._デコード済みWaveSource = new DecodedWaveSource( App.演奏スコア.背景動画ファイル名, App.サウンドデバイス.WaveFormat );
+						this._デコード済みWaveSource = SampleSourceFactory.Create( App.サウンドデバイス, App.演奏スコア.背景動画ファイル名, false );
 					}
 
 					this._BGM?.Dispose();
-					this._BGM = App.サウンドデバイス.サウンドを生成する( this._デコード済みWaveSource );
+					this._BGM = new Sound( App.サウンドデバイス, this._デコード済みWaveSource );
 				}
 				else
 				{
@@ -133,7 +136,7 @@ namespace DTXmatixx.ステージ.演奏
 						var ext = Path.GetExtension( path );
 
 						// 対応する拡張子のみ追加する。さもないとMediaFoundationが落ちる。
-						if( ".wav" == ext )
+						if( ".wav" == ext || ".ogg" == ext )
 							App.WAV管理.追加する( App.サウンドデバイス, wav.Key, path );
 					}
 				}
@@ -794,7 +797,7 @@ namespace DTXmatixx.ステージ.演奏
 		///		活性化と非活性化に関係なく、常に最後にデコードしたデータを持つ。（キャッシュ）
 		///		演奏ステージインスタンスを破棄する際に、このインスタンスもDisposeすること。
 		/// </remarks>
-		private DecodedWaveSource _デコード済みWaveSource = null;
+		private ISampleSource _デコード済みWaveSource = null;
 
 		private void _チップのヒット処理を行う( チップ chip, 判定種別 judge, ドラムとチップと入力の対応表.Column.Columnヒット処理 ヒット処理表, double ヒット判定バーと発声との時間sec )
 		{
@@ -875,6 +878,8 @@ namespace DTXmatixx.ステージ.演奏
 			}
 			else
 			{
+				//App.WAV管理.再生する( chip.チップサブID );
+
 				// BGM以外のサウンドについては、再生開始位置sec は反映せず、常に最初から再生する。
 				App.ドラムサウンド.発声する( chip.チップ種別, chip.チップサブID, ( chip.音量 / (float) チップ.最大音量 ) );
 			}

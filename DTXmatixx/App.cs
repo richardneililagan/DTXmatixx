@@ -14,6 +14,7 @@ using SharpDX.Windows;
 using FDK;
 using FDK.入力;
 using FDK.メディア;
+using FDK.メディア.サウンド.WASAPI;
 using FDK.同期;
 using DTXmatixx.ステージ;
 using DTXmatixx.曲;
@@ -59,12 +60,12 @@ namespace DTXmatixx
 			get;
 			set;
 		} = null;
-		public static FDK.メディア.サウンド.WASAPI.Device サウンドデバイス
+		public static SoundDevice サウンドデバイス
 		{
 			get;
 			protected set;
 		} = null;
-		public static FDK.メディア.サウンド.WASAPI.SoundTimer サウンドタイマ
+		public static SoundTimer サウンドタイマ
 		{
 			get;
 			protected set;
@@ -104,8 +105,8 @@ namespace DTXmatixx
 			App.Keyboard = new Keyboard( this.Handle );
 			App.演奏スコア = null;
 			App.WAV管理 = null;
-			App.サウンドデバイス = new FDK.メディア.サウンド.WASAPI.Device( CSCore.CoreAudioAPI.AudioClientShareMode.Shared );
-			App.サウンドタイマ = new FDK.メディア.サウンド.WASAPI.SoundTimer( App.サウンドデバイス );
+			App.サウンドデバイス = new SoundDevice( CSCore.CoreAudioAPI.AudioClientShareMode.Shared );
+			App.サウンドタイマ = new SoundTimer( App.サウンドデバイス );
 			App.システム設定 = new システム設定();
 			App.ドラムサウンド = new ドラムサウンド();
 			App.ユーザ設定 = new ユーザ設定( "AutoPlayer" );
