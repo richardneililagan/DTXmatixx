@@ -133,11 +133,7 @@ namespace DTXmatixx.ステージ.演奏
 					foreach( var wav in App.演奏スコア.dicWAVファイルパス )
 					{
 						var path = Path.Combine( App.演奏スコア.PATH_WAV, wav.Value );
-						var ext = Path.GetExtension( path );
-
-						// 対応する拡張子のみ追加する。さもないとMediaFoundationが落ちる。
-						if( ".wav" == ext || ".ogg" == ext )
-							App.WAV管理.登録する( App.サウンドデバイス, wav.Key, path );
+						App.WAV管理.登録する( App.サウンドデバイス, wav.Key, path );
 					}
 				}
 				//----------------
