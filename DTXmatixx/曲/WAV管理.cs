@@ -6,9 +6,15 @@ using System.Linq;
 using CSCore;
 using FDK;
 using FDK.メディア.サウンド.WASAPI;
+using SSTFormat.v3;
+using DTXmatixx.ステージ;
 
 namespace DTXmatixx.曲
 {
+	/// <summary>
+	///		主にDTXファイルの #WAV サウンドを管理する。
+	///		SSTファイルのドラムサウンドは、ここではなく <see cref="DTXmatixx.ステージ.ドラムサウンド"/> で管理する。
+	/// </summary>
 	class WAV管理 : IDisposable
 	{
 		/// <param name="多重度">１サウンドの最大多重発声数。1以上。</param>
@@ -19,73 +25,187 @@ namespace DTXmatixx.曲
 
 			this._多重度 = 多重度;
 
-			this._サウンドリスト = new Dictionary<int, (ISampleSource source, Sound[] sounds)>();
+			this.初期化する();
+		}
+		public void 初期化する()
+		{
+			this._WavContexts = new Dictionary<int, WavContext>();
 		}
 		public void Dispose()
 		{
-			if( null == this._サウンドリスト )
-				return;
-
-			foreach( var kvp in this._サウンドリスト )
+			foreach( var kvp in this._WavContexts )
 			{
-				for( int i = 0; i < kvp.Value.sounds.Length; i++ )
-					kvp.Value.sounds[ i ]?.Dispose();
-				kvp.Value.source?.Dispose();
-			}
-			this._サウンドリスト = null;
-		}
+				var context = kvp.Value;
 
+				// Sound[] を解放。
+				foreach( var sd in context.Sounds )
+					sd.Stop();
+				context.Sounds = null;
+
+				// Source を解放。
+				context.SampleSource?.Dispose();
+			}
+			this._WavContexts.Clear();
+			this._WavContexts = null;
+		}
 		/// <summary>
 		///		WAVファイルを登録する。
 		/// </summary>
-		/// <param name="WAV番号">登録する番号。0～1295。すでに登録されている場合は上書き更新される。</param>
+		/// <param name="wav番号">登録する番号。0～1295。すでに登録されている場合は上書き更新される。</param>
 		/// <param name="サウンドファイル">登録するサウンドファイルのパス。</param>
-		public void 追加する( SoundDevice サウンドデバイス, int WAV番号, string サウンドファイル )
+		public void 登録する( SoundDevice device, int wav番号, string サウンドファイル )
 		{
-			// パラメータチェック。
-			if( null == サウンドデバイス )
+			var path = Folder.絶対パスに含まれるフォルダ変数を展開して返す( サウンドファイル );
+
+			#region " パラメータチェック。"
+			//----------------
+			if( null == device )
 				throw new ArgumentNullException();
 
-			if( ( 0 > WAV番号 ) || ( 1295 < WAV番号 ) )
-				throw new ArgumentOutOfRangeException( $"WAV番号が範囲を超えています。[{WAV番号}]" );
+			if( ( 0 > wav番号 ) || ( 1295 < wav番号 ) )
+				throw new ArgumentOutOfRangeException( $"WAV番号が範囲を超えています。[{wav番号}]" );
 
-			var path = Folder.絶対パスに含まれるフォルダ変数を展開して返す( サウンドファイル );
 			if( !( File.Exists( path ) ) )
 			{
 				Log.WARNING( $"サウンドファイルが存在しません。[{サウンドファイル}]" );
 				return;
 			}
+			//----------------
+			#endregion
 
-			// すでに登録済みなら解放する。
-			if( this._サウンドリスト.ContainsKey( WAV番号 ) )
+			// 先に SampleSource を生成する。
+			var sampleSource = (ISampleSource) null;
+			try
 			{
-				for( int i = 0; i < this._サウンドリスト[ WAV番号 ].sounds.Length; i++ )
-					this._サウンドリスト[ WAV番号 ].sounds[ i ].Dispose();
-				this._サウンドリスト[ WAV番号 ].source.Dispose();
-				this._サウンドリスト.Remove( WAV番号 );
+				sampleSource = SampleSourceFactory.Create( device, path );
+			}
+			catch
+			{
+				Log.WARNING( $"サウンドのデコードに失敗しました。[{サウンドファイル}" );
+				return;
 			}
 
-			// todo: サウンドを生成して登録する。
-			//this._サウンドリスト.Add( WAV番号, (new MediaFoundationSampleSource( path, サウンドデバイス.WaveFormat ).ToWaveSource(), new Sound[ this._多重度 ]) );
-			//for( int i = 0; i < this._多重度; i++ )
-			//	this._サウンドリスト[ WAV番号 ].sounds[ i ] = サウンドデバイス.サウンドを生成する( this._サウンドリスト[ WAV番号 ].source );
+			// すでに登録済みなら解放する。
+			if( this._WavContexts.ContainsKey( wav番号 ) )
+			{
+				this._WavContexts[ wav番号 ].Dispose();
+				this._WavContexts.Remove( wav番号 );
+			}
 
-			//Log.Info( $"サウンドを読み込みました。[{サウンドファイル}]" );
+			// 新しいContextを生成して登録する。
+			var context = new WavContext( wav番号 );
+
+			context.SampleSource = sampleSource;
+
+			for( int i = 0; i < context.Sounds.Length; i++ )
+				context.Sounds[ i ] = new Sound( device, context.SampleSource );
+
+			this._WavContexts.Add( wav番号, context );
+
+			Log.Info( $"サウンドを読み込みました。[{サウンドファイル}]" );
 		}
-
-		public void 再生する( int WAV番号 )
+		/// <summary>
+		///		指定した番号のWAVを、指定したチップ種別として発声する。
+		/// </summary>
+		/// <param name="音量">0:無音～1:原音</param>
+		public void 発声する( int WAV番号, チップ種別 chipType, float 音量 = 1f )
 		{
-			if( !( this._サウンドリスト.ContainsKey( WAV番号 ) ) )
+			if( !( this._WavContexts.ContainsKey( WAV番号 ) ) )
 				return;
 
-			// todo: 多重再生未対応
-			this._サウンドリスト[ WAV番号 ].sounds[ 0 ].Play();
+			// 現在発声中のサウンドを全部止めるチップ種別の場合は止める。
+			if( 0 != chipType.排他発声グループID() ) // グループID = 0 は対象外。
+			{
+				// 消音対象のコンテキストの Sounds[] を select する。
+				var 停止するサウンドs =
+					from kvp in this._WavContexts
+					where ( chipType.直前のチップを消音する( kvp.Value.最後に発声したときのチップ種別 ) )
+					select kvp.Value.Sounds;
+
+				// 集めた Sounds[] をすべて停止する。
+				foreach( var sounds in 停止するサウンドs )
+				{
+					foreach( var sound in sounds )
+						sound.Stop();
+				}
+			}
+
+			// 発声する。
+			this._WavContexts[ WAV番号 ].発声する( chipType, 音量 );
 		}
 
-		private int _多重度 = 0;
+
 		/// <summary>
-		///		１つのデコード済みソースが、１つ以上のSoundに対応している。
+		///		１つの WAV に相当する管理情報。
 		/// </summary>
-		private Dictionary<int, (ISampleSource source, Sound[] sounds)> _サウンドリスト = null;
+		private class WavContext : IDisposable
+		{
+			/// <summary>
+			///		0～1295。
+			/// </summary>
+			public int WAV番号;
+
+			/// <summary>
+			///		この WAV に対応するサンプルソース（デコード済みサウンドデータ）。
+			/// </summary>
+			public ISampleSource SampleSource;
+
+			/// <summary>
+			///		この WAV に対応するサウンド。
+			///		サウンドデータとして <see cref="SampleSource"/> を使用し、多重度の数だけ存在することができる。
+			/// </summary>
+			public Sound[] Sounds;
+
+			public チップ種別 最後に発声したときのチップ種別
+			{
+				get;
+				protected set;
+			} = チップ種別.Unknown;
+
+			public WavContext( int wav番号 )
+			{
+				if( ( 0 > wav番号 ) || ( 1295 < wav番号 ) )
+					throw new ArgumentOutOfRangeException( "WAV番号が不正です。" );
+
+				this._多重度 = 4;
+				this.WAV番号 = wav番号;
+				this.SampleSource = null;
+				this.Sounds = new Sound[ _多重度 ];
+			}
+			public void Dispose()
+			{
+				foreach( var sd in this.Sounds )
+					sd.Dispose();
+				this.Sounds = null;
+
+				this.SampleSource?.Dispose();
+				this.SampleSource = null;
+			}
+			/// <summary>
+			///		指定したチップ種別扱いでWAVを発声する。
+			/// </summary>
+			/// <param name="音量">0:無音～1:原音</param>
+			public void 発声する( チップ種別 chipType, float 音量 )
+			{
+				this.最後に発声したときのチップ種別 = chipType;
+
+				// 発声。
+				音量 = ( 0f > 音量 ) ? 0f : ( 1f < 音量 ) ? 1f : 音量;
+				this.Sounds[ this.次に再生するSound番号 ].Volume = 音量;
+				this.Sounds[ this.次に再生するSound番号 ].Play( 0 );
+
+				// サウンドローテーション。
+				this.次に再生するSound番号 = ( this.次に再生するSound番号 + 1 ) % _多重度;
+			}
+
+			private int 次に再生するSound番号 = 0;
+			private readonly int _多重度;
+		}
+		/// <summary>
+		///		全WAVの管理DB。KeyはWAV番号。
+		/// </summary>
+		private Dictionary<int, WavContext> _WavContexts = null;
+
+		private readonly int _多重度;
 	}
 }

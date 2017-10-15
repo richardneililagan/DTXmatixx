@@ -113,7 +113,7 @@ namespace DTXmatixx.ステージ.演奏
 					{
 						// (B) 初めての生成か、または前回生成したBGMとパスが違うので、新しくデコード済み WaveSource を生成する。
 						this._デコード済みWaveSource?.Dispose();
-						this._デコード済みWaveSource = SampleSourceFactory.Create( App.サウンドデバイス, App.演奏スコア.背景動画ファイル名, false );
+						this._デコード済みWaveSource = SampleSourceFactory.Create( App.サウンドデバイス, App.演奏スコア.背景動画ファイル名 );
 					}
 
 					this._BGM?.Dispose();
@@ -137,7 +137,7 @@ namespace DTXmatixx.ステージ.演奏
 
 						// 対応する拡張子のみ追加する。さもないとMediaFoundationが落ちる。
 						if( ".wav" == ext || ".ogg" == ext )
-							App.WAV管理.追加する( App.サウンドデバイス, wav.Key, path );
+							App.WAV管理.登録する( App.サウンドデバイス, wav.Key, path );
 					}
 				}
 				//----------------
@@ -854,34 +854,43 @@ namespace DTXmatixx.ステージ.演奏
 
 			chip.発声済みである = true;
 
-			if( chip.チップ種別 == チップ種別.背景動画 )
+			if( 0 == chip.チップサブID )
 			{
-				App.サウンドタイマ.一時停止する();       // 止めても止めなくてもカクつくだろうが、止めておけば譜面は再開時にワープしない。
-
-				if( 0 == chip.チップサブID )
+				// (A) SSTF 準拠
+				if( chip.チップ種別 == チップ種別.背景動画 )
 				{
-					// 背景動画の再生を開始する。
+					// (A-a) 背景動画
+					App.サウンドタイマ.一時停止する();       // 止めても止めなくてもカクつくだろうが、止めておけば譜面は再開時にワープしない。
+
 					this._背景動画?.再生を開始する();
 					this._背景動画開始済み = true;
 
-					// BGMの再生を開始する。
 					this._BGM?.Play( 再生開始位置sec );
 					this._BGM再生開始済み = true;
+
+					App.サウンドタイマ.再開する();
 				}
 				else
 				{
-					// todo: ch.01 のサウンドの再生を開始する。
-					//App.WAV管理.再生する( chip.チップサブID );
-				}
+					// (A-b) ドラムサウンド
 
-				App.サウンドタイマ.再開する();
+					// BGM以外のサウンドについては、常に最初から再生する。
+					App.ドラムサウンド.発声する( chip.チップ種別, 0, ( chip.音量 / (float) チップ.最大音量 ) );
+				}
 			}
 			else
 			{
-				//App.WAV管理.再生する( chip.チップサブID );
-
-				// BGM以外のサウンドについては、再生開始位置sec は反映せず、常に最初から再生する。
-				App.ドラムサウンド.発声する( chip.チップ種別, chip.チップサブID, ( chip.音量 / (float) チップ.最大音量 ) );
+				// (B) DTX 準拠
+				if( chip.チップ種別 == チップ種別.背景動画 )
+				{
+					// (B-a) BGM
+					App.WAV管理.発声する( chip.チップサブID, chip.チップ種別, ( chip.音量 / (float) チップ.最大音量 ) );
+				}
+				else
+				{
+					// (B-b) その他のサウンド
+					App.WAV管理.発声する( chip.チップサブID, chip.チップ種別, ( chip.音量 / (float) チップ.最大音量 ) );
+				}
 			}
 		}
 

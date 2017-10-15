@@ -12,8 +12,9 @@ namespace DTXmatixx.ステージ
 {
 	class ドラムサウンド : IDisposable
 	{
-		public ドラムサウンド()
+		public ドラムサウンド( int 多重度 = 4 )
 		{
+			this._多重度 = 多重度;
 			this.初期化する();
 		}
 		public void Dispose()
@@ -94,10 +95,7 @@ namespace DTXmatixx.ステージ
 					}
 
 					// コンテキストを作成する。
-					var context = new Cコンテキスト() {
-						Sounds = new Sound[ ドラムサウンド._多重度 ],
-						次に再生するSound番号 = 0,
-					};
+					var context = new Cコンテキスト( this._多重度 );
 
 					// サウンドファイルを読み込んでデコードする。
 					context.SampleSource = SampleSourceFactory.Create( App.サウンドデバイス, path );
@@ -124,16 +122,16 @@ namespace DTXmatixx.ステージ
 				if( this._チップtoコンテキスト.TryGetValue( (chipType, subChipId), out Cコンテキスト context ) )
 				{
 					// 現在発声中のサウンドを全部止めるチップ種別の場合は止める。
-					if( 0 != chipType.排他発声グループID() ) // ID = 0 は対象外。
+					if( 0 != chipType.排他発声グループID() ) // グループID = 0 は対象外。
 					{
 						// 消音対象のコンテキストの Sounds[] を select する。
-						var 停止するサウンド群 =
+						var 停止するサウンドs =
 							from kvp in this._チップtoコンテキスト
 							where ( chipType.直前のチップを消音する( kvp.Key.chipType ) )
 							select kvp.Value.Sounds;
 
 						// 集めた Sounds[] をすべて停止する。
-						foreach( var sounds in 停止するサウンド群 )
+						foreach( var sounds in 停止するサウンドs )
 						{
 							foreach( var sound in sounds )
 							{
@@ -152,7 +150,7 @@ namespace DTXmatixx.ステージ
 					// サウンドローテーション。
 					context.次に再生するSound番号++;
 
-					if( context.次に再生するSound番号 >= ドラムサウンド._多重度 )
+					if( context.次に再生するSound番号 >= this._多重度 )
 						context.次に再生するSound番号 = 0;
 				}
 				else
@@ -162,24 +160,35 @@ namespace DTXmatixx.ステージ
 			}
 		}
 
-		private const int _多重度 = 2;
 		private class Cコンテキスト : IDisposable
 		{
 			public ISampleSource SampleSource = null;
-			public Sound[] Sounds = new Sound[ _多重度 ];
+			public Sound[] Sounds = null;
 			public int 次に再生するSound番号 = 0;
 
+			public Cコンテキスト( int 多重度 = 4 )
+			{
+				this._多重度 = 多重度;
+				this.Sounds = new Sound[ this._多重度 ];
+			}
 			public void Dispose()
 			{
 				FDKUtilities.解放する( ref this.SampleSource );
 
 				for( int i = 0; i < this.Sounds.Length; i++ )
+				{
+					if( this.Sounds[ i ].再生中である )
+						this.Sounds[ i ].Stop();
+
 					FDKUtilities.解放する( ref this.Sounds[ i ] );
+				}
 			}
+
+			private readonly int _多重度 = 4;
 		};
 
+		private readonly int _多重度 = 4;
 		private Dictionary<(チップ種別 chipType, int サブチップID), Cコンテキスト> _チップtoコンテキスト = null;
-
 		private readonly object _Sound利用権 = new object();
 	}
 }
