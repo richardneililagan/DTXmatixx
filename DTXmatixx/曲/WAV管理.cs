@@ -23,14 +23,16 @@ namespace DTXmatixx.曲
 			if( 1 > 多重度 )
 				throw new ArgumentException( $"多重度が1未満に設定されています。[{多重度}]" );
 
-			this._多重度 = 多重度;
+			this._既定の多重度 = 多重度;
 
 			this.初期化する();
 		}
+
 		public void 初期化する()
 		{
 			this._WavContexts = new Dictionary<int, WavContext>();
 		}
+
 		public void Dispose()
 		{
 			foreach( var kvp in this._WavContexts )
@@ -48,12 +50,13 @@ namespace DTXmatixx.曲
 			this._WavContexts.Clear();
 			this._WavContexts = null;
 		}
+
 		/// <summary>
 		///		WAVファイルを登録する。
 		/// </summary>
 		/// <param name="wav番号">登録する番号。0～1295。すでに登録されている場合は上書き更新される。</param>
 		/// <param name="サウンドファイル">登録するサウンドファイルのパス。</param>
-		public void 登録する( SoundDevice device, int wav番号, string サウンドファイル )
+		public void 登録する( SoundDevice device, int wav番号, string サウンドファイル, bool 多重再生する )
 		{
 			var path = Folder.絶対パスに含まれるフォルダ変数を展開して返す( サウンドファイル );
 
@@ -93,7 +96,7 @@ namespace DTXmatixx.曲
 			}
 
 			// 新しいContextを生成して登録する。
-			var context = new WavContext( wav番号 );
+			var context = new WavContext( wav番号, ( 多重再生する ) ? this._既定の多重度 : 1 );
 
 			context.SampleSource = sampleSource;
 
@@ -104,6 +107,7 @@ namespace DTXmatixx.曲
 
 			Log.Info( $"サウンドを読み込みました。[{サウンドファイル}]" );
 		}
+		
 		/// <summary>
 		///		指定した番号のWAVを、指定したチップ種別として発声する。
 		/// </summary>
@@ -162,15 +166,14 @@ namespace DTXmatixx.曲
 				protected set;
 			} = チップ種別.Unknown;
 
-			public WavContext( int wav番号 )
+			public WavContext( int wav番号, int 多重度 )
 			{
 				if( ( 0 > wav番号 ) || ( 1295 < wav番号 ) )
 					throw new ArgumentOutOfRangeException( "WAV番号が不正です。" );
 
-				this._多重度 = 4;
 				this.WAV番号 = wav番号;
 				this.SampleSource = null;
-				this.Sounds = new Sound[ _多重度 ];
+				this.Sounds = new Sound[ 多重度 ];
 			}
 			public void Dispose()
 			{
@@ -195,17 +198,16 @@ namespace DTXmatixx.曲
 				this.Sounds[ this.次に再生するSound番号 ].Play( 0 );
 
 				// サウンドローテーション。
-				this.次に再生するSound番号 = ( this.次に再生するSound番号 + 1 ) % _多重度;
+				this.次に再生するSound番号 = ( this.次に再生するSound番号 + 1 ) % this.Sounds.Length;
 			}
 
 			private int 次に再生するSound番号 = 0;
-			private readonly int _多重度;
 		}
 		/// <summary>
 		///		全WAVの管理DB。KeyはWAV番号。
 		/// </summary>
 		private Dictionary<int, WavContext> _WavContexts = null;
 
-		private readonly int _多重度;
+		private readonly int _既定の多重度;
 	}
 }

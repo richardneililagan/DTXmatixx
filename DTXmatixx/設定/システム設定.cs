@@ -44,6 +44,7 @@ namespace DTXmatixx.設定
 			{ チップ種別.LeftCymbal_Mute, 表示レーン種別.Unknown },
 			{ チップ種別.RightCymbal_Mute, 表示レーン種別.Unknown },
 			{ チップ種別.小節の先頭, 表示レーン種別.Unknown },
+			{ チップ種別.SE, 表示レーン種別.Unknown },
 		};
 	}
 }

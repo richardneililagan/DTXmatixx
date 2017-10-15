@@ -1168,6 +1168,42 @@ namespace DTXmatixx.設定
 					},
 					//----------------
 					#endregion
+					#region " チップ種別.SE "
+					//----------------
+					[ チップ種別.SE ] = new Column() {
+						チップ種別 = チップ種別.SE,
+						レーン種別 = レーン種別.Song,
+						ドラム入力種別 = ドラム入力種別.Unknown,
+						表示レーン種別 = 表示レーン種別.Unknown,
+						AutoPlay種別 = AutoPlay種別.Unknown,
+						AutoPlayON = new Column.ColumnAutoPlayON() {
+							自動ヒット = true,
+							自動ヒット時処理 = new Column.Columnヒット処理() {
+								再生 = true,
+								非表示 = true,
+								判定 = false,
+							},
+							MISS判定 = false,
+						},
+						AutoPlayOFF = new Column.ColumnAutoPlayOFF() {
+							自動ヒット = true,
+							自動ヒット時処理 = new Column.Columnヒット処理() {
+								再生 = true,
+								非表示 = true,
+								判定 = false,
+							},
+							ユーザヒット = false,
+							ユーザヒット時処理 = new Column.Columnヒット処理() {
+								再生 = false,
+								非表示 = false,
+								判定 = false,
+							},
+							MISS判定 = false,
+						},
+						シンバルフリーの対象 = false,
+					},
+					//----------------
+					#endregion
 				};
 			}
 		}

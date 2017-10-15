@@ -128,12 +128,13 @@ namespace DTXmatixx.ステージ.演奏
 				#region " WAVを生成する（ある場合）。"
 				//----------------
 				App.WAV管理 = new 曲.WAV管理();
+
 				if( null != App.演奏スコア )
 				{
-					foreach( var wav in App.演奏スコア.dicWAVファイルパス )
+					foreach( var kvp in App.演奏スコア.dicWAV )
 					{
-						var path = Path.Combine( App.演奏スコア.PATH_WAV, wav.Value );
-						App.WAV管理.登録する( App.サウンドデバイス, wav.Key, path );
+						var path = Path.Combine( App.演奏スコア.PATH_WAV, kvp.Value.ファイルパス );
+						App.WAV管理.登録する( App.サウンドデバイス, kvp.Key, path, kvp.Value.多重再生する );
 					}
 				}
 				//----------------
@@ -877,16 +878,7 @@ namespace DTXmatixx.ステージ.演奏
 			else
 			{
 				// (B) DTX 準拠
-				if( chip.チップ種別 == チップ種別.背景動画 )
-				{
-					// (B-a) BGM
-					App.WAV管理.発声する( chip.チップサブID, chip.チップ種別, ( chip.音量 / (float) チップ.最大音量 ) );
-				}
-				else
-				{
-					// (B-b) その他のサウンド
-					App.WAV管理.発声する( chip.チップサブID, chip.チップ種別, ( chip.音量 / (float) チップ.最大音量 ) );
-				}
+				App.WAV管理.発声する( chip.チップサブID, chip.チップ種別, ( chip.音量 / (float) チップ.最大音量 ) );
 			}
 		}
 

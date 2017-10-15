@@ -69,8 +69,11 @@ namespace DTXmatixx.ステージ
 			if( 直前のチップのGID != 今回のチップのGID )
 				return false;
 
-			// グループIDがシンバルである場合は、Mute が来た場合を除き、消音しない。
+			// SE は、消音する。
+			if( 今回のチップの種別 == チップ種別.SE )
+				return true;
 
+			// グループIDがシンバルである場合は、Mute が来た場合を除き、消音しない。
 			if( 直前のチップのGID == GID_LEFT_CYMBAL )
 			{
 				return ( 今回のチップの種別 == チップ種別.LeftCymbal_Mute );
