@@ -102,22 +102,20 @@ namespace DTXmatixx.ステージ.演奏
 					this.子リスト.Add( this._背景動画 = new 動画( App.演奏スコア.背景動画ファイル名 ) );
 
 					// 動画から音声パートを抽出して BGM を作成。
-
-					// todo: キャッシュへの対応
-					//if( ( null != this._デコード済みWaveSource ) && this._デコード済みWaveSource.Path.Equals( App.演奏スコア.背景動画ファイル名 ) )
-					//{
-					//	// (A) 前回生成したBGMとパスが同じなので、前回のデコード済み WaveSource をキャッシュとして再利用する。
-					//	Log.Info( "前回生成したサウンドデータを再利用します。" );
-					//}
-					//else
+					try
 					{
-						// (B) 初めての生成か、または前回生成したBGMとパスが違うので、新しくデコード済み WaveSource を生成する。
 						this._デコード済みWaveSource?.Dispose();
 						this._デコード済みWaveSource = SampleSourceFactory.Create( App.サウンドデバイス, App.演奏スコア.背景動画ファイル名 );
-					}
 
-					this._BGM?.Dispose();
-					this._BGM = new Sound( App.サウンドデバイス, this._デコード済みWaveSource );
+						this._BGM?.Dispose();
+						this._BGM = new Sound( App.サウンドデバイス, this._デコード済みWaveSource );
+					}
+					catch( InvalidDataException )
+					{
+						// DTXの動画のようにサウンドを含まない動画の場合、この例外が発生するだろう。
+						Log.WARNING( "背景動画ファイルからBGMを生成することに失敗しました。" );
+						this._BGM = null;
+					}
 				}
 				else
 				{
@@ -878,7 +876,21 @@ namespace DTXmatixx.ステージ.演奏
 			else
 			{
 				// (B) DTX 準拠
-				App.WAV管理.発声する( chip.チップサブID, chip.チップ種別, ( chip.音量 / (float) チップ.最大音量 ) );
+				if( chip.チップ種別 == チップ種別.背景動画 )
+				{
+					// (B-a) 背景動画
+					App.サウンドタイマ.一時停止する();       // 止めても止めなくてもカクつくだろうが、止めておけば譜面は再開時にワープしない。
+
+					this._背景動画?.再生を開始する();
+					this._背景動画開始済み = true;
+
+					App.サウンドタイマ.再開する();
+				}
+				else
+				{
+					// (B-b) その他サウンド
+					App.WAV管理.発声する( chip.チップサブID, chip.チップ種別, ( chip.音量 / (float) チップ.最大音量 ) );
+				}
 			}
 		}
 
