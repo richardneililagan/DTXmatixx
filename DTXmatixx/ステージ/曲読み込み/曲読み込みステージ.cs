@@ -91,6 +91,7 @@ namespace DTXmatixx.ステージ.曲読み込み
 
 				case フェーズ.表示:
 					this._スコアを読み込む();
+					App.Keyboard.ポーリングする();	// 先行入力があったらここでキャンセル
 					this.現在のフェーズ = フェーズ.完了;
 					break;
 
