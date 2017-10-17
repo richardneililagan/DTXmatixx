@@ -1,3 +1,6 @@
 [submodule "FDKリポジトリ"]
 	path = FDKリポジトリ
 	url = git@github.com:kumakamikoubou/FDK.git
+[submodule "SSTFormatリポジトリ"]
+	path = SSTFormatリポジトリ
+	url = git@github.com:kumakamikoubou/SSTFormat.git
