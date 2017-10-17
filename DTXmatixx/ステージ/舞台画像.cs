@@ -86,6 +86,8 @@ namespace DTXmatixx.ステージ
 			this._切り取りエフェクト黒幕付き用 = new Crop( gd.D2DDeviceContext );
 
 			this._ぼかしと縮小割合 = new Variable( gd.Animation.Manager, initialValue: 0.0 );
+			this.ぼかしと縮小を適用中 = false;
+
 			this._ストーリーボード = null;
 
 			this._初めての進行描画 = true;
