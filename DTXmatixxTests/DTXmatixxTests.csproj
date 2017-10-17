@@ -66,13 +66,13 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\%40StrokeStyleT\SSTFormat\SSTFormat\SSTFormat.csproj">
-      <Project>{93b53767-a0a5-431c-9ec7-b23dbffb10ec}</Project>
-      <Name>SSTFormat</Name>
-    </ProjectReference>
     <ProjectReference Include="..\DTXmatixx\DTXmatixx.csproj">
       <Project>{736BE388-5EC5-4BF9-838B-8580C9A8DA9C}</Project>
       <Name>DTXmatixx</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SSTFormatリポジトリ\SSTFormat\SSTFormat.csproj">
+      <Project>{93b53767-a0a5-431c-9ec7-b23dbffb10ec}</Project>
+      <Name>SSTFormat</Name>
     </ProjectReference>
   </ItemGroup>
   <Choose>

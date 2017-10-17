@@ -11,9 +11,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FDK", "FDKリポジトリ\F
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FDKTests", "FDKリポジトリ\FDKTests\FDKTests.csproj", "{24C456DB-F7CA-45CE-84A6-0B2EAF32ED07}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SSTFormat", "..\..\@StrokeStyleT\SSTFormat\SSTFormat\SSTFormat.csproj", "{93B53767-A0A5-431C-9EC7-B23DBFFB10EC}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SSTFormat", "SSTFormatリポジトリ\SSTFormat\SSTFormat.csproj", "{93B53767-A0A5-431C-9EC7-B23DBFFB10EC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SSTFormatTests", "..\..\@StrokeStyleT\SSTFormat\SSTFormatTests\SSTFormatTests.csproj", "{6B948694-7A83-4449-8A70-03F8B9F6B07B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SSTFormatTests", "SSTFormatリポジトリ\SSTFormatTests\SSTFormatTests.csproj", "{6B948694-7A83-4449-8A70-03F8B9F6B07B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
