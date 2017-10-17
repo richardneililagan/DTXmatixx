@@ -1,0 +1,3 @@
+[submodule "FDKリポジトリ"]
+	path = FDKリポジトリ
+	url = git@github.com:kumakamikoubou/FDK.git
