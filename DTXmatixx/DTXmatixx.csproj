@@ -200,10 +200,6 @@
       <Project>{93b53767-a0a5-431c-9ec7-b23dbffb10ec}</Project>
       <Name>SSTFormat</Name>
     </ProjectReference>
-    <ProjectReference Include="..\FDK\FDK.csproj">
-      <Project>{0e35c4ac-6e28-4a09-a6ce-05d177800051}</Project>
-      <Name>FDK</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="System\Images\!.png">
