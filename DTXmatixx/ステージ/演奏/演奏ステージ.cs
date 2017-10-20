@@ -379,6 +379,8 @@ namespace DTXmatixx.ステージ.演奏
 				case フェーズ.表示:
 				case フェーズ.キャンセル時フェードアウト:
 					{
+						double 演奏時刻sec = this._演奏開始からの経過時間secを返す() + gd.次のDComp表示までの残り時間sec;
+
 						#region " 譜面スクロール速度が変化している → 追い付き進行 "
 						//----------------
 						{
@@ -428,8 +430,6 @@ namespace DTXmatixx.ステージ.演奏
 						}
 						//----------------
 						#endregion
-
-						double 演奏時刻sec = this._演奏開始からの経過時間secを返す() + gd.次のDComp表示までの残り時間sec;
 
 						if( this._背景動画開始済み )
 						{
