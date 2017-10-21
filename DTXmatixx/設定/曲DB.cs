@@ -244,6 +244,8 @@ namespace DTXmatixx.設定
 
 					if( query.Skill < record.Skill )
 						query.Skill = record.Skill;	// 記録更新
+
+
 				}
 				else
 				{
