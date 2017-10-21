@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using SSTFormatCurrent = SSTFormat.v3;
 using DTXmatixx.設定;
+using DTXmatixx.設定.DB;
 
 namespace DTXmatixx.ステージ.演奏
 {
@@ -11,14 +12,8 @@ namespace DTXmatixx.ステージ.演奏
 	///		現在の演奏状態や成績を保存するクラス。
 	///		描画は行わない。
 	/// </summary>
-	internal class 成績
+	internal class 成績 : Record
 	{
-		public int Score
-		{
-			get;
-			protected set;
-		} = 0;
-
 		public int Combo
 		{
 			get;
@@ -32,12 +27,6 @@ namespace DTXmatixx.ステージ.演奏
 		} = 0;
 
 		public float 達成率
-		{
-			get;
-			protected set;
-		} = 0.0f;
-
-		public float Skill
 		{
 			get;
 			protected set;
@@ -66,14 +55,12 @@ namespace DTXmatixx.ステージ.演奏
 			=> this._ヒット割合を算出して返す();
 
 
-		/// <param name="譜面">単体テスト時に限り null を許す。</param>
-		/// <param name="設定">単体テスト時に限り null を許す。</param>
-		public 成績( SSTFormatCurrent.スコア 譜面 = null, ユーザ設定 設定 = null )
+		public 成績()
 		{
 			this.Score = 0;
 			this.MaxCombo = 0;
 			this.達成率 = 0.0f;
-			this.総ノーツ数 = ( null != 譜面 && null != 設定 ) ? this._総ノーツ数を算出して返す( 譜面, 設定 ) : 0;
+			this.総ノーツ数 = 0;
 
 			this._判定toヒット数 = new Dictionary<判定種別, int>();
 			this._最後にスコアを更新したときの判定toヒット数 = new Dictionary<判定種別, int>();
@@ -86,7 +73,13 @@ namespace DTXmatixx.ステージ.演奏
 			// todo: AutoPlay の状態から、達成率用のオプション補正を算出。
 			this._オプション補正 = 1.0;
 
-			this._譜面レベル = 譜面?.難易度 ?? 0.5;	// 単体テスト時は 0.5固定
+			this._譜面レベル = 0.5;
+		}
+
+		public void スコアと設定を反映する( SSTFormatCurrent.スコア 譜面, ユーザ設定 設定 )
+		{
+			this.総ノーツ数 = ( null != 譜面 && null != 設定 ) ? this._総ノーツ数を算出して返す( 譜面, 設定 ) : 0;
+			this._譜面レベル = 譜面?.難易度 ?? 0.5;
 		}
 
 		/// <summary>

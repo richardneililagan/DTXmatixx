@@ -77,7 +77,8 @@ namespace DTXmatixx.ステージ.演奏
 			{
 				this.キャプチャ画面 = null;
 
-				this.成績 = new 成績( App.演奏スコア, App.ユーザ設定 );
+				this.成績 = new 成績();
+				this.成績.スコアと設定を反映する( App.演奏スコア, App.ユーザ設定 );
 
 				this._描画開始チップ番号 = -1;
 				this._小節線色 = new SolidColorBrush( gd.D2DDeviceContext, Color.White );

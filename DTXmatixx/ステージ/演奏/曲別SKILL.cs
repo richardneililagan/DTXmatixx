@@ -30,11 +30,15 @@ namespace DTXmatixx.ステージ.演奏
 			}
 		}
 
-		public void 進行描画する( DeviceContext dc, float スキル値 )
+		public void 進行描画する( DeviceContext dc, double? スキル値 )
 		{
+			if( null == スキル値 )
+				return;
+			var skill = (double) スキル値;
+
 			var 描画領域 = new RectangleF( 108f, 780f, 275f, 98f );
 
-			string スキル値文字列 = スキル値.ToString( "0.00" ).PadLeft( 6 ).Replace( ' ', 'o' );  // 右詰め、余白は'o'。
+			string スキル値文字列 = skill.ToString( "0.00" ).PadLeft( 6 ).Replace( ' ', 'o' );  // 右詰め、余白は'o'。
 
 			// 曲別SKILLアイコンを描画する
 			dc.Transform =
