@@ -60,7 +60,7 @@ namespace DTXmatixx.ステージ.結果
 
 				// 成績をDBに記録。
 				// todo: 最高成績のみ更新するようにする。
-				曲DB.成績を追加または更新する( this._結果, App.ユーザ設定.ID, 選択曲.曲ファイルハッシュ );
+				曲DB.成績を追加または更新する( this._結果, App.ユーザ設定.Id, 選択曲.曲ファイルハッシュ );
 
 				this._曲名画像.表示文字列 = 選択曲.タイトル;
 				this._黒マスクブラシ = new SolidColorBrush( gd.D2DDeviceContext, new Color4( Color3.Black, 0.75f ) );

@@ -83,14 +83,14 @@ namespace DTXmatixx.ステージ.演奏
 				this._小節線色 = new SolidColorBrush( gd.D2DDeviceContext, Color.White );
 				this._拍線色 = new SolidColorBrush( gd.D2DDeviceContext, Color.LightGray );
 				this._ドラムチップ画像の矩形リスト = new 矩形リスト( @"$(System)images\ドラムチップ矩形.xml" );      // デバイスリソースは持たないので、子Activityではない。
-				this._現在進行描画中の譜面スクロール速度の倍率 = App.ユーザ設定.譜面スクロール速度の倍率;
+				this._現在進行描画中の譜面スクロール速度の倍率 = App.ユーザ設定.ScrollSpeed;
 				this._ドラムチップアニメ = new LoopCounter( 0, 200, 3 );
 				this._背景動画 = null;
 				this._BGM = null;
 				this._背景動画開始済み = false;
 				this._BGM再生開始済み = false;
 				//this._デコード済みWaveSource = null;	--> キャッシュなので消さない。
-				this._プレイヤー名表示.名前 = App.ユーザ設定.ユーザ名;
+				this._プレイヤー名表示.名前 = App.ユーザ設定.Name;
 
 				#region " 背景動画とBGMを生成する。"
 				//----------------
@@ -151,15 +151,15 @@ namespace DTXmatixx.ステージ.演奏
 				using( var userdb = new UserDB() )
 				{
 					var user = userdb.Users.Where(
-						( u ) => ( u.Id == App.ユーザ設定.ID )
+						( u ) => ( u.Id == App.ユーザ設定.Id )
 						).SingleOrDefault();
 
 					if( null != user )
 					{
-						user.ScrollSpeed = App.ユーザ設定.譜面スクロール速度の倍率;
+						user.ScrollSpeed = App.ユーザ設定.ScrollSpeed;
 						userdb.DataContext.SubmitChanges();
 
-						Log.Info( $"現在の譜面スクロール速度({App.ユーザ設定.譜面スクロール速度の倍率})をDBに保存しました。[UserID={user.Id}]" );
+						Log.Info( $"現在の譜面スクロール速度({App.ユーザ設定.ScrollSpeed})をDBに保存しました。[UserID={user.Id}]" );
 					}
 				}
 				//----------------
@@ -318,7 +318,7 @@ namespace DTXmatixx.ステージ.演奏
 						#region " 上 → 譜面スクロールを加速 "
 						//----------------
 						const double 最大倍率 = 8.0;
-						App.ユーザ設定.譜面スクロール速度の倍率 = Math.Min( App.ユーザ設定.譜面スクロール速度の倍率 + 0.5, 最大倍率 );
+						App.ユーザ設定.ScrollSpeed = Math.Min( App.ユーザ設定.ScrollSpeed + 0.5, 最大倍率 );
 						//----------------
 						#endregion
 					}
@@ -327,7 +327,7 @@ namespace DTXmatixx.ステージ.演奏
 						#region " 下 → 譜面スクロールを減速 "
 						//----------------
 						const double 最小倍率 = 0.5;
-						App.ユーザ設定.譜面スクロール速度の倍率 = Math.Max( App.ユーザ設定.譜面スクロール速度の倍率 - 0.5, 最小倍率 );
+						App.ユーザ設定.ScrollSpeed = Math.Max( App.ユーザ設定.ScrollSpeed - 0.5, 最小倍率 );
 						//----------------
 						#endregion
 					}
@@ -366,7 +366,7 @@ namespace DTXmatixx.ステージ.演奏
 						this._レーンフレーム.描画する( gd );
 						this._ドラムパッド.進行描画する( gd );
 						this._背景画像.描画する( gd, 0f, 0f );
-						this._譜面スクロール速度表示.進行描画する( gd, App.ユーザ設定.譜面スクロール速度の倍率 );
+						this._譜面スクロール速度表示.進行描画する( gd, App.ユーザ設定.ScrollSpeed );
 
 						this._カウントマップライン.進行描画する( gd );
 						this._フェーズパネル.進行描画する( gd );
@@ -386,7 +386,7 @@ namespace DTXmatixx.ステージ.演奏
 						{
 							double 倍率 = this._現在進行描画中の譜面スクロール速度の倍率;
 
-							if( 倍率 < App.ユーザ設定.譜面スクロール速度の倍率 )
+							if( 倍率 < App.ユーザ設定.ScrollSpeed )
 							{
 								if( 0 > this._スクロール倍率追い付き用_最後の値 )
 								{
@@ -401,10 +401,10 @@ namespace DTXmatixx.ステージ.演奏
 										this._スクロール倍率追い付き用_最後の値++;
 									}
 
-									this._現在進行描画中の譜面スクロール速度の倍率 = Math.Min( 倍率, App.ユーザ設定.譜面スクロール速度の倍率 );
+									this._現在進行描画中の譜面スクロール速度の倍率 = Math.Min( 倍率, App.ユーザ設定.ScrollSpeed );
 								}
 							}
-							else if( 倍率 > App.ユーザ設定.譜面スクロール速度の倍率 )
+							else if( 倍率 > App.ユーザ設定.ScrollSpeed )
 							{
 								if( 0 > this._スクロール倍率追い付き用_最後の値 )
 								{
@@ -419,7 +419,7 @@ namespace DTXmatixx.ステージ.演奏
 										this._スクロール倍率追い付き用_最後の値++;
 									}
 
-									this._現在進行描画中の譜面スクロール速度の倍率 = Math.Max( 倍率, App.ユーザ設定.譜面スクロール速度の倍率 );
+									this._現在進行描画中の譜面スクロール速度の倍率 = Math.Max( 倍率, App.ユーザ設定.ScrollSpeed );
 								}
 							}
 							else
@@ -461,7 +461,7 @@ namespace DTXmatixx.ステージ.演奏
 						this._レーンフレーム.描画する( gd );
 						this._ドラムパッド.進行描画する( gd );
 						this._背景画像.描画する( gd, 0f, 0f );
-						this._譜面スクロール速度表示.進行描画する( gd, App.ユーザ設定.譜面スクロール速度の倍率 );
+						this._譜面スクロール速度表示.進行描画する( gd, App.ユーザ設定.ScrollSpeed );
 
 						double 曲の長さsec = App.演奏スコア.チップリスト[ App.演奏スコア.チップリスト.Count - 1 ].描画時刻sec;
 						float 現在位置 = (float) ( 1.0 - ( 曲の長さsec - 演奏時刻sec ) / 曲の長さsec );

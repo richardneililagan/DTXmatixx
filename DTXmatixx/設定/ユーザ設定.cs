@@ -10,19 +10,15 @@ using DTXmatixx.ステージ.演奏;
 
 namespace DTXmatixx.設定
 {
-	class ユーザ設定
+	class ユーザ設定 : DB.User
 	{
-		public string ID
+		public bool 全画面モードである
 		{
-			get;
-			protected set;
-		} = null;
-
-		public string ユーザ名
-		{
-			get;
-			set;
-		} = null;
+			get
+				=> ( 0 != this.Fullscreen );
+			set
+				=> this.Fullscreen = value ? 1 : 0;
+		}
 
 		/// <summary>
 		///		AutoPlay 設定。
@@ -48,17 +44,6 @@ namespace DTXmatixx.設定
 		/// </summary>
 		public Dictionary<判定種別, double> 最大ヒット距離sec { get; set; }
 
-		/// <summary>
-		///		演奏画面での譜面スクロール速度の倍率。1.0 で等倍。
-		/// </summary>
-		public double 譜面スクロール速度の倍率 { get; set; }
-
-		/// <summary>
-		///		初期の表示モード。
-		///		true なら全画面モードで、false ならウィンドウモード。
-		/// </summary>
-		public bool 全画面モードである { get; set; }
-
 		public ドラムとチップと入力の対応表 ドラムとチップと入力の対応表
 		{
 			get;
@@ -66,6 +51,7 @@ namespace DTXmatixx.設定
 		} = null;
 
 		public ユーザ設定()
+			: base()
 		{
 			this.ドラムとチップと入力の対応表 = new ドラムとチップと入力の対応表(
 				new 表示レーンの左右() {	// 使わないので固定。
@@ -79,16 +65,16 @@ namespace DTXmatixx.設定
 		///		User 情報を使って初期化する。
 		/// </summary>
 		public ユーザ設定( DB.User user )
-			: base()
+			: this()
 		{
-			this._コピーする( user );
+			this.CopyFrom( user );
 		}
 
 		/// <summary>
 		///		ユーザ名で User テーブルを検索し、得られた User 情報を使って初期化する。
 		/// </summary>
 		public ユーザ設定( string ユーザ名 )
-			: base()
+			: this()
 		{
 			using( var userdb = new DB.UserDB() )
 			{
@@ -98,16 +84,27 @@ namespace DTXmatixx.設定
 
 				if( null != user )
 				{
-					this._コピーする( user );
+					this.CopyFrom( user );
 				}
 			}
 		}
 
 
-		private void _コピーする( DB.User user )
+		private void CopyFrom( DB.User user )
 		{
-			this.ID = user.Id;
-			this.ユーザ名 = user.Name;
+			this.Id = user.Id;
+			this.Name = user.Name;
+
+			this.AutoPlayLeftCymbal = user.AutoPlayLeftCymbal;
+			this.AutoPlayHiHat = user.AutoPlayHiHat;
+			this.AutoPlayLeftPedal = user.AutoPlayLeftPedal;
+			this.AutoPlaySnare = user.AutoPlaySnare;
+			this.AutoPlayBass = user.AutoPlayBass;
+			this.AutoPlayHighTom = user.AutoPlayHighTom;
+			this.AutoPlayLowTom = user.AutoPlayLowTom;
+			this.AutoPlayFloorTom = user.AutoPlayFloorTom;
+			this.AutoPlayRightCymbal = user.AutoPlayRightCymbal;
+
 			this.AutoPlay = new Dictionary<AutoPlay種別, bool>() {
 				{ AutoPlay種別.Unknown, true },
 				{ AutoPlay種別.LeftCrash, ( 0 != user.AutoPlayLeftCymbal ) },
@@ -120,20 +117,21 @@ namespace DTXmatixx.設定
 				{ AutoPlay種別.Tom3, ( 0 != user.AutoPlayFloorTom ) },
 				{ AutoPlay種別.RightCrash, ( 0 != user.AutoPlayRightCymbal ) },
 			};
+
+			this.MaxRangePerfect = user.MaxRangePerfect;
+			this.MaxRangeGreat = user.MaxRangeGreat;
+			this.MaxRangeGood = user.MaxRangeGood;
+			this.MaxRangeOk = user.MaxRangeOk;
+
 			this.最大ヒット距離sec = new Dictionary<判定種別, double>() {
 				{ 判定種別.PERFECT, user.MaxRangePerfect },
 				{ 判定種別.GREAT, user.MaxRangeGreat },
 				{ 判定種別.GOOD, user.MaxRangeGood },
 				{ 判定種別.OK, user.MaxRangeOk },
 			};
-			this.譜面スクロール速度の倍率 = Math.Max( user.ScrollSpeed, 0.0 );
-			this.全画面モードである = ( 0 != user.Fullscreen );
-			this.ドラムとチップと入力の対応表 = new ドラムとチップと入力の対応表(
-				new 表示レーンの左右() {
-					Chinaは左 = false,    // 使わないので固定。
-					Rideは左 = false,
-					Splashは左 = true,
-				} );
+
+			this.ScrollSpeed = Math.Max( user.ScrollSpeed, 0.0 );
+			this.Fullscreen = user.Fullscreen;
 		}
 	}
 }

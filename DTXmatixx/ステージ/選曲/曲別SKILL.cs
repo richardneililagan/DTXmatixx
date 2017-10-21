@@ -46,7 +46,7 @@ namespace DTXmatixx.ステージ.選曲
 
 				if( this._現在表示しているノード is MusicNode musicNode )
 				{
-					var record = 曲DB.ユーザと曲ファイルのハッシュから成績を取得する( App.ユーザ設定.ID, musicNode.曲ファイルハッシュ );
+					var record = 曲DB.ユーザと曲ファイルのハッシュから成績を取得する( App.ユーザ設定.Id, musicNode.曲ファイルハッシュ );
 
 					if( null != record )
 					{
