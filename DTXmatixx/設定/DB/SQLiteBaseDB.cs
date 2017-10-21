@@ -59,6 +59,7 @@ namespace DTXmatixx.設定.DB
 			{
 				// (B) 実DBが存在していない　→　作成する。
 				this.テーブルがなければ作成する();
+				this.UserVersion = Version;
 			}
 			else if( 実DBのバージョン < Version )
 			{
@@ -69,6 +70,7 @@ namespace DTXmatixx.設定.DB
 					this.データベースのアップグレードマイグレーションを行う( 実DBのバージョン );
 					実DBのバージョン++;
 				}
+				this.UserVersion = Version;
 			}
 			else
 			{
@@ -94,6 +96,10 @@ namespace DTXmatixx.設定.DB
 		{
 			throw new NotImplementedException();
 		}
+
+		/// <summary>
+		///		{移行元DBバージョン} から {移行元DBバージョン+1} へ、１つだけマイグレーションする。
+		/// </summary>
 		protected virtual void データベースのアップグレードマイグレーションを行う( long 移行元DBバージョン )
 		{
 			throw new NotImplementedException();

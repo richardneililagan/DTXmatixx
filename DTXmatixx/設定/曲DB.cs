@@ -122,7 +122,7 @@ namespace DTXmatixx.設定
 							record.Level = score.難易度;
 							record.MinBPM = BPMs.最小BPM;
 							record.MaxBPM = BPMs.最大BPM;
-					}
+						}
 						songdb.DataContext.SubmitChanges();
 
 						Log.Info( $"パスが異なりハッシュが同一であるレコードが検出されたため、曲の情報を更新しました。{曲ファイルパス}" );
@@ -218,6 +218,44 @@ namespace DTXmatixx.設定
 				return userdb.Records.Where( 
 					( record ) => ( record.UserId == ユーザID && record.SongHashId == 曲ファイルハッシュ )
 					).SingleOrDefault();
+			}
+		}
+
+		/// <summary>
+		///		指定したユーザID＆曲ファイルハッシュに対応するレコードがデータベースになければレコードを追加し、
+		///		あればそのレコードを更新する。
+		/// </summary>
+		public static void 成績を追加または更新する( 成績 record, string ユーザID, string 曲ファイルハッシュ )
+		{
+			using( var userdb = new UserDB() )
+			{
+				var query = userdb.Records.Where(
+					( r ) => ( r.UserId == ユーザID && r.SongHashId == 曲ファイルハッシュ )
+					).SingleOrDefault();
+
+				if( null != query )
+				{
+					// (A) レコードがすでに存在するなら、更新する。
+					query.Score = record.Score;
+					// todo: CountMap を成績クラスに保存する。
+					//query.CountMap = record.CountMap;
+					query.Skill = record.Skill;
+				}
+				else
+				{
+					// (B) レコードが存在しないなら、追加する。
+					userdb.Records.InsertOnSubmit( new Record() {
+						Id = null,
+						UserId = ユーザID,
+						SongHashId = 曲ファイルハッシュ,
+						Score = record.Score,
+						// todo: CountMap を成績クラスに保存する。
+						CountMap = "",
+						Skill = record.Skill,
+					} );
+				}
+
+				userdb.DataContext.SubmitChanges();
 			}
 		}
 

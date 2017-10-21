@@ -31,9 +31,6 @@ namespace DTXmatixx.設定.DB
 			{
 				try
 				{
-					// DBのバージョンを設定する。
-					this.UserVersion = VERSION;
-
 					// テーブルを作成する。
 					this.DataContext.ExecuteCommand( Song.CreateTableSQL );
 					this.DataContext.SubmitChanges();

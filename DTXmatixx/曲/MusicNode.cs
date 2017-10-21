@@ -66,6 +66,7 @@ namespace DTXmatixx.曲
 			var song = 曲DB.曲を取得する( this.曲ファイルパス );
 			this.タイトル = song.Title;
 			this.難易度 = (float) song.Level;
+			this.曲ファイルハッシュ = song.HashId;
 
 			// 曲ファイルと同じ場所に画像ファイルがあるなら、それをノード画像として採用する。
 			var サムネイル画像ファイルパス =

@@ -13,7 +13,7 @@ namespace DTXmatixx.設定.DB
 	/// </summary>
 	class UserDB : SQLiteBaseDB
 	{
-		public const long VERSION = 1;
+		public const long VERSION = 2;
 
 		public Table<User> Users
 		{
@@ -39,9 +39,6 @@ namespace DTXmatixx.設定.DB
 				{
 					try
 					{
-						// DBのバージョンを設定する。
-						this.UserVersion = VERSION;
-
 						// テーブルを作成する。
 						this.DataContext.ExecuteCommand( User.CreateTableSQL );
 						this.DataContext.ExecuteCommand( Record.CreateTableSQL );
@@ -89,8 +86,34 @@ namespace DTXmatixx.設定.DB
 		{
 			switch( 移行元DBバージョン )
 			{
+				case 1: this._ver1to2(); break;
+
 				default:
 					throw new Exception( $"移行元DBのバージョン({移行元DBバージョン})がマイグレーションに未対応です。" );
+			}
+		}
+		private void _ver1to2()
+		{
+			// Ver1 → 2 の変更点：
+			// ・Record.Skill カラムが追加された。
+
+			using( var transaction = this.Connection.BeginTransaction() )
+			{
+				try
+				{
+					this.DataContext.ExecuteCommand( @"ALTER TABLE Records ADD COLUMN Skill REAL;" );
+					this.DataContext.SubmitChanges();
+
+					// 成功。
+					transaction.Commit();
+					Log.Info( "UserDB のバージョンを 1 → 2 へアップデートしました。" );
+				}
+				catch
+				{
+					// 失敗。
+					transaction.Rollback();
+					throw;
+				}
 			}
 		}
 	}

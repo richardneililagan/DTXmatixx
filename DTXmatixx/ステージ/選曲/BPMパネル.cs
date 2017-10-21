@@ -41,8 +41,8 @@ namespace DTXmatixx.ステージ.選曲
 
 					if( null != song )
 					{
-						this._最小BPM = song.MinBPM;
-						this._最大BPM = song.MaxBPM;
+						this._最小BPM = song.MinBPM ?? 120.0;
+						this._最大BPM = song.MaxBPM ?? 120.0;
 					}
 				}
 				else

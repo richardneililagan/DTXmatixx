@@ -100,16 +100,16 @@ namespace DTXmatixx.設定.DB
 		public double Level { get; set; }
 
 		/// <summary>
-		///		最小BPM。
+		///		最小BPM。null なら未取得。
 		/// </summary>
-		[Column( DbType = "REAL", CanBeNull = false )]
-		public double MinBPM { get; set; }
+		[Column( DbType = "REAL", CanBeNull = true )]
+		public double? MinBPM { get; set; }
 
 		/// <summary>
-		///		最大BPM。
+		///		最大BPM。null なら未取得。
 		/// </summary>
-		[Column( DbType = "REAL", CanBeNull = false )]
-		public double MaxBPM { get; set; }
+		[Column( DbType = "REAL", CanBeNull = true )]
+		public double? MaxBPM { get; set; }
 
 		///////////////////////////
 
@@ -133,8 +133,8 @@ namespace DTXmatixx.設定.DB
 			this.FloorTomNotes = 0;
 			this.RightCymbalNotes = 0;
 			this.Level = 5.00;
-			this.MinBPM = 120.0;
-			this.MaxBPM = 120.0;
+			this.MinBPM = null;
+			this.MaxBPM = null;
 		}
 
 		///////////////////////////
@@ -159,8 +159,8 @@ namespace DTXmatixx.設定.DB
 			@", FloorTomNotes INTEGER NOT NULL" +
 			@", RightCymbalNotes INTEGER NOT NULL" +
 			@", Level REAL NOT NULL CHECK(0.0 <= Level AND Level < 10.0)" +
-			@", MinBPM REAL NOT NULL" +
-			@", MaxBPM REAL NOT NULL" +
+			@", MinBPM REAL" +
+			@", MaxBPM REAL" +
 			@");";
 	}
 }

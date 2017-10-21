@@ -52,7 +52,7 @@ namespace DTXmatixx.ステージ.演奏
 			// 成績の増加分を得る。
 			var 増加値 = new Dictionary<判定種別, int>();
 			foreach( 判定種別 judge in Enum.GetValues( typeof( 判定種別 ) ) )
-				増加値.Add( judge, 判定toヒット数[ judge ] - this._最後にカウント地を設定したときの成績[ judge ] );
+				増加値.Add( judge, 判定toヒット数[ judge ] - this._最後にカウント値を設定したときの成績[ judge ] );
 
 			// todo: カウント値を算出する。
 			int カウント値 = ( 増加値[ 判定種別.MISS ] > 0 ) ? 1 : 12;      // 暫定式。
@@ -69,7 +69,7 @@ namespace DTXmatixx.ステージ.演奏
 			// 位置と成績を保存。
 			this._最後にカウント値を設定した位置 = 現在位置;
 			foreach( 判定種別 judge in Enum.GetValues( typeof( 判定種別 ) ) )
-				this._最後にカウント地を設定したときの成績[ judge ] = 判定toヒット数[ judge ];
+				this._最後にカウント値を設定したときの成績[ judge ] = 判定toヒット数[ judge ];
 		}
 
 		protected override void On活性化( グラフィックデバイス gd )
@@ -81,9 +81,9 @@ namespace DTXmatixx.ステージ.演奏
 					this.カウントマップ[ i ] = 0;
 
 				this._最後にカウント値を設定した位置 = 0f;
-				this._最後にカウント地を設定したときの成績 = new Dictionary<判定種別, int>();
+				this._最後にカウント値を設定したときの成績 = new Dictionary<判定種別, int>();
 				foreach( 判定種別 judge in Enum.GetValues( typeof( 判定種別 ) ) )
-					this._最後にカウント地を設定したときの成績.Add( judge, 0 );
+					this._最後にカウント値を設定したときの成績.Add( judge, 0 );
 			}
 		}
 		protected override void On非活性化( グラフィックデバイス gd )
@@ -136,6 +136,6 @@ namespace DTXmatixx.ステージ.演奏
 
 		private int[] _過去最大のカウントマップ = null;
 		private float _最後にカウント値を設定した位置 = 0f;
-		private Dictionary<判定種別, int> _最後にカウント地を設定したときの成績 = null;
+		private Dictionary<判定種別, int> _最後にカウント値を設定したときの成績 = null;
 	}
 }

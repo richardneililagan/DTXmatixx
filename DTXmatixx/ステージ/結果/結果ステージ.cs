@@ -9,6 +9,7 @@ using SharpDX.DirectInput;
 using FDK;
 using FDK.メディア;
 using DTXmatixx.曲;
+using DTXmatixx.設定;
 using DTXmatixx.アイキャッチ;
 using DTXmatixx.ステージ.演奏;
 
@@ -56,6 +57,10 @@ namespace DTXmatixx.ステージ.結果
 				Debug.Assert( null != 選択曲 );
 
 				this._結果 = this.結果を取得する();
+
+				// 成績をDBに記録。
+				// todo: 最高成績のみ更新するようにする。
+				曲DB.成績を追加または更新する( this._結果, App.ユーザ設定.ID, 選択曲.曲ファイルハッシュ );
 
 				this._曲名画像.表示文字列 = 選択曲.タイトル;
 				this._黒マスクブラシ = new SolidColorBrush( gd.D2DDeviceContext, new Color4( Color3.Black, 0.75f ) );

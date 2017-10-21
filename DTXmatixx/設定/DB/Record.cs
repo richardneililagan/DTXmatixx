@@ -46,6 +46,12 @@ namespace DTXmatixx.設定.DB
 		[Column( DbType = "NVARCHAR", CanBeNull = false )]
 		public string CountMap { get; set; }
 
+		/// <summary>
+		///		曲別SKILL。null なら未取得。
+		/// </summary>
+		[Column( DbType = "REAL", CanBeNull = true )]
+		public double? Skill { get; set; }
+
 		///////////////////////////
 
 		/// <summary>
@@ -58,6 +64,7 @@ namespace DTXmatixx.設定.DB
 			this.SongHashId = "";
 			this.Score = 0;
 			this.CountMap = "";
+			this.Skill = null;
 		}
 
 		///////////////////////////
@@ -72,6 +79,7 @@ namespace DTXmatixx.設定.DB
 			@", SongHashId NVARCHAR NOT NULL" +
 			@", Score INTEGER NOT NULL" +
 			@", CountMap NVARCHAR NOT NULL" +
+			@", Skill REAL"+
 			@");";
 	}
 }
