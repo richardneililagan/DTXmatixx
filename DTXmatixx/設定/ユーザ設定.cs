@@ -24,7 +24,11 @@ namespace DTXmatixx.設定
 		///		AutoPlay 設定。
 		///		true なら AutoPlay ON。 
 		/// </summary>
-		public Dictionary<AutoPlay種別, bool> AutoPlay { get; set; }
+		public HookedDictionary<AutoPlay種別,bool> AutoPlay
+		{
+			get;
+			protected set;
+		} = null;
 
 		public bool AutoPlayがすべてONである
 		{
@@ -50,11 +54,59 @@ namespace DTXmatixx.設定
 			protected set;
 		} = null;
 
+
 		public ユーザ設定()
 			: base()
 		{
+			this.AutoPlay = new HookedDictionary<AutoPlay種別, bool>() {
+
+				get時アクション = null,
+
+				// Dictionary が変更されたらDB用の個別プロパティも変更する。
+				set時アクション = ( type, flag ) => {
+					switch( type )
+					{
+						case AutoPlay種別.LeftCrash:
+							this.AutoPlayLeftCymbal = flag ? 1 : 0;
+							break;
+
+						case AutoPlay種別.HiHat:
+							this.AutoPlayHiHat = flag ? 1 : 0;
+							break;
+
+						case AutoPlay種別.Foot:
+							this.AutoPlayLeftPedal = flag ? 1 : 0;
+							break;
+
+						case AutoPlay種別.Snare:
+							this.AutoPlaySnare = flag ? 1 : 0;
+							break;
+
+						case AutoPlay種別.Bass:
+							this.AutoPlayBass = flag ? 1 : 0;
+							break;
+
+						case AutoPlay種別.Tom1:
+							this.AutoPlayHighTom = flag ? 1 : 0;
+							break;
+
+						case AutoPlay種別.Tom2:
+							this.AutoPlayLowTom = flag ? 1 : 0;
+							break;
+
+						case AutoPlay種別.Tom3:
+							this.AutoPlayFloorTom = flag ? 1 : 0;
+							break;
+
+						case AutoPlay種別.RightCrash:
+							this.AutoPlayRightCymbal = flag ? 1 : 0;
+							break;
+					}
+				}
+			};
+
 			this.ドラムとチップと入力の対応表 = new ドラムとチップと入力の対応表(
-				new 表示レーンの左右() {	// 使わないので固定。
+				new 表示レーンの左右() {    // 使わないので固定。
 					Chinaは左 = false,
 					Rideは左 = false,
 					Splashは左 = true,
@@ -79,7 +131,7 @@ namespace DTXmatixx.設定
 			using( var userdb = new DB.UserDB() )
 			{
 				var user = userdb.Users.Where(
-					( u ) => ( u.Name == "AutoPlayer" ) 
+					( u ) => ( u.Name == "AutoPlayer" )
 					).SingleOrDefault();
 
 				if( null != user )
@@ -105,7 +157,7 @@ namespace DTXmatixx.設定
 			this.AutoPlayFloorTom = user.AutoPlayFloorTom;
 			this.AutoPlayRightCymbal = user.AutoPlayRightCymbal;
 
-			this.AutoPlay = new Dictionary<AutoPlay種別, bool>() {
+			this.AutoPlay = new HookedDictionary<AutoPlay種別, bool>() {
 				{ AutoPlay種別.Unknown, true },
 				{ AutoPlay種別.LeftCrash, ( 0 != user.AutoPlayLeftCymbal ) },
 				{ AutoPlay種別.HiHat, ( 0 != user.AutoPlayHiHat ) },
