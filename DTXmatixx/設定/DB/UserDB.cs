@@ -102,6 +102,7 @@ namespace DTXmatixx.設定.DB
 				try
 				{
 					this.DataContext.ExecuteCommand( @"ALTER TABLE Records ADD COLUMN Skill REAL NOT NULL;" );
+					this.DataContext.ExecuteCommand( @"ALTER TABLE Records ADD COLUMN Achievement REAL NOT NULL;" );
 					this.DataContext.SubmitChanges();
 
 					// 成功。
