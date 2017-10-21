@@ -143,6 +143,7 @@
     <Compile Include="ステージ\結果\結果ステージ.cs" />
     <Compile Include="ステージ\舞台画像.cs" />
     <Compile Include="ステージ\認証\認証ステージ.cs" />
+    <Compile Include="ステージ\選曲\BPMパネル.cs" />
     <Compile Include="ステージ\選曲\曲ステータスパネル.cs" />
     <Compile Include="ステージ\選曲\曲リスト.cs" />
     <Compile Include="ステージ\選曲\選択曲枠ランナー.cs" />
@@ -499,6 +500,11 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="System\Images\曲別SKILLアイコン.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="System\Images\選曲画面_BPMパネル.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>

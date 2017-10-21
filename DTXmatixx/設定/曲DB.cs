@@ -68,6 +68,7 @@ namespace DTXmatixx.設定
 						using( score )
 						{
 							var ノーツ数 = _ノーツ数を算出して返す( score, ユーザ設定 );
+							var BPMs = _最小最大BPMを調べて返す( score );
 
 							songdb.Songs.InsertOnSubmit(
 								new Song() {
@@ -86,6 +87,8 @@ namespace DTXmatixx.設定
 									FloorTomNotes = ノーツ数[ 表示レーン種別.Tom3 ],
 									RightCymbalNotes = ノーツ数[ 表示レーン種別.RightCrash ],
 									Level = score.難易度,
+									MinBPM = BPMs.最小BPM,
+									MaxBPM = BPMs.最大BPM,
 								} );
 							songdb.DataContext.SubmitChanges();
 						}
@@ -101,11 +104,12 @@ namespace DTXmatixx.設定
 						var record = 同一ハッシュ検索クエリ.Single();
 						using( var score = new SSTFormatCurrent.スコア( 調べる曲のパス ) )
 						{
+							var ノーツ数 = _ノーツ数を算出して返す( score, ユーザ設定 );
+							var BPMs = _最小最大BPMを調べて返す( score );
+
 							record.Title = score.曲名;
 							record.Path = 調べる曲のパス;
 							record.LastWriteTime = File.GetLastWriteTime( 調べる曲のパス ).ToString( "G" );
-
-							var ノーツ数 = _ノーツ数を算出して返す( score, ユーザ設定 );
 							record.LeftCymbalNotes = ノーツ数[ 表示レーン種別.LeftCrash ];
 							record.HiHatNotes = ノーツ数[ 表示レーン種別.HiHat ];
 							record.LeftPedalNotes = ノーツ数[ 表示レーン種別.Foot ];
@@ -115,9 +119,10 @@ namespace DTXmatixx.設定
 							record.LowTomNotes = ノーツ数[ 表示レーン種別.Tom2 ];
 							record.FloorTomNotes = ノーツ数[ 表示レーン種別.Tom3 ];
 							record.RightCymbalNotes = ノーツ数[ 表示レーン種別.RightCrash ];
-
 							record.Level = score.難易度;
-						}
+							record.MinBPM = BPMs.最小BPM;
+							record.MaxBPM = BPMs.最大BPM;
+					}
 						songdb.DataContext.SubmitChanges();
 
 						Log.Info( $"パスが異なりハッシュが同一であるレコードが検出されたため、曲の情報を更新しました。{曲ファイルパス}" );
@@ -140,11 +145,12 @@ namespace DTXmatixx.設定
 						//----------------
 						using( var score = new SSTFormatCurrent.スコア( 調べる曲のパス ) )
 						{
+							var ノーツ数 = _ノーツ数を算出して返す( score, ユーザ設定 );
+							var BPMs = _最小最大BPMを調べて返す( score );
+
 							record.HashId = _ファイルのハッシュを算出して返す( 調べる曲のパス );
 							record.Title = score.曲名;
 							record.LastWriteTime = 調べる曲の最終更新日時;
-
-							var ノーツ数 = _ノーツ数を算出して返す( score, ユーザ設定 );
 							record.LeftCymbalNotes = ノーツ数[ 表示レーン種別.LeftCrash ];
 							record.HiHatNotes = ノーツ数[ 表示レーン種別.HiHat ];
 							record.LeftPedalNotes = ノーツ数[ 表示レーン種別.Foot ];
@@ -154,8 +160,9 @@ namespace DTXmatixx.設定
 							record.LowTomNotes = ノーツ数[ 表示レーン種別.Tom2 ];
 							record.FloorTomNotes = ノーツ数[ 表示レーン種別.Tom3 ];
 							record.RightCymbalNotes = ノーツ数[ 表示レーン種別.RightCrash ];
-
 							record.Level = score.難易度;
+							record.MinBPM = BPMs.最小BPM;
+							record.MaxBPM = BPMs.最大BPM;
 						}
 						songdb.DataContext.SubmitChanges();
 
@@ -256,6 +263,25 @@ namespace DTXmatixx.設定
 				hashString.Append( b.ToString( "X2" ) );
 
 			return hashString.ToString();
+		}
+		private static (double 最小BPM, double 最大BPM) _最小最大BPMを調べて返す( SSTFormatCurrent.スコア score )
+		{
+			var result = (最小BPM: double.MaxValue, 最大BPM: double.MinValue);
+
+			var BPMchips = score.チップリスト.Where( ( c ) => ( c.チップ種別 == SSTFormatCurrent.チップ種別.BPM ) );
+			foreach( var chip in BPMchips )
+			{
+				result.最小BPM = Math.Min( result.最小BPM, chip.BPM );
+				result.最大BPM = Math.Max( result.最大BPM, chip.BPM );
+			}
+
+			if( result.最小BPM == double.MaxValue || result.最大BPM == double.MinValue )	// BPMチップがひとつもなかった
+			{
+				double 初期BPM = SSTFormatCurrent.スコア.初期BPM;
+				result = (初期BPM, 初期BPM);
+			}
+
+			return result;
 		}
 	}
 }

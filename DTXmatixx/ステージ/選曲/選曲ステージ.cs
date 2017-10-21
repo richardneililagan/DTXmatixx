@@ -38,6 +38,7 @@ namespace DTXmatixx.ステージ.選曲
 			this.子リスト.Add( this._ステージタイマー = new 画像( @"$(System)images\ステージタイマー.png" ) );
 			this.子リスト.Add( this._青い枠 = new 青い枠() );
 			this.子リスト.Add( this._選択曲枠ランナー = new 選択曲枠ランナー() );
+			this.子リスト.Add( this._BPMパネル = new BPMパネル() );
 		}
 
 		protected override void On活性化( グラフィックデバイス gd )
@@ -88,6 +89,7 @@ namespace DTXmatixx.ステージ.選曲
 			this._難易度と成績.描画する( gd );
 			this._曲ステータスパネル.描画する( gd );
 			this._プレビュー画像を描画する( gd, App.曲ツリー.フォーカスノード );
+			this._BPMパネル.描画する( gd );
 			this._選択曲を囲む枠を描画する( gd );
 			this._選択曲枠ランナー.進行描画する( gd );
 			this._導線を描画する( gd );
@@ -142,6 +144,7 @@ namespace DTXmatixx.ステージ.選曲
 		private 曲ステータスパネル _曲ステータスパネル = null;
 		private 青い枠 _青い枠 = null;
 		private 選択曲枠ランナー _選択曲枠ランナー = null;
+		private BPMパネル _BPMパネル = null;
 
 		private SolidColorBrush _白 = null;
 		private SolidColorBrush _黒 = null;
