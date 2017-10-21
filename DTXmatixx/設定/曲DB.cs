@@ -223,7 +223,7 @@ namespace DTXmatixx.設定
 
 		/// <summary>
 		///		指定したユーザID＆曲ファイルハッシュに対応するレコードがデータベースになければレコードを追加し、
-		///		あればそのレコードを更新する。
+		///		あればそのレコードを（最高記録であれば）更新する。
 		/// </summary>
 		public static void 成績を追加または更新する( 成績 record, string ユーザID, string 曲ファイルハッシュ )
 		{
@@ -236,10 +236,14 @@ namespace DTXmatixx.設定
 				if( null != query )
 				{
 					// (A) レコードがすでに存在するなら、更新する。
-					query.Score = record.Score;
+					if( query.Score < record.Score )
+						query.Score = record.Score; // 記録更新
+
 					// todo: CountMap を成績クラスに保存する。
 					//query.CountMap = record.CountMap;
-					query.Skill = record.Skill;
+
+					if( query.Skill < record.Skill )
+						query.Skill = record.Skill;	// 記録更新
 				}
 				else
 				{
@@ -249,8 +253,10 @@ namespace DTXmatixx.設定
 						UserId = ユーザID,
 						SongHashId = 曲ファイルハッシュ,
 						Score = record.Score,
+
 						// todo: CountMap を成績クラスに保存する。
 						CountMap = "",
+
 						Skill = record.Skill,
 					} );
 				}
