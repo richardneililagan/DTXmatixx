@@ -75,6 +75,8 @@ namespace DTXmatixx.ステージ.演奏
 		{
 			using( Log.Block( FDKUtilities.現在のメソッド名 ) )
 			{
+				Debug.Assert( null != App.演奏スコア, "演奏スコアが指定されていません。" );
+
 				this.キャプチャ画面 = null;
 
 				this.成績 = new 成績();
@@ -92,6 +94,10 @@ namespace DTXmatixx.ステージ.演奏
 				this._BGM再生開始済み = false;
 				//this._デコード済みWaveSource = null;	--> キャッシュなので消さない。
 				this._プレイヤー名表示.名前 = App.ユーザ設定.Name;
+
+				this._チップの演奏状態 = new Dictionary<チップ, チップの演奏状態>();
+				foreach( var chip in App.演奏スコア.チップリスト )
+					this._チップの演奏状態.Add( chip, new チップの演奏状態( chip ) );
 
 				#region " 背景動画とBGMを生成する。"
 				//----------------
@@ -173,6 +179,10 @@ namespace DTXmatixx.ステージ.演奏
 				//App.WAV管理?.Dispose();	--> ここではまだ解放しない。結果ステージの非活性化時に解放する。
 				//App.WAV管理 = null;
 
+				foreach( var kvp in this._チップの演奏状態 )
+					kvp.Value.Dispose();
+				this._チップの演奏状態 = null;
+
 				FDKUtilities.解放する( ref this._拍線色 );
 				FDKUtilities.解放する( ref this._小節線色 );
 
@@ -235,7 +245,7 @@ namespace DTXmatixx.ステージ.演奏
 						var 対応表 = オプション設定.ドラムとチップと入力の対応表[ chip.チップ種別 ];
 						var AutoPlay = オプション設定.AutoPlay[ 対応表.AutoPlay種別 ];
 
-						bool チップはヒット済みである = chip.ヒット済みである;
+						bool チップはヒット済みである = this._チップの演奏状態[ chip ].ヒット済みである;
 						bool チップはMISSエリアに達している = ( ヒット判定バーと描画との時間sec > オプション設定.最大ヒット距離sec[ 判定種別.OK ] );
 						bool チップは描画についてヒット判定バーを通過した = ( 0 <= ヒット判定バーと描画との時間sec );
 						bool チップは発声についてヒット判定バーを通過した = ( 0 <= ヒット判定バーと発声との時間sec );
@@ -563,6 +573,8 @@ namespace DTXmatixx.ステージ.演奏
 		/// </summary>
 		private Counter _フェードインカウンタ = null;
 
+		private Dictionary<チップ, チップの演奏状態> _チップの演奏状態 = null;
+
 		private double _現在進行描画中の譜面スクロール速度の倍率 = 1.0;
 		private LoopCounter _スクロール倍率追い付き用カウンタ = null;
 		private int _スクロール倍率追い付き用_最後の値 = -1;
@@ -685,7 +697,7 @@ namespace DTXmatixx.ステージ.演奏
 				//----------------
 				#endregion
 
-				if( chip.不可視 )
+				if( this._チップの演奏状態[ chip ].不可視 )
 					return;
 
 				float 音量0to1 = 1f;      // chip.音量 / (float) チップ.最大音量;		matixx では音量無視。
@@ -797,13 +809,13 @@ namespace DTXmatixx.ステージ.演奏
 
 		private void _チップのヒット処理を行う( チップ chip, 判定種別 judge, ドラムとチップと入力の対応表.Column.Columnヒット処理 ヒット処理表, double ヒット判定バーと発声との時間sec )
 		{
-			chip.ヒット済みである = true;
+			this._チップの演奏状態[ chip ].ヒット済みである = true;
 
 			if( ヒット処理表.再生 )
 			{
 				#region " チップの発声を行う。"
 				//----------------
-				if( chip.発声されていない )
+				if( this._チップの演奏状態[ chip ].発声されていない )
 					this._チップの発声を行う( chip, ヒット判定バーと発声との時間sec );
 				//----------------
 				#endregion
@@ -833,7 +845,7 @@ namespace DTXmatixx.ステージ.演奏
 				//----------------
 				if( judge != 判定種別.MISS )
 				{
-					chip.可視 = false;        // PERFECT～POOR チップは非表示。
+					this._チップの演奏状態[ chip ].可視 = false;        // PERFECT～POOR チップは非表示。
 				}
 				else
 				{
@@ -845,10 +857,10 @@ namespace DTXmatixx.ステージ.演奏
 		}
 		private void _チップの発声を行う( チップ chip, double 再生開始位置sec )
 		{
-			if( chip.発声済みである )
+			if( this._チップの演奏状態[ chip ].発声済みである )
 				return;
 
-			chip.発声済みである = true;
+			this._チップの演奏状態[ chip ].発声済みである = true;
 
 			if( 0 == chip.チップサブID )
 			{

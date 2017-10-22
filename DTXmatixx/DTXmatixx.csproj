@@ -121,6 +121,7 @@
     <Compile Include="ステージ\演奏\カウントマップライン.cs" />
     <Compile Include="ステージ\演奏\コンボ表示.cs" />
     <Compile Include="ステージ\演奏\スコア表示.cs" />
+    <Compile Include="ステージ\演奏\チップの演奏状態.cs" />
     <Compile Include="ステージ\演奏\チップ光.cs" />
     <Compile Include="ステージ\演奏\ドラムパッド.cs" />
     <Compile Include="ステージ\演奏\プレイヤー名表示.cs" />
