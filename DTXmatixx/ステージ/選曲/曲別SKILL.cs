@@ -50,7 +50,7 @@ namespace DTXmatixx.ステージ.選曲
 
 					if( null != record )
 					{
-						this._スキル値文字列 = record.Skill?.ToString( "0.00" ).PadLeft( 6 );  // 右詰め、余白は' '。
+						this._スキル値文字列 = record.Skill.ToString( "0.00" ).PadLeft( 6 );  // 右詰め、余白は' '。
 					}
 				}
 			}

@@ -243,7 +243,10 @@ namespace DTXmatixx.設定
 					//query.CountMap = record.CountMap;
 
 					if( query.Skill < record.Skill )
-						query.Skill = record.Skill;	// 記録更新
+						query.Skill = record.Skill; // 記録更新
+
+					if( query.Achievement < record.Achievement )
+						query.Achievement = record.Achievement;	// 記録更新
 				}
 				else
 				{
@@ -258,6 +261,7 @@ namespace DTXmatixx.設定
 						CountMap = "",
 
 						Skill = record.Skill,
+						Achievement = record.Achievement,
 					} );
 				}
 

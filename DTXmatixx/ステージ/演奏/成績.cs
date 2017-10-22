@@ -26,12 +26,6 @@ namespace DTXmatixx.ステージ.演奏
 			protected set;
 		} = 0;
 
-		public float 達成率
-		{
-			get;
-			protected set;
-		} = 0.0f;
-
 		/// <summary>
 		///		現在の設定において、ヒット対象になるノーツの数を返す。
 		/// </summary>
@@ -59,7 +53,7 @@ namespace DTXmatixx.ステージ.演奏
 		{
 			this.Score = 0;
 			this.MaxCombo = 0;
-			this.達成率 = 0.0f;
+			this.Achievement = 0.0f;
 			this.総ノーツ数 = 0;
 
 			this._判定toヒット数 = new Dictionary<判定種別, int>();
@@ -119,11 +113,11 @@ namespace DTXmatixx.ステージ.演奏
 				double フレーズコンボ成功率 = 0.0;    // 未対応
 				double COMBO値 = Math.Floor( 100.0 * ( ( this.MaxCombo * 5.0 / this.総ノーツ数 ) + ( フレーズコンボ成功率 * 10.0 ) ) ) / 100.0; // 小数第3位以下切り捨て
 
-				this.達成率 = (float) ( Math.Floor( 100.0 * ( ( 判定値 + COMBO値 ) * this._オプション補正 ) ) / 100.0 );    // 小数第3位以下切り捨て
+				this.Achievement = (float) ( Math.Floor( 100.0 * ( ( 判定値 + COMBO値 ) * this._オプション補正 ) ) / 100.0 );    // 小数第3位以下切り捨て
 			}
 
 			// (5) SKILL値を更新する。
-			this.Skill = (float) ( Math.Floor( 100.0 * ( ( this.達成率 * this._譜面レベル * 20.0 ) / 100.0 ) ) / 100.0 );		// 小数第3位以下切り捨て
+			this.Skill = (float) ( Math.Floor( 100.0 * ( ( this.Achievement * this._譜面レベル * 20.0 ) / 100.0 ) ) / 100.0 );		// 小数第3位以下切り捨て
 		}
 
 

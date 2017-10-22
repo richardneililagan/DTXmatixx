@@ -355,7 +355,7 @@ namespace DTXmatixx.ステージ.演奏
 						this._左サイドクリアパネル.クリアパネル.ビットマップへ描画する( gd, ( dc, bmp ) => {
 							this._プレイヤー名表示.進行描画する( dc );
 							this._スコア表示.進行描画する( dc, gd.Animation, new Vector2( +280f, +120f ), this.成績 );
-							this._達成率表示.描画する( dc, this.成績.達成率 );
+							this._達成率表示.描画する( dc, (float) this.成績.Achievement );
 							this._判定パラメータ表示.描画する( dc, +118f, +372f, this.成績 );
 							this._曲別SKILL.進行描画する( dc, 0f );
 						} );
@@ -445,7 +445,7 @@ namespace DTXmatixx.ステージ.演奏
 						this._左サイドクリアパネル.クリアパネル.ビットマップへ描画する( gd, ( dc, bmp ) => {
 							this._プレイヤー名表示.進行描画する( dc );
 							this._スコア表示.進行描画する( dc, gd.Animation, new Vector2( +280f, +120f ), this.成績 );
-							this._達成率表示.描画する( dc, this.成績.達成率 );
+							this._達成率表示.描画する( dc, (float) this.成績.Achievement );
 							this._判定パラメータ表示.描画する( dc, +118f, +372f, this.成績 );
 							this._曲別SKILL.進行描画する( dc, this.成績.Skill );
 						} );
