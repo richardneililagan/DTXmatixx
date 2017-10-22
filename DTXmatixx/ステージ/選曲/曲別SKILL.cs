@@ -62,22 +62,27 @@ namespace DTXmatixx.ステージ.選曲
 
 			gd.D2DBatchDraw( ( dc ) => {
 
+				var pretrans = dc.Transform;
+
 				// 曲別SKILLアイコンを描画する
 				dc.Transform =
 					Matrix3x2.Scaling( 0.5f, 0.4f ) *
-					Matrix3x2.Translation( 描画領域.X, 描画領域.Y + 10f );
+					Matrix3x2.Translation( 描画領域.X, 描画領域.Y + 10f ) *
+					pretrans;
 				this._ロゴ画像.描画する( dc, 0f, 0f );
 
 				// 小数部を描画する
 				dc.Transform =
 					Matrix3x2.Scaling( 0.8f, 0.8f ) *
-					Matrix3x2.Translation( 描画領域.X + 130f + 175f, 描画領域.Y + ( 描画領域.Height * 0.2f ) );
+					Matrix3x2.Translation( 描画領域.X + 130f + 175f, 描画領域.Y + ( 描画領域.Height * 0.2f ) ) *
+					pretrans;
 				this._数字画像.描画する( dc, 0f, 0f, _スキル値文字列.Substring( 4 ) );
 
 				// 整数部を描画する（'.'含む）
 				dc.Transform =
 					Matrix3x2.Scaling( 1f, 1.0f ) *
-					Matrix3x2.Translation( 描画領域.X + 130f, 描画領域.Y );
+					Matrix3x2.Translation( 描画領域.X + 130f, 描画領域.Y ) *
+					pretrans;
 				this._数字画像.描画する( dc, 0f, 0f, _スキル値文字列.Substring( 0, 4 ) );
 
 			} );
