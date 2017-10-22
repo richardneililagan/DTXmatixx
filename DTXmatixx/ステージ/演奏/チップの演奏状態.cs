@@ -18,22 +18,6 @@ namespace DTXmatixx.ステージ.演奏
 			set => this.可視 = !value;
 		}
 
-		public bool 可視の初期値
-		{
-			get
-			{
-				return (
-					// ↓これらは不可視。
-					( this._chip.チップ種別 == チップ種別.BPM ) ||
-					( this._chip.チップ種別 == チップ種別.背景動画 ) ||
-					( this._chip.チップ種別 == チップ種別.小節メモ ) ||
-					( this._chip.チップ種別 == チップ種別.小節の先頭 ) ||
-					( this._chip.チップ種別 == チップ種別.SE ) ||
-					( this._chip.チップ種別 == チップ種別.Unknown )
-					) ? false : true;
-			}
-		}
-
 		public bool ヒット済みである { get; set; } = false;
 		public bool ヒットされていない
 		{
@@ -64,7 +48,7 @@ namespace DTXmatixx.ステージ.演奏
 		}
 		public void ヒット前の状態にする()
 		{
-			this.可視 = this.可視の初期値;
+			this.可視 = !( App.ユーザ設定.ドラムとチップと入力の対応表.対応表[ this._chip.チップ種別 ].不可視 );
 			this.ヒット済みである = false;
 			this.発声済みである = false;
 		}

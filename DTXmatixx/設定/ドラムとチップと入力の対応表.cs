@@ -29,6 +29,8 @@ namespace DTXmatixx.設定
 
 			public AutoPlay種別 AutoPlay種別 { get; set; }
 
+			public bool 不可視 { get; set; }
+
 			public struct Columnヒット処理
 			{
 				public bool 再生 { get; set; }
@@ -96,6 +98,7 @@ namespace DTXmatixx.設定
 						ドラム入力種別 = ドラム入力種別.Unknown,
 						表示レーン種別 = 表示レーン種別.Unknown,
 						AutoPlay種別 = AutoPlay種別.Unknown,
+						不可視 = true,
 						AutoPlayON = new Column.ColumnAutoPlayON() {
 							自動ヒット = false,
 							自動ヒット時処理 = new Column.Columnヒット処理() {
@@ -132,6 +135,7 @@ namespace DTXmatixx.設定
 						ドラム入力種別 = ドラム入力種別.LeftCrash,
 						表示レーン種別 = 表示レーン種別.LeftCrash,
 						AutoPlay種別 = AutoPlay種別.LeftCrash,
+						不可視 = false,
 						AutoPlayON = new Column.ColumnAutoPlayON() {
 							自動ヒット = true,
 							自動ヒット時処理 = new Column.Columnヒット処理() {
@@ -168,6 +172,7 @@ namespace DTXmatixx.設定
 						ドラム入力種別 = ドラム入力種別.Ride,
 						表示レーン種別 = ( 表示レーンの左右.Rideは左 ) ? 表示レーン種別.LeftCrash : 表示レーン種別.RightCrash,
 						AutoPlay種別 = AutoPlay種別.RightCrash,
+						不可視 = false,
 						AutoPlayON = new Column.ColumnAutoPlayON() {
 							自動ヒット = true,
 							自動ヒット時処理 = new Column.Columnヒット処理() {
@@ -204,6 +209,7 @@ namespace DTXmatixx.設定
 						ドラム入力種別 = ドラム入力種別.Ride, // Rideと同義。
 						表示レーン種別 = ( 表示レーンの左右.Rideは左 ) ? 表示レーン種別.LeftCrash : 表示レーン種別.RightCrash,
 						AutoPlay種別 = AutoPlay種別.RightCrash,
+						不可視 = false,
 						AutoPlayON = new Column.ColumnAutoPlayON() {
 							自動ヒット = true,
 							自動ヒット時処理 = new Column.Columnヒット処理() {
@@ -240,6 +246,7 @@ namespace DTXmatixx.設定
 						ドラム入力種別 = ドラム入力種別.China,
 						表示レーン種別 = ( 表示レーンの左右.Chinaは左 ) ? 表示レーン種別.LeftCrash : 表示レーン種別.RightCrash,
 						AutoPlay種別 = AutoPlay種別.RightCrash,
+						不可視 = false,
 						AutoPlayON = new Column.ColumnAutoPlayON() {
 							自動ヒット = true,
 							自動ヒット時処理 = new Column.Columnヒット処理() {
@@ -276,6 +283,7 @@ namespace DTXmatixx.設定
 						ドラム入力種別 = ドラム入力種別.Splash,
 						表示レーン種別 = ( 表示レーンの左右.Splashは左 ) ? 表示レーン種別.LeftCrash : 表示レーン種別.RightCrash,
 						AutoPlay種別 = AutoPlay種別.LeftCrash,
+						不可視 = false,
 						AutoPlayON = new Column.ColumnAutoPlayON() {
 							自動ヒット = true,
 							自動ヒット時処理 = new Column.Columnヒット処理() {
@@ -312,6 +320,7 @@ namespace DTXmatixx.設定
 						ドラム入力種別 = ドラム入力種別.HiHat_Open,
 						表示レーン種別 = 表示レーン種別.HiHat,
 						AutoPlay種別 = AutoPlay種別.HiHat,
+						不可視 = false,
 						AutoPlayON = new Column.ColumnAutoPlayON() {
 							自動ヒット = true,
 							自動ヒット時処理 = new Column.Columnヒット処理() {
@@ -348,6 +357,7 @@ namespace DTXmatixx.設定
 						ドラム入力種別 = ドラム入力種別.HiHat_Open,   // Openと同義。
 						表示レーン種別 = 表示レーン種別.HiHat,
 						AutoPlay種別 = AutoPlay種別.HiHat,
+						不可視 = false,
 						AutoPlayON = new Column.ColumnAutoPlayON() {
 							自動ヒット = true,
 							自動ヒット時処理 = new Column.Columnヒット処理() {
@@ -384,6 +394,7 @@ namespace DTXmatixx.設定
 						ドラム入力種別 = ドラム入力種別.HiHat_Close,
 						表示レーン種別 = 表示レーン種別.HiHat,
 						AutoPlay種別 = AutoPlay種別.HiHat,
+						不可視 = false,
 						AutoPlayON = new Column.ColumnAutoPlayON() {
 							自動ヒット = true,
 							自動ヒット時処理 = new Column.Columnヒット処理() {
@@ -420,6 +431,7 @@ namespace DTXmatixx.設定
 						ドラム入力種別 = ドラム入力種別.Unknown,  // 使用しない。
 						表示レーン種別 = 表示レーン種別.Foot,
 						AutoPlay種別 = AutoPlay種別.Foot,
+						不可視 = false,
 						AutoPlayON = new Column.ColumnAutoPlayON() {
 							自動ヒット = true,
 							自動ヒット時処理 = new Column.Columnヒット処理() {
@@ -456,6 +468,7 @@ namespace DTXmatixx.設定
 						ドラム入力種別 = ドラム入力種別.Snare,
 						表示レーン種別 = 表示レーン種別.Snare,
 						AutoPlay種別 = AutoPlay種別.Snare,
+						不可視 = false,
 						AutoPlayON = new Column.ColumnAutoPlayON() {
 							自動ヒット = true,
 							自動ヒット時処理 = new Column.Columnヒット処理() {
@@ -492,6 +505,7 @@ namespace DTXmatixx.設定
 						ドラム入力種別 = ドラム入力種別.Snare_OpenRim,
 						表示レーン種別 = 表示レーン種別.Snare,
 						AutoPlay種別 = AutoPlay種別.Snare,
+						不可視 = false,
 						AutoPlayON = new Column.ColumnAutoPlayON() {
 							自動ヒット = true,
 							自動ヒット時処理 = new Column.Columnヒット処理() {
@@ -528,6 +542,7 @@ namespace DTXmatixx.設定
 						ドラム入力種別 = ドラム入力種別.Snare_ClosedRim,
 						表示レーン種別 = 表示レーン種別.Snare,
 						AutoPlay種別 = AutoPlay種別.Snare,
+						不可視 = false,
 						AutoPlayON = new Column.ColumnAutoPlayON() {
 							自動ヒット = true,
 							自動ヒット時処理 = new Column.Columnヒット処理() {
@@ -564,6 +579,7 @@ namespace DTXmatixx.設定
 						ドラム入力種別 = ドラム入力種別.Unknown,  // 使用しない。
 						表示レーン種別 = 表示レーン種別.Snare,
 						AutoPlay種別 = AutoPlay種別.Snare,
+						不可視 = false,
 						AutoPlayON = new Column.ColumnAutoPlayON() {
 							自動ヒット = true,
 							自動ヒット時処理 = new Column.Columnヒット処理() {
@@ -600,6 +616,7 @@ namespace DTXmatixx.設定
 						ドラム入力種別 = ドラム入力種別.Bass,
 						表示レーン種別 = 表示レーン種別.Bass,
 						AutoPlay種別 = AutoPlay種別.Bass,
+						不可視 = false,
 						AutoPlayON = new Column.ColumnAutoPlayON() {
 							自動ヒット = true,
 							自動ヒット時処理 = new Column.Columnヒット処理() {
@@ -636,6 +653,7 @@ namespace DTXmatixx.設定
 						ドラム入力種別 = ドラム入力種別.Tom1,
 						表示レーン種別 = 表示レーン種別.Tom1,
 						AutoPlay種別 = AutoPlay種別.Tom1,
+						不可視 = false,
 						AutoPlayON = new Column.ColumnAutoPlayON() {
 							自動ヒット = true,
 							自動ヒット時処理 = new Column.Columnヒット処理() {
@@ -672,6 +690,7 @@ namespace DTXmatixx.設定
 						ドラム入力種別 = ドラム入力種別.Tom1_Rim,
 						表示レーン種別 = 表示レーン種別.Tom1,
 						AutoPlay種別 = AutoPlay種別.Tom1,
+						不可視 = false,
 						AutoPlayON = new Column.ColumnAutoPlayON() {
 							自動ヒット = true,
 							自動ヒット時処理 = new Column.Columnヒット処理() {
@@ -708,6 +727,7 @@ namespace DTXmatixx.設定
 						ドラム入力種別 = ドラム入力種別.Tom2,
 						表示レーン種別 = 表示レーン種別.Tom2,
 						AutoPlay種別 = AutoPlay種別.Tom2,
+						不可視 = false,
 						AutoPlayON = new Column.ColumnAutoPlayON() {
 							自動ヒット = true,
 							自動ヒット時処理 = new Column.Columnヒット処理() {
@@ -744,6 +764,7 @@ namespace DTXmatixx.設定
 						ドラム入力種別 = ドラム入力種別.Tom2_Rim,
 						表示レーン種別 = 表示レーン種別.Tom2,
 						AutoPlay種別 = AutoPlay種別.Tom2,
+						不可視 = false,
 						AutoPlayON = new Column.ColumnAutoPlayON() {
 							自動ヒット = true,
 							自動ヒット時処理 = new Column.Columnヒット処理() {
@@ -780,6 +801,7 @@ namespace DTXmatixx.設定
 						ドラム入力種別 = ドラム入力種別.Tom3,
 						表示レーン種別 = 表示レーン種別.Tom3,
 						AutoPlay種別 = AutoPlay種別.Tom3,
+						不可視 = false,
 						AutoPlayON = new Column.ColumnAutoPlayON() {
 							自動ヒット = true,
 							自動ヒット時処理 = new Column.Columnヒット処理() {
@@ -816,6 +838,7 @@ namespace DTXmatixx.設定
 						ドラム入力種別 = ドラム入力種別.Tom3_Rim,
 						表示レーン種別 = 表示レーン種別.Tom3,
 						AutoPlay種別 = AutoPlay種別.Tom3,
+						不可視 = false,
 						AutoPlayON = new Column.ColumnAutoPlayON() {
 							自動ヒット = true,
 							自動ヒット時処理 = new Column.Columnヒット処理() {
@@ -852,6 +875,7 @@ namespace DTXmatixx.設定
 						ドラム入力種別 = ドラム入力種別.RightCrash,
 						表示レーン種別 = 表示レーン種別.RightCrash,
 						AutoPlay種別 = AutoPlay種別.RightCrash,
+						不可視 = false,
 						AutoPlayON = new Column.ColumnAutoPlayON() {
 							自動ヒット = true,
 							自動ヒット時処理 = new Column.Columnヒット処理() {
@@ -888,6 +912,7 @@ namespace DTXmatixx.設定
 						ドラム入力種別 = ドラム入力種別.Unknown,
 						表示レーン種別 = 表示レーン種別.Unknown,
 						AutoPlay種別 = AutoPlay種別.Unknown,
+						不可視 = true,
 						AutoPlayON = new Column.ColumnAutoPlayON() {
 							自動ヒット = false,
 							自動ヒット時処理 = new Column.Columnヒット処理() {
@@ -924,6 +949,7 @@ namespace DTXmatixx.設定
 						ドラム入力種別 = ドラム入力種別.Unknown,
 						表示レーン種別 = 表示レーン種別.Unknown,
 						AutoPlay種別 = AutoPlay種別.Unknown,
+						不可視 = false,
 						AutoPlayON = new Column.ColumnAutoPlayON() {
 							自動ヒット = false,
 							自動ヒット時処理 = new Column.Columnヒット処理() {
@@ -960,6 +986,7 @@ namespace DTXmatixx.設定
 						ドラム入力種別 = ドラム入力種別.Unknown,
 						表示レーン種別 = 表示レーン種別.Unknown,
 						AutoPlay種別 = AutoPlay種別.Unknown,
+						不可視 = false,
 						AutoPlayON = new Column.ColumnAutoPlayON() {
 							自動ヒット = false,
 							自動ヒット時処理 = new Column.Columnヒット処理() {
@@ -996,6 +1023,7 @@ namespace DTXmatixx.設定
 						ドラム入力種別 = ドラム入力種別.Unknown,
 						表示レーン種別 = 表示レーン種別.Unknown,
 						AutoPlay種別 = AutoPlay種別.Unknown,
+						不可視 = true,
 						AutoPlayON = new Column.ColumnAutoPlayON() {
 							自動ヒット = true,
 							自動ヒット時処理 = new Column.Columnヒット処理() {
@@ -1032,6 +1060,7 @@ namespace DTXmatixx.設定
 						ドラム入力種別 = ドラム入力種別.Unknown,
 						表示レーン種別 = 表示レーン種別.Unknown,
 						AutoPlay種別 = AutoPlay種別.Unknown,
+						不可視 = true,
 						AutoPlayON = new Column.ColumnAutoPlayON() {
 							自動ヒット = false,
 							自動ヒット時処理 = new Column.Columnヒット処理() {
@@ -1068,6 +1097,7 @@ namespace DTXmatixx.設定
 						ドラム入力種別 = ドラム入力種別.Unknown,
 						表示レーン種別 = 表示レーン種別.LeftCrash,
 						AutoPlay種別 = AutoPlay種別.LeftCrash,
+						不可視 = false,
 						AutoPlayON = new Column.ColumnAutoPlayON() {
 							自動ヒット = true,
 							自動ヒット時処理 = new Column.Columnヒット処理() {
@@ -1104,6 +1134,7 @@ namespace DTXmatixx.設定
 						ドラム入力種別 = ドラム入力種別.Unknown,
 						表示レーン種別 = 表示レーン種別.RightCrash,
 						AutoPlay種別 = AutoPlay種別.RightCrash,
+						不可視 = false,
 						AutoPlayON = new Column.ColumnAutoPlayON() {
 							自動ヒット = true,
 							自動ヒット時処理 = new Column.Columnヒット処理() {
@@ -1140,6 +1171,7 @@ namespace DTXmatixx.設定
 						ドラム入力種別 = ドラム入力種別.Unknown,
 						表示レーン種別 = 表示レーン種別.Unknown,
 						AutoPlay種別 = AutoPlay種別.Unknown,
+						不可視 = true,
 						AutoPlayON = new Column.ColumnAutoPlayON() {
 							自動ヒット = false,
 							自動ヒット時処理 = new Column.Columnヒット処理() {
@@ -1168,14 +1200,274 @@ namespace DTXmatixx.設定
 					},
 					//----------------
 					#endregion
-					#region " チップ種別.SE "
+					#region " チップ種別.BGM "
 					//----------------
-					[ チップ種別.SE ] = new Column() {
-						チップ種別 = チップ種別.SE,
+					[ チップ種別.BGM ] = new Column() {
+						チップ種別 = チップ種別.BGM,
 						レーン種別 = レーン種別.Song,
 						ドラム入力種別 = ドラム入力種別.Unknown,
 						表示レーン種別 = 表示レーン種別.Unknown,
 						AutoPlay種別 = AutoPlay種別.Unknown,
+						不可視 = true,
+						AutoPlayON = new Column.ColumnAutoPlayON() {
+							自動ヒット = true,
+							自動ヒット時処理 = new Column.Columnヒット処理() {
+								再生 = true,
+								非表示 = true,
+								判定 = false,
+							},
+							MISS判定 = false,
+						},
+						AutoPlayOFF = new Column.ColumnAutoPlayOFF() {
+							自動ヒット = true,
+							自動ヒット時処理 = new Column.Columnヒット処理() {
+								再生 = true,
+								非表示 = true,
+								判定 = false,
+							},
+							ユーザヒット = false,
+							ユーザヒット時処理 = new Column.Columnヒット処理() {
+								再生 = false,
+								非表示 = false,
+								判定 = false,
+							},
+							MISS判定 = false,
+						},
+						シンバルフリーの対象 = false,
+					},
+					//----------------
+					#endregion
+					#region " チップ種別.SE1 "
+					//----------------
+					[ チップ種別.SE1 ] = new Column() {
+						チップ種別 = チップ種別.SE1,
+						レーン種別 = レーン種別.Song,
+						ドラム入力種別 = ドラム入力種別.Unknown,
+						表示レーン種別 = 表示レーン種別.Unknown,
+						AutoPlay種別 = AutoPlay種別.Unknown,
+						不可視 = true,
+						AutoPlayON = new Column.ColumnAutoPlayON() {
+							自動ヒット = true,
+							自動ヒット時処理 = new Column.Columnヒット処理() {
+								再生 = true,
+								非表示 = true,
+								判定 = false,
+							},
+							MISS判定 = false,
+						},
+						AutoPlayOFF = new Column.ColumnAutoPlayOFF() {
+							自動ヒット = true,
+							自動ヒット時処理 = new Column.Columnヒット処理() {
+								再生 = true,
+								非表示 = true,
+								判定 = false,
+							},
+							ユーザヒット = false,
+							ユーザヒット時処理 = new Column.Columnヒット処理() {
+								再生 = false,
+								非表示 = false,
+								判定 = false,
+							},
+							MISS判定 = false,
+						},
+						シンバルフリーの対象 = false,
+					},
+					//----------------
+					#endregion
+					#region " チップ種別.SE2 "
+					//----------------
+					[ チップ種別.SE2 ] = new Column() {
+						チップ種別 = チップ種別.SE2,
+						レーン種別 = レーン種別.Song,
+						ドラム入力種別 = ドラム入力種別.Unknown,
+						表示レーン種別 = 表示レーン種別.Unknown,
+						AutoPlay種別 = AutoPlay種別.Unknown,
+						不可視 = true,
+						AutoPlayON = new Column.ColumnAutoPlayON() {
+							自動ヒット = true,
+							自動ヒット時処理 = new Column.Columnヒット処理() {
+								再生 = true,
+								非表示 = true,
+								判定 = false,
+							},
+							MISS判定 = false,
+						},
+						AutoPlayOFF = new Column.ColumnAutoPlayOFF() {
+							自動ヒット = true,
+							自動ヒット時処理 = new Column.Columnヒット処理() {
+								再生 = true,
+								非表示 = true,
+								判定 = false,
+							},
+							ユーザヒット = false,
+							ユーザヒット時処理 = new Column.Columnヒット処理() {
+								再生 = false,
+								非表示 = false,
+								判定 = false,
+							},
+							MISS判定 = false,
+						},
+						シンバルフリーの対象 = false,
+					},
+					//----------------
+					#endregion
+					#region " チップ種別.SE3 "
+					//----------------
+					[ チップ種別.SE3 ] = new Column() {
+						チップ種別 = チップ種別.SE3,
+						レーン種別 = レーン種別.Song,
+						ドラム入力種別 = ドラム入力種別.Unknown,
+						表示レーン種別 = 表示レーン種別.Unknown,
+						AutoPlay種別 = AutoPlay種別.Unknown,
+						不可視 = true,
+						AutoPlayON = new Column.ColumnAutoPlayON() {
+							自動ヒット = true,
+							自動ヒット時処理 = new Column.Columnヒット処理() {
+								再生 = true,
+								非表示 = true,
+								判定 = false,
+							},
+							MISS判定 = false,
+						},
+						AutoPlayOFF = new Column.ColumnAutoPlayOFF() {
+							自動ヒット = true,
+							自動ヒット時処理 = new Column.Columnヒット処理() {
+								再生 = true,
+								非表示 = true,
+								判定 = false,
+							},
+							ユーザヒット = false,
+							ユーザヒット時処理 = new Column.Columnヒット処理() {
+								再生 = false,
+								非表示 = false,
+								判定 = false,
+							},
+							MISS判定 = false,
+						},
+						シンバルフリーの対象 = false,
+					},
+					//----------------
+					#endregion
+					#region " チップ種別.SE4 "
+					//----------------
+					[ チップ種別.SE4 ] = new Column() {
+						チップ種別 = チップ種別.SE4,
+						レーン種別 = レーン種別.Song,
+						ドラム入力種別 = ドラム入力種別.Unknown,
+						表示レーン種別 = 表示レーン種別.Unknown,
+						AutoPlay種別 = AutoPlay種別.Unknown,
+						不可視 = true,
+						AutoPlayON = new Column.ColumnAutoPlayON() {
+							自動ヒット = true,
+							自動ヒット時処理 = new Column.Columnヒット処理() {
+								再生 = true,
+								非表示 = true,
+								判定 = false,
+							},
+							MISS判定 = false,
+						},
+						AutoPlayOFF = new Column.ColumnAutoPlayOFF() {
+							自動ヒット = true,
+							自動ヒット時処理 = new Column.Columnヒット処理() {
+								再生 = true,
+								非表示 = true,
+								判定 = false,
+							},
+							ユーザヒット = false,
+							ユーザヒット時処理 = new Column.Columnヒット処理() {
+								再生 = false,
+								非表示 = false,
+								判定 = false,
+							},
+							MISS判定 = false,
+						},
+						シンバルフリーの対象 = false,
+					},
+					//----------------
+					#endregion
+					#region " チップ種別.SE5 "
+					//----------------
+					[ チップ種別.SE5 ] = new Column() {
+						チップ種別 = チップ種別.SE5,
+						レーン種別 = レーン種別.Song,
+						ドラム入力種別 = ドラム入力種別.Unknown,
+						表示レーン種別 = 表示レーン種別.Unknown,
+						AutoPlay種別 = AutoPlay種別.Unknown,
+						不可視 = true,
+						AutoPlayON = new Column.ColumnAutoPlayON() {
+							自動ヒット = true,
+							自動ヒット時処理 = new Column.Columnヒット処理() {
+								再生 = true,
+								非表示 = true,
+								判定 = false,
+							},
+							MISS判定 = false,
+						},
+						AutoPlayOFF = new Column.ColumnAutoPlayOFF() {
+							自動ヒット = true,
+							自動ヒット時処理 = new Column.Columnヒット処理() {
+								再生 = true,
+								非表示 = true,
+								判定 = false,
+							},
+							ユーザヒット = false,
+							ユーザヒット時処理 = new Column.Columnヒット処理() {
+								再生 = false,
+								非表示 = false,
+								判定 = false,
+							},
+							MISS判定 = false,
+						},
+						シンバルフリーの対象 = false,
+					},
+					//----------------
+					#endregion
+					#region " チップ種別.GuitarAuto "
+					//----------------
+					[ チップ種別.GuitarAuto ] = new Column() {
+						チップ種別 = チップ種別.GuitarAuto,
+						レーン種別 = レーン種別.Song,
+						ドラム入力種別 = ドラム入力種別.Unknown,
+						表示レーン種別 = 表示レーン種別.Unknown,
+						AutoPlay種別 = AutoPlay種別.Unknown,
+						不可視 = true,
+						AutoPlayON = new Column.ColumnAutoPlayON() {
+							自動ヒット = true,
+							自動ヒット時処理 = new Column.Columnヒット処理() {
+								再生 = true,
+								非表示 = true,
+								判定 = false,
+							},
+							MISS判定 = false,
+						},
+						AutoPlayOFF = new Column.ColumnAutoPlayOFF() {
+							自動ヒット = true,
+							自動ヒット時処理 = new Column.Columnヒット処理() {
+								再生 = true,
+								非表示 = true,
+								判定 = false,
+							},
+							ユーザヒット = false,
+							ユーザヒット時処理 = new Column.Columnヒット処理() {
+								再生 = false,
+								非表示 = false,
+								判定 = false,
+							},
+							MISS判定 = false,
+						},
+						シンバルフリーの対象 = false,
+					},
+					//----------------
+					#endregion
+					#region " チップ種別.BassAuto "
+					//----------------
+					[ チップ種別.BassAuto ] = new Column() {
+						チップ種別 = チップ種別.BassAuto,
+						レーン種別 = レーン種別.Song,
+						ドラム入力種別 = ドラム入力種別.Unknown,
+						表示レーン種別 = 表示レーン種別.Unknown,
+						AutoPlay種別 = AutoPlay種別.Unknown,
+						不可視 = true,
 						AutoPlayON = new Column.ColumnAutoPlayON() {
 							自動ヒット = true,
 							自動ヒット時処理 = new Column.Columnヒット処理() {

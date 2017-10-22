@@ -65,6 +65,7 @@ namespace DTXmatixx.設定
 						{
 							throw new Exception( $"未対応のフォーマットファイルです。[{曲ファイルパス}]" );
 						}
+
 						using( score )
 						{
 							var ノーツ数 = _ノーツ数を算出して返す( score, ユーザ設定 );
@@ -102,7 +103,24 @@ namespace DTXmatixx.設定
 						#region " (A-b) 同一ハッシュを持つレコードがDBにあった → 更新 "
 						//----------------
 						var record = 同一ハッシュ検索クエリ.Single();
-						using( var score = new SSTFormatCurrent.スコア( 調べる曲のパス ) )
+
+						var 拡張子名 = Path.GetExtension( 調べる曲のパス );
+						var score = (SSTFormatCurrent.スコア) null;
+
+						if( ".sstf" == 拡張子名 )
+						{
+							score = new SSTFormatCurrent.スコア( 調べる曲のパス );
+						}
+						else if( ".dtx" == 拡張子名 )
+						{
+							score = SSTFormatCurrent.DTXReader.ReadFromFile( 調べる曲のパス );
+						}
+						else
+						{
+							throw new Exception( $"未対応のフォーマットファイルです。[{曲ファイルパス}]" );
+						}
+
+						using( score )
 						{
 							var ノーツ数 = _ノーツ数を算出して返す( score, ユーザ設定 );
 							var BPMs = _最小最大BPMを調べて返す( score );
@@ -143,7 +161,23 @@ namespace DTXmatixx.設定
 					{
 						#region " (B-a) 最終更新日時が変更されている → 更新 "
 						//----------------
-						using( var score = new SSTFormatCurrent.スコア( 調べる曲のパス ) )
+						var 拡張子名 = Path.GetExtension( 調べる曲のパス );
+						var score = (SSTFormatCurrent.スコア) null;
+
+						if( ".sstf" == 拡張子名 )
+						{
+							score = new SSTFormatCurrent.スコア( 調べる曲のパス );
+						}
+						else if( ".dtx" == 拡張子名 )
+						{
+							score = SSTFormatCurrent.DTXReader.ReadFromFile( 調べる曲のパス );
+						}
+						else
+						{
+							throw new Exception( $"未対応のフォーマットファイルです。[{曲ファイルパス}]" );
+						}
+
+						using( score )
 						{
 							var ノーツ数 = _ノーツ数を算出して返す( score, ユーザ設定 );
 							var BPMs = _最小最大BPMを調べて返す( score );

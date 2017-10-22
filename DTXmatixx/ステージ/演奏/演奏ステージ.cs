@@ -99,51 +99,73 @@ namespace DTXmatixx.ステージ.演奏
 				foreach( var chip in App.演奏スコア.チップリスト )
 					this._チップの演奏状態.Add( chip, new チップの演奏状態( chip ) );
 
-				#region " 背景動画とBGMを生成する。"
-				//----------------
-				if( ( null != App.演奏スコア ) && ( App.演奏スコア.背景動画ファイル名.Nullでも空でもない() ) )
-				{
-					Log.Info( "背景動画とBGMを読み込みます。" );
-
-					// 動画を子リストに追加。
-					this.子リスト.Add( this._背景動画 = new 動画( App.演奏スコア.背景動画ファイル名 ) );
-
-					// 動画から音声パートを抽出して BGM を作成。
-					try
-					{
-						this._デコード済みWaveSource?.Dispose();
-						this._デコード済みWaveSource = SampleSourceFactory.Create( App.サウンドデバイス, App.演奏スコア.背景動画ファイル名 );
-
-						this._BGM?.Dispose();
-						this._BGM = new Sound( App.サウンドデバイス, this._デコード済みWaveSource );
-					}
-					catch( InvalidDataException )
-					{
-						// DTXの動画のようにサウンドを含まない動画の場合、この例外が発生するだろう。
-						Log.WARNING( "背景動画ファイルからBGMを生成することに失敗しました。" );
-						this._BGM = null;
-					}
-				}
-				else
-				{
-					Log.Info( "背景動画とBGMはありません。" );
-				}
-				//----------------
-				#endregion
-				#region " WAVを生成する（ある場合）。"
-				//----------------
-				App.WAV管理 = new 曲.WAV管理();
-
 				if( null != App.演奏スコア )
 				{
+					#region " 背景動画とBGMを生成する。"
+					//----------------
+					if( App.演奏スコア.背景動画ファイル名.Nullでも空でもない() )
+					{
+						#region " (A) SST準拠の動画とBGM "
+						//----------------
+						Log.Info( "背景動画とBGMを読み込みます。" );
+
+						// 動画を子リストに追加。
+						this.子リスト.Add( this._背景動画 = new 動画( App.演奏スコア.背景動画ファイル名 ) );
+
+						// 動画から音声パートを抽出して BGM を作成。
+						try
+						{
+							this._デコード済みWaveSource?.Dispose();
+							this._デコード済みWaveSource = SampleSourceFactory.Create( App.サウンドデバイス, App.演奏スコア.背景動画ファイル名 );
+
+							this._BGM?.Dispose();
+							this._BGM = new Sound( App.サウンドデバイス, this._デコード済みWaveSource );
+						}
+						catch( InvalidDataException )
+						{
+							// DTXの動画のようにサウンドを含まない動画の場合、この例外が発生するだろう。
+							Log.WARNING( "背景動画ファイルからBGMを生成することに失敗しました。" );
+							this._BGM = null;
+						}
+						//----------------
+						#endregion
+					}
+					else if( 0 < App.演奏スコア.dicAVI.Count )
+					{
+						#region " (B) DTX準拠の動画 "
+						//----------------
+						Log.Info( "背景動画を読み込みます。" );
+
+						// #AVIzz がいくつ宣言されてても、最初のAVIだけを対象とする。
+						var path = Path.Combine( App.演奏スコア.PATH_WAV, App.演奏スコア.dicAVI.ElementAt( 0 ).Value );
+
+						// 動画を子リストに追加。
+						this.子リスト.Add( this._背景動画 = new 動画( path ) );
+
+						// BGM パートは使わない。
+						this._BGM = null;
+						//----------------
+						#endregion
+					}
+					else
+					{
+						Log.Info( "背景動画とBGMはありません。" );
+					}
+					//----------------
+					#endregion
+
+					#region " WAVを生成する（ある場合）。"
+					//----------------
+					App.WAV管理 = new 曲.WAV管理();
+
 					foreach( var kvp in App.演奏スコア.dicWAV )
 					{
 						var path = Path.Combine( App.演奏スコア.PATH_WAV, kvp.Value.ファイルパス );
 						App.WAV管理.登録する( App.サウンドデバイス, kvp.Key, path, kvp.Value.多重再生する );
 					}
+					//----------------
+					#endregion
 				}
-				//----------------
-				#endregion
 
 				this.現在のフェーズ = フェーズ.フェードイン;
 				this._初めての進行描画 = true;
@@ -702,7 +724,7 @@ namespace DTXmatixx.ステージ.演奏
 
 				float 音量0to1 = 1f;      // chip.音量 / (float) チップ.最大音量;		matixx では音量無視。
 
-				var lane = App.システム設定.チップto表示レーン[ chip.チップ種別 ];
+				var lane = App.ユーザ設定.ドラムとチップと入力の対応表.対応表[ chip.チップ種別 ].表示レーン種別;
 				if( lane != 表示レーン種別.Unknown )
 				{
 					// xml の記述ミスの検出用。
@@ -791,13 +813,17 @@ namespace DTXmatixx.ステージ.演奏
 
 		private 動画 _背景動画 = null;
 		private bool _背景動画開始済み = false;
+
 		/// <remarks>
 		///		停止と解放は、演奏ステージクラスの非活性化後に、外部から行われる。
 		///		<see cref="SST.ステージ.演奏.演奏ステージ.BGMを停止する"/>
 		///		<see cref="SST.ステージ.演奏.演奏ステージ.BGMのキャッシュを解放する"/>
+		///		DTX 準拠スコアでは使わない。
 		/// </remarks>
 		private Sound _BGM = null;
 		private bool _BGM再生開始済み = false;
+
+
 		/// <summary>
 		///		BGM の生成もとになるデコード済みサウンドデータ。
 		///	</summary>
@@ -864,7 +890,8 @@ namespace DTXmatixx.ステージ.演奏
 
 			if( 0 == chip.チップサブID )
 			{
-				// (A) SSTF 準拠
+				#region " (A) SSTF 準拠のチップ "
+				//----------------
 				if( chip.チップ種別 == チップ種別.背景動画 )
 				{
 					// (A-a) 背景動画
@@ -885,10 +912,13 @@ namespace DTXmatixx.ステージ.演奏
 					// BGM以外のサウンドについては、常に最初から再生する。
 					App.ドラムサウンド.発声する( chip.チップ種別, 0, ( chip.音量 / (float) チップ.最大音量 ) );
 				}
+				//----------------
+				#endregion
 			}
 			else
 			{
-				// (B) DTX 準拠
+				#region " (B) DTX 準拠のチップ "
+				//----------------
 				if( chip.チップ種別 == チップ種別.背景動画 )
 				{
 					// (B-a) 背景動画
@@ -904,6 +934,8 @@ namespace DTXmatixx.ステージ.演奏
 					// (B-b) その他サウンド
 					App.WAV管理.発声する( chip.チップサブID, chip.チップ種別, ( chip.音量 / (float) チップ.最大音量 ) );
 				}
+				//----------------
+				#endregion
 			}
 		}
 
