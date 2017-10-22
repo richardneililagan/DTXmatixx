@@ -154,6 +154,9 @@ namespace DTXmatixx
 		{
 			RenderLoop.Run( this, () => {
 
+				if( this.FormWindowState == FormWindowState.Minimized )
+					return;
+
 				switch( this._AppStatus )
 				{
 					case AppStatus.開始:
