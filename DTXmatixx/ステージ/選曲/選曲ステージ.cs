@@ -36,7 +36,7 @@ namespace DTXmatixx.ステージ.選曲
 			this.子リスト.Add( this._難易度と成績 = new 難易度と成績() );
 			this.子リスト.Add( this._曲ステータスパネル = new 曲ステータスパネル() );
 			this.子リスト.Add( this._ステージタイマー = new 画像( @"$(System)images\ステージタイマー.png" ) );
-			this.子リスト.Add( this._青い枠 = new 青い枠() );
+			this.子リスト.Add( this._青い枠 = new 青い線() );
 			this.子リスト.Add( this._選択曲枠ランナー = new 選択曲枠ランナー() );
 			this.子リスト.Add( this._BPMパネル = new BPMパネル() );
 			this.子リスト.Add( this._曲別SKILL = new 曲別SKILL() );
@@ -146,7 +146,7 @@ namespace DTXmatixx.ステージ.選曲
 		private 曲リスト _曲リスト = null;
 		private 難易度と成績 _難易度と成績 = null;
 		private 曲ステータスパネル _曲ステータスパネル = null;
-		private 青い枠 _青い枠 = null;
+		private 青い線 _青い枠 = null;
 		private 選択曲枠ランナー _選択曲枠ランナー = null;
 		private BPMパネル _BPMパネル = null;
 		private 曲別SKILL _曲別SKILL = null;

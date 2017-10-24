@@ -9,7 +9,10 @@ using FDK.メディア;
 
 namespace DTXmatixx.ステージ.選曲
 {
-	class 青い枠 : Activity
+	/// <summary>
+	///		枠を形成する青い「線」を一本描画する。
+	/// </summary>
+	class 青い線 : Activity
 	{
 		public float 太さdpx
 		{
@@ -17,7 +20,7 @@ namespace DTXmatixx.ステージ.選曲
 			protected set;
 		} = 26f;
 
-		public 青い枠()
+		public 青い線()
 		{
 		}
 
@@ -54,6 +57,12 @@ namespace DTXmatixx.ステージ.選曲
 			}
 		}
 
+		/// <summary>
+		/// 	よこ線（左→右）か、たて線（上→下）のいずれかを描画できる。
+		/// 	よこ線を描画したい場合は<paramref name="幅dpx"/>を指定し、
+		/// 	たて線を描画したい場合は<paramref name="高さdpx"/>を指定する。
+		/// 	<paramref name="幅dpx"/> と <paramref name="高さdpx"/> を同時に指定することはできない。
+		/// </summary>
 		/// <param name="幅dpx">横方向（左→右）の長さ。<paramref name="高さdpx"/>と同時に指定してはならない。</param>
 		/// <param name="高さdpx">縦方向（上→下）の長さ。<paramref name="幅dpx"/>と同時に指定してはならない。</param>
 		public void 描画する( グラフィックデバイス gd, Vector2 開始位置dpx, float 幅dpx = -1f, float 高さdpx = -1f )
