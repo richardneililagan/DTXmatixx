@@ -36,10 +36,13 @@ namespace DTXmatixx.ステージ.選曲
 			this.子リスト.Add( this._難易度と成績 = new 難易度と成績() );
 			this.子リスト.Add( this._曲ステータスパネル = new 曲ステータスパネル() );
 			this.子リスト.Add( this._ステージタイマー = new 画像( @"$(System)images\ステージタイマー.png" ) );
-			this.子リスト.Add( this._青い枠 = new 青い線() );
+			this.子リスト.Add( this._青い線 = new 青い線() );
 			this.子リスト.Add( this._選択曲枠ランナー = new 選択曲枠ランナー() );
 			this.子リスト.Add( this._BPMパネル = new BPMパネル() );
 			this.子リスト.Add( this._曲別SKILL = new 曲別SKILL() );
+
+			// 外部接続。
+			this._難易度と成績.青い線を取得する = () => this._青い線;
 		}
 
 		protected override void On活性化( グラフィックデバイス gd )
@@ -89,7 +92,7 @@ namespace DTXmatixx.ステージ.選曲
 			this._舞台画像.進行描画する( gd );
 			this._曲リスト.進行描画する( gd );
 			this._その他パネルを描画する( gd );
-			this._難易度と成績.描画する( gd );
+			this._難易度と成績.描画する( gd, App.曲ツリー.フォーカス難易度 );
 			this._曲ステータスパネル.描画する( gd );
 			this._プレビュー画像を描画する( gd, App.曲ツリー.フォーカスノード );
 			this._BPMパネル.描画する( gd );
@@ -146,7 +149,7 @@ namespace DTXmatixx.ステージ.選曲
 		private 曲リスト _曲リスト = null;
 		private 難易度と成績 _難易度と成績 = null;
 		private 曲ステータスパネル _曲ステータスパネル = null;
-		private 青い線 _青い枠 = null;
+		private 青い線 _青い線 = null;
 		private 選択曲枠ランナー _選択曲枠ランナー = null;
 		private BPMパネル _BPMパネル = null;
 		private 曲別SKILL _曲別SKILL = null;
@@ -209,9 +212,9 @@ namespace DTXmatixx.ステージ.選曲
 		{
 			var 矩形 = new RectangleF( 1015f, 485f, 905f, 113f );
 
-			this._青い枠.描画する( gd, new Vector2( 矩形.Left - this._青枠のマージンdpx, 矩形.Top ), 幅dpx: 矩形.Width + this._青枠のマージンdpx * 2f );
-			this._青い枠.描画する( gd, new Vector2( 矩形.Left - this._青枠のマージンdpx, 矩形.Bottom ), 幅dpx: 矩形.Width + this._青枠のマージンdpx * 2f );
-			this._青い枠.描画する( gd, new Vector2( 矩形.Left, 矩形.Top - this._青枠のマージンdpx ), 高さdpx: 矩形.Height + this._青枠のマージンdpx * 2f );
+			this._青い線.描画する( gd, new Vector2( 矩形.Left - this._青枠のマージンdpx, 矩形.Top ), 幅dpx: 矩形.Width + this._青枠のマージンdpx * 2f );
+			this._青い線.描画する( gd, new Vector2( 矩形.Left - this._青枠のマージンdpx, 矩形.Bottom ), 幅dpx: 矩形.Width + this._青枠のマージンdpx * 2f );
+			this._青い線.描画する( gd, new Vector2( 矩形.Left, 矩形.Top - this._青枠のマージンdpx ), 高さdpx: 矩形.Height + this._青枠のマージンdpx * 2f );
 		}
 
 		private Variable _上に伸びる導線の長さdpx = null;
@@ -283,20 +286,20 @@ namespace DTXmatixx.ステージ.選曲
 		private void _導線を描画する( グラフィックデバイス gd )
 		{
 			var h = (float) this._上に伸びる導線の長さdpx.Value;
-			this._青い枠.描画する( gd, new Vector2( 1044f, 485f - h ), 高さdpx: h );
+			this._青い線.描画する( gd, new Vector2( 1044f, 485f - h ), 高さdpx: h );
 
 			var w = (float) this._左に伸びる導線の長さdpx.Value;
-			this._青い枠.描画する( gd, new Vector2( 1046f - w, 278f ), 幅dpx: w );
+			this._青い線.描画する( gd, new Vector2( 1046f - w, 278f ), 幅dpx: w );
 
 			var z = (float) this._プレビュー枠の長さdpx.Value;   // マージン×2 込み
 			var 上 = this._プレビュー画像表示位置dpx.Y;
 			var 下 = this._プレビュー画像表示位置dpx.Y + this._プレビュー画像表示サイズdpx.Y;
 			var 左 = this._プレビュー画像表示位置dpx.X;
 			var 右 = this._プレビュー画像表示位置dpx.X + this._プレビュー画像表示サイズdpx.X;
-			this._青い枠.描画する( gd, new Vector2( 右 + this._青枠のマージンdpx - z, 上 ), 幅dpx: z ); // 上辺
-			this._青い枠.描画する( gd, new Vector2( 右 + this._青枠のマージンdpx - z, 下 ), 幅dpx: z ); // 下辺
-			this._青い枠.描画する( gd, new Vector2( 左, 下 + this._青枠のマージンdpx - z ), 高さdpx: z ); // 左辺
-			this._青い枠.描画する( gd, new Vector2( 右, 下 + this._青枠のマージンdpx - z ), 高さdpx: z ); // 右辺
+			this._青い線.描画する( gd, new Vector2( 右 + this._青枠のマージンdpx - z, 上 ), 幅dpx: z ); // 上辺
+			this._青い線.描画する( gd, new Vector2( 右 + this._青枠のマージンdpx - z, 下 ), 幅dpx: z ); // 下辺
+			this._青い線.描画する( gd, new Vector2( 左, 下 + this._青枠のマージンdpx - z ), 高さdpx: z ); // 左辺
+			this._青い線.描画する( gd, new Vector2( 右, 下 + this._青枠のマージンdpx - z ), 高さdpx: z ); // 右辺
 		}
 	}
 }

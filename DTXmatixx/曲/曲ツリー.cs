@@ -69,6 +69,28 @@ namespace DTXmatixx.曲
 		}
 
 		/// <summary>
+		///		現在選択されているノードが対応している、現在の難易度アンカに一番近い難易度（0:BASIC～4:ULTIMATE）を返す。
+		/// </summary>
+		public int フォーカス難易度
+		{
+			get
+			{
+				if( this.フォーカスノード is MusicNode musicnode )
+				{
+					return 3;   // MASTER 相当で固定
+				}
+				else if( this.フォーカスノード is SetNode setnode )
+				{
+					return this._現在の難易度アンカに最も近い難易度レベルを返す( setnode );
+				}
+				else
+				{
+					return 0;	// BoxNode, BackNode など
+				}
+			}
+		}
+
+		/// <summary>
 		///		フォーカスノードが存在するノードリスト。
 		///		変更するには、変更先のリスト内の任意のノードを選択すること。
 		/// </summary>

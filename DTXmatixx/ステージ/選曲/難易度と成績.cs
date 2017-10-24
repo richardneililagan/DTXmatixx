@@ -15,6 +15,9 @@ namespace DTXmatixx.ステージ.選曲
 {
 	class 難易度と成績 : Activity
 	{
+		// 外部接続アクション
+		public Func<青い線> 青い線を取得する = null;
+
 		public 難易度と成績()
 		{
 			this.子リスト.Add( this._数字画像 = new 画像フォント( @"$(System)images\パラメータ文字_大.png", @"$(System)images\パラメータ文字_大矩形.xml", 文字幅補正dpx: 0f ) );
@@ -37,11 +40,14 @@ namespace DTXmatixx.ステージ.選曲
 			}
 		}
 
-		public void 描画する( グラフィックデバイス gd )
+		/// <param name="選択している難易度">
+		///		0:BASIC～4:ULTIMATE
+		///	</param>
+		public void 描画する( グラフィックデバイス gd, int 選択している難易度 )
 		{
 			#region " ノードが変更されていたら、情報を更新する。"
 			//----------------
-			if( App.曲ツリー.フォーカスノード != this._現在表示しているノード ) 
+			if( App.曲ツリー.フォーカスノード != this._現在表示しているノード )
 			{
 				this._現在表示しているノード = App.曲ツリー.フォーカスノード;
 
@@ -86,6 +92,9 @@ namespace DTXmatixx.ステージ.選曲
 			gd.D2DBatchDraw( ( dc ) => {
 
 				var pretrans = dc.Transform;
+
+				// 難易度パネルを描画する。
+
 				var 領域dpx = new RectangleF( 642f, 529f, 338f, 508f );
 
 				using( var 黒ブラシ = new SolidColorBrush( dc, Color4.Black ) )
@@ -107,6 +116,20 @@ namespace DTXmatixx.ステージ.選曲
 				}
 
 			} );
+
+			// 選択枠を描画する。
+
+			var 青い線 = this.青い線を取得する();
+			if( null != 青い線 )
+			{
+				var 領域dpx = new RectangleF( 642f + 10f, 529f + 10f + ( 3 - 選択している難易度 ) * 120f, 338f - 20f, 130f );
+				var 太さdpx = 青い線.太さdpx;
+
+				青い線.描画する( gd, new Vector2( 領域dpx.Left - 太さdpx / 4f, 領域dpx.Top ), 幅dpx: 領域dpx.Width + 太さdpx / 2f );      // 上辺
+				青い線.描画する( gd, new Vector2( 領域dpx.Left, 領域dpx.Top - 太さdpx / 4f ), 高さdpx: 領域dpx.Height + 太さdpx / 2f );        // 左辺
+				青い線.描画する( gd, new Vector2( 領域dpx.Left - 太さdpx / 4f, 領域dpx.Bottom ), 幅dpx: 領域dpx.Width + 太さdpx / 2f );       // 下辺
+				青い線.描画する( gd, new Vector2( 領域dpx.Right, 領域dpx.Top - 太さdpx / 4f ), 高さdpx: 領域dpx.Height + 太さdpx / 2f );   // 右辺
+			}
 		}
 
 		private 画像フォント _数字画像 = null;

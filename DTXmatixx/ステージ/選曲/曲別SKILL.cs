@@ -39,19 +39,15 @@ namespace DTXmatixx.ステージ.選曲
 
 			#region " ノードが変更されていたら情報を更新する。"
 			//----------------
-			if( App.曲ツリー.フォーカスノード != this._現在表示しているノード )
+			if( App.曲ツリー.フォーカス曲ノード != this._現在表示しているノード )
 			{
-				this._現在表示しているノード = App.曲ツリー.フォーカスノード;
+				this._現在表示しているノード = App.曲ツリー.フォーカス曲ノード; // MusicNode 以外は null が返される
+
 				this._スキル値文字列 = null;
-
-				if( this._現在表示しているノード is MusicNode musicNode )
+				var record = 曲DB.ユーザと曲ファイルのハッシュから成績を取得する( App.ユーザ設定.Id, this._現在表示しているノード.曲ファイルハッシュ );
+				if( null != record )
 				{
-					var record = 曲DB.ユーザと曲ファイルのハッシュから成績を取得する( App.ユーザ設定.Id, musicNode.曲ファイルハッシュ );
-
-					if( null != record )
-					{
-						this._スキル値文字列 = record.Skill.ToString( "0.00" ).PadLeft( 6 );  // 右詰め、余白は' '。
-					}
+					this._スキル値文字列 = record.Skill.ToString( "0.00" ).PadLeft( 6 );  // 右詰め、余白は' '。
 				}
 			}
 			//----------------
@@ -91,7 +87,7 @@ namespace DTXmatixx.ステージ.選曲
 		private 画像フォント _数字画像 = null;
 		private 画像 _ロゴ画像 = null;
 
-		private Node _現在表示しているノード = null;
+		private MusicNode _現在表示しているノード = null;
 		private string _スキル値文字列 = null;
 	}
 }
