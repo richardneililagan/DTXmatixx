@@ -196,7 +196,11 @@ namespace DTXmatixx.ステージ.選曲
 			switch( ノード )
 			{
 				case MusicNode node:
-					this._曲ノードを描画する( gd, 行番号, node );
+					this._基底ノードを描画する( gd, 行番号, node );
+					break;
+
+				case SetNode node:
+					this._基底ノードを描画する( gd, 行番号, node );
 					break;
 
 				case BoxNode node:
@@ -208,7 +212,7 @@ namespace DTXmatixx.ステージ.選曲
 					break;
 			}
 		}
-		private void _曲ノードを描画する( グラフィックデバイス gd, int 行番号, MusicNode ノード )
+		private void _基底ノードを描画する( グラフィックデバイス gd, int 行番号, Node ノード )
 		{
 			var ノード画像 = ノード.ノード画像 ?? Node.既定のノード画像;
 			bool 選択ノードである = ( 4 == 行番号 );
@@ -295,10 +299,12 @@ namespace DTXmatixx.ステージ.選曲
 		}
 		private void _Boxノードを描画する( グラフィックデバイス gd, int 行番号, BoxNode ノード )
 		{
+			// todo: Boxノードの描画を実装する。
 			Debug.WriteLine( "Boxノードの表示には未対応です。" );
 		}
 		private void _戻るノードを描画する( グラフィックデバイス gd, int 行番号, BackNode ノード )
 		{
+			// todo: Backノードの描画を実装する。
 			Debug.WriteLine( "戻るノードの表示には未対応です。" );
 		}
 

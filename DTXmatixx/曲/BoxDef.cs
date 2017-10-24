@@ -12,12 +12,18 @@ namespace DTXmatixx.曲
 	/// </summary>
 	class BoxDef
 	{
+		/// <summary>
+		///		BOX名。
+		/// </summary>
 		public string TITLE
 		{
 			get;
 			set;
 		} = null;
 
+		/// <summary>
+		///		制作者名など。
+		/// </summary>
 		public string ARTIST
 		{
 			get;
@@ -29,11 +35,6 @@ namespace DTXmatixx.曲
 		{
 		}
 
-		public void 保存する( string Box定義ファイルパス )
-		{
-			// todo: 現在の内容を box.def に保存する。
-		}
-
 		public static BoxDef 復元する( string Box定義ファイルパス )
 		{
 			var boxDef = new BoxDef();
@@ -41,6 +42,7 @@ namespace DTXmatixx.曲
 			using( var sr = new StreamReader( Box定義ファイルパス ) )
 			{
 				string 行;
+
 				while( ( 行 = sr.ReadLine() ) != null )
 				{
 					try
@@ -56,7 +58,6 @@ namespace DTXmatixx.曲
 						}
 						//---------------------
 						#endregion
-
 						#region " ARTIST コマンド "
 						//---------------------
 						if( スコア.コマンドのパラメータ文字列部分を返す( 行, @"ARTIST", out パラメータ ) )

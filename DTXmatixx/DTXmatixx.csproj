@@ -159,6 +159,8 @@
     <Compile Include="曲\MusicNode.cs" />
     <Compile Include="曲\Node.cs" />
     <Compile Include="曲\RootNode.cs" />
+    <Compile Include="曲\SetDef.cs" />
+    <Compile Include="曲\SetNode.cs" />
     <Compile Include="曲\WAV管理.cs" />
     <Compile Include="曲\曲名.cs" />
     <Compile Include="曲\曲ツリー.cs" />

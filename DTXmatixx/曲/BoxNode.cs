@@ -16,8 +16,8 @@ namespace DTXmatixx.曲
 		public BoxNode()
 		{
 		}
-
 		public BoxNode( string BOX定義ファイルパス, Node 親ノード )
+			:this()
 		{
 			var box = BoxDef.復元する( BOX定義ファイルパス );
 

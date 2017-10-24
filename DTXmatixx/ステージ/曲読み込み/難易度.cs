@@ -21,7 +21,7 @@ namespace DTXmatixx.ステージ.曲読み込み
 		{
 			using( Log.Block( FDKUtilities.現在のメソッド名 ) )
 			{
-				var 選択曲 = App.曲ツリー.フォーカスノード as MusicNode;
+				var 選択曲 = App.曲ツリー.フォーカス曲ノード;
 				Debug.Assert( null != 選択曲 );
 
 				this._難易度文字列 = 選択曲.難易度.ToString( "0.00" );

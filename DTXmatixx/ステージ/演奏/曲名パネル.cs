@@ -31,7 +31,7 @@ namespace DTXmatixx.ステージ.演奏
 		{
 			using( Log.Block( FDKUtilities.現在のメソッド名 ) )
 			{
-				var 選択曲 = App.曲ツリー.フォーカスノード as MusicNode;
+				var 選択曲 = App.曲ツリー.フォーカス曲ノード;
 				Debug.Assert( null != 選択曲 );
 
 				this._曲名画像.表示文字列 = 選択曲.タイトル;
@@ -61,7 +61,7 @@ namespace DTXmatixx.ステージ.演奏
 
 		private void _サムネイルを描画する( グラフィックデバイス gd )
 		{
-			var 選択曲 = App.曲ツリー.フォーカスノード as MusicNode;
+			var 選択曲 = App.曲ツリー.フォーカス曲ノード;
 			Debug.Assert( null != 選択曲 );
 
 			var サムネイル画像 = 選択曲.ノード画像 ?? Node.既定のノード画像;

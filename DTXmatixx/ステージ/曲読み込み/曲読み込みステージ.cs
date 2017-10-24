@@ -50,7 +50,7 @@ namespace DTXmatixx.ステージ.曲読み込み
 		{
 			using( Log.Block( FDKUtilities.現在のメソッド名 ) )
 			{
-				var 選択曲 = App.曲ツリー.フォーカスノード as MusicNode;
+				var 選択曲 = App.曲ツリー.フォーカス曲ノード;
 				Debug.Assert( null != 選択曲 );
 
 				this._曲名画像.表示文字列 = 選択曲.タイトル;
@@ -125,10 +125,7 @@ namespace DTXmatixx.ステージ.曲読み込み
 		{
 			using( Log.Block( FDKUtilities.現在のメソッド名 ) )
 			{
-				var 選択ノード = App.曲ツリー.フォーカスノード;
-				Debug.Assert( null != 選択ノード );
-
-				var 選択曲 = 選択ノード as MusicNode;
+				var 選択曲 = App.曲ツリー.フォーカス曲ノード;
 				Debug.Assert( null != 選択曲 );
 
 				string 選択曲ファイルパス = 選択曲.曲ファイルパス;

@@ -46,6 +46,8 @@ namespace DTXmatixx.ステージ.選曲
 		{
 			using( Log.Block( FDKUtilities.現在のメソッド名 ) )
 			{
+				//this.難易度アンカ = 3;		--> 初期化せず、前回の値からスタートする。
+
 				this._白 = new SolidColorBrush( gd.D2DDeviceContext, Color4.White );
 				this._黒 = new SolidColorBrush( gd.D2DDeviceContext, Color4.Black );
 				this._黒透過 = new SolidColorBrush( gd.D2DDeviceContext, new Color4( Color3.Black, 0.5f ) );
