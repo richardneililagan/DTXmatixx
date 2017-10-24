@@ -244,7 +244,7 @@ namespace DTXmatixx.ステージ.選曲
 					Matrix.Scaling( this._サムネイル表示サイズdpx ) *
 					Matrix.Translation( サムネイル表示中央dpx );
 
-				ノード.描画する( gd, 変換行列, キャプション表示: false );  // SST形式のキャプションは非表示
+				ノード.進行描画する( gd, 変換行列, キャプション表示: false );  // SST形式のキャプションは非表示
 			}
 			//----------------
 			#endregion
