@@ -152,6 +152,7 @@
     <Compile Include="ステージ\選曲\難易度と成績.cs" />
     <Compile Include="ステージ\選曲\青い線.cs" />
     <Compile Include="ステージ\選曲\選曲ステージ.cs" />
+    <Compile Include="入力\ドラム入力イベント.cs" />
     <Compile Include="入力\ドラム入力種別.cs" />
     <Compile Include="曲\BackNode.cs" />
     <Compile Include="曲\BoxDef.cs" />
