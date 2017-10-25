@@ -5,7 +5,7 @@ using System.Data.SQLite;
 using System.Diagnostics;
 using System.Linq;
 
-namespace DTXmatixx.設定.DB
+namespace DTXmatixx.データベース
 {
 	/// <summary>
 	///		成績テーブルのエンティティクラス。

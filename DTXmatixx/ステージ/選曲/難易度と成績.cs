@@ -9,7 +9,6 @@ using FDK;
 using FDK.メディア;
 using DTXmatixx.曲;
 using DTXmatixx.設定;
-using DTXmatixx.設定.DB;
 
 namespace DTXmatixx.ステージ.選曲
 {

@@ -7,7 +7,7 @@ using System.Security.Cryptography;
 using System.Text;
 using FDK;
 using SSTFormatCurrent = SSTFormat.v3;
-using DTXmatixx.設定.DB;
+using DTXmatixx.データベース;
 using DTXmatixx.ステージ.演奏;
 
 namespace DTXmatixx.設定

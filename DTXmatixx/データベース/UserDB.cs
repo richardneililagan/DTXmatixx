@@ -6,7 +6,7 @@ using System.Linq;
 using FDK;
 using DTXmatixx.ステージ.演奏;
 
-namespace DTXmatixx.設定.DB
+namespace DTXmatixx.データベース
 {
 	/// <summary>
 	///		ユーザデータベースに対応するエンティティクラス。

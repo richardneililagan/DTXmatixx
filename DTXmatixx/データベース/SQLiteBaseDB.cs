@@ -7,7 +7,7 @@ using System.Diagnostics;
 using System.Linq;
 using FDK;
 
-namespace DTXmatixx.設定.DB
+namespace DTXmatixx.データベース
 {
 	/// <summary>
 	///		SQLiteのデータベースを操作するクラスの共通機能。

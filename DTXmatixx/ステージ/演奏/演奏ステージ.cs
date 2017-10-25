@@ -13,7 +13,7 @@ using FDK.メディア.サウンド.WASAPI;
 using FDK.カウンタ;
 using SSTFormat.v3;
 using DTXmatixx.設定;
-using DTXmatixx.設定.DB;
+using DTXmatixx.データベース;
 
 namespace DTXmatixx.ステージ.演奏
 {

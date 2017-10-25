@@ -5,7 +5,7 @@ using System.Diagnostics;
 using System.Linq;
 using FDK;
 
-namespace DTXmatixx.設定.DB
+namespace DTXmatixx.データベース
 {
 	/// <summary>
 	///		曲データベースに対応するエンティティクラス。

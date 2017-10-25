@@ -6,11 +6,12 @@ using System.Data.SQLite;
 using System.Diagnostics;
 using System.Linq;
 using FDK;
+using DTXmatixx.データベース;
 using DTXmatixx.ステージ.演奏;
 
 namespace DTXmatixx.設定
 {
-	class ユーザ設定 : DB.User
+	class ユーザ設定 : User
 	{
 		public bool 全画面モードである
 		{
@@ -116,7 +117,7 @@ namespace DTXmatixx.設定
 		/// <summary>
 		///		User 情報を使って初期化する。
 		/// </summary>
-		public ユーザ設定( DB.User user )
+		public ユーザ設定( User user )
 			: this()
 		{
 			this.CopyFrom( user );
@@ -128,11 +129,9 @@ namespace DTXmatixx.設定
 		public ユーザ設定( string ユーザ名 )
 			: this()
 		{
-			using( var userdb = new DB.UserDB() )
+			using( var userdb = new UserDB() )
 			{
-				var user = userdb.Users.Where(
-					( u ) => ( u.Name == "AutoPlayer" )
-					).SingleOrDefault();
+				var user = userdb.Users.Where( ( u ) => ( u.Name == "AutoPlayer" ) ).SingleOrDefault();
 
 				if( null != user )
 				{
@@ -142,7 +141,7 @@ namespace DTXmatixx.設定
 		}
 
 
-		private void CopyFrom( DB.User user )
+		private void CopyFrom( User user )
 		{
 			this.Id = user.Id;
 			this.Name = user.Name;

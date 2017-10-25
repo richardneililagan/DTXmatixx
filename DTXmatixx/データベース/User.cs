@@ -5,7 +5,7 @@ using System.Diagnostics;
 using System.Linq;
 using DTXmatixx.ステージ.演奏;
 
-namespace DTXmatixx.設定.DB
+namespace DTXmatixx.データベース
 {
 	/// <summary>
 	///		ユーザテーブルのエンティティクラス。

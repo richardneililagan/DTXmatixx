@@ -16,11 +16,10 @@ using FDK.入力;
 using FDK.メディア;
 using FDK.メディア.サウンド.WASAPI;
 using FDK.同期;
+using SSTFormat.v3;
 using DTXmatixx.ステージ;
 using DTXmatixx.曲;
 using DTXmatixx.設定;
-using DTXmatixx.設定.DB;
-using SSTFormat.v3;
 
 namespace DTXmatixx
 {

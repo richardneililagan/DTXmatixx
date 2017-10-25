@@ -4,7 +4,7 @@ using System.Data.Linq.Mapping;
 using System.Diagnostics;
 using System.Linq;
 
-namespace DTXmatixx.設定.DB
+namespace DTXmatixx.データベース
 {
 	/// <summary>
 	///		曲テーブルのエンティティクラス。
