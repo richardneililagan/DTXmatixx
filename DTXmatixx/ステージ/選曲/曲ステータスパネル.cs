@@ -53,17 +53,17 @@ namespace DTXmatixx.ステージ.選曲
 
 			#region " ノードが変更されていたら情報を更新する。"
 			//----------------
-			if( App.曲ツリー.フォーカスノード != this._現在表示しているノード )
+			if( App.曲ツリー.フォーカス曲ノード != this._現在表示しているノード )
 			{
-				this._現在表示しているノード = App.曲ツリー.フォーカスノード;
+				this._現在表示しているノード = App.曲ツリー.フォーカス曲ノード; // MusicNode 以外は null が返される
 
-				if( this._現在表示しているノード is MusicNode musicNode )
+				this._ノーツ数 = null;
+
+				var song = 曲DB.曲を取得する( this._現在表示しているノード.曲ファイルパス );
+
+				if( null != song )
 				{
-					var song = 曲DB.曲を取得する( musicNode.曲ファイルパス );
-
-					if( null != song )
-					{
-						this._ノーツ数 = new Dictionary<表示レーン種別, int>() {
+					this._ノーツ数 = new Dictionary<表示レーン種別, int>() {
 							{ 表示レーン種別.Unknown, 0 },
 							{ 表示レーン種別.LeftCrash, song.LeftCymbalNotes },
 							{ 表示レーン種別.HiHat, song.HiHatNotes },
@@ -75,11 +75,6 @@ namespace DTXmatixx.ステージ.選曲
 							{ 表示レーン種別.Tom3, song.FloorTomNotes },
 							{ 表示レーン種別.RightCrash, song.RightCymbalNotes },
 						};
-					}
-				}
-				else
-				{
-					this._ノーツ数 = null;
 				}
 			}
 			//----------------
@@ -121,7 +116,7 @@ namespace DTXmatixx.ステージ.選曲
 		}
 
 		private 画像 _背景画像 = null;
-		private Node _現在表示しているノード = null;
+		private MusicNode _現在表示しているノード = null;
 		private Dictionary<表示レーン種別, int> _ノーツ数 = null;
 		private Dictionary<表示レーン種別, SolidColorBrush> _色 = null;
 	}
