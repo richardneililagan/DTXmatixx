@@ -12,7 +12,7 @@ namespace DTXmatixx.データベース
 	/// <summary>
 	///		SQLiteのデータベースを操作するクラスの共通機能。
 	/// </summary>
-	abstract class SQLiteBaseDB : IDisposable
+	abstract class SQLiteDBBase : IDisposable
 	{
 		public long UserVersion
 		{
@@ -33,7 +33,7 @@ namespace DTXmatixx.データベース
 			protected set;
 		} = null;
 
-		public SQLiteBaseDB( string DBファイルパス, long Version )
+		public SQLiteDBBase( string DBファイルパス, long Version )
 		{
 			if( 0 == Version )
 				throw new Exception( "Version = 0 は予約されています。" );

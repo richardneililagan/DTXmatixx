@@ -5,12 +5,12 @@ using System.Diagnostics;
 using System.Linq;
 using FDK;
 
-namespace DTXmatixx.データベース
+namespace DTXmatixx.データベース.曲
 {
 	/// <summary>
 	///		曲データベースに対応するエンティティクラス。
 	/// </summary>
-	class SongDB : SQLiteBaseDB
+	class SongDB : SQLiteDBBase
 	{
 		public const long VERSION = 1;
 

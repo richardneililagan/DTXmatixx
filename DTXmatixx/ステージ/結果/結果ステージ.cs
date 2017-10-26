@@ -59,7 +59,7 @@ namespace DTXmatixx.ステージ.結果
 				this._結果 = this.結果を取得する();
 
 				// 成績をDBに記録。
-				曲DB.成績を追加または更新する( this._結果, App.ユーザ設定.Id, 選択曲.曲ファイルハッシュ );
+				曲DB.成績を追加または更新する( this._結果, App.ユーザ設定.ユーザID, 選択曲.曲ファイルハッシュ );
 
 				this._曲名画像.表示文字列 = 選択曲.タイトル;
 				this._黒マスクブラシ = new SolidColorBrush( gd.D2DDeviceContext, new Color4( Color3.Black, 0.75f ) );

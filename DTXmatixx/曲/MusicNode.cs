@@ -8,6 +8,7 @@ using SSTFormat.v3;
 using FDK;
 using FDK.メディア;
 using DTXmatixx.設定;
+using DTXmatixx.データベース.曲;
 
 namespace DTXmatixx.曲
 {
@@ -63,12 +64,16 @@ namespace DTXmatixx.曲
 			曲DB.曲を追加または更新する( this.曲ファイルパス, App.ユーザ設定 );
 
 			// 曲DBから情報を取得する。
-			var song = 曲DB.曲を取得する( this.曲ファイルパス );
-			if( null != song )
+			using( var songdb = new SongDB() )
 			{
-				this.タイトル = song.Title;
-				this.難易度 = (float) song.Level;
-				this.曲ファイルハッシュ = song.HashId;
+				var path = Folder.絶対パスに含まれるフォルダ変数を展開して返す( this.曲ファイルパス );
+				var song = songdb.Songs.Where( ( r ) => ( r.Path == path ) ).SingleOrDefault();
+				if( null != song )
+				{
+					this.タイトル = song.Title;
+					this.難易度 = (float) song.Level;
+					this.曲ファイルハッシュ = song.HashId;
+				}
 			}
 
 			// 曲ファイルと同じ場所に画像ファイルがあるなら、それをノード画像として採用する。

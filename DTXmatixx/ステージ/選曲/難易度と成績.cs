@@ -9,6 +9,7 @@ using FDK;
 using FDK.メディア;
 using DTXmatixx.曲;
 using DTXmatixx.設定;
+using DTXmatixx.データベース.曲;
 
 namespace DTXmatixx.ステージ.選曲
 {
@@ -48,36 +49,43 @@ namespace DTXmatixx.ステージ.選曲
 			//----------------
 			if( App.曲ツリー.フォーカスノード != this._現在表示しているノード )
 			{
-				this._現在表示しているノード = App.曲ツリー.フォーカスノード;
+				this._現在表示しているノード = App.曲ツリー.フォーカスノード;	// フォーカス曲ノードではない
 
 				switch( this._現在表示しているノード )
 				{
 					case MusicNode node:
 						{
-							var song = 曲DB.曲を取得する( node.曲ファイルパス );
-							if( null != song )
+							using( var songdb = new SongDB() )
 							{
-								this._難易度[ 0 ] = ("", "");
-								this._難易度[ 1 ] = ("", "");
-								this._難易度[ 2 ] = ("", "");
-								this._難易度[ 3 ] = ("FREE", song.Level.ToString( "0.00" ));
-								this._難易度[ 4 ] = ("", "");
+								var path = Folder.絶対パスに含まれるフォルダ変数を展開して返す( node.曲ファイルパス );
+								var song = songdb.Songs.Where( ( r ) => ( r.Path == path ) ).SingleOrDefault();
+								if( null != song )
+								{
+									this._難易度[ 0 ] = ("", "");
+									this._難易度[ 1 ] = ("", "");
+									this._難易度[ 2 ] = ("", "");
+									this._難易度[ 3 ] = ("FREE", song.Level.ToString( "0.00" ));
+									this._難易度[ 4 ] = ("", "");
+								}
 							}
 						}
 						break;
 
 					case SetNode node:
 						{
-							for( int i = 0; i < 5; i++ )
+							using( var songdb = new SongDB() )
 							{
-								this._難易度[ i ] = ("", "");
-
-								if( null != node.MusicNodes[ i ].label )
+								for( int i = 0; i < 5; i++ )
 								{
-									var song = 曲DB.曲を取得する( node.MusicNodes[ i ].music.曲ファイルパス );
-									if( null != song )
+									this._難易度[ i ] = ("", "");
+									if( null != node.MusicNodes[ i ].label )
 									{
-										this._難易度[ i ] = (node.MusicNodes[ i ].label, song.Level.ToString( "0.00" ));
+										var path = Folder.絶対パスに含まれるフォルダ変数を展開して返す( node.MusicNodes[ i ].music.曲ファイルパス );
+										var song = songdb.Songs.Where( ( r ) => ( r.Path == path ) ).SingleOrDefault();
+										if( null != song )
+										{
+											this._難易度[ i ] = (node.MusicNodes[ i ].label, song.Level.ToString( "0.00" ));
+										}
 									}
 								}
 							}

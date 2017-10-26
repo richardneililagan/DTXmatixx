@@ -11,6 +11,7 @@ using FDK.メディア;
 using DTXmatixx.曲;
 using DTXmatixx.設定;
 using DTXmatixx.ステージ.演奏;
+using DTXmatixx.データベース.曲;
 
 namespace DTXmatixx.ステージ.選曲
 {
@@ -59,22 +60,28 @@ namespace DTXmatixx.ステージ.選曲
 
 				this._ノーツ数 = null;
 
-				var song = 曲DB.曲を取得する( this._現在表示しているノード.曲ファイルパス );
-
-				if( null != song )
+				if( null != this._現在表示しているノード )
 				{
-					this._ノーツ数 = new Dictionary<表示レーン種別, int>() {
-							{ 表示レーン種別.Unknown, 0 },
-							{ 表示レーン種別.LeftCrash, song.LeftCymbalNotes },
-							{ 表示レーン種別.HiHat, song.HiHatNotes },
-							{ 表示レーン種別.Foot, song.LeftPedalNotes },
-							{ 表示レーン種別.Snare, song.SnareNotes },
-							{ 表示レーン種別.Bass, song.BassNotes },
-							{ 表示レーン種別.Tom1, song.HighTomNotes },
-							{ 表示レーン種別.Tom2, song.LowTomNotes },
-							{ 表示レーン種別.Tom3, song.FloorTomNotes },
-							{ 表示レーン種別.RightCrash, song.RightCymbalNotes },
-						};
+					using( var songdb = new SongDB() )
+					{
+						var note = songdb.Songs.Where( ( r ) => ( r.HashId == this._現在表示しているノード.曲ファイルハッシュ ) ).SingleOrDefault();
+
+						if( null != note )
+						{
+							this._ノーツ数 = new Dictionary<表示レーン種別, int>() {
+								{ 表示レーン種別.Unknown, 0 },
+								{ 表示レーン種別.LeftCrash, note.TotalNotes_LeftCymbal },
+								{ 表示レーン種別.HiHat, note.TotalNotes_HiHat },
+								{ 表示レーン種別.Foot, note.TotalNotes_LeftPedal },
+								{ 表示レーン種別.Snare, note.TotalNotes_Snare },
+								{ 表示レーン種別.Bass, note.TotalNotes_Bass },
+								{ 表示レーン種別.Tom1, note.TotalNotes_HighTom },
+								{ 表示レーン種別.Tom2, note.TotalNotes_LowTom },
+								{ 表示レーン種別.Tom3, note.TotalNotes_FloorTom },
+								{ 表示レーン種別.RightCrash, note.TotalNotes_RightCymbal },
+							};
+						}
+					}
 				}
 			}
 			//----------------

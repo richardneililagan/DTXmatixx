@@ -5,31 +5,24 @@ using System.Data.SQLite;
 using System.Diagnostics;
 using System.Linq;
 
-namespace DTXmatixx.データベース
+namespace DTXmatixx.データベース.ユーザ
 {
 	/// <summary>
 	///		成績テーブルのエンティティクラス。
 	/// </summary>
 	[Table( Name = "Records" )]   // テーブル名は複数形
-	public class Record	// クラス名は単数形
+	public class Record : ICloneable
 	{
-		/// <summary>
-		///		一意な ID。
-		///		値はDB側で自動生成されるので、INSERT 時は null を設定しておくこと。
-		/// </summary>
-		[Column( DbType = "INT", CanBeNull = false, IsPrimaryKey = true )] // Linq で自動増加させたい場合は、IsDbGenerate を指定してはならない。
-		public int? Id { get; set; } = null;
-
 		/// <summary>
 		///		ユーザを一意に識別するID。
 		/// </summary>
-		[Column( DbType = "NVARCHAR", CanBeNull = false )]
+		[Column( DbType = "NVARCHAR", CanBeNull = false, IsPrimaryKey = true )]
 		public string UserId { get; set; }
 
 		/// <summary>
 		///		曲譜面ファイルのハッシュ値。
 		/// </summary>
-		[Column( DbType = "NVARCHAR", CanBeNull = false )]
+		[Column( DbType = "NVARCHAR", CanBeNull = false, IsPrimaryKey = true )]
 		public string SongHashId { get; set; }
 
 		/// <summary>
@@ -65,13 +58,22 @@ namespace DTXmatixx.データベース
 		/// </summary>
 		public Record()
 		{
-			this.Id = null;
 			this.UserId = "Anonymous";
 			this.SongHashId = "";
 			this.Score = 0;
 			this.CountMap = "";
 			this.Skill = 0.0;
 			this.Achievement = 0.0;
+		}
+
+		// ICloneable 実装
+		public Record Clone()
+		{
+			return (Record) this.MemberwiseClone();
+		}
+		object ICloneable.Clone()
+		{
+			return this.Clone();
 		}
 
 		///////////////////////////
@@ -81,13 +83,13 @@ namespace DTXmatixx.データベース
 		/// </summary>
 		public static readonly string CreateTableSQL =
 			@"CREATE TABLE IF NOT EXISTS Records " +
-			@"( Id INTEGER NOT NULL PRIMARY KEY" +
-			@", UserId NVARCHAR NOT NULL" +
+			@"( UserId NVARCHAR NOT NULL" +
 			@", SongHashId NVARCHAR NOT NULL" +
 			@", Score INTEGER NOT NULL" +
 			@", CountMap NVARCHAR NOT NULL" +
 			@", Skill REAL NOT NULL"+
 			@", Achievement REAL NOT NULL" +
+			@", PRIMARY KEY(`UserId`,`SongHashId`)" +
 			@");";
 	}
 }

@@ -1,35 +1,42 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.Linq;
-using System.Data.Linq.Mapping;
-using System.Data.SQLite;
 using System.Diagnostics;
 using System.Linq;
 using FDK;
-using DTXmatixx.データベース;
+using DTXmatixx.データベース.ユーザ;
 using DTXmatixx.ステージ.演奏;
 
 namespace DTXmatixx.設定
 {
-	class ユーザ設定 : User
+	class ユーザ設定
 	{
+		public string ユーザID
+		{
+			get
+				=> this._User.Id;
+		}
+
+		public string ユーザ名
+		{
+			get
+				=> this._User.Name;
+		}
+
 		public bool 全画面モードである
 		{
 			get
-				=> ( 0 != this.Fullscreen );
+				=> ( 0 != this._User.Fullscreen );
 			set
-				=> this.Fullscreen = value ? 1 : 0;
+				=> this._User.Fullscreen = value ? 1 : 0;
 		}
 
-		/// <summary>
-		///		AutoPlay 設定。
-		///		true なら AutoPlay ON。 
-		/// </summary>
-		public HookedDictionary<AutoPlay種別,bool> AutoPlay
+		public double 譜面スクロール速度
 		{
-			get;
-			protected set;
-		} = null;
+			get
+				=> this._User.ScrollSpeed;
+			set
+				=> this._User.ScrollSpeed = value;
+		}
 
 		public bool AutoPlayがすべてONである
 		{
@@ -44,10 +51,16 @@ namespace DTXmatixx.設定
 			}
 		}
 
+		public HookedDictionary<AutoPlay種別, bool> AutoPlay
+		{
+			get;
+			protected set;
+		} = null;
+		
 		/// <summary>
 		///		チップがヒット判定バーから（上または下に）どれだけ離れていると Perfect ～ Ok 判定になるのかの定義。秒単位。
 		/// </summary>
-		public Dictionary<判定種別, double> 最大ヒット距離sec { get; set; }
+		public HookedDictionary<判定種別, double> 最大ヒット距離sec { get; set; }
 
 		public ドラムとチップと入力の対応表 ドラムとチップと入力の対応表
 		{
@@ -57,132 +70,139 @@ namespace DTXmatixx.設定
 
 
 		public ユーザ設定()
-			: base()
 		{
+			#region " User の初期化 "
+			//----------------
+			this._User = new User();
+			//----------------
+			#endregion
+			#region " AutoPlay の初期化 "
+			//----------------
 			this.AutoPlay = new HookedDictionary<AutoPlay種別, bool>() {
-
-				get時アクション = null,
-
-				// Dictionary が変更されたらDB用の個別プロパティも変更する。
-				set時アクション = ( type, flag ) => {
-					switch( type )
-					{
-						case AutoPlay種別.LeftCrash:
-							this.AutoPlayLeftCymbal = flag ? 1 : 0;
-							break;
-
-						case AutoPlay種別.HiHat:
-							this.AutoPlayHiHat = flag ? 1 : 0;
-							break;
-
-						case AutoPlay種別.Foot:
-							this.AutoPlayLeftPedal = flag ? 1 : 0;
-							break;
-
-						case AutoPlay種別.Snare:
-							this.AutoPlaySnare = flag ? 1 : 0;
-							break;
-
-						case AutoPlay種別.Bass:
-							this.AutoPlayBass = flag ? 1 : 0;
-							break;
-
-						case AutoPlay種別.Tom1:
-							this.AutoPlayHighTom = flag ? 1 : 0;
-							break;
-
-						case AutoPlay種別.Tom2:
-							this.AutoPlayLowTom = flag ? 1 : 0;
-							break;
-
-						case AutoPlay種別.Tom3:
-							this.AutoPlayFloorTom = flag ? 1 : 0;
-							break;
-
-						case AutoPlay種別.RightCrash:
-							this.AutoPlayRightCymbal = flag ? 1 : 0;
-							break;
-					}
-				}
+				{ AutoPlay種別.Unknown, true },
+				{ AutoPlay種別.LeftCrash, ( this._User.AutoPlay_LeftCymbal != 0 ) },
+				{ AutoPlay種別.HiHat, ( this._User.AutoPlay_HiHat != 0 ) },
+				{ AutoPlay種別.Foot, ( this._User.AutoPlay_LeftPedal != 0 ) },
+				{ AutoPlay種別.Snare, ( this._User.AutoPlay_Snare != 0 ) },
+				{ AutoPlay種別.Bass, ( this._User.AutoPlay_Bass != 0 ) },
+				{ AutoPlay種別.Tom1, ( this._User.AutoPlay_HighTom != 0 ) },
+				{ AutoPlay種別.Tom2, ( this._User.AutoPlay_LowTom != 0 ) },
+				{ AutoPlay種別.Tom3, ( this._User.AutoPlay_FloorTom != 0 ) },
+				{ AutoPlay種別.RightCrash, ( this._User.AutoPlay_RightCymbal != 0 ) },
 			};
 
+			// Dictionary が変更されたらDB用の個別プロパティも変更する。
+			this.AutoPlay.get時アクション = null;
+			this.AutoPlay.set時アクション = ( type, flag ) => {
+				switch( type )
+				{
+					case AutoPlay種別.LeftCrash:
+						this._User.AutoPlay_LeftCymbal = flag ? 1 : 0;
+						break;
+
+					case AutoPlay種別.HiHat:
+						this._User.AutoPlay_HiHat = flag ? 1 : 0;
+						break;
+
+					case AutoPlay種別.Foot:
+						this._User.AutoPlay_LeftPedal = flag ? 1 : 0;
+						break;
+
+					case AutoPlay種別.Snare:
+						this._User.AutoPlay_Snare = flag ? 1 : 0;
+						break;
+
+					case AutoPlay種別.Bass:
+						this._User.AutoPlay_Bass = flag ? 1 : 0;
+						break;
+
+					case AutoPlay種別.Tom1:
+						this._User.AutoPlay_HighTom = flag ? 1 : 0;
+						break;
+
+					case AutoPlay種別.Tom2:
+						this._User.AutoPlay_LowTom = flag ? 1 : 0;
+						break;
+
+					case AutoPlay種別.Tom3:
+						this._User.AutoPlay_FloorTom = flag ? 1 : 0;
+						break;
+
+					case AutoPlay種別.RightCrash:
+						this._User.AutoPlay_RightCymbal = flag ? 1 : 0;
+						break;
+				}
+			};
+			//----------------
+			#endregion
+			#region " 最大ヒット距離sec の初期化 "
+			//----------------
+			this.最大ヒット距離sec = new HookedDictionary<判定種別, double>() {
+				{ 判定種別.PERFECT, this._User.MaxRange_Perfect },
+				{ 判定種別.GREAT, this._User.MaxRange_Great },
+				{ 判定種別.GOOD, this._User.MaxRange_Good },
+				{ 判定種別.OK, this._User.MaxRange_Ok },
+			};
+
+			this.最大ヒット距離sec.get時アクション = null;
+			this.最大ヒット距離sec.set時アクション = ( type, val ) => {
+				switch( type )
+				{
+					case 判定種別.PERFECT:
+						this._User.MaxRange_Perfect = val;
+						break;
+
+					case 判定種別.GREAT:
+						this._User.MaxRange_Great = val;
+						break;
+
+					case 判定種別.GOOD:
+						this._User.MaxRange_Good = val;
+						break;
+
+					case 判定種別.OK:
+						this._User.MaxRange_Ok = val;
+						break;
+
+					case 判定種別.MISS:
+						break;
+				}
+			};
+			//----------------
+			#endregion
+			#region " ドラムとチップと入力の対応表の初期化 "
+			//----------------
 			this.ドラムとチップと入力の対応表 = new ドラムとチップと入力の対応表(
 				new 表示レーンの左右() {    // 使わないので固定。
 					Chinaは左 = false,
 					Rideは左 = false,
 					Splashは左 = true,
 				} );
+			//----------------
+			#endregion
 		}
 
-		/// <summary>
-		///		User 情報を使って初期化する。
-		/// </summary>
-		public ユーザ設定( User user )
-			: this()
-		{
-			this.CopyFrom( user );
-		}
-
-		/// <summary>
-		///		ユーザ名で User テーブルを検索し、得られた User 情報を使って初期化する。
-		/// </summary>
 		public ユーザ設定( string ユーザ名 )
 			: this()
 		{
 			using( var userdb = new UserDB() )
 			{
-				var user = userdb.Users.Where( ( u ) => ( u.Name == "AutoPlayer" ) ).SingleOrDefault();
+				var record = userdb.Users.Where( ( r ) => ( r.Name == ユーザ名 ) ).SingleOrDefault();
 
-				if( null != user )
+				if( null == record )
 				{
-					this.CopyFrom( user );
+					// (A) レコードが存在しないなら新規作成。
+					this._User = new User();
+				}
+				else
+				{
+					// (B) レコードが存在すれば、その内容を継承する。
+					this._User = record.Clone();
 				}
 			}
 		}
 
 
-		private void CopyFrom( User user )
-		{
-			this.Id = user.Id;
-			this.Name = user.Name;
-
-			this.AutoPlayLeftCymbal = user.AutoPlayLeftCymbal;
-			this.AutoPlayHiHat = user.AutoPlayHiHat;
-			this.AutoPlayLeftPedal = user.AutoPlayLeftPedal;
-			this.AutoPlaySnare = user.AutoPlaySnare;
-			this.AutoPlayBass = user.AutoPlayBass;
-			this.AutoPlayHighTom = user.AutoPlayHighTom;
-			this.AutoPlayLowTom = user.AutoPlayLowTom;
-			this.AutoPlayFloorTom = user.AutoPlayFloorTom;
-			this.AutoPlayRightCymbal = user.AutoPlayRightCymbal;
-
-			this.AutoPlay = new HookedDictionary<AutoPlay種別, bool>() {
-				{ AutoPlay種別.Unknown, true },
-				{ AutoPlay種別.LeftCrash, ( 0 != user.AutoPlayLeftCymbal ) },
-				{ AutoPlay種別.HiHat, ( 0 != user.AutoPlayHiHat ) },
-				{ AutoPlay種別.Foot, ( 0 != user.AutoPlayLeftPedal ) },
-				{ AutoPlay種別.Snare, ( 0 != user.AutoPlaySnare ) },
-				{ AutoPlay種別.Bass, ( 0 != user.AutoPlayBass ) },
-				{ AutoPlay種別.Tom1, ( 0 != user.AutoPlayHighTom ) },
-				{ AutoPlay種別.Tom2, ( 0 != user.AutoPlayLowTom ) },
-				{ AutoPlay種別.Tom3, ( 0 != user.AutoPlayFloorTom ) },
-				{ AutoPlay種別.RightCrash, ( 0 != user.AutoPlayRightCymbal ) },
-			};
-
-			this.MaxRangePerfect = user.MaxRangePerfect;
-			this.MaxRangeGreat = user.MaxRangeGreat;
-			this.MaxRangeGood = user.MaxRangeGood;
-			this.MaxRangeOk = user.MaxRangeOk;
-
-			this.最大ヒット距離sec = new Dictionary<判定種別, double>() {
-				{ 判定種別.PERFECT, user.MaxRangePerfect },
-				{ 判定種別.GREAT, user.MaxRangeGreat },
-				{ 判定種別.GOOD, user.MaxRangeGood },
-				{ 判定種別.OK, user.MaxRangeOk },
-			};
-
-			this.ScrollSpeed = Math.Max( user.ScrollSpeed, 0.0 );
-			this.Fullscreen = user.Fullscreen;
-		}
+		private User _User = null;
 	}
 }

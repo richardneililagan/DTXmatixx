@@ -6,14 +6,14 @@ using System.Linq;
 using FDK;
 using DTXmatixx.ステージ.演奏;
 
-namespace DTXmatixx.データベース
+namespace DTXmatixx.データベース.ユーザ
 {
 	/// <summary>
 	///		ユーザデータベースに対応するエンティティクラス。
 	/// </summary>
-	class UserDB : SQLiteBaseDB
+	class UserDB : SQLiteDBBase
 	{
-		public const long VERSION = 2;
+		public const long VERSION = 1;
 
 		public Table<User> Users
 		{
@@ -43,25 +43,16 @@ namespace DTXmatixx.データベース
 						this.DataContext.ExecuteCommand( User.CreateTableSQL );
 						this.DataContext.ExecuteCommand( Record.CreateTableSQL );
 
-						#region " Users テーブルに "AutoPlayer" ユーザがいないなら、追加する。"
+						#region " User テーブルに 'AutoPlayer' ユーザがいないなら、レコードを追加する。"
 						//----------------
 						{
-							var queryAutoPlayer = from user in this.Users where ( user.Id == "AutoPlayer" ) select user;
+							var AUTOPLAYER = "AutoPlayer";
 
-							if( 0 == queryAutoPlayer.Count() )
+							if( 0 == this.Users.Where( ( r ) => r.Id == AUTOPLAYER ).Count() )
 							{
 								this.Users.InsertOnSubmit( new User() {
-									Id = "AutoPlayer",
-									Name = "AutoPlayer",
-									AutoPlayLeftCymbal = 1,
-									AutoPlayHiHat = 1,
-									AutoPlayLeftPedal = 1,
-									AutoPlaySnare = 1,
-									AutoPlayBass = 1,
-									AutoPlayHighTom = 1,
-									AutoPlayLowTom = 1,
-									AutoPlayFloorTom = 1,
-									AutoPlayRightCymbal = 1,
+									Id = AUTOPLAYER,
+									Name = AUTOPLAYER,
 									// 他は規定値。
 								} );
 							}
@@ -86,35 +77,8 @@ namespace DTXmatixx.データベース
 		{
 			switch( 移行元DBバージョン )
 			{
-				case 1: this._ver1to2(); break;
-
 				default:
 					throw new Exception( $"移行元DBのバージョン({移行元DBバージョン})がマイグレーションに未対応です。" );
-			}
-		}
-		private void _ver1to2()
-		{
-			// Ver1 → 2 の変更点：
-			// ・Record.Skill カラムが追加された。
-
-			using( var transaction = this.Connection.BeginTransaction() )
-			{
-				try
-				{
-					this.DataContext.ExecuteCommand( @"ALTER TABLE Records ADD COLUMN Skill REAL NOT NULL;" );
-					this.DataContext.ExecuteCommand( @"ALTER TABLE Records ADD COLUMN Achievement REAL NOT NULL;" );
-					this.DataContext.SubmitChanges();
-
-					// 成功。
-					transaction.Commit();
-					Log.Info( "UserDB のバージョンを 1 → 2 へアップデートしました。" );
-				}
-				catch
-				{
-					// 失敗。
-					transaction.Rollback();
-					throw;
-				}
 			}
 		}
 	}

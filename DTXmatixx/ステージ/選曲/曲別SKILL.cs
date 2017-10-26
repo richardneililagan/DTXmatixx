@@ -8,6 +8,7 @@ using FDK;
 using FDK.メディア;
 using DTXmatixx.曲;
 using DTXmatixx.設定;
+using DTXmatixx.データベース.ユーザ;
 
 namespace DTXmatixx.ステージ.選曲
 {
@@ -44,10 +45,16 @@ namespace DTXmatixx.ステージ.選曲
 				this._現在表示しているノード = App.曲ツリー.フォーカス曲ノード; // MusicNode 以外は null が返される
 
 				this._スキル値文字列 = null;
-				var record = 曲DB.ユーザと曲ファイルのハッシュから成績を取得する( App.ユーザ設定.Id, this._現在表示しているノード.曲ファイルハッシュ );
-				if( null != record )
+
+				if( null != this._現在表示しているノード )
 				{
-					this._スキル値文字列 = record.Skill.ToString( "0.00" ).PadLeft( 6 );  // 右詰め、余白は' '。
+					using( var userdb = new UserDB() )
+					{
+						var record = userdb.Records.Where( ( r ) => ( r.UserId == App.ユーザ設定.ユーザID && r.SongHashId == this._現在表示しているノード.曲ファイルハッシュ ) ).SingleOrDefault();
+
+						if( null != record )
+							this._スキル値文字列 = record.Skill.ToString( "0.00" ).PadLeft( 6 );  // 右詰め、余白は' '。
+					}
 				}
 			}
 			//----------------
