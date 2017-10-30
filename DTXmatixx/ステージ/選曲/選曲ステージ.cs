@@ -108,23 +108,26 @@ namespace DTXmatixx.ステージ.選曲
 			{
 				case フェーズ.フェードイン:
 					App.ステージ管理.現在のアイキャッチ.進行描画する( gd );
+
 					if( App.ステージ管理.現在のアイキャッチ.現在のフェーズ == アイキャッチ.フェーズ.オープン完了 )
+					{
 						this.現在のフェーズ = フェーズ.表示;
+					}
 					break;
 
 				case フェーズ.表示:
-					if( App.入力管理.Keyboard.キーが押された( 0, Key.Return ) )
+					if( App.入力管理.シンバルが入力された() || App.入力管理.Keyboard.キーが押された( 0, Key.Return ) )
 					{
 						App.ステージ管理.アイキャッチを選択しクローズする( gd, nameof( GO ) );
 						this.現在のフェーズ = フェーズ.フェードアウト;
 					}
-					else if( App.入力管理.Keyboard.キーが押された( 0, Key.Up ) )
+					else if( App.入力管理.ドラムが入力された( 入力.ドラム入力種別.Tom1 ) || App.入力管理.Keyboard.キーが押された( 0, Key.Up ) )
 					{
 						//App.曲ツリー.前のノードをフォーカスする();	--> 曲リストへ委譲
 						this._曲リスト.前のノードを選択する( gd );
 						this._導線アニメをリセットする( gd );
 					}
-					else if( App.入力管理.Keyboard.キーが押された( 0, Key.Down ) )
+					else if( App.入力管理.ドラムが入力された( 入力.ドラム入力種別.Tom2 ) || App.入力管理.Keyboard.キーが押された( 0, Key.Down ) )
 					{
 						//App.曲ツリー.次のノードをフォーカスする();	--> 曲リストへ委譲
 						this._曲リスト.次のノードを選択する( gd );
