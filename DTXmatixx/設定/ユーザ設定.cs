@@ -16,6 +16,10 @@ namespace DTXmatixx.設定
 	/// </remarks>
 	class ユーザ設定
 	{
+		/// <summary>
+		///		ユーザID。
+		///		null ならこのインスタンスはどのユーザにも割り当てられていないことを示す。
+		/// </summary>
 		public string ユーザID
 		{
 			get
@@ -75,7 +79,9 @@ namespace DTXmatixx.設定
 		{
 			#region " User の初期化 "
 			//----------------
-			this._User = new User();
+			this._User = new User() {
+				Id = null,
+			};
 			//----------------
 			#endregion
 			#region " AutoPlay の初期化 "
@@ -183,25 +189,54 @@ namespace DTXmatixx.設定
 			//----------------
 			#endregion
 		}
-		public ユーザ設定( string ユーザ名 )
+		
+		/// <summary>
+		///		指定したユーザIDをデータベースから検索し、その情報でインスタンスを初期化する。
+		///		検索で見つからなければ、<see cref="ユーザID"/> が null となる。。
+		/// </summary>
+		public ユーザ設定( string ユーザID )
 			: this()
 		{
 			using( var userdb = new UserDB() )
 			{
-				var record = userdb.Users.Where( ( r ) => ( r.Name == ユーザ名 ) ).SingleOrDefault();
+				var record = userdb.Users.Where( ( r ) => ( r.Id == ユーザID ) ).SingleOrDefault();
 
-				if( null == record )
+				if( null != record )
 				{
-					// (A) レコードが存在しないなら新規作成。
-					this._User = new User();
-				}
-				else
-				{
-					// (B) レコードが存在すれば、その内容を継承する。
+					// レコードが存在するなら、その内容を継承する。
 					this._User = record.Clone();
 				}
 			}
 		}
+
+		/// <summary>
+		///		指定したユーザ情報を新しいユーザとしてデータベースに登録し、
+		///		その情報で初期化したインスタンスを返す。
+		///		指定したユーザ（と同じユーザIDのユーザ）がすでにデータベースに存在している場合には、null を返す。
+		/// </summary>
+		public static ユーザ設定 作成する( User user )
+		{
+			using( var userdb = new UserDB() )
+			{
+				var record = userdb.Users.Where( ( r ) => ( r.Id == user.Id ) ).SingleOrDefault();
+
+				if( null == record )
+				{
+					// (A) データベースに新規追加し、新しいインスタンスを返す。
+					userdb.Users.InsertOnSubmit( user );
+					userdb.DataContext.SubmitChanges();
+					return new ユーザ設定() {
+						_User = user.Clone(),
+					};
+				}
+				else
+				{
+					// (B) データベース上にすでに存在している。
+					return null;
+				}
+			}
+		}
+
 
 		private User _User = null;
 	}

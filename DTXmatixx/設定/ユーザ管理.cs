@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using FDK;
+using DTXmatixx.データベース.ユーザ;
 
 namespace DTXmatixx.設定
 {
@@ -29,8 +30,31 @@ namespace DTXmatixx.設定
 			this.ユーザリスト = new SelectableList<ユーザ設定>();
 
 			// 現在は、AutoPlayer と Guest しかいない。
-			this.ユーザリスト.Add( new ユーザ設定( "AutoPlayer" ) );
-			this.ユーザリスト.Add( new ユーザ設定( "Guest" ) );
+			var user = (ユーザ設定) null;
+
+			user = new ユーザ設定( "AutoPlayer" );
+			if( null == user.ユーザID )	// DBにいない
+			{
+				user = ユーザ設定.作成する( new User() {
+					Id = "AutoPlayer",
+					Name = "AutoPlayer",
+					// 他は規定値
+				} );
+			}
+			if( null != user )
+				this.ユーザリスト.Add( user );
+
+			user = new ユーザ設定( "Guest" );
+			if( null == user.ユーザID )	// DBにいない
+			{
+				user = ユーザ設定.作成する( new User() {
+					Id = "Guest",
+					Name = "Guest",
+					// 他は規定値
+				} );
+			}
+			if( null != user )
+				this.ユーザリスト.Add( user );
 		}
 		public void Dispose()
 		{
