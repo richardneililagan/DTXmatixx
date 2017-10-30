@@ -8,6 +8,12 @@ using DTXmatixx.ステージ.演奏;
 
 namespace DTXmatixx.設定
 {
+	/// <summary>
+	///		ユーザ別の設定項目。
+	/// </summary>
+	/// <remarks>
+	///		全ユーザで共有する項目は<see cref="システム設定"/>で管理すること。
+	/// </remarks>
 	class ユーザ設定
 	{
 		public string ユーザID

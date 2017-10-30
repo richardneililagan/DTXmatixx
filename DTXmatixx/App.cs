@@ -99,6 +99,7 @@ namespace DTXmatixx
 				Directory.CreateDirectory( Folder.フォルダ変数の内容を返す( "AppData" ) );  // なければ作成。
 
 			App.乱数 = new Random( DateTime.Now.Millisecond );
+			App.システム設定 = システム設定.復元する();
 			App.ステージ管理 = new ステージ管理();
 			App.曲ツリー = new 曲ツリー();
 			App.Keyboard = new Keyboard( this.Handle );
@@ -106,7 +107,6 @@ namespace DTXmatixx
 			App.WAV管理 = null;
 			App.サウンドデバイス = new SoundDevice( CSCore.CoreAudioAPI.AudioClientShareMode.Shared );
 			App.サウンドタイマ = new SoundTimer( App.サウンドデバイス );
-			App.システム設定 = new システム設定();
 			App.ドラムサウンド = new ドラムサウンド();
 			App.ユーザ設定 = new ユーザ設定( "AutoPlayer" );
 
@@ -137,14 +137,20 @@ namespace DTXmatixx
 				App.WAV管理?.Dispose();
 				App.WAV管理 = null;
 
+				App.演奏スコア?.Dispose();
+				App.演奏スコア = null;
+
+				App.Keyboard.Dispose();
+				App.Keyboard = null;
+
 				App.曲ツリー.Dispose();
 				App.曲ツリー = null;
 
 				App.ステージ管理.Dispose( App.グラフィックデバイス );
 				App.ステージ管理 = null;
 
-				App.Keyboard.Dispose();
-				App.Keyboard = null;
+				App.システム設定.保存する();
+				App.システム設定 = null;
 
 				base.Dispose();
 			}
