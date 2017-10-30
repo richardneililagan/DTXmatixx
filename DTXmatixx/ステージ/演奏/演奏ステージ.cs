@@ -331,8 +331,9 @@ namespace DTXmatixx.ステージ.演奏
 
 					// 入力
 
-					App.Keyboard.ポーリングする();
-					if( App.Keyboard.キーが押された( 0, Key.Escape ) )
+					App.入力管理.すべての入力デバイスをポーリングする( 入力履歴を記録する: false );
+
+					if( App.入力管理.Keyboard.キーが押された( 0, Key.Escape ) )
 					{
 						#region " ESC → 演奏中断 "
 						//----------------
@@ -342,7 +343,7 @@ namespace DTXmatixx.ステージ.演奏
 						//----------------
 						#endregion
 					}
-					if( App.Keyboard.キーが押された( 0, Key.Up ) )
+					if( App.入力管理.Keyboard.キーが押された( 0, Key.Up ) )
 					{
 						#region " 上 → 譜面スクロールを加速 "
 						//----------------
@@ -351,7 +352,7 @@ namespace DTXmatixx.ステージ.演奏
 						//----------------
 						#endregion
 					}
-					if( App.Keyboard.キーが押された( 0, Key.Down ) )
+					if( App.入力管理.Keyboard.キーが押された( 0, Key.Down ) )
 					{
 						#region " 下 → 譜面スクロールを減速 "
 						//----------------

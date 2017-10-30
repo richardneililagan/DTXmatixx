@@ -58,7 +58,7 @@ namespace DTXmatixx.ステージ.認証
 				this._初めての進行描画 = false;
 			}
 
-			App.Keyboard.ポーリングする();
+			App.入力管理.すべての入力デバイスをポーリングする();
 
 			switch( this.現在のフェーズ )
 			{

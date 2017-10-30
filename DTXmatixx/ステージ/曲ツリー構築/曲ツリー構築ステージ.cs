@@ -41,7 +41,7 @@ namespace DTXmatixx.ステージ.曲ツリー構築
 		}
 		public override void 進行描画する( グラフィックデバイス gd )
 		{
-			App.Keyboard.ポーリングする();
+			App.入力管理.すべての入力デバイスをポーリングする();
 
 			switch( this.現在のフェーズ )
 			{
@@ -70,7 +70,7 @@ namespace DTXmatixx.ステージ.曲ツリー構築
 					break;
 			}
 
-			if( App.Keyboard.キーが押された( 0, Key.Escape ) )
+			if( App.入力管理.Keyboard.キーが押された( 0, Key.Escape ) )
 			{
 				this.現在のフェーズ = フェーズ.キャンセル;
 			}

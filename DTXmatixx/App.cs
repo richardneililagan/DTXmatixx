@@ -20,6 +20,7 @@ using SSTFormat.v3;
 using DTXmatixx.ステージ;
 using DTXmatixx.曲;
 using DTXmatixx.設定;
+using DTXmatixx.入力;
 
 namespace DTXmatixx
 {
@@ -34,17 +35,22 @@ namespace DTXmatixx
 			get;
 			protected set;
 		} = null;
+		public static システム設定 システム設定
+		{
+			get;
+			protected set;
+		} = null;
+		public static 入力管理 入力管理
+		{
+			get;
+			protected set;
+		} = null;
 		public static ステージ管理 ステージ管理
 		{
 			get;
 			protected set;
 		} = null;
 		public static 曲ツリー 曲ツリー
-		{
-			get;
-			protected set;
-		} = null;
-		public static Keyboard Keyboard
 		{
 			get;
 			protected set;
@@ -65,11 +71,6 @@ namespace DTXmatixx
 			protected set;
 		} = null;
 		public static SoundTimer サウンドタイマ
-		{
-			get;
-			protected set;
-		} = null;
-		public static システム設定 システム設定
 		{
 			get;
 			protected set;
@@ -100,9 +101,13 @@ namespace DTXmatixx
 
 			App.乱数 = new Random( DateTime.Now.Millisecond );
 			App.システム設定 = システム設定.復元する();
+			App.入力管理 = new 入力管理( this.Handle ) {
+				キーバインディングを取得する = () => App.システム設定.キーバインディング,
+				キーバインディングを保存する = () => App.システム設定.保存する(),
+			};
+			App.入力管理.Initialize();
 			App.ステージ管理 = new ステージ管理();
 			App.曲ツリー = new 曲ツリー();
-			App.Keyboard = new Keyboard( this.Handle );
 			App.演奏スコア = null;
 			App.WAV管理 = null;
 			App.サウンドデバイス = new SoundDevice( CSCore.CoreAudioAPI.AudioClientShareMode.Shared );
@@ -140,14 +145,14 @@ namespace DTXmatixx
 				App.演奏スコア?.Dispose();
 				App.演奏スコア = null;
 
-				App.Keyboard.Dispose();
-				App.Keyboard = null;
-
 				App.曲ツリー.Dispose();
 				App.曲ツリー = null;
 
 				App.ステージ管理.Dispose( App.グラフィックデバイス );
 				App.ステージ管理 = null;
+
+				App.入力管理.Dispose();
+				App.入力管理 = null;
 
 				App.システム設定.保存する();
 				App.システム設定 = null;

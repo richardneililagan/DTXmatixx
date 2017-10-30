@@ -157,6 +157,7 @@
     <Compile Include="ステージ\選曲\選曲ステージ.cs" />
     <Compile Include="入力\ドラム入力イベント.cs" />
     <Compile Include="入力\ドラム入力種別.cs" />
+    <Compile Include="入力\入力管理.cs" />
     <Compile Include="曲\BackNode.cs" />
     <Compile Include="曲\BoxDef.cs" />
     <Compile Include="曲\BoxNode.cs" />

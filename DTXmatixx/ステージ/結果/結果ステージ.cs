@@ -99,12 +99,12 @@ namespace DTXmatixx.ステージ.結果
 			this._曲名を描画する( gd );
 			this._演奏パラメータ結果.描画する( gd, 1317f, 716f, this._結果 );
 
-			App.Keyboard.ポーリングする();
+			App.入力管理.すべての入力デバイスをポーリングする();
 
 			switch( this.現在のフェーズ )
 			{
 				case フェーズ.表示:
-					if( App.Keyboard.キーが押された( 0, Key.Return ) )
+					if( App.入力管理.Keyboard.キーが押された( 0, Key.Return ) )
 					{
 						App.ステージ管理.アイキャッチを選択しクローズする( gd, nameof( シャッター ) );
 						this.現在のフェーズ = フェーズ.フェードアウト;
