@@ -80,7 +80,7 @@ namespace DTXmatixx
 			get;
 			protected set;
 		} = null;
-		public static ユーザ設定 ユーザ設定
+		public static ユーザ管理 ユーザ管理
 		{
 			get;
 			protected set;
@@ -100,24 +100,33 @@ namespace DTXmatixx
 				Directory.CreateDirectory( Folder.フォルダ変数の内容を返す( "AppData" ) );  // なければ作成。
 
 			App.乱数 = new Random( DateTime.Now.Millisecond );
+
 			App.システム設定 = システム設定.復元する();
+
 			App.入力管理 = new 入力管理( this.Handle ) {
 				キーバインディングを取得する = () => App.システム設定.キーバインディング,
 				キーバインディングを保存する = () => App.システム設定.保存する(),
 			};
 			App.入力管理.Initialize();
+
 			App.ステージ管理 = new ステージ管理();
+
 			App.曲ツリー = new 曲ツリー();
+
 			App.演奏スコア = null;
+
 			App.WAV管理 = null;
+
 			App.サウンドデバイス = new SoundDevice( CSCore.CoreAudioAPI.AudioClientShareMode.Shared );
 			App.サウンドタイマ = new SoundTimer( App.サウンドデバイス );
 			App.ドラムサウンド = new ドラムサウンド();
-			App.ユーザ設定 = new ユーザ設定( "AutoPlayer" );
+
+			App.ユーザ管理 = new ユーザ管理();
+			App.ユーザ管理.ユーザリスト.SelectItem( ( user ) => ( user.ユーザID == "AutoPlayer" ) );	// ひとまず起動直後はAutoPlayerを選択。
 
 			this._活性化する();
 
-			base.全画面モード = App.ユーザ設定.全画面モードである;
+			base.全画面モード = App.ユーザ管理.ログオン中のユーザ.全画面モードである;
 
 			// 最初のステージへ遷移する。
 			App.ステージ管理.ステージを遷移する( App.グラフィックデバイス, App.ステージ管理.最初のステージ名 );
@@ -128,7 +137,8 @@ namespace DTXmatixx
 			{
 				this._非活性化する();
 
-				App.ユーザ設定 = null;
+				App.ユーザ管理?.Dispose();
+				App.ユーザ管理 = null;
 
 				App.ドラムサウンド?.Dispose();
 				App.ドラムサウンド = null;
@@ -212,7 +222,7 @@ namespace DTXmatixx
 			if( e.KeyCode == Keys.F11 )
 			{
 				this.全画面モード = !( this.全画面モード );
-				App.ユーザ設定.全画面モードである = this.全画面モード;
+				App.ユーザ管理.ログオン中のユーザ.全画面モードである = this.全画面モード;
 			}
 		}
 

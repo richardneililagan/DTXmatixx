@@ -178,6 +178,7 @@
     <Compile Include="データベース\ユーザ\User.cs" />
     <Compile Include="データベース\ユーザ\UserDB.cs" />
     <Compile Include="設定\キーバインディング.cs" />
+    <Compile Include="設定\ユーザ管理.cs" />
     <Compile Include="設定\ユーザ設定.cs" />
     <Compile Include="設定\システム設定.cs" />
     <Compile Include="設定\ドラムとチップと入力の対応表.cs" />

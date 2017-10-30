@@ -80,20 +80,20 @@ namespace DTXmatixx.ステージ.演奏
 				this.キャプチャ画面 = null;
 
 				this.成績 = new 成績();
-				this.成績.スコアと設定を反映する( App.演奏スコア, App.ユーザ設定 );
+				this.成績.スコアと設定を反映する( App.演奏スコア, App.ユーザ管理.ログオン中のユーザ );
 
 				this._描画開始チップ番号 = -1;
 				this._小節線色 = new SolidColorBrush( gd.D2DDeviceContext, Color.White );
 				this._拍線色 = new SolidColorBrush( gd.D2DDeviceContext, Color.LightGray );
 				this._ドラムチップ画像の矩形リスト = new 矩形リスト( @"$(System)images\ドラムチップ矩形.xml" );      // デバイスリソースは持たないので、子Activityではない。
-				this._現在進行描画中の譜面スクロール速度の倍率 = App.ユーザ設定.譜面スクロール速度;
+				this._現在進行描画中の譜面スクロール速度の倍率 = App.ユーザ管理.ログオン中のユーザ.譜面スクロール速度;
 				this._ドラムチップアニメ = new LoopCounter( 0, 200, 3 );
 				this._背景動画 = null;
 				this._BGM = null;
 				this._背景動画開始済み = false;
 				this._BGM再生開始済み = false;
 				//this._デコード済みWaveSource = null;	--> キャッシュなので消さない。
-				this._プレイヤー名表示.名前 = App.ユーザ設定.ユーザ名;
+				this._プレイヤー名表示.名前 = App.ユーザ管理.ログオン中のユーザ.ユーザ名;
 
 				this._チップの演奏状態 = new Dictionary<チップ, チップの演奏状態>();
 				foreach( var chip in App.演奏スコア.チップリスト )
@@ -179,12 +179,12 @@ namespace DTXmatixx.ステージ.演奏
 				//----------------
 				using( var userdb = new UserDB() )
 				{
-					var user = userdb.Users.Where( ( r ) => ( r.Id == App.ユーザ設定.ユーザID ) ).SingleOrDefault();
+					var user = userdb.Users.Where( ( r ) => ( r.Id == App.ユーザ管理.ログオン中のユーザ.ユーザID ) ).SingleOrDefault();
 					if( null != user )
 					{
-						user.ScrollSpeed = App.ユーザ設定.譜面スクロール速度;
+						user.ScrollSpeed = App.ユーザ管理.ログオン中のユーザ.譜面スクロール速度;
 						userdb.DataContext.SubmitChanges();
-						Log.Info( $"現在の譜面スクロール速度({App.ユーザ設定.譜面スクロール速度})をDBに保存しました。[UserID={user.Id}]" );
+						Log.Info( $"現在の譜面スクロール速度({App.ユーザ管理.ログオン中のユーザ.譜面スクロール速度})をDBに保存しました。[UserID={user.Id}]" );
 					}
 				}
 				//----------------
@@ -259,7 +259,7 @@ namespace DTXmatixx.ステージ.演奏
 					//----------------
 					this._描画範囲のチップに処理を適用する( 現在の演奏時刻sec, ( chip, index, ヒット判定バーと描画との時間sec, ヒット判定バーと発声との時間sec, ヒット判定バーとの距離 ) => {
 
-						var オプション設定 = App.ユーザ設定;
+						var オプション設定 = App.ユーザ管理.ログオン中のユーザ;
 						var 対応表 = オプション設定.ドラムとチップと入力の対応表[ chip.チップ種別 ];
 						var AutoPlay = オプション設定.AutoPlay[ 対応表.AutoPlay種別 ];
 
@@ -348,7 +348,7 @@ namespace DTXmatixx.ステージ.演奏
 						#region " 上 → 譜面スクロールを加速 "
 						//----------------
 						const double 最大倍率 = 8.0;
-						App.ユーザ設定.譜面スクロール速度 = Math.Min( App.ユーザ設定.譜面スクロール速度 + 0.5, 最大倍率 );
+						App.ユーザ管理.ログオン中のユーザ.譜面スクロール速度 = Math.Min( App.ユーザ管理.ログオン中のユーザ.譜面スクロール速度 + 0.5, 最大倍率 );
 						//----------------
 						#endregion
 					}
@@ -357,7 +357,7 @@ namespace DTXmatixx.ステージ.演奏
 						#region " 下 → 譜面スクロールを減速 "
 						//----------------
 						const double 最小倍率 = 0.5;
-						App.ユーザ設定.譜面スクロール速度 = Math.Max( App.ユーザ設定.譜面スクロール速度 - 0.5, 最小倍率 );
+						App.ユーザ管理.ログオン中のユーザ.譜面スクロール速度 = Math.Max( App.ユーザ管理.ログオン中のユーザ.譜面スクロール速度 - 0.5, 最小倍率 );
 						//----------------
 						#endregion
 					}
@@ -396,7 +396,7 @@ namespace DTXmatixx.ステージ.演奏
 						this._レーンフレーム.描画する( gd );
 						this._ドラムパッド.進行描画する( gd );
 						this._背景画像.描画する( gd, 0f, 0f );
-						this._譜面スクロール速度表示.進行描画する( gd, App.ユーザ設定.譜面スクロール速度 );
+						this._譜面スクロール速度表示.進行描画する( gd, App.ユーザ管理.ログオン中のユーザ.譜面スクロール速度 );
 
 						this._カウントマップライン.進行描画する( gd );
 						this._フェーズパネル.進行描画する( gd );
@@ -416,7 +416,7 @@ namespace DTXmatixx.ステージ.演奏
 						{
 							double 倍率 = this._現在進行描画中の譜面スクロール速度の倍率;
 
-							if( 倍率 < App.ユーザ設定.譜面スクロール速度 )
+							if( 倍率 < App.ユーザ管理.ログオン中のユーザ.譜面スクロール速度 )
 							{
 								if( 0 > this._スクロール倍率追い付き用_最後の値 )
 								{
@@ -431,10 +431,10 @@ namespace DTXmatixx.ステージ.演奏
 										this._スクロール倍率追い付き用_最後の値++;
 									}
 
-									this._現在進行描画中の譜面スクロール速度の倍率 = Math.Min( 倍率, App.ユーザ設定.譜面スクロール速度 );
+									this._現在進行描画中の譜面スクロール速度の倍率 = Math.Min( 倍率, App.ユーザ管理.ログオン中のユーザ.譜面スクロール速度 );
 								}
 							}
-							else if( 倍率 > App.ユーザ設定.譜面スクロール速度 )
+							else if( 倍率 > App.ユーザ管理.ログオン中のユーザ.譜面スクロール速度 )
 							{
 								if( 0 > this._スクロール倍率追い付き用_最後の値 )
 								{
@@ -449,7 +449,7 @@ namespace DTXmatixx.ステージ.演奏
 										this._スクロール倍率追い付き用_最後の値++;
 									}
 
-									this._現在進行描画中の譜面スクロール速度の倍率 = Math.Max( 倍率, App.ユーザ設定.譜面スクロール速度 );
+									this._現在進行描画中の譜面スクロール速度の倍率 = Math.Max( 倍率, App.ユーザ管理.ログオン中のユーザ.譜面スクロール速度 );
 								}
 							}
 							else
@@ -491,7 +491,7 @@ namespace DTXmatixx.ステージ.演奏
 						this._レーンフレーム.描画する( gd );
 						this._ドラムパッド.進行描画する( gd );
 						this._背景画像.描画する( gd, 0f, 0f );
-						this._譜面スクロール速度表示.進行描画する( gd, App.ユーザ設定.譜面スクロール速度 );
+						this._譜面スクロール速度表示.進行描画する( gd, App.ユーザ管理.ログオン中のユーザ.譜面スクロール速度 );
 
 						double 曲の長さsec = App.演奏スコア.チップリスト[ App.演奏スコア.チップリスト.Count - 1 ].描画時刻sec;
 						float 現在位置 = (float) ( 1.0 - ( 曲の長さsec - 演奏時刻sec ) / 曲の長さsec );
@@ -721,7 +721,7 @@ namespace DTXmatixx.ステージ.演奏
 
 				float 音量0to1 = 1f;      // chip.音量 / (float) チップ.最大音量;		matixx では音量無視。
 
-				var lane = App.ユーザ設定.ドラムとチップと入力の対応表.対応表[ chip.チップ種別 ].表示レーン種別;
+				var lane = App.ユーザ管理.ログオン中のユーザ.ドラムとチップと入力の対応表.対応表[ chip.チップ種別 ].表示レーン種別;
 				if( lane != 表示レーン種別.Unknown )
 				{
 					// xml の記述ミスの検出用。
@@ -847,7 +847,7 @@ namespace DTXmatixx.ステージ.演奏
 			{
 				#region " チップの判定処理を行う。"
 				//----------------
-				var 対応表 = App.ユーザ設定.ドラムとチップと入力の対応表[ chip.チップ種別 ];
+				var 対応表 = App.ユーザ管理.ログオン中のユーザ.ドラムとチップと入力の対応表[ chip.チップ種別 ];
 
 				if( judge != 判定種別.MISS )
 				{

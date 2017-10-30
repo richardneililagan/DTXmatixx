@@ -21,13 +21,11 @@ namespace DTXmatixx.設定
 			get
 				=> this._User.Id;
 		}
-
 		public string ユーザ名
 		{
 			get
 				=> this._User.Name;
 		}
-
 		public bool 全画面モードである
 		{
 			get
@@ -35,7 +33,6 @@ namespace DTXmatixx.設定
 			set
 				=> this._User.Fullscreen = value ? 1 : 0;
 		}
-
 		public double 譜面スクロール速度
 		{
 			get
@@ -43,7 +40,6 @@ namespace DTXmatixx.設定
 			set
 				=> this._User.ScrollSpeed = value;
 		}
-
 		public bool AutoPlayがすべてONである
 		{
 			get
@@ -56,24 +52,24 @@ namespace DTXmatixx.設定
 				return すべてON;
 			}
 		}
-
 		public HookedDictionary<AutoPlay種別, bool> AutoPlay
 		{
 			get;
 			protected set;
 		} = null;
-		
 		/// <summary>
 		///		チップがヒット判定バーから（上または下に）どれだけ離れていると Perfect ～ Ok 判定になるのかの定義。秒単位。
 		/// </summary>
-		public HookedDictionary<判定種別, double> 最大ヒット距離sec { get; set; }
-
+		public HookedDictionary<判定種別, double> 最大ヒット距離sec
+		{
+			get;
+			set;
+		} = null;
 		public ドラムとチップと入力の対応表 ドラムとチップと入力の対応表
 		{
 			get;
 			protected set;
 		} = null;
-
 
 		public ユーザ設定()
 		{
@@ -187,7 +183,6 @@ namespace DTXmatixx.設定
 			//----------------
 			#endregion
 		}
-
 		public ユーザ設定( string ユーザ名 )
 			: this()
 		{
@@ -207,7 +202,6 @@ namespace DTXmatixx.設定
 				}
 			}
 		}
-
 
 		private User _User = null;
 	}

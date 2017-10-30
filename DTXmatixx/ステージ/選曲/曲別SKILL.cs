@@ -50,7 +50,7 @@ namespace DTXmatixx.ステージ.選曲
 				{
 					using( var userdb = new UserDB() )
 					{
-						var record = userdb.Records.Where( ( r ) => ( r.UserId == App.ユーザ設定.ユーザID && r.SongHashId == this._現在表示しているノード.曲ファイルハッシュ ) ).SingleOrDefault();
+						var record = userdb.Records.Where( ( r ) => ( r.UserId == App.ユーザ管理.ログオン中のユーザ.ユーザID && r.SongHashId == this._現在表示しているノード.曲ファイルハッシュ ) ).SingleOrDefault();
 
 						if( null != record )
 							this._スキル値文字列 = record.Skill.ToString( "0.00" ).PadLeft( 6 );  // 右詰め、余白は' '。
