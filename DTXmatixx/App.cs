@@ -92,12 +92,12 @@ namespace DTXmatixx
 			this.Text = $"{Application.ProductName} {Application.ProductVersion}";
 
 			var exePath = Path.GetDirectoryName( Assembly.GetExecutingAssembly().Location );
-			Folder.フォルダ変数を追加または更新する( "Exe", $@"{exePath}\" );
-			Folder.フォルダ変数を追加または更新する( "System", Path.Combine( exePath, @"System\" ) );
-			Folder.フォルダ変数を追加または更新する( "AppData", Path.Combine( Environment.GetFolderPath( Environment.SpecialFolder.ApplicationData, Environment.SpecialFolderOption.Create ), @"DTXMatixx\" ) );
+			VariablePath.フォルダ変数を追加または更新する( "Exe", $@"{exePath}\" );
+			VariablePath.フォルダ変数を追加または更新する( "System", Path.Combine( exePath, @"System\" ) );
+			VariablePath.フォルダ変数を追加または更新する( "AppData", Path.Combine( Environment.GetFolderPath( Environment.SpecialFolder.ApplicationData, Environment.SpecialFolderOption.Create ), @"DTXMatixx\" ) );
 
-			if( !( Directory.Exists( Folder.フォルダ変数の内容を返す( "AppData" ) ) ) )
-				Directory.CreateDirectory( Folder.フォルダ変数の内容を返す( "AppData" ) );  // なければ作成。
+			if( !( Directory.Exists( VariablePath.フォルダ変数の内容を返す( "AppData" ) ) ) )
+				Directory.CreateDirectory( VariablePath.フォルダ変数の内容を返す( "AppData" ) );  // なければ作成。
 
 			App.乱数 = new Random( DateTime.Now.Millisecond );
 
@@ -122,7 +122,8 @@ namespace DTXmatixx
 			App.ドラムサウンド = new ドラムサウンド();
 
 			App.ユーザ管理 = new ユーザ管理();
-			App.ユーザ管理.ユーザリスト.SelectItem( ( user ) => ( user.ユーザID == "AutoPlayer" ) );	// ひとまず起動直後はAutoPlayerを選択。
+			// todo: ひとまず起動直後はAutoPlayerを選択。
+			App.ユーザ管理.ユーザリスト.SelectItem( ( user ) => ( user.ユーザID == "AutoPlayer" ) );
 
 			this._活性化する();
 

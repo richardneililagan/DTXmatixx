@@ -39,13 +39,11 @@ namespace DTXmatixx.設定
 
 		public static システム設定 復元する()
 		{
-			var path = Folder.絶対パスに含まれるフォルダ変数を展開して返す( _ファイルパス );
-			return FDKUtilities.復元または新規作成する<システム設定>( path, UseSimpleDictionaryFormat: false );
+			return FDKUtilities.復元または新規作成する<システム設定>( _ファイルパス, UseSimpleDictionaryFormat: false );
 		}
 		public void 保存する()
 		{
-			var path = Folder.絶対パスに含まれるフォルダ変数を展開して返す( _ファイルパス );
-			FDKUtilities.保存する( this, path, UseSimpleDictionaryFormat: false );
+			FDKUtilities.保存する( this, _ファイルパス, UseSimpleDictionaryFormat: false );
 		}
 
 		private static readonly string _ファイルパス = @"$(AppData)Configuration.json";

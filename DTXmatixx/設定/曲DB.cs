@@ -29,44 +29,42 @@ namespace DTXmatixx.設定
 		///		指定した曲ファイルに対応するレコードがデータベースになければレコードを追加し、
 		///		あればそのレコードを更新する。
 		/// </summary>
-		public static void 曲を追加または更新する( string 曲ファイルパス, ユーザ設定 ユーザ設定 )
+		public static void 曲を追加または更新する( VariablePath 曲ファイルパス, ユーザ設定 ユーザ設定 )
 		{
-			string 調べる曲のパス = Folder.絶対パスに含まれるフォルダ変数を展開して返す( 曲ファイルパス );
-
 			try
 			{
 				using( var songdb = new SongDB() )
 				{
-					var 同一パス検索クエリ = songdb.Songs.Where(
-						( song ) => ( song.Path == 調べる曲のパス ) );
+					var 同一パス検索クエリ = songdb.Songs.Where( ( song ) => ( song.Path == 曲ファイルパス.変数なしパス ) );
 
 					if( 0 == 同一パス検索クエリ.Count() )
 					{
 						// (A) 同一パスを持つレコードがDBになかった
 
-						var 調べる曲のハッシュ = _ファイルのハッシュを算出して返す( 調べる曲のパス );
+						var 調べる曲のハッシュ = _ファイルのハッシュを算出して返す( 曲ファイルパス );
 
 						var 同一ハッシュレコード = songdb.Songs.Where( ( song ) => ( song.HashId == 調べる曲のハッシュ ) ).SingleOrDefault();
+
 						if( null == 同一ハッシュレコード )
 						{
 							#region " (A-a) 同一ハッシュを持つレコードがDBになかった → 新規追加 "
 							//----------------
-							var 拡張子名 = Path.GetExtension( 調べる曲のパス );
+							var 拡張子名 = Path.GetExtension( 曲ファイルパス.変数なしパス );
 							var score = (SSTFormatCurrent.スコア) null;
 
 							#region " スコアを読み込む "
 							//----------------
 							if( ".sstf" == 拡張子名 )
 							{
-								score = new SSTFormatCurrent.スコア( 調べる曲のパス );
+								score = new SSTFormatCurrent.スコア( 曲ファイルパス.変数なしパス );
 							}
 							else if( ".dtx" == 拡張子名 )
 							{
-								score = SSTFormatCurrent.DTXReader.ReadFromFile( 調べる曲のパス );
+								score = SSTFormatCurrent.DTXReader.ReadFromFile( 曲ファイルパス.変数なしパス );
 							}
 							else
 							{
-								throw new Exception( $"未対応のフォーマットファイルです。[{曲ファイルパス}]" );
+								throw new Exception( $"未対応のフォーマットファイルです。[{曲ファイルパス.変数付きパス}]" );
 							}
 							//----------------
 							#endregion
@@ -79,10 +77,10 @@ namespace DTXmatixx.設定
 
 								songdb.Songs.InsertOnSubmit(
 									new Song() {
-										HashId = _ファイルのハッシュを算出して返す( 調べる曲のパス ),
+										HashId = _ファイルのハッシュを算出して返す( 曲ファイルパス ),
 										Title = score.曲名,
-										Path = 調べる曲のパス,
-										LastWriteTime = File.GetLastWriteTime( 調べる曲のパス ).ToString( "G" ),
+										Path = 曲ファイルパス.変数なしパス,
+										LastWriteTime = File.GetLastWriteTime( 曲ファイルパス.変数なしパス ).ToString( "G" ),
 										Level = score.難易度,
 										MinBPM = BPMs.最小BPM,
 										MaxBPM = BPMs.最大BPM,
@@ -100,7 +98,7 @@ namespace DTXmatixx.設定
 
 							songdb.DataContext.SubmitChanges();
 
-							Log.Info( $"DBに曲を追加しました。{曲ファイルパス}" );
+							Log.Info( $"DBに曲を追加しました。{曲ファイルパス.変数付きパス}" );
 							//----------------
 							#endregion
 						}
@@ -108,22 +106,22 @@ namespace DTXmatixx.設定
 						{
 							#region " (A-b) 同一ハッシュを持つレコードがDBにあった → 更新 "
 							//----------------
-							var 拡張子名 = Path.GetExtension( 調べる曲のパス );
+							var 拡張子名 = Path.GetExtension( 曲ファイルパス.変数なしパス );
 							var score = (SSTFormatCurrent.スコア) null;
 
 							#region " スコアを読み込む "
 							//----------------
 							if( ".sstf" == 拡張子名 )
 							{
-								score = new SSTFormatCurrent.スコア( 調べる曲のパス );
+								score = new SSTFormatCurrent.スコア( 曲ファイルパス.変数なしパス );
 							}
 							else if( ".dtx" == 拡張子名 )
 							{
-								score = SSTFormatCurrent.DTXReader.ReadFromFile( 調べる曲のパス );
+								score = SSTFormatCurrent.DTXReader.ReadFromFile( 曲ファイルパス.変数なしパス );
 							}
 							else
 							{
-								throw new Exception( $"未対応のフォーマットファイルです。[{曲ファイルパス}]" );
+								throw new Exception( $"未対応のフォーマットファイルです。[{曲ファイルパス.変数付きパス}]" );
 							}
 							//----------------
 							#endregion
@@ -136,8 +134,8 @@ namespace DTXmatixx.設定
 								var song = 同一ハッシュレコード;
 
 								song.Title = score.曲名;
-								song.Path = 調べる曲のパス;
-								song.LastWriteTime = File.GetLastWriteTime( 調べる曲のパス ).ToString( "G" );
+								song.Path = 曲ファイルパス.変数なしパス;
+								song.LastWriteTime = File.GetLastWriteTime( 曲ファイルパス.変数なしパス ).ToString( "G" );
 								song.Level = score.難易度;
 								song.MinBPM = BPMs.最小BPM;
 								song.MaxBPM = BPMs.最大BPM;
@@ -154,7 +152,7 @@ namespace DTXmatixx.設定
 
 							songdb.DataContext.SubmitChanges();
 
-							Log.Info( $"パスが異なりハッシュが同一であるレコードが検出されたため、曲の情報を更新しました。{曲ファイルパス}" );
+							Log.Info( $"パスが異なりハッシュが同一であるレコードが検出されたため、曲の情報を更新しました。{曲ファイルパス.変数付きパス}" );
 							//----------------
 							#endregion
 						}
@@ -166,28 +164,28 @@ namespace DTXmatixx.設定
 						var record = 同一パス検索クエリ.Single();
 
 						string レコードの最終更新日時 = record.LastWriteTime;
-						string 調べる曲の最終更新日時 = File.GetLastWriteTime( 調べる曲のパス ).ToString( "G" );
+						string 調べる曲の最終更新日時 = File.GetLastWriteTime( 曲ファイルパス.変数なしパス ).ToString( "G" );
 
 						if( レコードの最終更新日時 != 調べる曲の最終更新日時 )
 						{
 							#region " (B-a) 最終更新日時が変更されている → 更新 "
 							//----------------
-							var 拡張子名 = Path.GetExtension( 調べる曲のパス );
+							var 拡張子名 = Path.GetExtension( 曲ファイルパス.変数なしパス );
 							var score = (SSTFormatCurrent.スコア) null;
 
 							#region " スコアを読み込む "
 							//----------------
 							if( ".sstf" == 拡張子名 )
 							{
-								score = new SSTFormatCurrent.スコア( 調べる曲のパス );
+								score = new SSTFormatCurrent.スコア( 曲ファイルパス.変数なしパス );
 							}
 							else if( ".dtx" == 拡張子名 )
 							{
-								score = SSTFormatCurrent.DTXReader.ReadFromFile( 調べる曲のパス );
+								score = SSTFormatCurrent.DTXReader.ReadFromFile( 曲ファイルパス.変数なしパス );
 							}
 							else
 							{
-								throw new Exception( $"未対応のフォーマットファイルです。[{曲ファイルパス}]" );
+								throw new Exception( $"未対応のフォーマットファイルです。[{曲ファイルパス.変数付きパス}]" );
 							}
 							//----------------
 							#endregion
@@ -198,7 +196,7 @@ namespace DTXmatixx.設定
 								var ノーツ数 = _ノーツ数を算出して返す( score, ユーザ設定 );
 								var BPMs = _最小最大BPMを調べて返す( score );
 
-								record.HashId = _ファイルのハッシュを算出して返す( 調べる曲のパス );
+								record.HashId = _ファイルのハッシュを算出して返す( 曲ファイルパス );
 								record.Title = score.曲名;
 								record.LastWriteTime = 調べる曲の最終更新日時;
 								record.Level = score.難易度;
@@ -217,7 +215,7 @@ namespace DTXmatixx.設定
 
 							songdb.DataContext.SubmitChanges();
 
-							Log.Info( $"最終更新日時が変更されているため、曲の情報を更新しました。{曲ファイルパス}" );
+							Log.Info( $"最終更新日時が変更されているため、曲の情報を更新しました。{曲ファイルパス.変数付きパス}" );
 							//----------------
 							#endregion
 						}
@@ -233,7 +231,7 @@ namespace DTXmatixx.設定
 			}
 			catch
 			{
-				Log.ERROR( $"曲DBへの曲の追加に失敗しました。[{曲ファイルパス}]" );
+				Log.ERROR( $"曲DBへの曲の追加に失敗しました。[{曲ファイルパス.変数付きパス}]" );
 				throw;
 			}
 		}
@@ -308,14 +306,12 @@ namespace DTXmatixx.設定
 			return ノーツ数;
 		}
 
-		private static string _ファイルのハッシュを算出して返す( string 曲ファイルパス )
+		private static string _ファイルのハッシュを算出して返す( VariablePath 曲ファイルパス )
 		{
-			var filePath = Folder.絶対パスに含まれるフォルダ変数を展開して返す( 曲ファイルパス );
-
 			var sha512 = new SHA512CryptoServiceProvider();
 			byte[] hash = null;
 
-			using( var fs = new FileStream( filePath, FileMode.Open ) )
+			using( var fs = new FileStream( 曲ファイルパス.変数なしパス, FileMode.Open ) )
 				hash = sha512.ComputeHash( fs );
 
 			var hashString = new StringBuilder();

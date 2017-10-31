@@ -57,8 +57,7 @@ namespace DTXmatixx.ステージ.選曲
 						{
 							using( var songdb = new SongDB() )
 							{
-								var path = Folder.絶対パスに含まれるフォルダ変数を展開して返す( node.曲ファイルパス );
-								var song = songdb.Songs.Where( ( r ) => ( r.Path == path ) ).SingleOrDefault();
+								var song = songdb.Songs.Where( ( r ) => ( r.Path == node.曲ファイルパス.変数なしパス ) ).SingleOrDefault();
 								if( null != song )
 								{
 									this._難易度[ 0 ] = ("", "");
@@ -80,8 +79,7 @@ namespace DTXmatixx.ステージ.選曲
 									this._難易度[ i ] = ("", "");
 									if( null != node.MusicNodes[ i ].label )
 									{
-										var path = Folder.絶対パスに含まれるフォルダ変数を展開して返す( node.MusicNodes[ i ].music.曲ファイルパス );
-										var song = songdb.Songs.Where( ( r ) => ( r.Path == path ) ).SingleOrDefault();
+										var song = songdb.Songs.Where( ( r ) => ( r.Path == node.MusicNodes[ i ].music.曲ファイルパス.変数なしパス ) ).SingleOrDefault();
 										if( null != song )
 										{
 											this._難易度[ i ] = (node.MusicNodes[ i ].label, song.Level.ToString( "0.00" ));

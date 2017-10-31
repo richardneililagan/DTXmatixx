@@ -20,7 +20,7 @@ namespace DTXmatixx.曲
 		/// <summary>
 		///		この曲ノードに対応する曲ファイル。
 		/// </summary>
-		public string 曲ファイルパス
+		public VariablePath 曲ファイルパス
 		{
 			get;
 			protected set;
@@ -38,7 +38,7 @@ namespace DTXmatixx.曲
 		/// <summary>
 		///		この曲ノードに対応する動画ファイル。
 		/// </summary>
-		public string 動画ファイルパス
+		public VariablePath 動画ファイルパス
 		{
 			get;
 			protected set;
@@ -55,10 +55,10 @@ namespace DTXmatixx.曲
 		} = 5.0f;
 
 
-		public MusicNode( string 曲ファイルパス, Node 親ノード )
+		public MusicNode( VariablePath 曲ファイルパス, Node 親ノード )
 		{
 			this.親ノード = 親ノード;
-			this.曲ファイルパス = Folder.絶対パスに含まれるフォルダ変数を展開して返す( 曲ファイルパス );
+			this.曲ファイルパス = 曲ファイルパス;
 
 			// （まだ存在してなければ）曲DBに追加する。
 			曲DB.曲を追加または更新する( this.曲ファイルパス, App.ユーザ管理.ログオン中のユーザ );
@@ -66,8 +66,7 @@ namespace DTXmatixx.曲
 			// 曲DBから情報を取得する。
 			using( var songdb = new SongDB() )
 			{
-				var path = Folder.絶対パスに含まれるフォルダ変数を展開して返す( this.曲ファイルパス );
-				var song = songdb.Songs.Where( ( r ) => ( r.Path == path ) ).SingleOrDefault();
+				var song = songdb.Songs.Where( ( r ) => ( r.Path == this.曲ファイルパス.変数なしパス ) ).SingleOrDefault();
 				if( null != song )
 				{
 					this.タイトル = song.Title;
@@ -78,7 +77,7 @@ namespace DTXmatixx.曲
 
 			// 曲ファイルと同じ場所に画像ファイルがあるなら、それをノード画像として採用する。
 			var サムネイル画像ファイルパス =
-				( from ファイル名 in Directory.GetFiles( Path.GetDirectoryName( this.曲ファイルパス ) )
+				( from ファイル名 in Directory.GetFiles( Path.GetDirectoryName( this.曲ファイルパス.変数なしパス ) )
 				  where _対応するサムネイル画像名.Any( thumbファイル名 => ( Path.GetFileName( ファイル名 ).ToLower() == thumbファイル名 ) )
 				  select ファイル名 ).FirstOrDefault();
 
@@ -89,9 +88,9 @@ namespace DTXmatixx.曲
 
 			// 曲ファイルと同じ場所に（対応する拡張子を持った）動画ファイルがあるなら、それを背景動画として採用する。
 			this.動画ファイルパス =
-				( from ファイル名 in Directory.GetFiles( Path.GetDirectoryName( this.曲ファイルパス ) )
+				( from ファイル名 in Directory.GetFiles( Path.GetDirectoryName( this.曲ファイルパス.変数なしパス ) )
 				  where _対応する動画の拡張子.Any( 拡張子名 => ( Path.GetExtension( ファイル名 ).ToLower() == 拡張子名 ) )
-				  select ファイル名 ).FirstOrDefault();
+				  select ファイル名 ).FirstOrDefault()?.ToVariablePath();
 		}
 
 

@@ -10,21 +10,13 @@ namespace DTXmatixx.ステージ
 	class ステージ管理 : Activity, IDisposable
 	{
 		public string 最初のステージ名
-		{
-			get
-				=> this.ステージリスト.ElementAt( 0 ).Value.GetType().Name;
-		}
+			=> this.ステージリスト.ElementAt( 0 ).Value.GetType().Name;
 
 		public ステージ 現在のステージ
-		{
-			get
-				=> this._現在のステージ;
-		}
+			=> this._現在のステージ;
+
 		public アイキャッチ.アイキャッチ 現在のアイキャッチ
-		{
-			get
-				=> this._現在のアイキャッチ;
-		}
+			=> this._現在のアイキャッチ;
 
 		/// <summary>
 		///		全ステージのリスト。
@@ -43,8 +35,9 @@ namespace DTXmatixx.ステージ
 		public ステージ管理()
 		{
 			// 各ステージの外部依存アクションを接続。
-			( (結果.結果ステージ) this.ステージリスト[ nameof( 結果.結果ステージ ) ] ).結果を取得する =
-				() => ( (演奏.演奏ステージ) this.ステージリスト[ nameof( 演奏.演奏ステージ ) ] ).成績;
+			var 結果ステージ = (結果.結果ステージ) this.ステージリスト[ nameof( 結果.結果ステージ ) ];
+			var 演奏ステージ = (演奏.演奏ステージ) this.ステージリスト[ nameof( 演奏.演奏ステージ ) ];
+			結果ステージ.結果を取得する = () => ( 演奏ステージ.成績 );
 		}
 		public void Dispose()
 		{

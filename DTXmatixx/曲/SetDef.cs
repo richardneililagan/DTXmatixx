@@ -61,12 +61,11 @@ namespace DTXmatixx.曲
 		{
 		}
 
-		public static SetDef 復元する( string Set定義ファイルパス )
+		public static SetDef 復元する( VariablePath Set定義ファイルパス )
 		{
-			var path = Folder.絶対パスに含まれるフォルダ変数を展開して返す( Set定義ファイルパス );
 			var setDef = new SetDef();
 
-			using( var sr = new StreamReader( path, Encoding.GetEncoding( 932/*Shift-JIS*/ ) ) )
+			using( var sr = new StreamReader( Set定義ファイルパス.変数なしパス, Encoding.GetEncoding( 932/*Shift-JIS*/ ) ) )
 			{
 				string 行;
 				var block = new Block();

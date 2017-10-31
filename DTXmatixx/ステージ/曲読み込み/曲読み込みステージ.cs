@@ -131,23 +131,22 @@ namespace DTXmatixx.ステージ.曲読み込み
 				var 選択曲 = App.曲ツリー.フォーカス曲ノード;
 				Debug.Assert( null != 選択曲 );
 
-				string 選択曲ファイルパス = 選択曲.曲ファイルパス;
-				Debug.Assert( 選択曲ファイルパス.Nullでも空でもない() );
+				var 選択曲ファイルパス = 選択曲.曲ファイルパス;
+				Debug.Assert( 選択曲ファイルパス?.変数なしパス.Nullでも空でもない() ?? false );
 
-				var path = Folder.絶対パスに含まれるフォルダ変数を展開して返す( 選択曲ファイルパス );
-				var 拡張子名 = Path.GetExtension( path );
+				var 拡張子名 = Path.GetExtension( 選択曲ファイルパス.変数なしパス );
 
 				if( ".sstf" == 拡張子名 )
 				{
-					App.演奏スコア = new スコア( path );
+					App.演奏スコア = new スコア( 選択曲ファイルパス.変数なしパス );
 				}
 				else if( ".dtx" == 拡張子名 )
 				{
-					App.演奏スコア = DTXReader.ReadFromFile( path );
+					App.演奏スコア = DTXReader.ReadFromFile( 選択曲ファイルパス.変数なしパス );
 				}
 				else
 				{
-					throw new Exception( $"未対応のフォーマットファイルです。[{選択曲ファイルパス}]" );
+					throw new Exception( $"未対応のフォーマットファイルです。[{選択曲ファイルパス.変数付きパス}]" );
 				}
 
 				// サウンドデバイス遅延を取得し、全チップの発声時刻へ反映する。

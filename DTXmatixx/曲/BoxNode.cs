@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using FDK;
 
 namespace DTXmatixx.曲
 {
@@ -16,7 +17,7 @@ namespace DTXmatixx.曲
 		public BoxNode()
 		{
 		}
-		public BoxNode( string BOX定義ファイルパス, Node 親ノード )
+		public BoxNode( VariablePath BOX定義ファイルパス, Node 親ノード )
 			:this()
 		{
 			var box = BoxDef.復元する( BOX定義ファイルパス );

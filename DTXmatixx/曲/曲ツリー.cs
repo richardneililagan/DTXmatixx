@@ -137,29 +137,26 @@ namespace DTXmatixx.曲
 		/// <remarks>
 		///		追加されたノードは、ここでは活性化されない。
 		/// </remarks>
-		public void 曲を検索して親ノードに追加する( Node 親ノード, string フォルダパス )
+		public void 曲を検索して親ノードに追加する( Node 親ノード, VariablePath フォルダパス )
 		{
-			フォルダパス = Folder.絶対パスに含まれるフォルダ変数を展開して返す( フォルダパス );
-			var ログ用フォルダパス = Folder.絶対パスをフォルダ変数付き絶対パスに変換して返す( フォルダパス );
-
 			// フォルダが存在しないなら何もしない。
 
-			if( !( Directory.Exists( フォルダパス ) ) )
+			if( !( Directory.Exists( フォルダパス.変数なしパス ) ) )
 			{
-				Log.WARNING( $"指定されたフォルダが存在しません。無視します。[{ログ用フォルダパス}]" );
+				Log.WARNING( $"指定されたフォルダが存在しません。無視します。[{フォルダパス.変数付きパス}]" );
 				return;
 			}
 
-			Log.Info( $"曲検索: {ログ用フォルダパス}" );
-			var dirInfo = new DirectoryInfo( フォルダパス );
+			Log.Info( $"曲検索: {フォルダパス.変数付きパス}" );
+			var dirInfo = new DirectoryInfo( フォルダパス.変数なしパス );
 
 			// (1) このフォルダに set.def があるなら、その内容でSetノード（任意個）を作成する。
 
-			var setDefPath = Path.Combine( フォルダパス, @"set.def" );
+			var setDefPath = Path.Combine( フォルダパス.変数なしパス, @"set.def" );
 
 			if( File.Exists( setDefPath ) )
 			{
-				var setDef = SetDef.復元する( setDefPath );
+				var setDef = SetDef.復元する( setDefPath.ToVariablePath() );
 
 				foreach( var block in setDef.Blocks )
 				{
@@ -178,7 +175,7 @@ namespace DTXmatixx.曲
 				{
 					try
 					{
-						var music = new MusicNode( fileInfo.FullName, 親ノード );
+						var music = new MusicNode( fileInfo.FullName.ToVariablePath(), 親ノード );
 						親ノード.子ノードリスト.Add( music );
 					}
 					catch
@@ -197,16 +194,16 @@ namespace DTXmatixx.曲
 				if( File.Exists( boxDefPath ) )
 				{
 					// (3-a) box.def を含むフォルダの場合、BOXノードを作成する。
-					var boxNode = new BoxNode( boxDefPath, 親ノード );
+					var boxNode = new BoxNode( boxDefPath.ToVariablePath(), 親ノード );
 					親ノード.子ノードリスト.Add( boxNode );
 
 					// BOXノードを親として、サブフォルダへ再帰。
-					this.曲を検索して親ノードに追加する( boxNode, subDirInfo.FullName );
+					this.曲を検索して親ノードに追加する( boxNode, subDirInfo.FullName.ToVariablePath() );
 				}
 				else
 				{
 					// (3-b) サブフォルダへ再帰。（通常フォルダ）
-					this.曲を検索して親ノードに追加する( 親ノード, subDirInfo.FullName );
+					this.曲を検索して親ノードに追加する( 親ノード, subDirInfo.FullName.ToVariablePath() );
 				}
 			}
 		}

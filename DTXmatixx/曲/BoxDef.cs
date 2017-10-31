@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using SSTFormat.v3;
+using FDK;
 
 namespace DTXmatixx.曲
 {
@@ -35,11 +36,11 @@ namespace DTXmatixx.曲
 		{
 		}
 
-		public static BoxDef 復元する( string Box定義ファイルパス )
+		public static BoxDef 復元する( VariablePath Box定義ファイルパス )
 		{
 			var boxDef = new BoxDef();
 
-			using( var sr = new StreamReader( Box定義ファイルパス ) )
+			using( var sr = new StreamReader( Box定義ファイルパス.変数なしパス ) )
 			{
 				string 行;
 

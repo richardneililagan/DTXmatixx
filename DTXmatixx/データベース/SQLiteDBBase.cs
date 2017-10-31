@@ -33,14 +33,13 @@ namespace DTXmatixx.データベース
 			protected set;
 		} = null;
 
-		public SQLiteDBBase( string DBファイルパス, long Version )
+		public SQLiteDBBase( VariablePath DBファイルパス, long Version )
 		{
 			if( 0 == Version )
 				throw new Exception( "Version = 0 は予約されています。" );
 
 			this._DBファイルパス = DBファイルパス;
-
-			this._DB接続文字列 = new SQLiteConnectionStringBuilder() { DataSource = Folder.絶対パスに含まれるフォルダ変数を展開して返す( this._DBファイルパス ) }.ToString();
+			this._DB接続文字列 = new SQLiteConnectionStringBuilder() { DataSource = this._DBファイルパス.変数なしパス }.ToString();
 
 			this.Connection = new SQLiteConnection( this._DB接続文字列 );
 			this.Connection.Open();
@@ -78,6 +77,10 @@ namespace DTXmatixx.データベース
 				throw new Exception( $"データベースが未知のバージョン({実DBのバージョン})です。" );
 			}
 		}
+		public SQLiteDBBase( string DBファイルパス, long Version )
+			: this( DBファイルパス.ToVariablePath(), Version )
+		{
+		}
 		public void Dispose()
 		{
 			//this.DataContext?.SubmitChanges();	--> Submit していいとは限らない。
@@ -87,7 +90,7 @@ namespace DTXmatixx.データベース
 			this.Connection?.Dispose();
 		}
 
-		protected string _DBファイルパス;
+		protected VariablePath _DBファイルパス;
 		protected string _DB接続文字列;
 
 		// 以下、派生クラスで実装する。

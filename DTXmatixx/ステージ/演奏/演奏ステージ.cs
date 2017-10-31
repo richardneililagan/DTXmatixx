@@ -161,7 +161,7 @@ namespace DTXmatixx.ステージ.演奏
 					foreach( var kvp in App.演奏スコア.dicWAV )
 					{
 						var path = Path.Combine( App.演奏スコア.PATH_WAV, kvp.Value.ファイルパス );
-						App.WAV管理.登録する( App.サウンドデバイス, kvp.Key, path, kvp.Value.多重再生する );
+						App.WAV管理.登録する( App.サウンドデバイス, kvp.Key, path.ToVariablePath(), kvp.Value.多重再生する );
 					}
 					//----------------
 					#endregion
@@ -510,8 +510,11 @@ namespace DTXmatixx.ステージ.演奏
 						if( this.現在のフェーズ == フェーズ.キャンセル時フェードアウト )
 						{
 							App.ステージ管理.現在のアイキャッチ.進行描画する( gd );
+
 							if( App.ステージ管理.現在のアイキャッチ.現在のフェーズ == アイキャッチ.フェーズ.クローズ完了 )
+							{
 								this.現在のフェーズ = フェーズ.キャンセル完了;
+							}
 						}
 					}
 					break;

@@ -17,7 +17,7 @@ namespace DTXmatixx.曲
 		public SetNode()
 		{
 		}
-		public SetNode( SetDef.Block block, string 基点フォルダパス, Node 親ノード )
+		public SetNode( SetDef.Block block, VariablePath 基点フォルダパス, Node 親ノード )
 			: this()
 		{
 			this.タイトル = block.Title;
@@ -31,7 +31,7 @@ namespace DTXmatixx.曲
 				{
 					try
 					{
-						this.MusicNodes[ i ] = (block.Label[ i ], new MusicNode( Path.Combine( 基点フォルダパス, block.File[ i ] ), 親ノード ));
+						this.MusicNodes[ i ] = (block.Label[ i ], new MusicNode( Path.Combine( 基点フォルダパス.変数なしパス, block.File[ i ] ).ToVariablePath(), 親ノード ));
 						this.子リスト.Add( this.MusicNodes[ i ].music );
 					}
 					catch

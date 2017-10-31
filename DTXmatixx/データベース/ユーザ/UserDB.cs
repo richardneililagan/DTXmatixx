@@ -16,18 +16,13 @@ namespace DTXmatixx.データベース.ユーザ
 		public const long VERSION = 1;
 
 		public Table<User> Users
-		{
-			get
-				=> base.DataContext.GetTable<User>();
-		}
+			=> base.DataContext.GetTable<User>();
+
 		public Table<Record> Records
-		{
-			get
-				=> base.DataContext.GetTable<Record>();
-		}
+			=> base.DataContext.GetTable<Record>();
 
 		public UserDB()
-			: base( Folder.絶対パスに含まれるフォルダ変数を展開して返す( @"$(AppData)UserDB.sqlite3" ), VERSION )
+			: base( @"$(AppData)UserDB.sqlite3", VERSION )
 		{
 		}
 
@@ -42,24 +37,6 @@ namespace DTXmatixx.データベース.ユーザ
 						// テーブルを作成する。
 						this.DataContext.ExecuteCommand( User.CreateTableSQL );
 						this.DataContext.ExecuteCommand( Record.CreateTableSQL );
-
-						#region " User テーブルに 'AutoPlayer' ユーザがいないなら、レコードを追加する。"
-						//----------------
-						{
-							var AUTOPLAYER = "AutoPlayer";
-
-							if( 0 == this.Users.Where( ( r ) => r.Id == AUTOPLAYER ).Count() )
-							{
-								this.Users.InsertOnSubmit( new User() {
-									Id = AUTOPLAYER,
-									Name = AUTOPLAYER,
-									// 他は規定値。
-								} );
-							}
-						}
-						//----------------
-						#endregion
-
 						this.DataContext.SubmitChanges();
 
 						// 成功。
