@@ -38,7 +38,8 @@ namespace DTXmatixx.設定
 				user = ユーザ設定.作成する( new User() {
 					Id = "AutoPlayer",
 					Name = "AutoPlayer",
-					// 他は規定値
+					// todo: テストコード: 暫定的に固定パスを使用する。
+					SongFolders = new VariablePath( @"$(Exe)..\..\..\曲データ" ).変数なしパス,
 				} );
 			}
 			if( null != user )

@@ -74,17 +74,106 @@ namespace DTXmatixx.設定
 			get;
 			protected set;
 		} = null;
+		public List<VariablePath> 曲検索フォルダ
+		{
+			get;
+			protected set;
+		} = null;
 
 		public ユーザ設定()
 		{
-			#region " User の初期化 "
-			//----------------
 			this._User = new User() {
 				Id = null,
 			};
-			//----------------
-			#endregion
-			#region " AutoPlay の初期化 "
+
+			this.ドラムとチップと入力の対応表 = new ドラムとチップと入力の対応表(
+				new 表示レーンの左右() {    // 使わないので固定。
+					Chinaは左 = false,
+					Rideは左 = false,
+					Splashは左 = true,
+				} );
+
+			this._Userに依存するメンバを初期化する();
+		}
+		
+		/// <summary>
+		///		指定したユーザIDをデータベースから検索し、その情報でインスタンスを初期化する。
+		///		検索で見つからなければ、<see cref="ユーザID"/> が null となる。。
+		/// </summary>
+		public ユーザ設定( string ユーザID )
+			: this()
+		{
+			using( var userdb = new UserDB() )
+			{
+				var record = userdb.Users.Where( ( r ) => ( r.Id == ユーザID ) ).SingleOrDefault();
+
+				if( null != record )
+				{
+					// レコードが存在するなら、その内容を継承する。
+					this._User = record.Clone();
+					this._Userに依存するメンバを初期化する();
+				}
+				else
+				{
+					Log.WARNING( $"ユーザがデータベース上に見つかりませんでした。[Id:{ユーザID}]" );
+				}
+			}
+		}
+
+		/// <summary>
+		///		指定したユーザ情報を新しいユーザとしてデータベースに登録し、
+		///		その情報で初期化したインスタンスを返す。
+		///		指定したユーザ（と同じユーザIDのユーザ）がすでにデータベースに存在している場合には、null を返す。
+		/// </summary>
+		public static ユーザ設定 作成する( User user )
+		{
+			using( var userdb = new UserDB() )
+			{
+				var record = userdb.Users.Where( ( r ) => ( r.Id == user.Id ) ).SingleOrDefault();
+
+				if( null == record )
+				{
+					// (A) データベースに新規追加し、新しいインスタンスを返す。
+					userdb.Users.InsertOnSubmit( user );
+					userdb.DataContext.SubmitChanges();
+
+					var settings = new ユーザ設定() {
+						_User = user.Clone(),
+					};
+					settings._Userに依存するメンバを初期化する();
+
+					return settings;
+				}
+				else
+				{
+					// (B) データベース上にすでに存在している。
+					Log.WARNING( $"指定されたユーザはすでにデータベース上に存在しています。[Id:{user.Id}]" );
+					return null;
+				}
+			}
+		}
+
+		public void 保存する()
+		{
+			using( var userdb = new UserDB() )
+			{
+				// すでにデータベース上にレコードが存在する場合は、いったん削除する。（更新するより手っ取り早いので）
+				var record = userdb.Users.Where( ( r ) => ( r.Id == this.ユーザID ) ).SingleOrDefault();
+				if( null != record )
+					userdb.Users.DeleteOnSubmit( record );
+
+				// レコードを追加する。
+				userdb.Users.InsertOnSubmit( this._User );
+				userdb.DataContext.SubmitChanges();
+			}
+		}
+
+
+		private User _User = null;
+
+		private void _Userに依存するメンバを初期化する()
+		{
+			#region " AutoPlay "
 			//----------------
 			this.AutoPlay = new HookedDictionary<AutoPlay種別, bool>() {
 				{ AutoPlay種別.Unknown, true },
@@ -143,7 +232,7 @@ namespace DTXmatixx.設定
 			};
 			//----------------
 			#endregion
-			#region " 最大ヒット距離sec の初期化 "
+			#region " 最大ヒット距離sec "
 			//----------------
 			this.最大ヒット距離sec = new HookedDictionary<判定種別, double>() {
 				{ 判定種別.PERFECT, this._User.MaxRange_Perfect },
@@ -178,66 +267,17 @@ namespace DTXmatixx.設定
 			};
 			//----------------
 			#endregion
-			#region " ドラムとチップと入力の対応表の初期化 "
+			#region " 曲検索フォルダ "
 			//----------------
-			this.ドラムとチップと入力の対応表 = new ドラムとチップと入力の対応表(
-				new 表示レーンの左右() {    // 使わないので固定。
-					Chinaは左 = false,
-					Rideは左 = false,
-					Splashは左 = true,
-				} );
+			this.曲検索フォルダ = new List<VariablePath>();
+
+			var paths = this._User.SongFolders.Split( ';' );
+			foreach( var path in paths )
+			{
+				this.曲検索フォルダ.Add( path.ToVariablePath() );
+			}
 			//----------------
 			#endregion
 		}
-		
-		/// <summary>
-		///		指定したユーザIDをデータベースから検索し、その情報でインスタンスを初期化する。
-		///		検索で見つからなければ、<see cref="ユーザID"/> が null となる。。
-		/// </summary>
-		public ユーザ設定( string ユーザID )
-			: this()
-		{
-			using( var userdb = new UserDB() )
-			{
-				var record = userdb.Users.Where( ( r ) => ( r.Id == ユーザID ) ).SingleOrDefault();
-
-				if( null != record )
-				{
-					// レコードが存在するなら、その内容を継承する。
-					this._User = record.Clone();
-				}
-			}
-		}
-
-		/// <summary>
-		///		指定したユーザ情報を新しいユーザとしてデータベースに登録し、
-		///		その情報で初期化したインスタンスを返す。
-		///		指定したユーザ（と同じユーザIDのユーザ）がすでにデータベースに存在している場合には、null を返す。
-		/// </summary>
-		public static ユーザ設定 作成する( User user )
-		{
-			using( var userdb = new UserDB() )
-			{
-				var record = userdb.Users.Where( ( r ) => ( r.Id == user.Id ) ).SingleOrDefault();
-
-				if( null == record )
-				{
-					// (A) データベースに新規追加し、新しいインスタンスを返す。
-					userdb.Users.InsertOnSubmit( user );
-					userdb.DataContext.SubmitChanges();
-					return new ユーザ設定() {
-						_User = user.Clone(),
-					};
-				}
-				else
-				{
-					// (B) データベース上にすでに存在している。
-					return null;
-				}
-			}
-		}
-
-
-		private User _User = null;
 	}
 }
