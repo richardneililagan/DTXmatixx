@@ -50,6 +50,15 @@ namespace DTXmatixx.設定
 				user = ユーザ設定.作成する( new User() {
 					Id = "Guest",
 					Name = "Guest",
+					AutoPlay_LeftCymbal = 0,
+					AutoPlay_HiHat = 0,
+					AutoPlay_LeftPedal = 0,
+					AutoPlay_Snare = 0,
+					AutoPlay_Bass = 0,
+					AutoPlay_HighTom = 0,
+					AutoPlay_LowTom = 0,
+					AutoPlay_FloorTom = 0,
+					AutoPlay_RightCymbal = 0,
 					// 他は規定値
 				} );
 			}

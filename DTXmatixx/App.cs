@@ -122,7 +122,7 @@ namespace DTXmatixx
 			App.ドラムサウンド = new ドラムサウンド();
 
 			App.ユーザ管理 = new ユーザ管理();
-			App.ユーザ管理.ユーザリスト.SelectItem( ( user ) => ( user.ユーザID == "Guest" ) );	// ひとまず起動直後はAutoPlayerを選択。
+			App.ユーザ管理.ユーザリスト.SelectItem( ( user ) => ( user.ユーザID == "AutoPlayer" ) );	// ひとまず起動直後はAutoPlayerを選択。
 
 			this._活性化する();
 
