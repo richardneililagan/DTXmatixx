@@ -94,6 +94,8 @@ namespace DTXmatixx.ステージ.選曲
 			//----------------
 			#endregion
 
+			bool 表示可能ノードである = ( this._現在表示しているノード is MusicNode ) || ( this._現在表示しているノード is SetNode );
+
 			gd.D2DBatchDraw( ( dc ) => {
 
 				var pretrans = dc.Transform;
@@ -113,27 +115,32 @@ namespace DTXmatixx.ステージ.選曲
 					// 背景
 					dc.FillRectangle( 領域dpx, 黒透過ブラシ );
 
-					// todo: ULTIMATE の表示を実装する。
-					this._難易度パネルを１つ描画する( dc, pretrans, 領域dpx.X, 領域dpx.Y, this._難易度[ 3 ].label, this._難易度[ 3 ].value, 白ブラシ, MASTER色ブラシ, 黒ブラシ );
-					this._難易度パネルを１つ描画する( dc, pretrans, 領域dpx.X, 領域dpx.Y + 120f, this._難易度[ 2 ].label, this._難易度[ 2 ].value, 白ブラシ, EXTREME色ブラシ, 黒ブラシ );
-					this._難易度パネルを１つ描画する( dc, pretrans, 領域dpx.X, 領域dpx.Y + 240f, this._難易度[ 1 ].label, this._難易度[ 1 ].value, 白ブラシ, ADVANCED色ブラシ, 黒ブラシ );
-					this._難易度パネルを１つ描画する( dc, pretrans, 領域dpx.X, 領域dpx.Y + 360f, this._難易度[ 0 ].label, this._難易度[ 0 ].value, 白ブラシ, BASIC色ブラシ, 黒ブラシ );
+					if( 表示可能ノードである )
+					{
+						// todo: ULTIMATE の表示を実装する。
+						this._難易度パネルを１つ描画する( dc, pretrans, 領域dpx.X, 領域dpx.Y, this._難易度[ 3 ].label, this._難易度[ 3 ].value, 白ブラシ, MASTER色ブラシ, 黒ブラシ );
+						this._難易度パネルを１つ描画する( dc, pretrans, 領域dpx.X, 領域dpx.Y + 120f, this._難易度[ 2 ].label, this._難易度[ 2 ].value, 白ブラシ, EXTREME色ブラシ, 黒ブラシ );
+						this._難易度パネルを１つ描画する( dc, pretrans, 領域dpx.X, 領域dpx.Y + 240f, this._難易度[ 1 ].label, this._難易度[ 1 ].value, 白ブラシ, ADVANCED色ブラシ, 黒ブラシ );
+						this._難易度パネルを１つ描画する( dc, pretrans, 領域dpx.X, 領域dpx.Y + 360f, this._難易度[ 0 ].label, this._難易度[ 0 ].value, 白ブラシ, BASIC色ブラシ, 黒ブラシ );
+					}
 				}
 
 			} );
 
 			// 選択枠を描画する。
-
-			var 青い線 = this.青い線を取得する();
-			if( null != 青い線 )
+			if( 表示可能ノードである )
 			{
-				var 領域dpx = new RectangleF( 642f + 10f, 529f + 10f + ( 3 - 選択している難易度 ) * 120f, 338f - 20f, 130f );
-				var 太さdpx = 青い線.太さdpx;
+				var 青い線 = this.青い線を取得する();
+				if( null != 青い線 )
+				{
+					var 領域dpx = new RectangleF( 642f + 10f, 529f + 10f + ( 3 - 選択している難易度 ) * 120f, 338f - 20f, 130f );
+					var 太さdpx = 青い線.太さdpx;
 
-				青い線.描画する( gd, new Vector2( 領域dpx.Left - 太さdpx / 4f, 領域dpx.Top ), 幅dpx: 領域dpx.Width + 太さdpx / 2f );      // 上辺
-				青い線.描画する( gd, new Vector2( 領域dpx.Left, 領域dpx.Top - 太さdpx / 4f ), 高さdpx: 領域dpx.Height + 太さdpx / 2f );        // 左辺
-				青い線.描画する( gd, new Vector2( 領域dpx.Left - 太さdpx / 4f, 領域dpx.Bottom ), 幅dpx: 領域dpx.Width + 太さdpx / 2f );       // 下辺
-				青い線.描画する( gd, new Vector2( 領域dpx.Right, 領域dpx.Top - 太さdpx / 4f ), 高さdpx: 領域dpx.Height + 太さdpx / 2f );   // 右辺
+					青い線.描画する( gd, new Vector2( 領域dpx.Left - 太さdpx / 4f, 領域dpx.Top ), 幅dpx: 領域dpx.Width + 太さdpx / 2f );      // 上辺
+					青い線.描画する( gd, new Vector2( 領域dpx.Left, 領域dpx.Top - 太さdpx / 4f ), 高さdpx: 領域dpx.Height + 太さdpx / 2f );        // 左辺
+					青い線.描画する( gd, new Vector2( 領域dpx.Left - 太さdpx / 4f, 領域dpx.Bottom ), 幅dpx: 領域dpx.Width + 太さdpx / 2f );       // 下辺
+					青い線.描画する( gd, new Vector2( 領域dpx.Right, 領域dpx.Top - 太さdpx / 4f ), 高さdpx: 領域dpx.Height + 太さdpx / 2f );   // 右辺
+				}
 			}
 		}
 

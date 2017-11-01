@@ -56,17 +56,22 @@ namespace DTXmatixx.ステージ.選曲
 			//----------------
 			#endregion
 
+			bool 表示可能ノードである = ( this._現在表示しているノード is MusicNode );
+
 			this._BPMパネル.描画する( gd, 領域.X - 5f, 領域.Y - 4f );
 
-			if( 10.0 >= Math.Abs( this._最大BPM - this._最小BPM ) )
+			if( 表示可能ノードである )
 			{
-				// (A) 「最小値」だけ描画。差が10以下なら同一値とみなす。
-				this._パラメータ文字.描画する( gd, 領域.X + 120f, 領域.Y, this._最小BPM.ToString( "0" ).PadLeft( 3 ) );
-			}
-			else
-			{
-				// (B) 「最小～最大」を描画。
-				this._パラメータ文字.描画する( gd, 領域.X + 80f, 領域.Y, this._最小BPM.ToString( "0" ) + "~" + this._最大BPM.ToString("0") );
+				if( 10.0 >= Math.Abs( this._最大BPM - this._最小BPM ) )
+				{
+					// (A) 「最小値」だけ描画。差が10以下なら同一値とみなす。
+					this._パラメータ文字.描画する( gd, 領域.X + 120f, 領域.Y, this._最小BPM.ToString( "0" ).PadLeft( 3 ) );
+				}
+				else
+				{
+					// (B) 「最小～最大」を描画。
+					this._パラメータ文字.描画する( gd, 領域.X + 80f, 領域.Y, this._最小BPM.ToString( "0" ) + "~" + this._最大BPM.ToString( "0" ) );
+				}
 			}
 		}
 
