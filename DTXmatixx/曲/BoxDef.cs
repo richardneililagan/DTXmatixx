@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Text;
 using SSTFormat.v3;
 using FDK;
 
@@ -40,7 +41,7 @@ namespace DTXmatixx.曲
 		{
 			var boxDef = new BoxDef();
 
-			using( var sr = new StreamReader( Box定義ファイルパス.変数なしパス ) )
+			using( var sr = new StreamReader( Box定義ファイルパス.変数なしパス, Encoding.GetEncoding( 932/*Shift-JIS*/ ) ) )
 			{
 				string 行;
 
