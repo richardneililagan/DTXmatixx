@@ -180,7 +180,18 @@ namespace DTXmatixx.ステージ.選曲
 			App.曲ツリー.次のノードをフォーカスする();
 			this._選択ノードのオフセットアニメをリセットする( gd );
 		}
-
+		public void BOXに入る( グラフィックデバイス gd )
+		{
+			this._カーソル位置 = 4;
+			this._曲リスト全体のY軸移動オフセット = 0;
+			App.曲ツリー.フォーカスする( gd, App.曲ツリー.フォーカスノード.子ノードリスト[ 0 ] );
+		}
+		public void BOXから出る( グラフィックデバイス gd )
+		{
+			this._カーソル位置 = 4;
+			this._曲リスト全体のY軸移動オフセット = 0;
+			App.曲ツリー.フォーカスする( gd, App.曲ツリー.フォーカスノード.親ノード );
+		}
 
 		/// <param name="行番号">
 		///		一番上:0 ～ 9:一番下。
@@ -193,27 +204,6 @@ namespace DTXmatixx.ステージ.選曲
 			Debug.Assert( null != ノード );
 			Debug.Assert( ( ノード as RootNode ) is null );
 
-			switch( ノード )
-			{
-				case MusicNode node:
-					this._基底ノードを描画する( gd, 行番号, node );
-					break;
-
-				case SetNode node:
-					this._基底ノードを描画する( gd, 行番号, node );
-					break;
-
-				case BoxNode node:
-					this._Boxノードを描画する( gd, 行番号, node );
-					break;
-
-				case BackNode node:
-					this._戻るノードを描画する( gd, 行番号, node );
-					break;
-			}
-		}
-		private void _基底ノードを描画する( グラフィックデバイス gd, int 行番号, Node ノード )
-		{
 			var ノード画像 = ノード.ノード画像 ?? Node.既定のノード画像;
 			bool 選択ノードである = ( 4 == 行番号 );
 
@@ -234,9 +224,116 @@ namespace DTXmatixx.ステージ.選曲
 				this._曲リストの基準左上隅座標dpx.Y + ( 実数行番号 * _ノードの高さdpx ),
 				0f );
 
+
+			#region " 背景 "
+			//----------------
+			gd.D2DBatchDraw( ( dc ) => {
+
+				if( ノード is BoxNode )
+				{
+					#region " BOXノードの背景 "
+					//----------------
+					using( var brush = new SolidColorBrush( dc, new Color4( 0xffa3647c ) ) )
+					{
+						using( var pathGeometry = new PathGeometry( gd.D2DFactory ) )
+						{
+							using( var sink = pathGeometry.Open() )
+							{
+								sink.SetFillMode( FillMode.Winding );
+								sink.BeginFigure( new Vector2( ノード左上dpx.X, ノード左上dpx.Y + 8f ), FigureBegin.Filled ); // 1
+								var points = new SharpDX.Mathematics.Interop.RawVector2[] {
+										new Vector2( ノード左上dpx.X + 150f, ノード左上dpx.Y + 8f ),	// 2
+										new Vector2( ノード左上dpx.X + 170f, ノード左上dpx.Y + 18f ),	// 3
+										new Vector2( gd.設計画面サイズ.Width, ノード左上dpx.Y + 18f ),	// 4
+										new Vector2( gd.設計画面サイズ.Width, ノード左上dpx.Y + _ノードの高さdpx ),	// 5
+										new Vector2( ノード左上dpx.X, ノード左上dpx.Y + _ノードの高さdpx ),	// 6
+										new Vector2( ノード左上dpx.X, ノード左上dpx.Y + 8f ),	// 1
+									};
+								sink.AddLines( points );
+								sink.EndFigure( FigureEnd.Closed );
+								sink.Close();
+							}
+
+							dc.FillGeometry( pathGeometry, brush );
+						}
+					}
+					//----------------
+					#endregion
+				}
+				else if( ノード is BackNode )
+				{
+					#region " BACKノードの背景 "
+					//----------------
+					using( var brush = new SolidColorBrush( dc, Color4.Black ) )
+					{
+						using( var pathGeometry = new PathGeometry( gd.D2DFactory ) )
+						{
+							using( var sink = pathGeometry.Open() )
+							{
+								sink.SetFillMode( FillMode.Winding );
+								sink.BeginFigure( new Vector2( ノード左上dpx.X, ノード左上dpx.Y + 8f ), FigureBegin.Filled ); // 1
+								var points = new SharpDX.Mathematics.Interop.RawVector2[] {
+										new Vector2( ノード左上dpx.X + 150f, ノード左上dpx.Y + 8f ),	// 2
+										new Vector2( ノード左上dpx.X + 170f, ノード左上dpx.Y + 18f ),	// 3
+										new Vector2( gd.設計画面サイズ.Width, ノード左上dpx.Y + 18f ),	// 4
+										new Vector2( gd.設計画面サイズ.Width, ノード左上dpx.Y + _ノードの高さdpx ),	// 5
+										new Vector2( ノード左上dpx.X, ノード左上dpx.Y + _ノードの高さdpx ),	// 6
+										new Vector2( ノード左上dpx.X, ノード左上dpx.Y + 8f ),	// 1
+									};
+								sink.AddLines( points );
+								sink.EndFigure( FigureEnd.Closed );
+								sink.Close();
+							}
+
+							dc.FillGeometry( pathGeometry, brush );
+						}
+					}
+					//----------------
+					#endregion
+				}
+				else
+				{
+					#region " 既定の背景（半透明の黒）"
+					//----------------
+					using( var brush = new SolidColorBrush( dc, new Color4( 0f, 0f, 0f, 0.25f ) ) )
+						dc.FillRectangle( new RectangleF( ノード左上dpx.X, ノード左上dpx.Y, gd.設計画面サイズ.Width - ノード左上dpx.X, _ノードの高さdpx ), brush );
+					//----------------
+					#endregion
+				}
+
+			} );
+			//----------------
+			#endregion
+
 			#region " サムネイル画像 "
 			//----------------
+			if( ノード is BoxNode )
 			{
+				#region " BOXノードのサムネイル画像 → 少し小さく表示する（涙 "
+				//----------------
+				var ノード内サムネイルオフセットdpx = new Vector3( 58f, 4f, 0f );
+
+				var サムネイル表示中央dpx = new Vector3(
+					画面左上dpx.X + ノード左上dpx.X + ( this._サムネイル表示サイズdpx.X / 2f ) + ノード内サムネイルオフセットdpx.X,
+					画面左上dpx.Y - ノード左上dpx.Y - ( this._サムネイル表示サイズdpx.Y / 2f ) - ノード内サムネイルオフセットdpx.Y,
+					0f );
+
+				var 変換行列 =
+					Matrix.Scaling( this._サムネイル表示サイズdpx * 0.9f ) *  // ちょっと小さく
+					Matrix.Translation( サムネイル表示中央dpx - 4f );            // ちょっと下へ
+
+				ノード.進行描画する( gd, 変換行列, キャプション表示: false );
+				//----------------
+				#endregion
+			}
+			else if( ノード is BackNode )
+			{
+				// BACKノードはサムネイル画像なし
+			}
+			else
+			{
+				#region " 既定のサムネイル画像 "
+				//----------------
 				var ノード内サムネイルオフセットdpx = new Vector3( 58f, 4f, 0f );
 
 				var サムネイル表示中央dpx = new Vector3(
@@ -248,7 +345,9 @@ namespace DTXmatixx.ステージ.選曲
 					Matrix.Scaling( this._サムネイル表示サイズdpx ) *
 					Matrix.Translation( サムネイル表示中央dpx );
 
-				ノード.進行描画する( gd, 変換行列, キャプション表示: false );  // SST形式のキャプションは非表示
+				ノード.進行描画する( gd, 変換行列, キャプション表示: false );
+				//----------------
+				#endregion
 			}
 			//----------------
 			#endregion
@@ -291,21 +390,6 @@ namespace DTXmatixx.ステージ.選曲
 			}
 			//----------------
 			#endregion
-
-			#region " サブ文字列（フォーカスノードのみ）"
-			//----------------
-			//----------------
-			#endregion
-		}
-		private void _Boxノードを描画する( グラフィックデバイス gd, int 行番号, BoxNode ノード )
-		{
-			// todo: Boxノードの描画を実装する。
-			Debug.WriteLine( "Boxノードの表示には未対応です。" );
-		}
-		private void _戻るノードを描画する( グラフィックデバイス gd, int 行番号, BackNode ノード )
-		{
-			// todo: Backノードの描画を実装する。
-			Debug.WriteLine( "戻るノードの表示には未対応です。" );
 		}
 
 		private bool _初めての進行描画 = true;

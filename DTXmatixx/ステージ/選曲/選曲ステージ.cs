@@ -118,8 +118,20 @@ namespace DTXmatixx.ステージ.選曲
 				case フェーズ.表示:
 					if( App.入力管理.シンバルが入力された() || App.入力管理.Keyboard.キーが押された( 0, Key.Return ) )
 					{
-						App.ステージ管理.アイキャッチを選択しクローズする( gd, nameof( GO ) );
-						this.現在のフェーズ = フェーズ.フェードアウト;
+						if( App.曲ツリー.フォーカスノード is BoxNode boxNode )
+						{
+							this._曲リスト.BOXに入る( gd );
+						}
+						else if( App.曲ツリー.フォーカスノード is BackNode backNode )
+						{
+							this._曲リスト.BOXから出る( gd );
+						}
+						else
+						{
+							// 選曲する
+							App.ステージ管理.アイキャッチを選択しクローズする( gd, nameof( GO ) );
+							this.現在のフェーズ = フェーズ.フェードアウト;
+						}
 					}
 					else if( App.入力管理.ドラムが入力された( 入力.ドラム入力種別.Tom1 ) || App.入力管理.Keyboard.キーが押された( 0, Key.Up ) )
 					{
@@ -137,8 +149,11 @@ namespace DTXmatixx.ステージ.選曲
 
 				case フェーズ.フェードアウト:
 					App.ステージ管理.現在のアイキャッチ.進行描画する( gd );
+
 					if( App.ステージ管理.現在のアイキャッチ.現在のフェーズ == アイキャッチ.フェーズ.クローズ完了 )
+					{
 						this.現在のフェーズ = フェーズ.確定;
+					}
 					break;
 
 				case フェーズ.確定:

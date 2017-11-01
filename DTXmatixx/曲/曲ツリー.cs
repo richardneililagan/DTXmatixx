@@ -139,35 +139,42 @@ namespace DTXmatixx.曲
 		/// </remarks>
 		public void 曲を検索して親ノードに追加する( Node 親ノード, VariablePath フォルダパス )
 		{
-			// フォルダが存在しないなら何もしない。
-
+			#region " フォルダが存在しないなら何もしない。"
+			//----------------
 			if( !( Directory.Exists( フォルダパス.変数なしパス ) ) )
 			{
 				Log.WARNING( $"指定されたフォルダが存在しません。無視します。[{フォルダパス.変数付きパス}]" );
 				return;
 			}
+			//----------------
+			#endregion
 
 			Log.Info( $"曲検索: {フォルダパス.変数付きパス}" );
 			var dirInfo = new DirectoryInfo( フォルダパス.変数なしパス );
 
-			// (1) このフォルダに set.def があるなら、その内容でSetノード（任意個）を作成する。
+			// (1) 曲ファイルを列挙。
 
 			var setDefPath = Path.Combine( フォルダパス.変数なしパス, @"set.def" );
 
 			if( File.Exists( setDefPath ) )
 			{
+				#region " (A) このフォルダに set.def がある → その内容でSetノード（任意個）を作成する。"
+				//----------------
 				var setDef = SetDef.復元する( setDefPath.ToVariablePath() );
 
 				foreach( var block in setDef.Blocks )
 				{
 					var setNode = new SetNode( block, フォルダパス, 親ノード );
+
 					親ノード.子ノードリスト.Add( setNode );
 				}
+				//----------------
+				#endregion
 			}
 			else
 			{
-				// (2) set.def がなかった場合、このフォルダにあるすべてのsstf/dtxファイルを検索して、曲ノードを作成する。
-
+				#region " (B) set.def がなかった場合 → このフォルダにあるすべての曲ファイルを検索して、曲ノードを作成する。"
+				//----------------
 				var fileInfos = dirInfo.GetFiles( "*.*", SearchOption.TopDirectoryOnly )
 					.Where( ( fileInfo ) => new string[] { ".sstf", ".dtx" }.Any( 拡張子名 => ( Path.GetExtension( fileInfo.Name ).ToLower() == 拡張子名 ) ) );
 
@@ -180,30 +187,57 @@ namespace DTXmatixx.曲
 					}
 					catch
 					{
-						Log.ERROR( "MusicNode の生成に失敗しました。" );
+						Log.ERROR( $"MusicNode の生成に失敗しました。[{fileInfo.FullName.ToVariablePath().変数付きパス}]" );
 					}
 				}
+				//----------------
+				#endregion
 			}
 
-			// (3) このフォルダのすべてのサブフォルダについて再帰処理。（set.defがあってもなくても）
+			// (2) このフォルダのすべてのサブフォルダについて...
 
 			foreach( var subDirInfo in dirInfo.GetDirectories() )
 			{
+				var DTXFILES = "dtxfiles.";
 				var boxDefPath = Path.Combine( subDirInfo.FullName, @"box.def" );
 
-				if( File.Exists( boxDefPath ) )
+				if( subDirInfo.Name.ToLower().StartsWith( DTXFILES ) )
 				{
-					// (3-a) box.def を含むフォルダの場合、BOXノードを作成する。
-					var boxNode = new BoxNode( boxDefPath.ToVariablePath(), 親ノード );
+					#region " (A) 'dtxfiles.' で始まるフォルダの場合 → BOXノードとして扱う。"
+					//----------------
+					var boxNode = new BoxNode( subDirInfo.Name.Substring( DTXFILES.Length ), 親ノード );
 					親ノード.子ノードリスト.Add( boxNode );
+
+					var backNode = new BackNode( boxNode );
+					boxNode.子ノードリスト.Add( backNode );
 
 					// BOXノードを親として、サブフォルダへ再帰。
 					this.曲を検索して親ノードに追加する( boxNode, subDirInfo.FullName.ToVariablePath() );
+					//----------------
+					#endregion
+				}
+				else if( File.Exists( boxDefPath ) )
+				{
+					#region " (B) box.def を含むフォルダの場合 → BOXノードとして扱う。 "
+					//----------------
+					var boxNode = new BoxNode( boxDefPath.ToVariablePath(), 親ノード );
+					親ノード.子ノードリスト.Add( boxNode );
+
+					var backNode = new BackNode( boxNode );
+					boxNode.子ノードリスト.Add( backNode );
+
+					// BOXノードを親として、サブフォルダへ再帰。
+					this.曲を検索して親ノードに追加する( boxNode, subDirInfo.FullName.ToVariablePath() );
+					//----------------
+					#endregion
 				}
 				else
 				{
-					// (3-b) サブフォルダへ再帰。（通常フォルダ）
+					#region " (C) その他のフォルダの場合 → そのままサブフォルダへ再帰。"
+					//----------------
 					this.曲を検索して親ノードに追加する( 親ノード, subDirInfo.FullName.ToVariablePath() );
+					//----------------
+					#endregion
 				}
 			}
 		}
@@ -220,10 +254,8 @@ namespace DTXmatixx.曲
 		/// <summary>
 		///		指定されたノードをフォーカスする。
 		///		<see cref="フォーカスリスト"/>もそのノードのあるリストへ変更される。
+		///		現在活性化中である場合、移動前のフォーカスリストは非活性化され、新しいフォーカスリストが活性化される。
 		/// </summary>
-		/// <remarks>
-		///		現在活性化中である場合、フォーカスリストも活性化状態にする。
-		/// </remarks>
 		public void フォーカスする( グラフィックデバイス gd, Node ノード )
 		{
 			//Debug.Assert( this.活性化している );	--> どちらの状態で呼び出してもよい。
