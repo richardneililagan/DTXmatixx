@@ -40,6 +40,9 @@ namespace DTXmatixx.ステージ.選曲
 			this.子リスト.Add( this._選択曲枠ランナー = new 選択曲枠ランナー() );
 			this.子リスト.Add( this._BPMパネル = new BPMパネル() );
 			this.子リスト.Add( this._曲別SKILL = new 曲別SKILL() );
+			this.子リスト.Add( this._SongNotFound = new 文字列画像() {
+				表示文字列 = "Song not found...",
+			} );
 
 			// 外部接続。
 			this._難易度と成績.青い線を取得する = () => this._青い線;
@@ -89,18 +92,32 @@ namespace DTXmatixx.ステージ.選曲
 				this._初めての進行描画 = false;
 			}
 
-			this._舞台画像.進行描画する( gd );
-			this._曲リスト.進行描画する( gd );
-			this._その他パネルを描画する( gd );
-			this._難易度と成績.描画する( gd, App.曲ツリー.フォーカス難易度 );
-			this._曲ステータスパネル.描画する( gd );
-			this._プレビュー画像を描画する( gd, App.曲ツリー.フォーカスノード );
-			this._BPMパネル.描画する( gd );
-			this._曲別SKILL.進行描画する( gd );
-			this._選択曲を囲む枠を描画する( gd );
-			this._選択曲枠ランナー.進行描画する( gd );
-			this._導線を描画する( gd );
-			this._ステージタイマー.描画する( gd, 1689f, 37f );
+			// 進行描画
+
+			if( null != App.曲ツリー.フォーカスノード )
+			{
+				this._舞台画像.進行描画する( gd );
+				this._曲リスト.進行描画する( gd );
+				this._その他パネルを描画する( gd );
+				this._難易度と成績.描画する( gd, App.曲ツリー.フォーカス難易度 );
+				this._曲ステータスパネル.描画する( gd );
+				this._プレビュー画像を描画する( gd, App.曲ツリー.フォーカスノード );
+				this._BPMパネル.描画する( gd );
+				this._曲別SKILL.進行描画する( gd );
+				this._選択曲を囲む枠を描画する( gd );
+				this._選択曲枠ランナー.進行描画する( gd );
+				this._導線を描画する( gd );
+				this._ステージタイマー.描画する( gd, 1689f, 37f );
+			}
+			else
+			{
+				// 曲が１つもない
+				this._舞台画像.進行描画する( gd );
+				this._ステージタイマー.描画する( gd, 1689f, 37f );
+				this._SongNotFound.描画する( gd, 1150f, 400f );
+			}
+
+			// 入力
 
 			App.入力管理.すべての入力デバイスをポーリングする();
 
@@ -126,7 +143,7 @@ namespace DTXmatixx.ステージ.選曲
 						{
 							this._曲リスト.BOXから出る( gd );
 						}
-						else
+						else if( null != App.曲ツリー.フォーカスノード )
 						{
 							// 選曲する
 							App.ステージ管理.アイキャッチを選択しクローズする( gd, nameof( GO ) );
@@ -135,15 +152,21 @@ namespace DTXmatixx.ステージ.選曲
 					}
 					else if( App.入力管理.ドラムが入力された( 入力.ドラム入力種別.Tom1 ) || App.入力管理.Keyboard.キーが押された( 0, Key.Up ) )
 					{
-						//App.曲ツリー.前のノードをフォーカスする();	--> 曲リストへ委譲
-						this._曲リスト.前のノードを選択する( gd );
-						this._導線アニメをリセットする( gd );
+						if( null != App.曲ツリー.フォーカスノード )
+						{
+							//App.曲ツリー.前のノードをフォーカスする();	--> 曲リストへ委譲
+							this._曲リスト.前のノードを選択する( gd );
+							this._導線アニメをリセットする( gd );
+						}
 					}
 					else if( App.入力管理.ドラムが入力された( 入力.ドラム入力種別.Tom2 ) || App.入力管理.Keyboard.キーが押された( 0, Key.Down ) )
 					{
-						//App.曲ツリー.次のノードをフォーカスする();	--> 曲リストへ委譲
-						this._曲リスト.次のノードを選択する( gd );
-						this._導線アニメをリセットする( gd );
+						if( null != App.曲ツリー.フォーカスノード )
+						{
+							//App.曲ツリー.次のノードをフォーカスする();	--> 曲リストへ委譲
+							this._曲リスト.次のノードを選択する( gd );
+							this._導線アニメをリセットする( gd );
+						}
 					}
 					break;
 
@@ -171,6 +194,7 @@ namespace DTXmatixx.ステージ.選曲
 		private 選択曲枠ランナー _選択曲枠ランナー = null;
 		private BPMパネル _BPMパネル = null;
 		private 曲別SKILL _曲別SKILL = null;
+		private 文字列画像 _SongNotFound = null;
 
 		private SolidColorBrush _白 = null;
 		private SolidColorBrush _黒 = null;
@@ -208,7 +232,7 @@ namespace DTXmatixx.ステージ.選曲
 		}
 		private void _プレビュー画像を描画する( グラフィックデバイス gd, Node ノード )
 		{
-			var 画像 = ノード?.ノード画像 ?? Node.既定のノード画像;
+			var 画像 = ノード.ノード画像 ?? Node.既定のノード画像;
 
 			// テクスチャは画面中央が (0,0,0) で、Xは右がプラス方向, Yは上がプラス方向, Zは奥がプラス方向+。
 

@@ -78,7 +78,7 @@ namespace DTXmatixx.データベース
 			}
 		}
 		public SQLiteDBBase( string DBファイルパス, long Version )
-			: this( DBファイルパス.ToVariablePath(), Version )
+			: this( DBファイルパス?.ToVariablePath(), Version )
 		{
 		}
 		public void Dispose()
