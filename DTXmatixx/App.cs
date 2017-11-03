@@ -488,6 +488,9 @@ namespace DTXmatixx
 				{
 					this._高速進行ステータス.現在の状態 = TriStateEvent.状態種別.OFF;
 
+					// ユーザ情報を保存する。
+					App.ユーザ管理.ログオン中のユーザ?.保存する();
+
 					// _AppStatus を変更してから、GUI スレッドで非同期実行を指示する。
 					this._AppStatus = AppStatus.終了;
 					this.BeginInvoke( new Action( () => { this.Close(); } ) );
