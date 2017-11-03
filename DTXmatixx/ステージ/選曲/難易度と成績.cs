@@ -28,7 +28,6 @@ namespace DTXmatixx.ステージ.選曲
 			using( Log.Block( FDKUtilities.現在のメソッド名 ) )
 			{
 				this._現在表示しているノード = null;
-				this._難易度 = new(string, string)[ 5 ];
 				this._見出し用TextFormat = new TextFormat( gd.DWriteFactory, "Century Gothic", 20f );
 			}
 		}
@@ -49,52 +48,14 @@ namespace DTXmatixx.ステージ.選曲
 			//----------------
 			if( App.曲ツリー.フォーカスノード != this._現在表示しているノード )
 			{
-				this._現在表示しているノード = App.曲ツリー.フォーカスノード;	// フォーカス曲ノードではない
-
-				switch( this._現在表示しているノード )
-				{
-					case MusicNode node:
-						{
-							using( var songdb = new SongDB() )
-							{
-								var song = songdb.Songs.Where( ( r ) => ( r.Path == node.曲ファイルパス.変数なしパス ) ).SingleOrDefault();
-								if( null != song )
-								{
-									this._難易度[ 0 ] = ("", "");
-									this._難易度[ 1 ] = ("", "");
-									this._難易度[ 2 ] = ("", "");
-									this._難易度[ 3 ] = ("FREE", song.Level.ToString( "0.00" ));
-									this._難易度[ 4 ] = ("", "");
-								}
-							}
-						}
-						break;
-
-					case SetNode node:
-						{
-							using( var songdb = new SongDB() )
-							{
-								for( int i = 0; i < 5; i++ )
-								{
-									this._難易度[ i ] = ("", "");
-									if( null != node.MusicNodes[ i ].label )
-									{
-										var song = songdb.Songs.Where( ( r ) => ( r.Path == node.MusicNodes[ i ].music.曲ファイルパス.変数なしパス ) ).SingleOrDefault();
-										if( null != song )
-										{
-											this._難易度[ i ] = (node.MusicNodes[ i ].label, song.Level.ToString( "0.00" ));
-										}
-									}
-								}
-							}
-						}
-						break;
-				}
+				this._現在表示しているノード = App.曲ツリー.フォーカスノード;  // フォーカス曲ノードではない → このクラスではMusicNode以外も表示できる　というかSetNodeな。
 			}
 			//----------------
 			#endregion
 
-			bool 表示可能ノードである = ( this._現在表示しているノード is MusicNode ) || ( this._現在表示しているノード is SetNode );
+			var node = this._現在表示しているノード;
+
+			bool 表示可能ノードである = ( node is MusicNode ) || ( node is SetNode );
 
 			gd.D2DBatchDraw( ( dc ) => {
 
@@ -105,23 +66,33 @@ namespace DTXmatixx.ステージ.選曲
 				var 領域dpx = new RectangleF( 642f, 529f, 338f, 508f );
 
 				using( var 黒ブラシ = new SolidColorBrush( dc, Color4.Black ) )
-				using( var 白ブラシ = new SolidColorBrush( dc, Color4.White ) )
 				using( var 黒透過ブラシ = new SolidColorBrush( dc, new Color4( Color3.Black, 0.5f ) ) )
-				using( var MASTER色ブラシ = new SolidColorBrush( dc, new Color4( 0xfffe55c6 ) ) )
-				using( var EXTREME色ブラシ = new SolidColorBrush( dc, new Color4( 0xff7d5cfe ) ) )
-				using( var ADVANCED色ブラシ = new SolidColorBrush( dc, new Color4( 0xff00aaeb ) ) )
-				using( var BASIC色ブラシ = new SolidColorBrush( dc, new Color4( 0xfffe9551 ) ) )
+				using( var 白ブラシ = new SolidColorBrush( dc, Color4.White ) )
+				using( var ULTIMATE色ブラシ = new SolidColorBrush( dc, Node.難易度色[ 4 ] ) )
+				using( var MASTER色ブラシ = new SolidColorBrush( dc, Node.難易度色[ 3 ] ) )
+				using( var EXTREME色ブラシ = new SolidColorBrush( dc, Node.難易度色[ 2 ] ) )
+				using( var ADVANCED色ブラシ = new SolidColorBrush( dc, Node.難易度色[ 1 ] ) )
+				using( var BASIC色ブラシ = new SolidColorBrush( dc, Node.難易度色[ 0 ] ) )
 				{
 					// 背景
 					dc.FillRectangle( 領域dpx, 黒透過ブラシ );
 
 					if( 表示可能ノードである )
 					{
+						// ULTIMATE 相当
 						// todo: ULTIMATE の表示を実装する。
-						this._難易度パネルを１つ描画する( dc, pretrans, 領域dpx.X, 領域dpx.Y, this._難易度[ 3 ].label, this._難易度[ 3 ].value, 白ブラシ, MASTER色ブラシ, 黒ブラシ );
-						this._難易度パネルを１つ描画する( dc, pretrans, 領域dpx.X, 領域dpx.Y + 120f, this._難易度[ 2 ].label, this._難易度[ 2 ].value, 白ブラシ, EXTREME色ブラシ, 黒ブラシ );
-						this._難易度パネルを１つ描画する( dc, pretrans, 領域dpx.X, 領域dpx.Y + 240f, this._難易度[ 1 ].label, this._難易度[ 1 ].value, 白ブラシ, ADVANCED色ブラシ, 黒ブラシ );
-						this._難易度パネルを１つ描画する( dc, pretrans, 領域dpx.X, 領域dpx.Y + 360f, this._難易度[ 0 ].label, this._難易度[ 0 ].value, 白ブラシ, BASIC色ブラシ, 黒ブラシ );
+						
+						// MASTER 相当
+						this._難易度パネルを１つ描画する( dc, pretrans, 領域dpx.X, 領域dpx.Y, node.難易度[ 3 ].label, node.難易度[ 3 ].level, 白ブラシ, MASTER色ブラシ, 黒ブラシ );
+
+						// EXTREME 相当
+						this._難易度パネルを１つ描画する( dc, pretrans, 領域dpx.X, 領域dpx.Y + 120f, node.難易度[ 2 ].label, node.難易度[ 2 ].level, 白ブラシ, EXTREME色ブラシ, 黒ブラシ );
+
+						// ADVANCED 相当
+						this._難易度パネルを１つ描画する( dc, pretrans, 領域dpx.X, 領域dpx.Y + 240f, node.難易度[ 1 ].label, node.難易度[ 1 ].level, 白ブラシ, ADVANCED色ブラシ, 黒ブラシ );
+
+						// BASIC 相当
+						this._難易度パネルを１つ描画する( dc, pretrans, 領域dpx.X, 領域dpx.Y + 360f, node.難易度[ 0 ].label, node.難易度[ 0 ].level, 白ブラシ, BASIC色ブラシ, 黒ブラシ );
 					}
 				}
 
@@ -148,13 +119,7 @@ namespace DTXmatixx.ステージ.選曲
 		private Node _現在表示しているノード = null;
 		private TextFormat _見出し用TextFormat = null;
 
-		/// <summary>
-		///		難易度ラベルと難易度（を文字列にしたもの）。
-		///		0:BASIC～4:ULTIMATE。
-		/// </summary>
-		private (string label, string value)[] _難易度 = new(string, string)[ 5 ];
-
-		private void _難易度パネルを１つ描画する( DeviceContext dc, Matrix3x2 pretrans, float 基点X, float 基点Y, string label, string 難易度, Brush 文字ブラシ, Brush 見出し背景ブラシ, Brush 数値背景ブラシ )
+		private void _難易度パネルを１つ描画する( DeviceContext dc, Matrix3x2 pretrans, float 基点X, float 基点Y, string 難易度ラベル, float 難易度値, Brush 文字ブラシ, Brush 見出し背景ブラシ, Brush 数値背景ブラシ )
 		{
 			dc.Transform = pretrans;
 
@@ -162,23 +127,25 @@ namespace DTXmatixx.ステージ.選曲
 			dc.FillRectangle( new RectangleF( 基点X + 156f, 基点Y + 53f, 157f, 78f ), 数値背景ブラシ );
 
 			this._見出し用TextFormat.TextAlignment = TextAlignment.Trailing;
-			dc.DrawText( label, this._見出し用TextFormat, new RectangleF( 基点X + 156f + 4f, 基点Y + 29f, 157f - 8f, 24f ), 文字ブラシ );
+			dc.DrawText( 難易度ラベル, this._見出し用TextFormat, new RectangleF( 基点X + 156f + 4f, 基点Y + 29f, 157f - 8f, 24f ), 文字ブラシ );
 
-			if( 難易度.Nullでも空でもない() )
+			if( 難易度ラベル.Nullでも空でもない() && 0.00 != 難易度値 )
 			{
+				var 難易度値文字列 = 難易度値.ToString( "0.00" ).PadLeft( 1 );	// 整数部は２桁を保証（１桁なら十の位は空白文字）
+
 				// 小数部を描画する
 				dc.Transform =
 					Matrix3x2.Scaling( 0.5f, 0.5f ) *
 					Matrix3x2.Translation( 基点X + 240f, 基点Y + 73f ) *
 					pretrans;
-				this._数字画像.描画する( dc, 0f, 0f, 難易度.Substring( 2 ) );
+				this._数字画像.描画する( dc, 0f, 0f, 難易度値文字列.Substring( 2 ) );
 
 				// 整数部を描画する（'.'含む）
 				dc.Transform =
 					Matrix3x2.Scaling( 0.75f, 0.75f ) *
 					Matrix3x2.Translation( 基点X + 176f, 基点Y + 53f ) *
 					pretrans;
-				this._数字画像.描画する( dc, 0f, 0f, 難易度.Substring( 0, 2 ) );
+				this._数字画像.描画する( dc, 0f, 0f, 難易度値文字列.Substring( 0, 2 ) );
 			}
 		}
 	}

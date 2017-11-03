@@ -59,7 +59,7 @@ namespace DTXmatixx.曲
 				}
 				if( this.フォーカスノード is SetNode setnode )
 				{
-					return setnode.MusicNodes[ this._現在の難易度アンカに最も近い難易度レベルを返す( setnode ) ].music;
+					return setnode.MusicNodes[ this._現在の難易度アンカに最も近い難易度レベルを返す( setnode ) ];
 				}
 				else
 				{
@@ -336,7 +336,7 @@ namespace DTXmatixx.曲
 			if( null == setnode )
 				return this._難易度アンカ;
 
-			if( null != setnode.MusicNodes[ this._難易度アンカ ].label )
+			if( null != setnode.MusicNodes[ this._難易度アンカ ] )
 				return this._難易度アンカ;    // 難易度ぴったりの曲があった
 
 			// 現在のアンカレベルから、難易度上向きに検索開始。
@@ -344,7 +344,7 @@ namespace DTXmatixx.曲
 			int 最も近いレベル = this._難易度アンカ;
 			for( int i = 0; i < 5; i++ )
 			{
-				if( null != setnode.MusicNodes[ 最も近いレベル ].label )
+				if( null != setnode.MusicNodes[ 最も近いレベル ] )
 					break;  // 曲があった。
 
 				// 曲がなかったので次の難易度レベルへGo。（5以上になったら0に戻る。）
@@ -361,7 +361,7 @@ namespace DTXmatixx.曲
 				最も近いレベル = this._難易度アンカ;
 				for( int i = 0; i < 5; i++ )
 				{
-					if( null != setnode.MusicNodes[ 最も近いレベル ].label )
+					if( null != setnode.MusicNodes[ 最も近いレベル ] )
 						break;  // 曲があった。
 
 					// 曲がなかったので次の難易度レベルへGo。（0未満になったら4に戻る。）

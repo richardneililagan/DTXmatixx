@@ -44,16 +44,6 @@ namespace DTXmatixx.曲
 			protected set;
 		} = null;
 
-		/// <summary>
-		///		この曲ノードに対応する難易度。
-		///		0.00～9.99。
-		/// </summary>
-		public float 難易度
-		{
-			get;
-			protected set;
-		} = 5.0f;
-
 
 		public MusicNode( VariablePath 曲ファイルパス, Node 親ノード )
 		{
@@ -70,8 +60,8 @@ namespace DTXmatixx.曲
 				if( null != song )
 				{
 					this.タイトル = song.Title;
-					this.難易度 = (float) song.Level;
 					this.曲ファイルハッシュ = song.HashId;
+					this.難易度[ 3 ] = ("FREE", (float) song.Level);       // [3]:MASTER相当。set.def 内にある MusicNode でも同じ。
 				}
 			}
 
