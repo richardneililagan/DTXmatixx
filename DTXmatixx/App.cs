@@ -122,7 +122,7 @@ namespace DTXmatixx
 			App.ドラムサウンド = new ドラムサウンド();
 
 			App.ユーザ管理 = new ユーザ管理();
-			// todo: ひとまず起動直後はAutoPlayerを選択。
+			// hack: ひとまず起動直後はAutoPlayerを選択。
 			App.ユーザ管理.ユーザリスト.SelectItem( ( user ) => ( user.ユーザID == "AutoPlayer" ) );
 
 			this._活性化する();
@@ -181,11 +181,11 @@ namespace DTXmatixx
 				switch( this._AppStatus )
 				{
 					case AppStatus.開始:
-						
+
 						// 高速進行タスク起動。
 						this._高速進行ステータス = new TriStateEvent( TriStateEvent.状態種別.OFF );
 						Task.Factory.StartNew( this._高速進行タスクエントリ );
-						
+
 						// 描画タスク起動。
 						this._AppStatus = AppStatus.実行中;
 
@@ -344,9 +344,12 @@ namespace DTXmatixx
 							//----------------
 							if( stage.現在のフェーズ == ステージ.曲ツリー構築.曲ツリー構築ステージ.フェーズ.確定 )
 							{
-								//App.ステージ管理.ステージを遷移する( gd, nameof( ステージ.タイトル.タイトルステージ ) );
-								// todo: テストコード: タイトルを飛ばして選曲ステージへ遷移する。
+#if DEBUG
+								// hack: テストコード: タイトルを飛ばして選曲ステージへ遷移する。
 								App.ステージ管理.ステージを遷移する( gd, nameof( ステージ.選曲.選曲ステージ ) );
+#else
+								App.ステージ管理.ステージを遷移する( gd, nameof( ステージ.タイトル.タイトルステージ ) );
+#endif
 							}
 							//----------------
 							#endregion

@@ -336,7 +336,7 @@ namespace DTXmatixx.ステージ.演奏
 
 					#region " ユーザヒット処理。"
 					//----------------
-
+#if DEBUG
 					if( App.入力管理.Keyboard.キーが押された( 0, Key.A ) )
 					{
 						this.成績.エキサイトゲージを加算する( 判定種別.PERFECT );
@@ -345,7 +345,7 @@ namespace DTXmatixx.ステージ.演奏
 					{
 						this.成績.エキサイトゲージを加算する( 判定種別.MISS );
 					}
-
+#endif
 					//----------------
 					#endregion
 
