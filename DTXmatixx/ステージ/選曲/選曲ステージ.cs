@@ -150,6 +150,10 @@ namespace DTXmatixx.ステージ.選曲
 							this.現在のフェーズ = フェーズ.フェードアウト;
 						}
 					}
+					else if( App.入力管理.Keyboard.キーが押された( 0, Key.Escape ) )
+					{
+						this.現在のフェーズ = フェーズ.キャンセル;
+					}
 					else if( App.入力管理.ドラムが入力された( 入力.ドラム入力種別.Tom1 ) || App.入力管理.Keyboard.キーが押された( 0, Key.Up ) )
 					{
 						if( null != App.曲ツリー.フォーカスノード )
