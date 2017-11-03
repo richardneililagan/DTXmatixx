@@ -69,6 +69,7 @@ namespace DTXmatixx.ステージ.演奏
 			this.子リスト.Add( this._譜面スクロール速度表示 = new 譜面スクロール速度表示() );
 			this.子リスト.Add( this._達成率表示 = new 達成率表示() );
 			this.子リスト.Add( this._曲別SKILL = new 曲別SKILL() );
+			this.子リスト.Add( this._エキサイトゲージ = new エキサイトゲージ() );
 			this.子リスト.Add( this._FPS = new FPS() );
 		}
 		protected override void On活性化( グラフィックデバイス gd )
@@ -329,9 +330,27 @@ namespace DTXmatixx.ステージ.演奏
 					#endregion
 
 
-					// 入力
+					// 入力(1) 手動演奏
 
 					App.入力管理.すべての入力デバイスをポーリングする( 入力履歴を記録する: false );
+
+					#region " ユーザヒット処理。"
+					//----------------
+
+					if( App.入力管理.Keyboard.キーが押された( 0, Key.A ) )
+					{
+						this.成績.エキサイトゲージを加算する( 判定種別.PERFECT );
+					}
+					if( App.入力管理.Keyboard.キーが押された( 0, Key.S ) )
+					{
+						this.成績.エキサイトゲージを加算する( 判定種別.MISS );
+					}
+
+					//----------------
+					#endregion
+
+
+					// 入力(2) 演奏以外の操作
 
 					if( App.入力管理.Keyboard.キーが押された( 0, Key.Escape ) )
 					{
@@ -397,6 +416,7 @@ namespace DTXmatixx.ステージ.演奏
 						this._ドラムパッド.進行描画する( gd );
 						this._背景画像.描画する( gd, 0f, 0f );
 						this._譜面スクロール速度表示.進行描画する( gd, App.ユーザ管理.ログオン中のユーザ.譜面スクロール速度 );
+						this._エキサイトゲージ.進行描画する( gd, this.成績.エキサイトゲージ量 );
 
 						this._カウントマップライン.進行描画する( gd );
 						this._フェーズパネル.進行描画する( gd );
@@ -492,6 +512,7 @@ namespace DTXmatixx.ステージ.演奏
 						this._ドラムパッド.進行描画する( gd );
 						this._背景画像.描画する( gd, 0f, 0f );
 						this._譜面スクロール速度表示.進行描画する( gd, App.ユーザ管理.ログオン中のユーザ.譜面スクロール速度 );
+						this._エキサイトゲージ.進行描画する( gd, this.成績.エキサイトゲージ量 );
 
 						double 曲の長さsec = App.演奏スコア.チップリスト[ App.演奏スコア.チップリスト.Count - 1 ].描画時刻sec;
 						float 現在位置 = (float) ( 1.0 - ( 曲の長さsec - 演奏時刻sec ) / 曲の長さsec );
@@ -589,6 +610,7 @@ namespace DTXmatixx.ステージ.演奏
 		private 譜面スクロール速度表示 _譜面スクロール速度表示 = null;
 		private 達成率表示 _達成率表示 = null;
 		private 曲別SKILL _曲別SKILL = null;
+		private エキサイトゲージ _エキサイトゲージ = null;
 		private FPS _FPS = null;
 		/// <summary>
 		///		読み込み画面: 0 ～ 1: 演奏画面

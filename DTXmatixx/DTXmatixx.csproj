@@ -121,6 +121,7 @@
     <Compile Include="ステージ\曲読み込み\プレビュー画像.cs" />
     <Compile Include="ステージ\曲読み込み\曲読み込みステージ.cs" />
     <Compile Include="ステージ\曲読み込み\難易度.cs" />
+    <Compile Include="ステージ\演奏\エキサイトゲージ.cs" />
     <Compile Include="ステージ\演奏\カウントマップライン.cs" />
     <Compile Include="ステージ\演奏\コンボ表示.cs" />
     <Compile Include="ステージ\演奏\スコア表示.cs" />
@@ -528,6 +529,14 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="System\Images\終了画面.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="System\Images\演奏画面_エキサイトゲージDANGER.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="System\Images\演奏画面_エキサイトゲージ通常.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
