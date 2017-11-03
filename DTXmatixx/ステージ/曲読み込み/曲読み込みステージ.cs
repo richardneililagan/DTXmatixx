@@ -128,6 +128,8 @@ namespace DTXmatixx.ステージ.曲読み込み
 		{
 			using( Log.Block( FDKUtilities.現在のメソッド名 ) )
 			{
+				// 曲ファイルを読み込む。
+
 				var 選択曲 = App.曲ツリー.フォーカス曲ノード;
 				Debug.Assert( null != 選択曲 );
 
@@ -149,10 +151,16 @@ namespace DTXmatixx.ステージ.曲読み込み
 					throw new Exception( $"未対応のフォーマットファイルです。[{選択曲ファイルパス.変数付きパス}]" );
 				}
 
-				// サウンドデバイス遅延を取得し、全チップの発声時刻へ反映する。
-				float 再生時遅延ms = (float) ( App.サウンドデバイス.再生遅延sec * 1000.0 );
+				// 本体のサウンドデバイスの遅延とスコアの示す遅延とを取得し、全チップの発声時刻を修正する。
+
+				long 早める時間ms = (long) ( App.サウンドデバイス.再生遅延sec * 1000 - App.演奏スコア.サウンドデバイス遅延ms );
+
 				foreach( var chip in App.演奏スコア.チップリスト )
-					chip.発声時刻ms -= (long) 再生時遅延ms;
+				{
+					chip.発声時刻ms -= (long) 早める時間ms;
+				}
+
+				// 完了。
 
 				Log.Info( $"曲ファイルを読み込みました。" );
 				Log.Info( $"曲名: {App.演奏スコア.曲名}" );
