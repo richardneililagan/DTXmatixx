@@ -34,6 +34,9 @@ namespace DTXmatixx.ステージ.演奏
 			FDKUtilities.解放する( ref this._通常ブラシ );
 			FDKUtilities.解放する( ref this._DANGERブラシ );
 			FDKUtilities.解放する( ref this._MAXブラシ );
+
+			FDKUtilities.解放する( ref this._ゲージ量のストーリーボード );
+			FDKUtilities.解放する( ref this._ゲージ量 );
 		}
 
 		/// <param name="ゲージ量">
