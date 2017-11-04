@@ -143,6 +143,13 @@ namespace DTXmatixx.データベース.ユーザ
 		[Column( DbType = "NVARCHAR", CanBeNull = false )]
 		public string SongFolders { get; set; }
 
+		/// <summary>
+		///		シンバルフリーモード。
+		///		0: OFF, その他: ON
+		/// </summary>
+		[Column( DbType = "INT", CanBeNull = false )]
+		public int CymbalFree { get; set; }
+
 		///////////////////////////
 
 		/// <summary>
@@ -205,6 +212,7 @@ namespace DTXmatixx.データベース.ユーザ
 			@", MaxRange_Good REAL NOT NULL" +
 			@", MaxRange_Ok REAL NOT NULL" +
 			@", SongFolders NVARCHAR NOT NULL" +
+			@", CymbalFree INTEGER NOT NULL" +
 			@");";
 	}
 }

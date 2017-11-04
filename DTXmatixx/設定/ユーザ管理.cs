@@ -38,10 +38,6 @@ namespace DTXmatixx.設定
 				user = ユーザ設定.作成する( new User() {
 					Id = "AutoPlayer",
 					Name = "AutoPlayer",
-#if DEBUG
-					// hack: テストコード: デバッグ用に固定パスを使用する。
-					SongFolders = new VariablePath( @"$(Exe)..\..\..\曲データ" ).変数なしパス,
-#endif
 				} );
 			}
 			if( null != user )
@@ -65,6 +61,10 @@ namespace DTXmatixx.設定
 					// 他は規定値
 				} );
 			}
+#if DEBUG
+			// hack: テストコード: デバッグ用に固定パスを使用する。
+			user.曲検索フォルダ.Add( new VariablePath( @"$(Exe)..\..\..\曲データ" ) );
+#endif
 			if( null != user )
 				this.ユーザリスト.Add( user );
 		}

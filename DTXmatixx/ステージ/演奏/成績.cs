@@ -143,7 +143,7 @@ namespace DTXmatixx.ステージ.演奏
 				case 判定種別.GREAT: this.エキサイトゲージ量 += 0.01f; break;
 				case 判定種別.GOOD: this.エキサイトゲージ量 += 0.005f; break;
 				case 判定種別.OK: this.エキサイトゲージ量 += 0f; break;
-				case 判定種別.MISS: this.エキサイトゲージ量 -= 0.02f; break;
+				case 判定種別.MISS: this.エキサイトゲージ量 -= 0.08f; break;
 			}
 
 			this.エキサイトゲージ量 = Math.Max( Math.Min( this.エキサイトゲージ量, 1.0f ), 0.0f );

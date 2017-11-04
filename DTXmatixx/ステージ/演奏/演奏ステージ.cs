@@ -14,6 +14,7 @@ using FDK.カウンタ;
 using SSTFormat.v3;
 using DTXmatixx.設定;
 using DTXmatixx.データベース.ユーザ;
+using DTXmatixx.入力;
 
 namespace DTXmatixx.ステージ.演奏
 {
@@ -281,11 +282,13 @@ namespace DTXmatixx.ステージ.演奏
 							if( AutoPlay && 対応表.AutoPlayON.MISS判定 )
 							{
 								this._チップのヒット処理を行う( chip, 判定種別.MISS, 対応表.AutoPlayON.自動ヒット時処理, ヒット判定バーと発声との時間sec );
+								this.成績.エキサイトゲージを加算する( 判定種別.MISS );	// MISS はエキサイトゲージに反映。
 								return;
 							}
 							else if( !AutoPlay && 対応表.AutoPlayOFF.MISS判定 )
 							{
 								this._チップのヒット処理を行う( chip, 判定種別.MISS, 対応表.AutoPlayOFF.ユーザヒット時処理, ヒット判定バーと発声との時間sec );
+								this.成績.エキサイトゲージを加算する( 判定種別.MISS );	// MISS はエキサイトゲージに反映。
 								return;
 							}
 							else
@@ -311,12 +314,14 @@ namespace DTXmatixx.ステージ.演奏
 							{
 								// Auto は Perfect 扱い
 								this._チップのヒット処理を行う( chip, 判定種別.PERFECT, 対応表.AutoPlayON.自動ヒット時処理, ヒット判定バーと発声との時間sec );
+								//this.成績.エキサイトゲージを加算する( 判定種別.PERFECT ); -> Auto ならエキサイトゲージには反映しない。
 								return;
 							}
 							else if( !AutoPlay && 対応表.AutoPlayOFF.自動ヒット )
 							{
 								// Auto は Perfect 扱い
 								this._チップのヒット処理を行う( chip, 判定種別.PERFECT, 対応表.AutoPlayOFF.自動ヒット時処理, ヒット判定バーと発声との時間sec );
+								//this.成績.エキサイトゲージを加算する( 判定種別.PERFECT ); -> Auto ならエキサイトゲージには反映しない。
 								return;
 							}
 							else
@@ -336,16 +341,138 @@ namespace DTXmatixx.ステージ.演奏
 
 					#region " ユーザヒット処理。"
 					//----------------
-#if DEBUG
-					if( App.入力管理.Keyboard.キーが押された( 0, Key.A ) )
 					{
-						this.成績.エキサイトゲージを加算する( 判定種別.PERFECT );
+						#region " ヒットしてようがしてまいが起こすアクション（空打ち処理）を実行。"
+						//----------------
+						foreach( var input in App.入力管理.ポーリング結果 )
+						{
+							if( input.InputEvent.離された )
+								continue;   // 押下イベントじゃないなら無視。
+
+							var column = ( from col in App.ユーザ管理.ログオン中のユーザ.ドラムとチップと入力の対応表.対応表
+										   where ( col.Value.ドラム入力種別 == input.Type )
+										   select col.Value ).First();
+
+							this._ドラムパッド.ヒットする( column.表示レーン種別 );
+							this._レーンフラッシュ.開始する( column.表示レーン種別 );
+						}
+						//----------------
+						#endregion
+
+						var 処理済み入力 = new List<ドラム入力イベント>(); // ヒット処理が終わった入力は、二重処理しないよう、この中に追加しておく。
+
+						this._描画範囲のチップに処理を適用する( 現在の演奏時刻sec, ( chip, index, ヒット判定バーと描画との時間sec, ヒット判定バーと発声との時間sec, ヒット判定バーとの距離 ) => {
+
+							var チップにヒットしている入力 = (ドラム入力イベント) null;
+
+							#region " ヒット判定 "
+							//----------------
+							var オプション設定 = App.ユーザ管理.ログオン中のユーザ;
+							var 対応表 = オプション設定.ドラムとチップと入力の対応表[ chip.チップ種別 ];
+							var AutoPlayである = オプション設定.AutoPlay[ 対応表.AutoPlay種別 ];
+
+							bool チップはヒット済みである = this._チップの演奏状態[ chip ].ヒット済みである;
+							bool チップはMISSエリアに達している = ( ヒット判定バーと描画との時間sec > オプション設定.最大ヒット距離sec[ 判定種別.OK ] );
+							bool チップは描画についてヒット判定バーを通過した = ( 0 <= ヒット判定バーと描画との時間sec );
+							bool チップは発声についてヒット判定バーを通過した = ( 0 <= ヒット判定バーと発声との時間sec );
+
+							if( チップはヒット済みである )
+							{
+								// ヒット済みなら何もしない。
+								return;
+							}
+							if( AutoPlayである )
+							{
+								// AutoPlay チップなので何もしない。
+								return;
+							}
+							if( !( 対応表.AutoPlayOFF.ユーザヒット ) )
+							{
+								// このチップは AutoPlay OFF の時でもユーザヒットの対象ではないので何もしない。
+								return;
+							}
+							if( !( ヒット判定バーと描画との時間sec >= -( オプション設定.最大ヒット距離sec[ 判定種別.OK ] ) && !( チップはMISSエリアに達している ) ) )
+							{
+								// チップはヒット可能エリアの外にある。
+								return;
+							}
+
+							// chip にヒットできる入力を探す。
+							チップにヒットしている入力 = App.入力管理.ポーリング結果.FirstOrDefault( ( 入力 ) => {
+
+								#region " chip にヒットする入力があれば true を返す。"
+								//----------------
+								if( !( 入力.InputEvent.押された ) )
+								{
+									// 押下入力じゃない。
+									return false;
+								}
+								if( 処理済み入力.Contains( 入力 ) )
+								{
+									// すでに今回のターンで処理済み（＝処理済み入力リストに追加済み）。
+									return false;
+								}
+
+								// chip がシンバルフリーの対象なら、chip に直接対応する入力の他にも、ヒット判定すべき入力がある。
+								if( 対応表.シンバルフリーの対象 && オプション設定.シンバルフリーモードである )
+								{
+									// この入力に対応するカラムのうち、
+									var カラムs = from kvp in オプション設定.ドラムとチップと入力の対応表.対応表
+											   where ( kvp.Value.ドラム入力種別 == 入力.Type )
+											   select kvp.Value;
+
+									foreach( var カラム in カラムs )
+									{
+										// シンバルフリーなチップがあるなら true。
+										if( カラム.シンバルフリーの対象 )
+											return true;
+									}
+									// まったくなかったら false。
+									return false;
+								}
+
+								// chip に対応する入力なら true。
+								return ( 対応表.ドラム入力種別 == 入力.Type );
+								//----------------
+								#endregion
+
+							} );
+							//----------------
+							#endregion
+
+							if( null == チップにヒットしている入力 )
+								return;	// なかった
+
+							処理済み入力.Add( チップにヒットしている入力 );
+
+							#region " 判定種別を判定する。"
+							//----------------
+							var 判定 = 判定種別.OK;
+
+							double ヒット判定バーとの時間の絶対値sec = Math.Abs( ヒット判定バーと描画との時間sec );
+
+							if( ヒット判定バーとの時間の絶対値sec <= オプション設定.最大ヒット距離sec[ 判定種別.PERFECT ] )
+							{
+								判定 = 判定種別.PERFECT;
+							}
+							else if( ヒット判定バーとの時間の絶対値sec <= オプション設定.最大ヒット距離sec[ 判定種別.GREAT ] )
+							{
+								判定 = 判定種別.GREAT;
+							}
+							else if( ヒット判定バーとの時間の絶対値sec <= オプション設定.最大ヒット距離sec[ 判定種別.GOOD ] )
+							{
+								判定 = 判定種別.GOOD;
+							}
+							//----------------
+							#endregion
+
+							this._チップのヒット処理を行う( chip, 判定, 対応表.AutoPlayOFF.ユーザヒット時処理, ヒット判定バーと発声との時間sec );
+							this.成績.エキサイトゲージを加算する( 判定 );	// エキサイトゲージに反映する。
+
+						} );
+
+						処理済み入力 = null;
 					}
-					if( App.入力管理.Keyboard.キーが押された( 0, Key.S ) )
-					{
-						this.成績.エキサイトゲージを加算する( 判定種別.MISS );
-					}
-#endif
 					//----------------
 					#endregion
 

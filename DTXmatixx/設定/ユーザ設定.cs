@@ -44,6 +44,13 @@ namespace DTXmatixx.設定
 			set
 				=> this._User.ScrollSpeed = value;
 		}
+		public bool シンバルフリーモードである
+		{
+			get
+				=> ( 0 != this._User.CymbalFree );
+			set
+				=> this._User.CymbalFree = value ? 1 : 0;
+		}
 		public bool AutoPlayがすべてONである
 		{
 			get

@@ -122,9 +122,20 @@ namespace DTXmatixx
 			App.ドラムサウンド = new ドラムサウンド();
 
 			App.ユーザ管理 = new ユーザ管理();
+#if DEBUG
 			// hack: ひとまず起動直後はAutoPlayerを選択。
-			App.ユーザ管理.ユーザリスト.SelectItem( ( user ) => ( user.ユーザID == "AutoPlayer" ) );
-
+			//App.ユーザ管理.ユーザリスト.SelectItem( ( user ) => ( user.ユーザID == "AutoPlayer" ) );
+			App.ユーザ管理.ユーザリスト.SelectItem( ( user ) => ( user.ユーザID == "Guest" ) );
+			App.ユーザ管理.ログオン中のユーザ.AutoPlay[ AutoPlay種別.LeftCrash ] = true;
+			App.ユーザ管理.ログオン中のユーザ.AutoPlay[ AutoPlay種別.HiHat ] = true;
+			App.ユーザ管理.ログオン中のユーザ.AutoPlay[ AutoPlay種別.Foot ] = true;
+			App.ユーザ管理.ログオン中のユーザ.AutoPlay[ AutoPlay種別.Snare ] = false;	// スネアと
+			App.ユーザ管理.ログオン中のユーザ.AutoPlay[ AutoPlay種別.Bass ] = false;	// バスだけ手動
+			App.ユーザ管理.ログオン中のユーザ.AutoPlay[ AutoPlay種別.Tom1 ] = true;
+			App.ユーザ管理.ログオン中のユーザ.AutoPlay[ AutoPlay種別.Tom2 ] = true;
+			App.ユーザ管理.ログオン中のユーザ.AutoPlay[ AutoPlay種別.Tom3 ] = true;
+			App.ユーザ管理.ログオン中のユーザ.AutoPlay[ AutoPlay種別.RightCrash ] = true;
+#endif
 			this._活性化する();
 
 			base.全画面モード = App.ユーザ管理.ログオン中のユーザ.全画面モードである;
