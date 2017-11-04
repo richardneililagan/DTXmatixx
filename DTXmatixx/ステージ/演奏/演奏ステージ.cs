@@ -101,10 +101,6 @@ namespace DTXmatixx.ステージ.演奏
 				foreach( var chip in App.演奏スコア.チップリスト )
 					this._チップの演奏状態.Add( chip, new チップの演奏状態( chip ) );
 
-				this._空打ちチップ = new Dictionary<ドラム入力種別, チップ>();
-				foreach( ドラム入力種別 drumType in Enum.GetValues( typeof( ドラム入力種別 ) ) )
-					this._空打ちチップ.Add( drumType, null );
-
 				if( null != App.演奏スコア )
 				{
 					#region " 背景動画とBGMを生成する。"
@@ -202,9 +198,6 @@ namespace DTXmatixx.ステージ.演奏
 
 				//App.WAV管理?.Dispose();	--> ここではまだ解放しない。結果ステージの非活性化時に解放する。
 				//App.WAV管理 = null;
-
-				this._空打ちチップ.Clear();
-				this._空打ちチップ = null;
 
 				foreach( var kvp in this._チップの演奏状態 )
 					kvp.Value.Dispose();
@@ -476,10 +469,15 @@ namespace DTXmatixx.ステージ.演奏
 							if( 処理済み入力.Contains( 入力 ) )
 								continue;
 
-							if( null != this._空打ちチップ[ 入力.Type ] )
+							var column = from kvp in App.ユーザ管理.ログオン中のユーザ.ドラムとチップと入力の対応表.対応表
+										 where ( kvp.Value.ドラム入力種別 == 入力.Type )
+										 select kvp.Value;
+
+							int zz;
+							if( ( 0 < column.Count() ) && ( 0 != ( zz = App.演奏スコア.空打ちチップ[ column.First().レーン種別 ] ) ) )
 							{
 								// (A) 空打ちチップの指定があるなら、それを発声する。
-								this._チップの発声を行う( this._空打ちチップ[ 入力.Type ], 現在の演奏時刻sec );
+								App.WAV管理.発声する( zz, column.First().チップ種別 );
 							}
 							else
 							{
@@ -490,7 +488,7 @@ namespace DTXmatixx.ステージ.演奏
 							}
 						}
 						//----------------
-									#endregion
+						#endregion
 
 						処理済み入力 = null;
 					}
@@ -1112,11 +1110,6 @@ namespace DTXmatixx.ステージ.演奏
 				#endregion
 			}
 		}
-
-		/// <summary>
-		///		空打ちチップが指定されている場合はそのチップを、指定されていないなら null を保持する。
-		/// </summary>
-		private Dictionary<ドラム入力種別, チップ> _空打ちチップ = null;
 
 		private チップ _指定された時刻に一番近いチップを返す( double 時刻sec, ドラム入力種別 drumType )
 		{
