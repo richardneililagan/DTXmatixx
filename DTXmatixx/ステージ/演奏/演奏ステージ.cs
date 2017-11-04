@@ -101,6 +101,10 @@ namespace DTXmatixx.ステージ.演奏
 				foreach( var chip in App.演奏スコア.チップリスト )
 					this._チップの演奏状態.Add( chip, new チップの演奏状態( chip ) );
 
+				this._空打ちチップ = new Dictionary<ドラム入力種別, チップ>();
+				foreach( ドラム入力種別 drumType in Enum.GetValues( typeof( ドラム入力種別 ) ) )
+					this._空打ちチップ.Add( drumType, null );
+
 				if( null != App.演奏スコア )
 				{
 					#region " 背景動画とBGMを生成する。"
@@ -199,6 +203,9 @@ namespace DTXmatixx.ステージ.演奏
 				//App.WAV管理?.Dispose();	--> ここではまだ解放しない。結果ステージの非活性化時に解放する。
 				//App.WAV管理 = null;
 
+				this._空打ちチップ.Clear();
+				this._空打ちチップ = null;
+
 				foreach( var kvp in this._チップの演奏状態 )
 					kvp.Value.Dispose();
 				this._チップの演奏状態 = null;
@@ -282,13 +289,12 @@ namespace DTXmatixx.ステージ.演奏
 							if( AutoPlay && 対応表.AutoPlayON.MISS判定 )
 							{
 								this._チップのヒット処理を行う( chip, 判定種別.MISS, 対応表.AutoPlayON.自動ヒット時処理, ヒット判定バーと発声との時間sec );
-								this.成績.エキサイトゲージを加算する( 判定種別.MISS );	// MISS はエキサイトゲージに反映。
 								return;
 							}
 							else if( !AutoPlay && 対応表.AutoPlayOFF.MISS判定 )
 							{
 								this._チップのヒット処理を行う( chip, 判定種別.MISS, 対応表.AutoPlayOFF.ユーザヒット時処理, ヒット判定バーと発声との時間sec );
-								this.成績.エキサイトゲージを加算する( 判定種別.MISS );	// MISS はエキサイトゲージに反映。
+								this.成績.エキサイトゲージを加算する( 判定種別.MISS );	// 手動演奏なら MISS はエキサイトゲージに反映。
 								return;
 							}
 							else
@@ -303,7 +309,7 @@ namespace DTXmatixx.ステージ.演奏
 							if( ( AutoPlay && 対応表.AutoPlayON.自動ヒット && 対応表.AutoPlayON.自動ヒット時処理.再生 ) ||
 								( !AutoPlay && 対応表.AutoPlayOFF.自動ヒット && 対応表.AutoPlayOFF.自動ヒット時処理.再生 ) )
 							{
-								this._チップの発声を行う( chip, ヒット判定バーと発声との時間sec );
+								this._チップの発声がまだなら発声を行う( chip, ヒット判定バーと発声との時間sec );
 							}
 						}
 
@@ -312,16 +318,16 @@ namespace DTXmatixx.ステージ.演奏
 							// 自動ヒット判定。
 							if( AutoPlay && 対応表.AutoPlayON.自動ヒット )
 							{
-								// Auto は Perfect 扱い
+								// AutoPlay 時は Perfect 扱い
 								this._チップのヒット処理を行う( chip, 判定種別.PERFECT, 対応表.AutoPlayON.自動ヒット時処理, ヒット判定バーと発声との時間sec );
-								//this.成績.エキサイトゲージを加算する( 判定種別.PERFECT ); -> Auto ならエキサイトゲージには反映しない。
+								//this.成績.エキサイトゲージを加算する( 判定種別.PERFECT ); -> エキサイトゲージには反映しない。
 								return;
 							}
 							else if( !AutoPlay && 対応表.AutoPlayOFF.自動ヒット )
 							{
-								// Auto は Perfect 扱い
+								// AutoPlay OFF でも自動ヒットする場合は Perfect 扱い
 								this._チップのヒット処理を行う( chip, 判定種別.PERFECT, 対応表.AutoPlayOFF.自動ヒット時処理, ヒット判定バーと発声との時間sec );
-								//this.成績.エキサイトゲージを加算する( 判定種別.PERFECT ); -> Auto ならエキサイトゲージには反映しない。
+								//this.成績.エキサイトゲージを加算する( 判定種別.PERFECT ); -> エキサイトゲージには反映しない。
 								return;
 							}
 							else
@@ -344,6 +350,7 @@ namespace DTXmatixx.ステージ.演奏
 					{
 						var 処理済み入力 = new List<ドラム入力イベント>(); // ヒット処理が終わった入力は、二重処理しないよう、この中に追加しておく。
 
+						// 描画範囲内のすべてのチップについて、対応する入力があればヒット処理を行う。
 						this._描画範囲のチップに処理を適用する( 現在の演奏時刻sec, ( chip, index, ヒット判定バーと描画との時間sec, ヒット判定バーと発声との時間sec, ヒット判定バーとの距離 ) => {
 
 							var チップにヒットしている入力 = (ドラム入力イベント) null;
@@ -426,35 +433,26 @@ namespace DTXmatixx.ステージ.演奏
 							if( null == チップにヒットしている入力 )
 								return;	// なかった
 
-							処理済み入力.Add( チップにヒットしている入力 );
+							処理済み入力.Add( チップにヒットしている入力 );	// この入力はこのチップでヒット処理した。
 
-							#region " 判定種別を判定する。"
-							//----------------
+							// 判定を算出。
 							var 判定 = 判定種別.OK;
-
 							double ヒット判定バーとの時間の絶対値sec = Math.Abs( ヒット判定バーと描画との時間sec );
+							switch( ヒット判定バーとの時間の絶対値sec )
+							{
+								case double span when( span <= オプション設定.最大ヒット距離sec[ 判定種別.PERFECT ] ): 判定 = 判定種別.PERFECT; break;
+								case double span when( span <= オプション設定.最大ヒット距離sec[ 判定種別.GREAT ] ): 判定 = 判定種別.GREAT; break;
+								case double span when( span <= オプション設定.最大ヒット距離sec[ 判定種別.GOOD ] ): 判定 = 判定種別.GOOD; break;
+								default: 判定 = 判定種別.OK;break;
+							}
 
-							if( ヒット判定バーとの時間の絶対値sec <= オプション設定.最大ヒット距離sec[ 判定種別.PERFECT ] )
-							{
-								判定 = 判定種別.PERFECT;
-							}
-							else if( ヒット判定バーとの時間の絶対値sec <= オプション設定.最大ヒット距離sec[ 判定種別.GREAT ] )
-							{
-								判定 = 判定種別.GREAT;
-							}
-							else if( ヒット判定バーとの時間の絶対値sec <= オプション設定.最大ヒット距離sec[ 判定種別.GOOD ] )
-							{
-								判定 = 判定種別.GOOD;
-							}
-							//----------------
-							#endregion
-
+							// ヒット処理。
 							this._チップのヒット処理を行う( chip, 判定, 対応表.AutoPlayOFF.ユーザヒット時処理, ヒット判定バーと発声との時間sec );
 							this.成績.エキサイトゲージを加算する( 判定 );	// エキサイトゲージに反映する。
 
 						} );
 
-						#region " ヒットしてようがしてまいが起こすアクション（空打ち処理）を実行。"
+						#region " ヒットしてようがしてまいが起こすアクションを実行。"
 						//----------------
 						foreach( var input in App.入力管理.ポーリング結果 )
 						{
@@ -470,6 +468,29 @@ namespace DTXmatixx.ステージ.演奏
 						}
 						//----------------
 						#endregion
+
+						#region " どのチップにもヒットしなかった入力は空打ちとみなし、空打ち音を再生する。"
+						//----------------
+						foreach( var 入力 in App.入力管理.ポーリング結果 )
+						{
+							if( 処理済み入力.Contains( 入力 ) )
+								continue;
+
+							if( null != this._空打ちチップ[ 入力.Type ] )
+							{
+								// (A) 空打ちチップの指定があるなら、それを発声する。
+								this._チップの発声を行う( this._空打ちチップ[ 入力.Type ], 現在の演奏時刻sec );
+							}
+							else
+							{
+								// (B) 空打ちチップの指定がないなら、一番近いチップを検索し、それを発声する。
+								var chip = this._指定された時刻に一番近いチップを返す( 現在の演奏時刻sec, 入力.Type );
+								if( null != chip )
+									this._チップの発声を行う( chip, 現在の演奏時刻sec );
+							}
+						}
+						//----------------
+									#endregion
 
 						処理済み入力 = null;
 					}
@@ -972,7 +993,6 @@ namespace DTXmatixx.ステージ.演奏
 		private Sound _BGM = null;
 		private bool _BGM再生開始済み = false;
 
-
 		/// <summary>
 		///		BGM の生成もとになるデコード済みサウンドデータ。
 		///	</summary>
@@ -991,7 +1011,7 @@ namespace DTXmatixx.ステージ.演奏
 				#region " チップの発声を行う。"
 				//----------------
 				if( this._チップの演奏状態[ chip ].発声されていない )
-					this._チップの発声を行う( chip, ヒット判定バーと発声との時間sec );
+					this._チップの発声がまだなら発声を行う( chip, ヒット判定バーと発声との時間sec );
 				//----------------
 				#endregion
 			}
@@ -1030,13 +1050,18 @@ namespace DTXmatixx.ステージ.演奏
 				#endregion
 			}
 		}
+
+		private void _チップの発声がまだなら発声を行う( チップ chip, double 再生開始位置sec )
+		{
+			if( !( this._チップの演奏状態[ chip ].発声済みである ) )
+			{
+				this._チップの演奏状態[ chip ].発声済みである = true;
+
+				this._チップの発声を行う( chip, 再生開始位置sec );
+			}
+		}
 		private void _チップの発声を行う( チップ chip, double 再生開始位置sec )
 		{
-			if( this._チップの演奏状態[ chip ].発声済みである )
-				return;
-
-			this._チップの演奏状態[ chip ].発声済みである = true;
-
 			if( 0 == chip.チップサブID )
 			{
 				#region " (A) SSTF 準拠のチップ "
@@ -1086,6 +1111,43 @@ namespace DTXmatixx.ステージ.演奏
 				//----------------
 				#endregion
 			}
+		}
+
+		/// <summary>
+		///		空打ちチップが指定されている場合はそのチップを、指定されていないなら null を保持する。
+		/// </summary>
+		private Dictionary<ドラム入力種別, チップ> _空打ちチップ = null;
+
+		private チップ _指定された時刻に一番近いチップを返す( double 時刻sec, ドラム入力種別 drumType )
+		{
+			var 対応表 = App.ユーザ管理.ログオン中のユーザ.ドラムとチップと入力の対応表.対応表;
+
+			var 一番近いチップ = (チップ) null;
+			var 一番近いチップの時刻差の絶対値sec = (double) 0.0;
+
+			for( int i = 0; i < App.演奏スコア.チップリスト.Count; i++ )
+			{
+				var chip = App.演奏スコア.チップリスト[ i ];
+
+				if( 対応表[ chip.チップ種別 ].ドラム入力種別 != drumType )
+					continue;   // 指定されたドラム入力種別ではないチップは無視。
+
+				if( null != 一番近いチップ )
+				{
+					var 今回の時刻差の絶対値sec = Math.Abs( chip.描画時刻sec - 時刻sec );
+
+					if( 一番近いチップの時刻差の絶対値sec < 今回の時刻差の絶対値sec )
+					{
+						// 時刻差の絶対値が前回より増えた → 前回のチップが指定時刻への再接近だった
+						break;
+					}
+				}
+
+				一番近いチップ = chip;
+				一番近いチップの時刻差の絶対値sec = Math.Abs( 一番近いチップ.描画時刻sec - 時刻sec );
+			}
+
+			return 一番近いチップ;
 		}
 
 		private void _キャプチャ画面を描画する( グラフィックデバイス gd, float 不透明度 = 1.0f )
