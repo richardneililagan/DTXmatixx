@@ -342,30 +342,13 @@ namespace DTXmatixx.ステージ.演奏
 					#region " ユーザヒット処理。"
 					//----------------
 					{
-						#region " ヒットしてようがしてまいが起こすアクション（空打ち処理）を実行。"
-						//----------------
-						foreach( var input in App.入力管理.ポーリング結果 )
-						{
-							if( input.InputEvent.離された )
-								continue;   // 押下イベントじゃないなら無視。
-
-							var column = ( from col in App.ユーザ管理.ログオン中のユーザ.ドラムとチップと入力の対応表.対応表
-										   where ( col.Value.ドラム入力種別 == input.Type )
-										   select col.Value ).First();
-
-							this._ドラムパッド.ヒットする( column.表示レーン種別 );
-							this._レーンフラッシュ.開始する( column.表示レーン種別 );
-						}
-						//----------------
-						#endregion
-
 						var 処理済み入力 = new List<ドラム入力イベント>(); // ヒット処理が終わった入力は、二重処理しないよう、この中に追加しておく。
 
 						this._描画範囲のチップに処理を適用する( 現在の演奏時刻sec, ( chip, index, ヒット判定バーと描画との時間sec, ヒット判定バーと発声との時間sec, ヒット判定バーとの距離 ) => {
 
 							var チップにヒットしている入力 = (ドラム入力イベント) null;
 
-							#region " ヒット判定 "
+							#region " チップにヒットしている入力を探す。"
 							//----------------
 							var オプション設定 = App.ユーザ管理.ログオン中のユーザ;
 							var 対応表 = オプション設定.ドラムとチップと入力の対応表[ chip.チップ種別 ];
@@ -470,6 +453,23 @@ namespace DTXmatixx.ステージ.演奏
 							this.成績.エキサイトゲージを加算する( 判定 );	// エキサイトゲージに反映する。
 
 						} );
+
+						#region " ヒットしてようがしてまいが起こすアクション（空打ち処理）を実行。"
+						//----------------
+						foreach( var input in App.入力管理.ポーリング結果 )
+						{
+							if( input.InputEvent.離された )
+								continue;   // 押下イベントじゃないなら無視。
+
+							var column = ( from col in App.ユーザ管理.ログオン中のユーザ.ドラムとチップと入力の対応表.対応表
+										   where ( col.Value.ドラム入力種別 == input.Type )
+										   select col.Value ).First();
+
+							this._ドラムパッド.ヒットする( column.表示レーン種別 );
+							this._レーンフラッシュ.開始する( column.表示レーン種別 );
+						}
+						//----------------
+						#endregion
 
 						処理済み入力 = null;
 					}
@@ -986,7 +986,7 @@ namespace DTXmatixx.ステージ.演奏
 		{
 			this._チップの演奏状態[ chip ].ヒット済みである = true;
 
-			if( ヒット処理表.再生 )
+			if( ヒット処理表.再生 && ( judge != 判定種別.MISS ) )
 			{
 				#region " チップの発声を行う。"
 				//----------------

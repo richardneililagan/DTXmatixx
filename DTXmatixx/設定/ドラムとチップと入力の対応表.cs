@@ -154,7 +154,7 @@ namespace DTXmatixx.設定
 							},
 							ユーザヒット = true,
 							ユーザヒット時処理 = new Column.Columnヒット処理() {
-								再生 = false,
+								再生 = true,
 								非表示 = true,
 								判定 = true,
 							},
@@ -191,7 +191,7 @@ namespace DTXmatixx.設定
 							},
 							ユーザヒット = true,
 							ユーザヒット時処理 = new Column.Columnヒット処理() {
-								再生 = false,
+								再生 = true,
 								非表示 = true,
 								判定 = true,
 							},
@@ -228,7 +228,7 @@ namespace DTXmatixx.設定
 							},
 							ユーザヒット = true,
 							ユーザヒット時処理 = new Column.Columnヒット処理() {
-								再生 = false,
+								再生 = true,
 								非表示 = true,
 								判定 = true,
 							},
@@ -265,7 +265,7 @@ namespace DTXmatixx.設定
 							},
 							ユーザヒット = true,
 							ユーザヒット時処理 = new Column.Columnヒット処理() {
-								再生 = false,
+								再生 = true,
 								非表示 = true,
 								判定 = true,
 							},
@@ -302,7 +302,7 @@ namespace DTXmatixx.設定
 							},
 							ユーザヒット = true,
 							ユーザヒット時処理 = new Column.Columnヒット処理() {
-								再生 = false,
+								再生 = true,
 								非表示 = true,
 								判定 = true,
 							},
@@ -339,7 +339,7 @@ namespace DTXmatixx.設定
 							},
 							ユーザヒット = true,
 							ユーザヒット時処理 = new Column.Columnヒット処理() {
-								再生 = false,
+								再生 = true,
 								非表示 = true,
 								判定 = true,
 							},
@@ -376,7 +376,7 @@ namespace DTXmatixx.設定
 							},
 							ユーザヒット = true,
 							ユーザヒット時処理 = new Column.Columnヒット処理() {
-								再生 = false,
+								再生 = true,
 								非表示 = true,
 								判定 = true,
 							},
@@ -413,7 +413,7 @@ namespace DTXmatixx.設定
 							},
 							ユーザヒット = true,
 							ユーザヒット時処理 = new Column.Columnヒット処理() {
-								再生 = false,
+								再生 = true,
 								非表示 = true,
 								判定 = true,
 							},
@@ -450,7 +450,7 @@ namespace DTXmatixx.設定
 							},
 							ユーザヒット = true,
 							ユーザヒット時処理 = new Column.Columnヒット処理() {
-								再生 = false,
+								再生 = true,
 								非表示 = true,
 								判定 = false,
 							},
@@ -487,7 +487,7 @@ namespace DTXmatixx.設定
 							},
 							ユーザヒット = true,
 							ユーザヒット時処理 = new Column.Columnヒット処理() {
-								再生 = false,
+								再生 = true,
 								非表示 = true,
 								判定 = true,
 							},
@@ -524,7 +524,7 @@ namespace DTXmatixx.設定
 							},
 							ユーザヒット = true,
 							ユーザヒット時処理 = new Column.Columnヒット処理() {
-								再生 = false,
+								再生 = true,
 								非表示 = true,
 								判定 = true,
 							},
@@ -561,7 +561,7 @@ namespace DTXmatixx.設定
 							},
 							ユーザヒット = true,
 							ユーザヒット時処理 = new Column.Columnヒット処理() {
-								再生 = false,
+								再生 = true,
 								非表示 = true,
 								判定 = true,
 							},
@@ -598,7 +598,7 @@ namespace DTXmatixx.設定
 							},
 							ユーザヒット = true,
 							ユーザヒット時処理 = new Column.Columnヒット処理() {
-								再生 = false,
+								再生 = true,
 								非表示 = true,
 								判定 = false,
 							},
@@ -635,7 +635,7 @@ namespace DTXmatixx.設定
 							},
 							ユーザヒット = true,
 							ユーザヒット時処理 = new Column.Columnヒット処理() {
-								再生 = false,
+								再生 = true,
 								非表示 = true,
 								判定 = true,
 							},
@@ -672,7 +672,7 @@ namespace DTXmatixx.設定
 							},
 							ユーザヒット = true,
 							ユーザヒット時処理 = new Column.Columnヒット処理() {
-								再生 = false,
+								再生 = true,
 								非表示 = true,
 								判定 = true,
 							},
@@ -709,7 +709,7 @@ namespace DTXmatixx.設定
 							},
 							ユーザヒット = true,
 							ユーザヒット時処理 = new Column.Columnヒット処理() {
-								再生 = false,
+								再生 = true,
 								非表示 = true,
 								判定 = true,
 							},
@@ -746,7 +746,7 @@ namespace DTXmatixx.設定
 							},
 							ユーザヒット = true,
 							ユーザヒット時処理 = new Column.Columnヒット処理() {
-								再生 = false,
+								再生 = true,
 								非表示 = true,
 								判定 = true,
 							},
@@ -783,7 +783,7 @@ namespace DTXmatixx.設定
 							},
 							ユーザヒット = true,
 							ユーザヒット時処理 = new Column.Columnヒット処理() {
-								再生 = false,
+								再生 = true,
 								非表示 = true,
 								判定 = true,
 							},
@@ -820,7 +820,7 @@ namespace DTXmatixx.設定
 							},
 							ユーザヒット = true,
 							ユーザヒット時処理 = new Column.Columnヒット処理() {
-								再生 = false,
+								再生 = true,
 								非表示 = true,
 								判定 = true,
 							},
@@ -857,7 +857,7 @@ namespace DTXmatixx.設定
 							},
 							ユーザヒット = true,
 							ユーザヒット時処理 = new Column.Columnヒット処理() {
-								再生 = false,
+								再生 = true,
 								非表示 = true,
 								判定 = true,
 							},
@@ -894,7 +894,7 @@ namespace DTXmatixx.設定
 							},
 							ユーザヒット = true,
 							ユーザヒット時処理 = new Column.Columnヒット処理() {
-								再生 = false,
+								再生 = true,
 								非表示 = true,
 								判定 = true,
 							},
@@ -1097,7 +1097,7 @@ namespace DTXmatixx.設定
 						ドラム入力種別 = ドラム入力種別.Unknown,
 						表示レーン種別 = 表示レーン種別.LeftCrash,
 						AutoPlay種別 = AutoPlay種別.LeftCrash,
-						不可視 = false,
+						不可視 = true,
 						AutoPlayON = new Column.ColumnAutoPlayON() {
 							自動ヒット = true,
 							自動ヒット時処理 = new Column.Columnヒット処理() {
@@ -1134,7 +1134,7 @@ namespace DTXmatixx.設定
 						ドラム入力種別 = ドラム入力種別.Unknown,
 						表示レーン種別 = 表示レーン種別.RightCrash,
 						AutoPlay種別 = AutoPlay種別.RightCrash,
-						不可視 = false,
+						不可視 = true,
 						AutoPlayON = new Column.ColumnAutoPlayON() {
 							自動ヒット = true,
 							自動ヒット時処理 = new Column.Columnヒット処理() {

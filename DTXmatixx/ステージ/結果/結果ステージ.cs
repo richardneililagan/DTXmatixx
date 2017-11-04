@@ -31,6 +31,7 @@ namespace DTXmatixx.ステージ.結果
 
 		// 外部依存アクション; ステージ管理クラスで接続。
 		internal Func<成績> 結果を取得する = null;
+		internal Action BGMを停止する = null;
 
 		public 結果ステージ()
 		{
@@ -76,6 +77,8 @@ namespace DTXmatixx.ステージ.結果
 
 				FDKUtilities.解放する( ref this._黒マスクブラシ );
 				FDKUtilities.解放する( ref this._プレビュー枠ブラシ );
+
+				this.BGMを停止する();
 
 				App.WAV管理?.Dispose();
 				App.WAV管理 = null;
