@@ -148,6 +148,8 @@
     <Compile Include="ステージ\結果\演奏パラメータ結果.cs" />
     <Compile Include="ステージ\結果\結果ステージ.cs" />
     <Compile Include="ステージ\舞台画像.cs" />
+    <Compile Include="ステージ\認証\ユーザリスト.cs" />
+    <Compile Include="ステージ\認証\認証ステージ_タッチアイコンVer.cs" />
     <Compile Include="ステージ\認証\認証ステージ.cs" />
     <Compile Include="ステージ\選曲\BPMパネル.cs" />
     <Compile Include="ステージ\選曲\曲ステータスパネル.cs" />
@@ -537,6 +539,20 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="System\Images\演奏画面_エキサイトゲージ通常.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="System\Images\認証画面_パネル.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="System\Images\認証画面_パネル光彩あり.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="System\Images\認証画面_ユーザ選択ウィンドウ.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="System\Images\認証画面_肩書きパネル.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>

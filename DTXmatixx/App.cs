@@ -122,9 +122,7 @@ namespace DTXmatixx
 			App.ドラムサウンド = new ドラムサウンド();
 
 			App.ユーザ管理 = new ユーザ管理();
-#if DEBUG
-			// hack: ひとまず起動直後はAutoPlayerを選択。
-			//App.ユーザ管理.ユーザリスト.SelectItem( ( user ) => ( user.ユーザID == "AutoPlayer" ) );
+#if DEBUG_
 			App.ユーザ管理.ユーザリスト.SelectItem( ( user ) => ( user.ユーザID == "Guest" ) );
 			App.ユーザ管理.ログオン中のユーザ.AutoPlay[ AutoPlay種別.LeftCrash ] = true;
 			App.ユーザ管理.ログオン中のユーザ.AutoPlay[ AutoPlay種別.HiHat ] = true;
@@ -135,6 +133,8 @@ namespace DTXmatixx
 			App.ユーザ管理.ログオン中のユーザ.AutoPlay[ AutoPlay種別.Tom2 ] = true;
 			App.ユーザ管理.ログオン中のユーザ.AutoPlay[ AutoPlay種別.Tom3 ] = true;
 			App.ユーザ管理.ログオン中のユーザ.AutoPlay[ AutoPlay種別.RightCrash ] = true;
+#else
+			App.ユーザ管理.ユーザリスト.SelectItem( ( user ) => ( user.ユーザID == "AutoPlayer" ) );  // ひとまずAutoPlayerを選択。
 #endif
 			this._活性化する();
 
@@ -355,7 +355,7 @@ namespace DTXmatixx
 							//----------------
 							if( stage.現在のフェーズ == ステージ.曲ツリー構築.曲ツリー構築ステージ.フェーズ.確定 )
 							{
-#if DEBUG
+#if DEBUG_
 								// hack: テストコード: タイトルを飛ばして選曲ステージへ遷移する。
 								App.ステージ管理.ステージを遷移する( gd, nameof( ステージ.選曲.選曲ステージ ) );
 #else
@@ -405,11 +405,11 @@ namespace DTXmatixx
 							break;
 
 						case ステージ.選曲.選曲ステージ stage:
-							#region " キャンセル → 終了ステージへ "
+							#region " キャンセル → タイトルステージへ "
 							//----------------
 							if( stage.現在のフェーズ == ステージ.選曲.選曲ステージ.フェーズ.キャンセル )
 							{
-								App.ステージ管理.ステージを遷移する( gd, nameof( ステージ.終了.終了ステージ ) );
+								App.ステージ管理.ステージを遷移する( gd, nameof( ステージ.タイトル.タイトルステージ ) );
 							}
 							//----------------
 							#endregion
