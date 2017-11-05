@@ -37,15 +37,24 @@ namespace DTXmatixx.ステージ
 
 			if( !( this.ぼかしと縮小を適用中 ) )
 			{
-				using( var 割合遷移 = ( 0.0 == 完了までの最大時間sec ) ?
-					gd.Animation.TrasitionLibrary.Instantaneous( finalValue: 1.0 ) :
-					gd.Animation.TrasitionLibrary.SmoothStop( 完了までの最大時間sec, finalValue: 1.0 ) )
+				if( 0.0 == 完了までの最大時間sec )
 				{
 					this._ストーリーボード?.Abandon();
 					this._ストーリーボード?.Dispose();
-					this._ストーリーボード = new Storyboard( gd.Animation.Manager );
-					this._ストーリーボード.AddTransition( this._ぼかしと縮小割合, 割合遷移 );
-					this._ストーリーボード.Schedule( gd.Animation.Timer.Time ); // 今すぐ開始
+					this._ストーリーボード = null;
+					this._ぼかしと縮小割合?.Dispose();
+					this._ぼかしと縮小割合 = new Variable( gd.Animation.Manager, initialValue: 1.0 );
+				}
+				else
+				{
+					using( var 割合遷移 = gd.Animation.TrasitionLibrary.SmoothStop( 完了までの最大時間sec, finalValue: 1.0 ) )
+					{
+						this._ストーリーボード?.Abandon();
+						this._ストーリーボード?.Dispose();
+						this._ストーリーボード = new Storyboard( gd.Animation.Manager );
+						this._ストーリーボード.AddTransition( this._ぼかしと縮小割合, 割合遷移 );
+						this._ストーリーボード.Schedule( gd.Animation.Timer.Time ); // 今すぐ開始
+					}
 				}
 				this.ぼかしと縮小を適用中 = true;
 			}
@@ -56,15 +65,24 @@ namespace DTXmatixx.ステージ
 
 			if( this.ぼかしと縮小を適用中 )
 			{
-				using( var 割合遷移 = ( 0.0 == 完了までの最大時間sec ) ?
-					gd.Animation.TrasitionLibrary.Instantaneous( finalValue: 0.0 ) :
-					gd.Animation.TrasitionLibrary.SmoothStop( 完了までの最大時間sec, finalValue: 0.0 ) )
+				if( 0.0 == 完了までの最大時間sec )
 				{
 					this._ストーリーボード?.Abandon();
 					this._ストーリーボード?.Dispose();
-					this._ストーリーボード = new Storyboard( gd.Animation.Manager );
-					this._ストーリーボード.AddTransition( this._ぼかしと縮小割合, 割合遷移 );
-					this._ストーリーボード.Schedule( gd.Animation.Timer.Time );    // 今すぐ開始
+					this._ストーリーボード = null;
+					this._ぼかしと縮小割合?.Dispose();
+					this._ぼかしと縮小割合 = new Variable( gd.Animation.Manager, initialValue: 0.0 );
+				}
+				else
+				{
+					using( var 割合遷移 = gd.Animation.TrasitionLibrary.SmoothStop( 完了までの最大時間sec, finalValue: 0.0 ) )
+					{
+						this._ストーリーボード?.Abandon();
+						this._ストーリーボード?.Dispose();
+						this._ストーリーボード = new Storyboard( gd.Animation.Manager );
+						this._ストーリーボード.AddTransition( this._ぼかしと縮小割合, 割合遷移 );
+						this._ストーリーボード.Schedule( gd.Animation.Timer.Time );    // 今すぐ開始
+					}
 				}
 				this.ぼかしと縮小を適用中 = false;
 			}
