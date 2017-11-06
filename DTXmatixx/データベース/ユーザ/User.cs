@@ -150,6 +150,10 @@ namespace DTXmatixx.データベース.ユーザ
 		[Column( DbType = "INT", CanBeNull = false )]
 		public int CymbalFree { get; set; }
 
+		
+		// Column を追加したら、コンストラクタでの初期化コードも忘れず追加すること。
+
+
 		///////////////////////////
 
 		/// <summary>
@@ -175,6 +179,7 @@ namespace DTXmatixx.データベース.ユーザ
 			this.MaxRange_Good = 0.084;
 			this.MaxRange_Ok = 0.117;
 			this.SongFolders = VariablePath.フォルダ変数の内容を返す( "Exe" ) ?? "";
+			this.CymbalFree = 1;
 		}
 
 		// ICloneable 実装
