@@ -311,14 +311,22 @@ namespace DTXmatixx.設定
 			var sha512 = new SHA512CryptoServiceProvider();
 			byte[] hash = null;
 
-			using( var fs = new FileStream( 曲ファイルパス.変数なしパス, FileMode.Open ) )
-				hash = sha512.ComputeHash( fs );
+			try
+			{
+				using( var fs = new FileStream( 曲ファイルパス.変数なしパス, FileMode.Open, FileAccess.Read ) )
+					hash = sha512.ComputeHash( fs );
 
-			var hashString = new StringBuilder();
-			foreach( byte b in hash )
-				hashString.Append( b.ToString( "X2" ) );
+				var hashString = new StringBuilder();
+				foreach( byte b in hash )
+					hashString.Append( b.ToString( "X2" ) );
 
-			return hashString.ToString();
+				return hashString.ToString();
+			}
+			catch( Exception e )
+			{
+				Log.ERROR( $"ファイルからのハッシュの作成に失敗しました。({e})[{曲ファイルパス.変数付きパス}]" );
+				throw;
+			}
 		}
 
 		private static (double 最小BPM, double 最大BPM) _最小最大BPMを調べて返す( SSTFormatCurrent.スコア score )
