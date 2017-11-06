@@ -7,7 +7,7 @@ using SSTFormat.v3;
 namespace DTXmatixx.ステージ
 {
 	/// <summary>
-	///		SSTFormat.v3.チップ種別/チップ の拡張メソッド
+	///		<see cref="SSTFormat.v3.チップ種別"/>, <see cref="SSTFormat.v3.チップ"/> の拡張メソッド。
 	/// </summary>
 	static class チップExtensions
 	{

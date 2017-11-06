@@ -9,7 +9,7 @@ namespace DTXmatixx.ステージ.演奏
 	/// <summary>
 	///		チップに対応する、チップの演奏情報。
 	/// </summary>
-	class チップの演奏状態 : IDisposable
+	class チップの演奏状態 : ICloneable, IDisposable
 	{
 		public bool 可視 { get; set; } = true;
 		public bool 不可視
@@ -40,15 +40,9 @@ namespace DTXmatixx.ステージ.演奏
 		{
 			this._chip = null;
 		}
-		public void CopyFrom( チップの演奏状態 srcChipStatus )
-		{
-			this.可視 = srcChipStatus.可視;
-			this.ヒット済みである = srcChipStatus.ヒット済みである;
-			this.発声済みである = srcChipStatus.発声済みである;
-		}
 		public void ヒット前の状態にする()
 		{
-			this.可視 = !( App.ユーザ設定.ドラムとチップと入力の対応表.対応表[ this._chip.チップ種別 ].不可視 );
+			this.可視 = !( App.ユーザ管理.ログオン中のユーザ.ドラムとチップと入力の対応表.対応表[ this._chip.チップ種別 ].不可視 );
 			this.ヒット済みである = false;
 			this.発声済みである = false;
 		}
@@ -57,6 +51,16 @@ namespace DTXmatixx.ステージ.演奏
 			this.可視 = false;
 			this.ヒット済みである = true;
 			this.発声済みである = true;
+		}
+
+		// IClonable 実装
+		public チップの演奏状態 Clone()
+		{
+			return (チップの演奏状態) this.MemberwiseClone();
+		}
+		object ICloneable.Clone()
+		{
+			return this.Clone();
 		}
 
 		protected チップ _chip = null;

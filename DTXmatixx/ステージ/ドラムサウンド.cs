@@ -78,12 +78,10 @@ namespace DTXmatixx.ステージ
 				}
 			}
 		}
-		public void 登録する( チップ種別 chipType, int subChipId, string サウンドファイルパス )
-		{
-			var path = Folder.絶対パスに含まれるフォルダ変数を展開して返す( サウンドファイルパス );
-			サウンドファイルパス = Folder.絶対パスをフォルダ変数付き絶対パスに変換して返す( path );	// Log 用
 
-			if( File.Exists( path ) )
+		public void 登録する( チップ種別 chipType, int subChipId, VariablePath サウンドファイルパス )
+		{
+			if( File.Exists( サウンドファイルパス.変数なしパス ) )
 			{
 				lock( this._Sound利用権 )
 				{
@@ -98,7 +96,7 @@ namespace DTXmatixx.ステージ
 					var context = new Cコンテキスト( this._多重度 );
 
 					// サウンドファイルを読み込んでデコードする。
-					context.SampleSource = SampleSourceFactory.Create( App.サウンドデバイス, path );
+					context.SampleSource = SampleSourceFactory.Create( App.サウンドデバイス, サウンドファイルパス );
 
 					// 多重度分のサウンドを生成する。
 					for( int i = 0; i < context.Sounds.Length; i++ )
@@ -107,14 +105,17 @@ namespace DTXmatixx.ステージ
 					// コンテキストを辞書に追加する。
 					this._チップtoコンテキスト.Add( (chipType, subChipId), context );
 
-					Log.Info( $"ドラムサウンドを生成しました。[({chipType.ToString()},{subChipId}) = {サウンドファイルパス}]" );
+					Log.Info( $"ドラムサウンドを生成しました。[({chipType.ToString()},{subChipId}) = {サウンドファイルパス.変数付きパス}]" );
 				}
 			}
 			else
 			{
-				Log.ERROR( $"サウンドファイルが存在しません。[{サウンドファイルパス}]" );
+				Log.ERROR( $"サウンドファイルが存在しません。[{サウンドファイルパス.変数付きパス}]" );
 			}
 		}
+		public void 登録する( チップ種別 chipType, int subChipId, string サウンドファイルパス )
+			=> this.登録する( chipType, subChipId, サウンドファイルパス?.ToVariablePath() );
+
 		public void 発声する( チップ種別 chipType, int subChipId, float 音量0to1 = 1f )
 		{
 			lock( this._Sound利用権 )

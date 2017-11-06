@@ -50,7 +50,7 @@ namespace DTXmatixx.ステージ.曲読み込み
 		{
 			using( Log.Block( FDKUtilities.現在のメソッド名 ) )
 			{
-				var 選択曲 = App.曲ツリー.フォーカスノード as MusicNode;
+				var 選択曲 = App.曲ツリー.フォーカス曲ノード;
 				Debug.Assert( null != 選択曲 );
 
 				this._曲名画像.表示文字列 = 選択曲.タイトル;
@@ -85,13 +85,16 @@ namespace DTXmatixx.ステージ.曲読み込み
 			{
 				case フェーズ.フェードイン:
 					App.ステージ管理.現在のアイキャッチ.進行描画する( gd );
+
 					if( App.ステージ管理.現在のアイキャッチ.現在のフェーズ == アイキャッチ.フェーズ.オープン完了 )
+					{
 						this.現在のフェーズ = フェーズ.表示;
+					}
 					break;
 
 				case フェーズ.表示:
 					this._スコアを読み込む();
-					App.Keyboard.ポーリングする();	// 先行入力があったらここでキャンセル
+					App.入力管理.すべての入力デバイスをポーリングする();	// 先行入力があったらここでキャンセル
 					this.現在のフェーズ = フェーズ.完了;
 					break;
 
@@ -125,35 +128,39 @@ namespace DTXmatixx.ステージ.曲読み込み
 		{
 			using( Log.Block( FDKUtilities.現在のメソッド名 ) )
 			{
-				var 選択ノード = App.曲ツリー.フォーカスノード;
-				Debug.Assert( null != 選択ノード );
+				// 曲ファイルを読み込む。
 
-				var 選択曲 = 選択ノード as MusicNode;
+				var 選択曲 = App.曲ツリー.フォーカス曲ノード;
 				Debug.Assert( null != 選択曲 );
 
-				string 選択曲ファイルパス = 選択曲.曲ファイルパス;
-				Debug.Assert( 選択曲ファイルパス.Nullでも空でもない() );
+				var 選択曲ファイルパス = 選択曲.曲ファイルパス;
+				Debug.Assert( 選択曲ファイルパス?.変数なしパス.Nullでも空でもない() ?? false );
 
-				var path = Folder.絶対パスに含まれるフォルダ変数を展開して返す( 選択曲ファイルパス );
-				var 拡張子名 = Path.GetExtension( path );
+				var 拡張子名 = Path.GetExtension( 選択曲ファイルパス.変数なしパス );
 
 				if( ".sstf" == 拡張子名 )
 				{
-					App.演奏スコア = new スコア( path );
+					App.演奏スコア = new スコア( 選択曲ファイルパス.変数なしパス );
 				}
 				else if( ".dtx" == 拡張子名 )
 				{
-					App.演奏スコア = DTXReader.ReadFromFile( path );
+					App.演奏スコア = DTXReader.ReadFromFile( 選択曲ファイルパス.変数なしパス );
 				}
 				else
 				{
-					throw new Exception( $"未対応のフォーマットファイルです。[{選択曲ファイルパス}]" );
+					throw new Exception( $"未対応のフォーマットファイルです。[{選択曲ファイルパス.変数付きパス}]" );
 				}
 
-				// サウンドデバイス遅延を取得し、全チップの発声時刻へ反映する。
-				float 再生時遅延ms = (float) ( App.サウンドデバイス.再生遅延sec * 1000.0 );
+				// 本体のサウンドデバイスの遅延とスコアの示す遅延とを取得し、全チップの発声時刻を修正する。
+
+				long 早める時間ms = (long) ( App.サウンドデバイス.再生遅延sec * 1000 - App.演奏スコア.サウンドデバイス遅延ms );
+
 				foreach( var chip in App.演奏スコア.チップリスト )
-					chip.発声時刻ms -= (long) 再生時遅延ms;
+				{
+					chip.発声時刻ms -= (long) 早める時間ms;
+				}
+
+				// 完了。
 
 				Log.Info( $"曲ファイルを読み込みました。" );
 				Log.Info( $"曲名: {App.演奏スコア.曲名}" );

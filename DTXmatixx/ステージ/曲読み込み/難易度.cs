@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using SharpDX;
 using SharpDX.Direct2D1;
+using SharpDX.DirectWrite;
 using FDK;
 using FDK.メディア;
 using DTXmatixx.曲;
@@ -21,57 +22,78 @@ namespace DTXmatixx.ステージ.曲読み込み
 		{
 			using( Log.Block( FDKUtilities.現在のメソッド名 ) )
 			{
-				var 選択曲 = App.曲ツリー.フォーカスノード as MusicNode;
-				Debug.Assert( null != 選択曲 );
-
-				this._難易度文字列 = 選択曲.難易度.ToString( "0.00" );
+				this._見出し用TextFormat = new TextFormat( gd.DWriteFactory, "Century Gothic", 50f );
 			}
 		}
 		protected override void On非活性化( グラフィックデバイス gd )
 		{
 			using( Log.Block( FDKUtilities.現在のメソッド名 ) )
 			{
+				FDKUtilities.解放する( ref this._見出し用TextFormat );
 			}
 		}
 
 		public void 描画する( グラフィックデバイス gd )
 		{
-			var ヘッダ描画領域 = new RectangleF( 783f, 117f, 414f, 63f );
-			var ボディ描画領域 = new RectangleF( 783f, 180f, 414f, 213f );
+			var 見出し描画領域 = new RectangleF( 783f, 117f, 414f, 63f );
+			var 数値描画領域 = new RectangleF( 783f, 180f, 414f, 213f );
 
-			// todo: 今はMASTERで固定。
+			var node = App.曲ツリー.フォーカス曲ノード;
+			var anker = App.曲ツリー.フォーカス難易度;
+
+			(string label, float level) 難易度;
+			if( node.親ノード is SetNode )
+			{
+				// 親が SetNode なら、難易度はそっちから取得する。
+				難易度 = node.親ノード.難易度[ anker ];
+			}
+			else
+			{
+				難易度 = node.難易度[ anker ];
+			}
+
 			gd.D2DBatchDraw( ( dc ) => {
 
 				var pretrans = dc.Transform;
 
+				using( var 見出し背景ブラシ = new SolidColorBrush( dc, Node.難易度色[ anker ] ) )
 				using( var 黒ブラシ = new SolidColorBrush( dc, Color4.Black ) )
-				using( var MASTER色ブラシ = new SolidColorBrush( dc, new Color4( 0xfffe55c6 ) ) )
+				using( var 黒透過ブラシ = new SolidColorBrush( dc, new Color4( Color3.Black, 0.5f ) ) )
+				using( var 白ブラシ = new SolidColorBrush( dc, Color4.White ) )
 				{
-					// MASTER
-					{
-						dc.FillRectangle( ヘッダ描画領域, MASTER色ブラシ );
-						dc.FillRectangle( ボディ描画領域, 黒ブラシ );
+					dc.Transform = pretrans;
 
-						// 小数部を描画する
-						dc.Transform =
-							Matrix3x2.Scaling( 2.2f, 2.2f ) *
-							Matrix3x2.Translation( ボディ描画領域.X + 175f, ボディ描画領域.Y ) *
-							pretrans;
-						this._数字画像.描画する( dc, 0f, 0f, this._難易度文字列.Substring( 2 ) );
+					// 背景領域を塗りつぶす。
+					dc.FillRectangle( 見出し描画領域, 見出し背景ブラシ );
+					dc.FillRectangle( 数値描画領域, 黒ブラシ );
 
-						// 整数部を描画する（'.'含む）
-						dc.Transform =
-							Matrix3x2.Scaling( 2.2f, 2.2f ) *
-							Matrix3x2.Translation( ボディ描画領域.X + 15f, ボディ描画領域.Y ) *
-							pretrans;
-						this._数字画像.描画する( dc, 0f, 0f, this._難易度文字列.Substring( 0, 2 ) );
-					}
+					// 見出し文字列を描画する。
+					this._見出し用TextFormat.TextAlignment = TextAlignment.Trailing;
+					var 見出し文字領域 = 見出し描画領域;
+					見出し文字領域.Width -= 8f;	// 右マージン
+					dc.DrawText( 難易度.label, this._見出し用TextFormat, 見出し文字領域, 白ブラシ );
+
+					// 小数部を描画する。
+					var 数値文字列 = 難易度.level.ToString( "0.00" ).PadLeft( 1 );
+					dc.Transform =
+						Matrix3x2.Scaling( 2.2f, 2.2f ) *
+						Matrix3x2.Translation( 数値描画領域.X + 175f, 数値描画領域.Y ) *
+						pretrans;
+					this._数字画像.描画する( dc, 0f, 0f, 数値文字列.Substring( 2 ) );
+
+					// 整数部と小数点を描画する。
+					dc.Transform =
+						Matrix3x2.Scaling( 2.2f, 2.2f ) *
+						Matrix3x2.Translation( 数値描画領域.X + 15f, 数値描画領域.Y ) *
+						pretrans;
+					this._数字画像.描画する( dc, 0f, 0f, 数値文字列.Substring( 0, 2 ) );
 				}
 
 			} );
 		}
 
 		private 画像フォント _数字画像 = null;
-		private string _難易度文字列 = "5.00";
+		//private string _難易度文字列 = "5.00";
+		private TextFormat _見出し用TextFormat = null;
 	}
 }

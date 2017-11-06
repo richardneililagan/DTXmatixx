@@ -4,7 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using SSTFormatCurrent = SSTFormat.v3;
 using DTXmatixx.設定;
-using DTXmatixx.設定.DB;
+using DTXmatixx.データベース.ユーザ;
 
 namespace DTXmatixx.ステージ.演奏
 {
@@ -25,6 +25,15 @@ namespace DTXmatixx.ステージ.演奏
 			get;
 			protected set;
 		} = 0;
+
+		/// <summary>
+		///		0.0で0%、1.0で100%。
+		/// </summary>
+		public float エキサイトゲージ量
+		{
+			get;
+			protected set;
+		}
 
 		/// <summary>
 		///		現在の設定において、ヒット対象になるノーツの数を返す。
@@ -53,6 +62,7 @@ namespace DTXmatixx.ステージ.演奏
 		{
 			this.Score = 0;
 			this.MaxCombo = 0;
+			this.エキサイトゲージ量 = 0.75f;
 			this.Achievement = 0.0f;
 			this.総ノーツ数 = 0;
 
@@ -117,9 +127,27 @@ namespace DTXmatixx.ステージ.演奏
 			}
 
 			// (5) SKILL値を更新する。
-			this.Skill = (float) ( Math.Floor( 100.0 * ( ( this.Achievement * this._譜面レベル * 20.0 ) / 100.0 ) ) / 100.0 );		// 小数第3位以下切り捨て
+			this.Skill = (float) ( Math.Floor( 100.0 * ( ( this.Achievement * this._譜面レベル * 20.0 ) / 100.0 ) ) / 100.0 );       // 小数第3位以下切り捨て
+
+			// (6) エキサイトゲージ → ここからは呼び出さない。（AutoPlayと区別がつかないため）
 		}
 
+		/// <summary>
+		///		判定に応じてエキサイトゲージを加減する。
+		/// </summary>
+		public void エキサイトゲージを加算する( 判定種別 judge )
+		{
+			switch( judge )
+			{
+				case 判定種別.PERFECT: this.エキサイトゲージ量 += 0.025f; break;
+				case 判定種別.GREAT: this.エキサイトゲージ量 += 0.01f; break;
+				case 判定種別.GOOD: this.エキサイトゲージ量 += 0.005f; break;
+				case 判定種別.OK: this.エキサイトゲージ量 += 0f; break;
+				case 判定種別.MISS: this.エキサイトゲージ量 -= 0.08f; break;
+			}
+
+			this.エキサイトゲージ量 = Math.Max( Math.Min( this.エキサイトゲージ量, 1.0f ), 0.0f );
+		}
 
 		private Dictionary<判定種別, int> _判定toヒット数 = null;
 		private Dictionary<判定種別, int> _最後にスコアを更新したときの判定toヒット数 = null;

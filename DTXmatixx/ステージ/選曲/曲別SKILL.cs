@@ -8,6 +8,7 @@ using FDK;
 using FDK.メディア;
 using DTXmatixx.曲;
 using DTXmatixx.設定;
+using DTXmatixx.データベース.ユーザ;
 
 namespace DTXmatixx.ステージ.選曲
 {
@@ -39,18 +40,20 @@ namespace DTXmatixx.ステージ.選曲
 
 			#region " ノードが変更されていたら情報を更新する。"
 			//----------------
-			if( App.曲ツリー.フォーカスノード != this._現在表示しているノード )
+			if( App.曲ツリー.フォーカス曲ノード != this._現在表示しているノード )
 			{
-				this._現在表示しているノード = App.曲ツリー.フォーカスノード;
+				this._現在表示しているノード = App.曲ツリー.フォーカス曲ノード; // MusicNode 以外は null が返される
+
 				this._スキル値文字列 = null;
 
-				if( this._現在表示しているノード is MusicNode musicNode )
+				if( null != this._現在表示しているノード )
 				{
-					var record = 曲DB.ユーザと曲ファイルのハッシュから成績を取得する( App.ユーザ設定.Id, musicNode.曲ファイルハッシュ );
-
-					if( null != record )
+					using( var userdb = new UserDB() )
 					{
-						this._スキル値文字列 = record.Skill.ToString( "0.00" ).PadLeft( 6 );  // 右詰め、余白は' '。
+						var record = userdb.Records.Where( ( r ) => ( r.UserId == App.ユーザ管理.ログオン中のユーザ.ユーザID && r.SongHashId == this._現在表示しているノード.曲ファイルハッシュ ) ).SingleOrDefault();
+
+						if( null != record )
+							this._スキル値文字列 = record.Skill.ToString( "0.00" ).PadLeft( 6 );  // 右詰め、余白は' '。
 					}
 				}
 			}
@@ -60,33 +63,43 @@ namespace DTXmatixx.ステージ.選曲
 			if( this._スキル値文字列.Nullまたは空である() )
 				return;
 
-			gd.D2DBatchDraw( ( dc ) => {
+			bool 表示可能ノードである = ( this._現在表示しているノード is MusicNode );
 
-				// 曲別SKILLアイコンを描画する
-				dc.Transform =
-					Matrix3x2.Scaling( 0.5f, 0.4f ) *
-					Matrix3x2.Translation( 描画領域.X, 描画領域.Y + 10f );
-				this._ロゴ画像.描画する( dc, 0f, 0f );
+			if( 表示可能ノードである )
+			{
+				gd.D2DBatchDraw( ( dc ) => {
 
-				// 小数部を描画する
-				dc.Transform =
-					Matrix3x2.Scaling( 0.8f, 0.8f ) *
-					Matrix3x2.Translation( 描画領域.X + 130f + 175f, 描画領域.Y + ( 描画領域.Height * 0.2f ) );
-				this._数字画像.描画する( dc, 0f, 0f, _スキル値文字列.Substring( 4 ) );
+					var pretrans = dc.Transform;
 
-				// 整数部を描画する（'.'含む）
-				dc.Transform =
-					Matrix3x2.Scaling( 1f, 1.0f ) *
-					Matrix3x2.Translation( 描画領域.X + 130f, 描画領域.Y );
-				this._数字画像.描画する( dc, 0f, 0f, _スキル値文字列.Substring( 0, 4 ) );
+					// 曲別SKILLアイコンを描画する
+					dc.Transform =
+						Matrix3x2.Scaling( 0.5f, 0.4f ) *
+						Matrix3x2.Translation( 描画領域.X, 描画領域.Y + 10f ) *
+						pretrans;
+					this._ロゴ画像.描画する( dc, 0f, 0f );
 
-			} );
+					// 小数部を描画する
+					dc.Transform =
+						Matrix3x2.Scaling( 0.8f, 0.8f ) *
+						Matrix3x2.Translation( 描画領域.X + 130f + 175f, 描画領域.Y + ( 描画領域.Height * 0.2f ) ) *
+						pretrans;
+					this._数字画像.描画する( dc, 0f, 0f, _スキル値文字列.Substring( 4 ) );
+
+					// 整数部を描画する（'.'含む）
+					dc.Transform =
+						Matrix3x2.Scaling( 1f, 1.0f ) *
+						Matrix3x2.Translation( 描画領域.X + 130f, 描画領域.Y ) *
+						pretrans;
+					this._数字画像.描画する( dc, 0f, 0f, _スキル値文字列.Substring( 0, 4 ) );
+
+				} );
+			}
 		}
 
 		private 画像フォント _数字画像 = null;
 		private 画像 _ロゴ画像 = null;
 
-		private Node _現在表示しているノード = null;
+		private MusicNode _現在表示しているノード = null;
 		private string _スキル値文字列 = null;
 	}
 }

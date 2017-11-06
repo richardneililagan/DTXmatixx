@@ -5,23 +5,20 @@ using System.Diagnostics;
 using System.Linq;
 using FDK;
 
-namespace DTXmatixx.設定.DB
+namespace DTXmatixx.データベース.曲
 {
 	/// <summary>
 	///		曲データベースに対応するエンティティクラス。
 	/// </summary>
-	class SongDB : SQLiteBaseDB
+	class SongDB : SQLiteDBBase
 	{
 		public const long VERSION = 1;
 
 		public Table<Song> Songs
-		{
-			get
-				=> base.DataContext.GetTable<Song>();
-		}
+			=> base.DataContext.GetTable<Song>();
 
 		public SongDB()
-			: base( Folder.絶対パスに含まれるフォルダ変数を展開して返す( @"$(AppData)SongDB.sqlite3" ), VERSION )
+			: base(  @"$(AppData)SongDB.sqlite3", VERSION )
 		{
 		}
 

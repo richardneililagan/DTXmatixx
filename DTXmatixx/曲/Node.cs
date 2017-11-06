@@ -17,6 +17,27 @@ namespace DTXmatixx.曲
 	/// </remarks>
 	abstract class Node : FDK.Activity
 	{
+		// static 定数
+
+		/// <summary>
+		///		難易度それぞれのカラー。
+		///		具体的には難易度ラベルの背景の色。
+		/// </summary>
+		public static IReadOnlyDictionary<int, Color4> 難易度色
+		{
+			get;
+			protected set;
+		} = new Dictionary<int, Color4>() {
+			[ 0 ] = new Color4( 0xfffe9551 ),   // BASIC 相当
+			[ 1 ] = new Color4( 0xff00aaeb ),   // ADVANCED 相当
+			[ 2 ] = new Color4( 0xff7d5cfe ),   // EXTREME 相当
+			[ 3 ] = new Color4( 0xfffe55c6 ),   // MASTER 相当
+			[ 4 ] = new Color4( 0xfffe55c6 ),   // ULTIMATE 相当
+		};
+
+
+		// プロパティ
+
 		/// <summary>
 		///		ノードのタイトル。
 		///		曲名、BOX名など。
@@ -36,6 +57,19 @@ namespace DTXmatixx.曲
 			get;
 			set;
 		} = "";
+
+		/// <summary>
+		///		難易度ラベルとその値（0.00～9.99）。
+		///		必要あれば、派生クラスで設定すること。
+		///		なお、配列は5要素で固定とする（0:BASIC～4:ULTIMATE）
+		/// </summary>
+		public (string label, float level)[] 難易度
+		{
+			get;
+		} = new(string, float)[ 5 ];
+
+
+		// 曲ツリー関連
 
 		/// <summary>
 		///		曲ツリー階層において、親となるノード。
@@ -100,6 +134,9 @@ namespace DTXmatixx.曲
 			}
 		}
 
+
+		// ノード画像関連
+
 		/// <summary>
 		///		ノードの全体サイズ（設計単位）。
 		///		すべてのノードで同一、固定値。
@@ -122,7 +159,7 @@ namespace DTXmatixx.曲
 		} = null;
 
 		/// <summary>
-		///		ノードを表す画像の既定画像。
+		///		ノードを表す画像の既定画像。static。
 		/// </summary>
 		/// <remarks>
 		///		<see cref="ノード画像"/>が null の再に、代わりに表示される。
@@ -134,8 +171,17 @@ namespace DTXmatixx.曲
 			protected set;
 		} = null;
 
+
 		public Node()
 		{
+			this.難易度 = new(string, float)[]{
+				( "", 0.00f ),
+				( "", 0.00f ),
+				( "", 0.00f ),
+				( "", 0.00f ),
+				( "", 0.00f ),
+			};
+
 			//this.子リスト.Add( this._ノード画像 );	--> 派生クラスのコンストラクタで追加することができる。
 			this.子リスト.Add( this._曲名テクスチャ = new 曲名() );
 		}
@@ -149,7 +195,6 @@ namespace DTXmatixx.曲
 				Node.既定のノード画像.活性化する( gd );
 			}
 		}
-
 		protected override void On非活性化( グラフィックデバイス gd )
 		{
 			// 全インスタンスで共有する static メンバが生成な済みなら解放する。
@@ -160,13 +205,9 @@ namespace DTXmatixx.曲
 			}
 		}
 
-		public virtual void 進行する()
+		public virtual void 進行描画する( グラフィックデバイス gd, Matrix ワールド変換行列, bool キャプション表示 = true )
 		{
-		}
-
-		public virtual void 描画する( グラフィックデバイス gd, Matrix ワールド変換行列, bool キャプション表示 = true )
-		{
-			// (1) ノード画像
+			// (1) ノード画像を描画する。
 			if( null != this.ノード画像 )
 			{
 				this.ノード画像.描画する( gd, ワールド変換行列 );
@@ -176,7 +217,7 @@ namespace DTXmatixx.曲
 				Node.既定のノード画像.描画する( gd, ワールド変換行列 );
 			}
 
-			// (2) キャプション
+			// (2) キャプションを描画する。
 			if( キャプション表示 )
 			{
 				ワールド変換行列 *= Matrix.Translation( 0f, 0f, 1f );    // ノード画像よりZ方向手前にほんのり移動
@@ -185,7 +226,6 @@ namespace DTXmatixx.曲
 				this._曲名テクスチャ.描画する( gd, ワールド変換行列, new RectangleF( 0f, 138f, Node.全体サイズ.Width, Node.全体サイズ.Height - 138f + 27f ) );
 			}
 		}
-
 
 		protected 曲名 _曲名テクスチャ = null;
 	}

@@ -36,16 +36,24 @@ namespace DTXmatixx.ステージ.選曲
 			this.子リスト.Add( this._難易度と成績 = new 難易度と成績() );
 			this.子リスト.Add( this._曲ステータスパネル = new 曲ステータスパネル() );
 			this.子リスト.Add( this._ステージタイマー = new 画像( @"$(System)images\ステージタイマー.png" ) );
-			this.子リスト.Add( this._青い枠 = new 青い枠() );
+			this.子リスト.Add( this._青い線 = new 青い線() );
 			this.子リスト.Add( this._選択曲枠ランナー = new 選択曲枠ランナー() );
 			this.子リスト.Add( this._BPMパネル = new BPMパネル() );
 			this.子リスト.Add( this._曲別SKILL = new 曲別SKILL() );
+			this.子リスト.Add( this._SongNotFound = new 文字列画像() {
+				表示文字列 = "Song not found...",
+			} );
+
+			// 外部接続。
+			this._難易度と成績.青い線を取得する = () => this._青い線;
 		}
 
 		protected override void On活性化( グラフィックデバイス gd )
 		{
 			using( Log.Block( FDKUtilities.現在のメソッド名 ) )
 			{
+				//this.難易度アンカ = 3;		--> 初期化せず、前回の値からスタートする。
+
 				this._白 = new SolidColorBrush( gd.D2DDeviceContext, Color4.White );
 				this._黒 = new SolidColorBrush( gd.D2DDeviceContext, Color4.Black );
 				this._黒透過 = new SolidColorBrush( gd.D2DDeviceContext, new Color4( Color3.Black, 0.5f ) );
@@ -84,53 +92,95 @@ namespace DTXmatixx.ステージ.選曲
 				this._初めての進行描画 = false;
 			}
 
-			this._舞台画像.進行描画する( gd );
-			this._曲リスト.進行描画する( gd );
-			this._その他パネルを描画する( gd );
-			this._難易度と成績.描画する( gd );
-			this._曲ステータスパネル.描画する( gd );
-			this._プレビュー画像を描画する( gd, App.曲ツリー.フォーカスノード );
-			this._BPMパネル.描画する( gd );
-			this._曲別SKILL.進行描画する( gd );
-			this._選択曲を囲む枠を描画する( gd );
-			this._選択曲枠ランナー.進行描画する( gd );
-			this._導線を描画する( gd );
-			this._ステージタイマー.描画する( gd, 1689f, 37f );
+			// 進行描画
 
-			App.Keyboard.ポーリングする();
+			if( null != App.曲ツリー.フォーカスノード )
+			{
+				this._舞台画像.進行描画する( gd );
+				this._曲リスト.進行描画する( gd );
+				this._その他パネルを描画する( gd );
+				this._難易度と成績.描画する( gd, App.曲ツリー.フォーカス難易度 );
+				this._曲ステータスパネル.描画する( gd );
+				this._プレビュー画像を描画する( gd, App.曲ツリー.フォーカスノード );
+				this._BPMパネル.描画する( gd );
+				this._曲別SKILL.進行描画する( gd );
+				this._選択曲を囲む枠を描画する( gd );
+				this._選択曲枠ランナー.進行描画する( gd );
+				this._導線を描画する( gd );
+				this._ステージタイマー.描画する( gd, 1689f, 37f );
+			}
+			else
+			{
+				// 曲が１つもない
+				this._舞台画像.進行描画する( gd );
+				this._ステージタイマー.描画する( gd, 1689f, 37f );
+				this._SongNotFound.描画する( gd, 1150f, 400f );
+			}
+
+			// 入力
+
+			App.入力管理.すべての入力デバイスをポーリングする();
 
 			switch( this.現在のフェーズ )
 			{
 				case フェーズ.フェードイン:
 					App.ステージ管理.現在のアイキャッチ.進行描画する( gd );
+
 					if( App.ステージ管理.現在のアイキャッチ.現在のフェーズ == アイキャッチ.フェーズ.オープン完了 )
+					{
 						this.現在のフェーズ = フェーズ.表示;
+					}
 					break;
 
 				case フェーズ.表示:
-					if( App.Keyboard.キーが押された( 0, Key.Return ) )
+					if( App.入力管理.シンバルが入力された() || App.入力管理.Keyboard.キーが押された( 0, Key.Return ) )
 					{
-						App.ステージ管理.アイキャッチを選択しクローズする( gd, nameof( GO ) );
-						this.現在のフェーズ = フェーズ.フェードアウト;
+						if( App.曲ツリー.フォーカスノード is BoxNode boxNode )
+						{
+							this._曲リスト.BOXに入る( gd );
+						}
+						else if( App.曲ツリー.フォーカスノード is BackNode backNode )
+						{
+							this._曲リスト.BOXから出る( gd );
+						}
+						else if( null != App.曲ツリー.フォーカスノード )
+						{
+							// 選曲する
+							App.ステージ管理.アイキャッチを選択しクローズする( gd, nameof( GO ) );
+							this.現在のフェーズ = フェーズ.フェードアウト;
+						}
 					}
-					else if( App.Keyboard.キーが押された( 0, Key.Up ) )
+					else if( App.入力管理.Keyboard.キーが押された( 0, Key.Escape ) )
 					{
-						//App.曲ツリー.前のノードをフォーカスする();	--> 曲リストへ委譲
-						this._曲リスト.前のノードを選択する( gd );
-						this._導線アニメをリセットする( gd );
+						this.現在のフェーズ = フェーズ.キャンセル;
 					}
-					else if( App.Keyboard.キーが押された( 0, Key.Down ) )
+					else if( App.入力管理.ドラムが入力された( 入力.ドラム入力種別.Tom1 ) || App.入力管理.Keyboard.キーが押された( 0, Key.Up ) )
 					{
-						//App.曲ツリー.次のノードをフォーカスする();	--> 曲リストへ委譲
-						this._曲リスト.次のノードを選択する( gd );
-						this._導線アニメをリセットする( gd );
+						if( null != App.曲ツリー.フォーカスノード )
+						{
+							//App.曲ツリー.前のノードをフォーカスする();	--> 曲リストへ委譲
+							this._曲リスト.前のノードを選択する( gd );
+							this._導線アニメをリセットする( gd );
+						}
+					}
+					else if( App.入力管理.ドラムが入力された( 入力.ドラム入力種別.Tom2 ) || App.入力管理.Keyboard.キーが押された( 0, Key.Down ) )
+					{
+						if( null != App.曲ツリー.フォーカスノード )
+						{
+							//App.曲ツリー.次のノードをフォーカスする();	--> 曲リストへ委譲
+							this._曲リスト.次のノードを選択する( gd );
+							this._導線アニメをリセットする( gd );
+						}
 					}
 					break;
 
 				case フェーズ.フェードアウト:
 					App.ステージ管理.現在のアイキャッチ.進行描画する( gd );
+
 					if( App.ステージ管理.現在のアイキャッチ.現在のフェーズ == アイキャッチ.フェーズ.クローズ完了 )
+					{
 						this.現在のフェーズ = フェーズ.確定;
+					}
 					break;
 
 				case フェーズ.確定:
@@ -144,10 +194,11 @@ namespace DTXmatixx.ステージ.選曲
 		private 曲リスト _曲リスト = null;
 		private 難易度と成績 _難易度と成績 = null;
 		private 曲ステータスパネル _曲ステータスパネル = null;
-		private 青い枠 _青い枠 = null;
+		private 青い線 _青い線 = null;
 		private 選択曲枠ランナー _選択曲枠ランナー = null;
 		private BPMパネル _BPMパネル = null;
 		private 曲別SKILL _曲別SKILL = null;
+		private 文字列画像 _SongNotFound = null;
 
 		private SolidColorBrush _白 = null;
 		private SolidColorBrush _黒 = null;
@@ -185,7 +236,7 @@ namespace DTXmatixx.ステージ.選曲
 		}
 		private void _プレビュー画像を描画する( グラフィックデバイス gd, Node ノード )
 		{
-			var 画像 = ノード?.ノード画像 ?? Node.既定のノード画像;
+			var 画像 = ノード.ノード画像 ?? Node.既定のノード画像;
 
 			// テクスチャは画面中央が (0,0,0) で、Xは右がプラス方向, Yは上がプラス方向, Zは奥がプラス方向+。
 
@@ -207,9 +258,9 @@ namespace DTXmatixx.ステージ.選曲
 		{
 			var 矩形 = new RectangleF( 1015f, 485f, 905f, 113f );
 
-			this._青い枠.描画する( gd, new Vector2( 矩形.Left - this._青枠のマージンdpx, 矩形.Top ), 幅dpx: 矩形.Width + this._青枠のマージンdpx * 2f );
-			this._青い枠.描画する( gd, new Vector2( 矩形.Left - this._青枠のマージンdpx, 矩形.Bottom ), 幅dpx: 矩形.Width + this._青枠のマージンdpx * 2f );
-			this._青い枠.描画する( gd, new Vector2( 矩形.Left, 矩形.Top - this._青枠のマージンdpx ), 高さdpx: 矩形.Height + this._青枠のマージンdpx * 2f );
+			this._青い線.描画する( gd, new Vector2( 矩形.Left - this._青枠のマージンdpx, 矩形.Top ), 幅dpx: 矩形.Width + this._青枠のマージンdpx * 2f );
+			this._青い線.描画する( gd, new Vector2( 矩形.Left - this._青枠のマージンdpx, 矩形.Bottom ), 幅dpx: 矩形.Width + this._青枠のマージンdpx * 2f );
+			this._青い線.描画する( gd, new Vector2( 矩形.Left, 矩形.Top - this._青枠のマージンdpx ), 高さdpx: 矩形.Height + this._青枠のマージンdpx * 2f );
 		}
 
 		private Variable _上に伸びる導線の長さdpx = null;
@@ -281,20 +332,20 @@ namespace DTXmatixx.ステージ.選曲
 		private void _導線を描画する( グラフィックデバイス gd )
 		{
 			var h = (float) this._上に伸びる導線の長さdpx.Value;
-			this._青い枠.描画する( gd, new Vector2( 1044f, 485f - h ), 高さdpx: h );
+			this._青い線.描画する( gd, new Vector2( 1044f, 485f - h ), 高さdpx: h );
 
 			var w = (float) this._左に伸びる導線の長さdpx.Value;
-			this._青い枠.描画する( gd, new Vector2( 1046f - w, 278f ), 幅dpx: w );
+			this._青い線.描画する( gd, new Vector2( 1046f - w, 278f ), 幅dpx: w );
 
 			var z = (float) this._プレビュー枠の長さdpx.Value;   // マージン×2 込み
 			var 上 = this._プレビュー画像表示位置dpx.Y;
 			var 下 = this._プレビュー画像表示位置dpx.Y + this._プレビュー画像表示サイズdpx.Y;
 			var 左 = this._プレビュー画像表示位置dpx.X;
 			var 右 = this._プレビュー画像表示位置dpx.X + this._プレビュー画像表示サイズdpx.X;
-			this._青い枠.描画する( gd, new Vector2( 右 + this._青枠のマージンdpx - z, 上 ), 幅dpx: z ); // 上辺
-			this._青い枠.描画する( gd, new Vector2( 右 + this._青枠のマージンdpx - z, 下 ), 幅dpx: z ); // 下辺
-			this._青い枠.描画する( gd, new Vector2( 左, 下 + this._青枠のマージンdpx - z ), 高さdpx: z ); // 左辺
-			this._青い枠.描画する( gd, new Vector2( 右, 下 + this._青枠のマージンdpx - z ), 高さdpx: z ); // 右辺
+			this._青い線.描画する( gd, new Vector2( 右 + this._青枠のマージンdpx - z, 上 ), 幅dpx: z ); // 上辺
+			this._青い線.描画する( gd, new Vector2( 右 + this._青枠のマージンdpx - z, 下 ), 幅dpx: z ); // 下辺
+			this._青い線.描画する( gd, new Vector2( 左, 下 + this._青枠のマージンdpx - z ), 高さdpx: z ); // 左辺
+			this._青い線.描画する( gd, new Vector2( 右, 下 + this._青枠のマージンdpx - z ), 高さdpx: z ); // 右辺
 		}
 	}
 }

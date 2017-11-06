@@ -31,6 +31,7 @@ namespace DTXmatixx.ステージ.結果
 
 		// 外部依存アクション; ステージ管理クラスで接続。
 		internal Func<成績> 結果を取得する = null;
+		internal Action BGMを停止する = null;
 
 		public 結果ステージ()
 		{
@@ -53,13 +54,13 @@ namespace DTXmatixx.ステージ.結果
 		{
 			using( Log.Block( FDKUtilities.現在のメソッド名 ) )
 			{
-				var 選択曲 = App.曲ツリー.フォーカスノード as MusicNode;
+				var 選択曲 = App.曲ツリー.フォーカス曲ノード;
 				Debug.Assert( null != 選択曲 );
 
 				this._結果 = this.結果を取得する();
 
 				// 成績をDBに記録。
-				曲DB.成績を追加または更新する( this._結果, App.ユーザ設定.Id, 選択曲.曲ファイルハッシュ );
+				曲DB.成績を追加または更新する( this._結果, App.ユーザ管理.ログオン中のユーザ.ユーザID, 選択曲.曲ファイルハッシュ );
 
 				this._曲名画像.表示文字列 = 選択曲.タイトル;
 				this._黒マスクブラシ = new SolidColorBrush( gd.D2DDeviceContext, new Color4( Color3.Black, 0.75f ) );
@@ -76,6 +77,8 @@ namespace DTXmatixx.ステージ.結果
 
 				FDKUtilities.解放する( ref this._黒マスクブラシ );
 				FDKUtilities.解放する( ref this._プレビュー枠ブラシ );
+
+				this.BGMを停止する();
 
 				App.WAV管理?.Dispose();
 				App.WAV管理 = null;
@@ -99,12 +102,12 @@ namespace DTXmatixx.ステージ.結果
 			this._曲名を描画する( gd );
 			this._演奏パラメータ結果.描画する( gd, 1317f, 716f, this._結果 );
 
-			App.Keyboard.ポーリングする();
+			App.入力管理.すべての入力デバイスをポーリングする();
 
 			switch( this.現在のフェーズ )
 			{
 				case フェーズ.表示:
-					if( App.Keyboard.キーが押された( 0, Key.Return ) )
+					if( App.入力管理.シンバルが入力された() || App.入力管理.Keyboard.キーが押された( 0, Key.Return ) )
 					{
 						App.ステージ管理.アイキャッチを選択しクローズする( gd, nameof( シャッター ) );
 						this.現在のフェーズ = フェーズ.フェードアウト;
@@ -113,8 +116,11 @@ namespace DTXmatixx.ステージ.結果
 
 				case フェーズ.フェードアウト:
 					App.ステージ管理.現在のアイキャッチ.進行描画する( gd );
+
 					if( App.ステージ管理.現在のアイキャッチ.現在のフェーズ == アイキャッチ.フェーズ.クローズ完了 )
+					{
 						this.現在のフェーズ = フェーズ.確定;
+					}
 					break;
 
 				case フェーズ.確定:
@@ -137,7 +143,7 @@ namespace DTXmatixx.ステージ.結果
 
 		private void _プレビュー画像を描画する( グラフィックデバイス gd )
 		{
-			var 選択曲 = App.曲ツリー.フォーカスノード as MusicNode;
+			var 選択曲 = App.曲ツリー.フォーカス曲ノード;
 			Debug.Assert( null != 選択曲 );
 
 			var プレビュー画像 = 選択曲.ノード画像 ?? Node.既定のノード画像;

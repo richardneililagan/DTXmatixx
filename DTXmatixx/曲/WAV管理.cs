@@ -56,10 +56,8 @@ namespace DTXmatixx.曲
 		/// </summary>
 		/// <param name="wav番号">登録する番号。0～1295。すでに登録されている場合は上書き更新される。</param>
 		/// <param name="サウンドファイル">登録するサウンドファイルのパス。</param>
-		public void 登録する( SoundDevice device, int wav番号, string サウンドファイル, bool 多重再生する )
+		public void 登録する( SoundDevice device, int wav番号, VariablePath サウンドファイル, bool 多重再生する )
 		{
-			var path = Folder.絶対パスに含まれるフォルダ変数を展開して返す( サウンドファイル );
-
 			#region " パラメータチェック。"
 			//----------------
 			if( null == device )
@@ -68,9 +66,9 @@ namespace DTXmatixx.曲
 			if( ( 0 > wav番号 ) || ( 1295 < wav番号 ) )
 				throw new ArgumentOutOfRangeException( $"WAV番号が範囲を超えています。[{wav番号}]" );
 
-			if( !( File.Exists( path ) ) )
+			if( !( File.Exists( サウンドファイル.変数なしパス ) ) )
 			{
-				Log.WARNING( $"サウンドファイルが存在しません。[{サウンドファイル}]" );
+				Log.WARNING( $"サウンドファイルが存在しません。[{サウンドファイル.変数付きパス}]" );
 				return;
 			}
 			//----------------
@@ -80,11 +78,11 @@ namespace DTXmatixx.曲
 			var sampleSource = (ISampleSource) null;
 			try
 			{
-				sampleSource = SampleSourceFactory.Create( device, path );
+				sampleSource = SampleSourceFactory.Create( device, サウンドファイル.変数なしパス );
 			}
 			catch
 			{
-				Log.WARNING( $"サウンドのデコードに失敗しました。[{サウンドファイル}" );
+				Log.WARNING( $"サウンドのデコードに失敗しました。[{サウンドファイル.変数付きパス}" );
 				return;
 			}
 
@@ -105,7 +103,7 @@ namespace DTXmatixx.曲
 
 			this._WavContexts.Add( wav番号, context );
 
-			Log.Info( $"サウンドを読み込みました。[{サウンドファイル}]" );
+			Log.Info( $"サウンドを読み込みました。[{サウンドファイル.変数付きパス}]" );
 		}
 		
 		/// <summary>
@@ -138,6 +136,11 @@ namespace DTXmatixx.曲
 			this._WavContexts[ WAV番号 ].発声する( chipType, 音量 );
 		}
 
+		public void すべての発声を停止する()
+		{
+			foreach( var kvp in this._WavContexts )
+				kvp.Value.Dispose();
+		}
 
 		/// <summary>
 		///		１つの WAV に相当する管理情報。

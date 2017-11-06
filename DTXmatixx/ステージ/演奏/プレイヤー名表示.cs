@@ -62,8 +62,8 @@ namespace DTXmatixx.ステージ.演奏
 			}
 
 			dc.Transform =
-				Matrix3x2.Scaling( this._拡大率X, 1.0f ) *
-				Matrix3x2.Translation( 描画矩形.X, 描画矩形.Y );	
+				Matrix3x2.Scaling( this._拡大率X, 1.0f ) *		// 拡大縮小
+				Matrix3x2.Translation( 描画矩形.X, 描画矩形.Y );	// 平行移動
 			dc.DrawTextLayout( Vector2.Zero, this._TextLayout, this._文字色 ); // 座標（描画矩形）は拡大率の影響をうけるので、このメソッドではなく、Matrix3x2.Translation() で設定するほうが楽。
 
 			this._前回表示した名前 = this.名前;

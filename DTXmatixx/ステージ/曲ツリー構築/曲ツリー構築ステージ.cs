@@ -41,7 +41,7 @@ namespace DTXmatixx.ステージ.曲ツリー構築
 		}
 		public override void 進行描画する( グラフィックデバイス gd )
 		{
-			App.Keyboard.ポーリングする();
+			App.入力管理.すべての入力デバイスをポーリングする();
 
 			switch( this.現在のフェーズ )
 			{
@@ -58,8 +58,10 @@ namespace DTXmatixx.ステージ.曲ツリー構築
 
 				case フェーズ.構築中:
 					App.曲ツリー.非活性化する( gd );
-					// todo: テストコード: 暫定的に固定パスを使用する。
-					App.曲ツリー.曲を検索して親ノードに追加する( App.曲ツリー.ルートノード, @"$(Exe)..\..\..\曲データ" );
+
+					foreach( var varpath in App.ユーザ管理.ログオン中のユーザ.曲検索フォルダ )
+						App.曲ツリー.曲を検索して親ノードに追加する( App.曲ツリー.ルートノード, varpath );
+
 					App.曲ツリー.活性化する( gd );
 
 					this.現在のフェーズ = フェーズ.確定;
@@ -70,7 +72,7 @@ namespace DTXmatixx.ステージ.曲ツリー構築
 					break;
 			}
 
-			if( App.Keyboard.キーが押された( 0, Key.Escape ) )
+			if( App.入力管理.Keyboard.キーが押された( 0, Key.Escape ) )
 			{
 				this.現在のフェーズ = フェーズ.キャンセル;
 			}

@@ -16,11 +16,11 @@ using FDK.入力;
 using FDK.メディア;
 using FDK.メディア.サウンド.WASAPI;
 using FDK.同期;
+using SSTFormat.v3;
 using DTXmatixx.ステージ;
 using DTXmatixx.曲;
 using DTXmatixx.設定;
-using DTXmatixx.設定.DB;
-using SSTFormat.v3;
+using DTXmatixx.入力;
 
 namespace DTXmatixx
 {
@@ -35,17 +35,22 @@ namespace DTXmatixx
 			get;
 			protected set;
 		} = null;
+		public static システム設定 システム設定
+		{
+			get;
+			protected set;
+		} = null;
+		public static 入力管理 入力管理
+		{
+			get;
+			protected set;
+		} = null;
 		public static ステージ管理 ステージ管理
 		{
 			get;
 			protected set;
 		} = null;
 		public static 曲ツリー 曲ツリー
-		{
-			get;
-			protected set;
-		} = null;
-		public static Keyboard Keyboard
 		{
 			get;
 			protected set;
@@ -70,50 +75,70 @@ namespace DTXmatixx
 			get;
 			protected set;
 		} = null;
-		public static システム設定 システム設定
-		{
-			get;
-			protected set;
-		} = null;
 		public static ドラムサウンド ドラムサウンド
 		{
 			get;
 			protected set;
 		} = null;
-		public static ユーザ設定 ユーザ設定
+		public static ユーザ管理 ユーザ管理
 		{
 			get;
 			protected set;
 		} = null;
 
 		public App()
-			: base( 設計画面サイズ: new SizeF( 1920f, 1080f ), 物理画面サイズ: new SizeF( 1920f, 1080f ), 深度ステンシルを使う: false )
+			: base( 設計画面サイズ: new SizeF( 1920f, 1080f ), 物理画面サイズ: new SizeF( 1280f, 720f ), 深度ステンシルを使う: false )
 		{
 			this.Text = $"{Application.ProductName} {Application.ProductVersion}";
 
 			var exePath = Path.GetDirectoryName( Assembly.GetExecutingAssembly().Location );
-			Folder.フォルダ変数を追加または更新する( "Exe", $@"{exePath}\" );
-			Folder.フォルダ変数を追加または更新する( "System", Path.Combine( exePath, @"System\" ) );
-			Folder.フォルダ変数を追加または更新する( "AppData", Path.Combine( Environment.GetFolderPath( Environment.SpecialFolder.ApplicationData, Environment.SpecialFolderOption.Create ), @"DTXMatixx\" ) );
+			VariablePath.フォルダ変数を追加または更新する( "Exe", $@"{exePath}\" );
+			VariablePath.フォルダ変数を追加または更新する( "System", Path.Combine( exePath, @"System\" ) );
+			VariablePath.フォルダ変数を追加または更新する( "AppData", Path.Combine( Environment.GetFolderPath( Environment.SpecialFolder.ApplicationData, Environment.SpecialFolderOption.Create ), @"DTXMatixx\" ) );
 
-			if( !( Directory.Exists( Folder.フォルダ変数の内容を返す( "AppData" ) ) ) )
-				Directory.CreateDirectory( Folder.フォルダ変数の内容を返す( "AppData" ) );  // なければ作成。
+			if( !( Directory.Exists( VariablePath.フォルダ変数の内容を返す( "AppData" ) ) ) )
+				Directory.CreateDirectory( VariablePath.フォルダ変数の内容を返す( "AppData" ) );  // なければ作成。
 
 			App.乱数 = new Random( DateTime.Now.Millisecond );
+
+			App.システム設定 = システム設定.復元する();
+
+			App.入力管理 = new 入力管理( this.Handle ) {
+				キーバインディングを取得する = () => App.システム設定.キーバインディング,
+				キーバインディングを保存する = () => App.システム設定.保存する(),
+			};
+			App.入力管理.Initialize();
+
 			App.ステージ管理 = new ステージ管理();
+
 			App.曲ツリー = new 曲ツリー();
-			App.Keyboard = new Keyboard( this.Handle );
+
 			App.演奏スコア = null;
+
 			App.WAV管理 = null;
+
 			App.サウンドデバイス = new SoundDevice( CSCore.CoreAudioAPI.AudioClientShareMode.Shared );
 			App.サウンドタイマ = new SoundTimer( App.サウンドデバイス );
-			App.システム設定 = new システム設定();
 			App.ドラムサウンド = new ドラムサウンド();
-			App.ユーザ設定 = new ユーザ設定( "AutoPlayer" );
 
+			App.ユーザ管理 = new ユーザ管理();
+#if DEBUG_
+			App.ユーザ管理.ユーザリスト.SelectItem( ( user ) => ( user.ユーザID == "Guest" ) );
+			App.ユーザ管理.ログオン中のユーザ.AutoPlay[ AutoPlay種別.LeftCrash ] = true;
+			App.ユーザ管理.ログオン中のユーザ.AutoPlay[ AutoPlay種別.HiHat ] = true;
+			App.ユーザ管理.ログオン中のユーザ.AutoPlay[ AutoPlay種別.Foot ] = true;
+			App.ユーザ管理.ログオン中のユーザ.AutoPlay[ AutoPlay種別.Snare ] = false;	// スネアと
+			App.ユーザ管理.ログオン中のユーザ.AutoPlay[ AutoPlay種別.Bass ] = false;	// バスだけ手動
+			App.ユーザ管理.ログオン中のユーザ.AutoPlay[ AutoPlay種別.Tom1 ] = true;
+			App.ユーザ管理.ログオン中のユーザ.AutoPlay[ AutoPlay種別.Tom2 ] = true;
+			App.ユーザ管理.ログオン中のユーザ.AutoPlay[ AutoPlay種別.Tom3 ] = true;
+			App.ユーザ管理.ログオン中のユーザ.AutoPlay[ AutoPlay種別.RightCrash ] = true;
+#else
+			App.ユーザ管理.ユーザリスト.SelectItem( ( user ) => ( user.ユーザID == "AutoPlayer" ) );  // ひとまずAutoPlayerを選択。
+#endif
 			this._活性化する();
 
-			base.全画面モード = App.ユーザ設定.全画面モードである;
+			base.全画面モード = App.ユーザ管理.ログオン中のユーザ.全画面モードである;
 
 			// 最初のステージへ遷移する。
 			App.ステージ管理.ステージを遷移する( App.グラフィックデバイス, App.ステージ管理.最初のステージ名 );
@@ -124,7 +149,8 @@ namespace DTXmatixx
 			{
 				this._非活性化する();
 
-				App.ユーザ設定 = null;
+				App.ユーザ管理?.Dispose();
+				App.ユーザ管理 = null;
 
 				App.ドラムサウンド?.Dispose();
 				App.ドラムサウンド = null;
@@ -138,14 +164,20 @@ namespace DTXmatixx
 				App.WAV管理?.Dispose();
 				App.WAV管理 = null;
 
+				App.演奏スコア?.Dispose();
+				App.演奏スコア = null;
+
 				App.曲ツリー.Dispose();
 				App.曲ツリー = null;
 
 				App.ステージ管理.Dispose( App.グラフィックデバイス );
 				App.ステージ管理 = null;
 
-				App.Keyboard.Dispose();
-				App.Keyboard = null;
+				App.入力管理.Dispose();
+				App.入力管理 = null;
+
+				App.システム設定.保存する();
+				App.システム設定 = null;
 
 				base.Dispose();
 			}
@@ -154,14 +186,17 @@ namespace DTXmatixx
 		{
 			RenderLoop.Run( this, () => {
 
+				if( this.FormWindowState == FormWindowState.Minimized )
+					return;
+
 				switch( this._AppStatus )
 				{
 					case AppStatus.開始:
-						
+
 						// 高速進行タスク起動。
 						this._高速進行ステータス = new TriStateEvent( TriStateEvent.状態種別.OFF );
 						Task.Factory.StartNew( this._高速進行タスクエントリ );
-						
+
 						// 描画タスク起動。
 						this._AppStatus = AppStatus.実行中;
 
@@ -199,7 +234,7 @@ namespace DTXmatixx
 			if( e.KeyCode == Keys.F11 )
 			{
 				this.全画面モード = !( this.全画面モード );
-				App.ユーザ設定.全画面モードである = this.全画面モード;
+				App.ユーザ管理.ログオン中のユーザ.全画面モードである = this.全画面モード;
 			}
 		}
 
@@ -266,7 +301,7 @@ namespace DTXmatixx
 					App.ステージ管理.現在のステージ.高速進行する();
 				}
 
-				Thread.Sleep( 1 );  // ウェイト。
+				Thread.Sleep( 3 );  // ウェイト。
 			}
 
 			this._高速進行ステータス.現在の状態 = TriStateEvent.状態種別.無効;
@@ -320,21 +355,23 @@ namespace DTXmatixx
 							//----------------
 							if( stage.現在のフェーズ == ステージ.曲ツリー構築.曲ツリー構築ステージ.フェーズ.確定 )
 							{
-								//App.ステージ管理.ステージを遷移する( gd, nameof( ステージ.タイトル.タイトルステージ ) );
-								// todo: テストコード: タイトルを飛ばして選曲ステージへ遷移する。
+#if DEBUG_
+								// hack: テストコード: タイトルを飛ばして選曲ステージへ遷移する。
 								App.ステージ管理.ステージを遷移する( gd, nameof( ステージ.選曲.選曲ステージ ) );
+#else
+								App.ステージ管理.ステージを遷移する( gd, nameof( ステージ.タイトル.タイトルステージ ) );
+#endif
 							}
 							//----------------
 							#endregion
 							break;
 
 						case ステージ.タイトル.タイトルステージ stage:
-							#region " キャンセル → アプリを終了する。"
+							#region " キャンセル → 終了ステージへ "
 							//----------------
 							if( stage.現在のフェーズ == ステージ.タイトル.タイトルステージ.フェーズ.キャンセル )
 							{
-								App.ステージ管理.ステージを遷移する( gd, null );
-								this._アプリを終了する();
+								App.ステージ管理.ステージを遷移する( gd, nameof( ステージ.終了.終了ステージ ) );
 							}
 							//----------------
 							#endregion
@@ -349,12 +386,11 @@ namespace DTXmatixx
 							break;
 
 						case ステージ.認証.認証ステージ stage:
-							#region " キャンセル → アプリを終了する。"
+							#region " キャンセル → 終了ステージへ "
 							//----------------
 							if( stage.現在のフェーズ == ステージ.認証.認証ステージ.フェーズ.キャンセル )
 							{
-								App.ステージ管理.ステージを遷移する( gd, null );
-								this._アプリを終了する();
+								App.ステージ管理.ステージを遷移する( gd, nameof( ステージ.終了.終了ステージ ) );
 							}
 							//----------------
 							#endregion
@@ -369,12 +405,11 @@ namespace DTXmatixx
 							break;
 
 						case ステージ.選曲.選曲ステージ stage:
-							#region " キャンセル → アプリを終了する。"
+							#region " キャンセル → タイトルステージへ "
 							//----------------
 							if( stage.現在のフェーズ == ステージ.選曲.選曲ステージ.フェーズ.キャンセル )
 							{
-								App.ステージ管理.ステージを遷移する( gd, null );
-								this._アプリを終了する();
+								App.ステージ管理.ステージを遷移する( gd, nameof( ステージ.タイトル.タイトルステージ ) );
 							}
 							//----------------
 							#endregion
@@ -408,9 +443,7 @@ namespace DTXmatixx
 							//----------------
 							if( stage.現在のフェーズ == ステージ.演奏.演奏ステージ.フェーズ.キャンセル完了 )
 							{
-								// todo: テストコード: ESC で結果ステージへ
-								//App.ステージ管理.ステージを遷移する( gd, nameof( ステージ.選曲.選曲ステージ ) );
-								App.ステージ管理.ステージを遷移する( gd, nameof( ステージ.結果.結果ステージ ) );
+								App.ステージ管理.ステージを遷移する( gd, nameof( ステージ.選曲.選曲ステージ ) );
 							}
 							//----------------
 							#endregion
@@ -430,6 +463,18 @@ namespace DTXmatixx
 							if( stage.現在のフェーズ == ステージ.結果.結果ステージ.フェーズ.確定 )
 							{
 								App.ステージ管理.ステージを遷移する( gd, nameof( ステージ.選曲.選曲ステージ ) );
+							}
+							//----------------
+							#endregion
+							break;
+
+						case ステージ.終了.終了ステージ stage:
+							#region " 確定 → アプリを終了する。"
+							//----------------
+							if( stage.現在のフェーズ == ステージ.終了.終了ステージ.フェーズ.確定 )
+							{
+								App.ステージ管理.ステージを遷移する( gd, null );
+								this._アプリを終了する();
 							}
 							//----------------
 							#endregion
@@ -456,6 +501,9 @@ namespace DTXmatixx
 				if( this._AppStatus != AppStatus.終了 )
 				{
 					this._高速進行ステータス.現在の状態 = TriStateEvent.状態種別.OFF;
+
+					// ユーザ情報を保存する。
+					App.ユーザ管理.ログオン中のユーザ?.保存する();
 
 					// _AppStatus を変更してから、GUI スレッドで非同期実行を指示する。
 					this._AppStatus = AppStatus.終了;

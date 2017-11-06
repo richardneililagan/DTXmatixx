@@ -7,6 +7,7 @@ using FDK;
 using FDK.メディア;
 using DTXmatixx.曲;
 using DTXmatixx.設定;
+using DTXmatixx.データベース.曲;
 
 namespace DTXmatixx.ステージ.選曲
 {
@@ -33,45 +34,51 @@ namespace DTXmatixx.ステージ.選曲
 			//----------------
 			if( App.曲ツリー.フォーカスノード != this._現在表示しているノード )
 			{
-				this._現在表示しているノード = App.曲ツリー.フォーカスノード;
+				this._現在表示しているノード = App.曲ツリー.フォーカス曲ノード; // MusicNode 以外は null が返される
 
-				if( this._現在表示しているノード is MusicNode musicNode )
+				this._最小BPM = 120.0;
+				this._最大BPM = 120.0;
+
+				if( null != this._現在表示しているノード )
 				{
-					var song = 曲DB.曲を取得する( musicNode.曲ファイルパス );
-
-					if( null != song )
+					using( var songdb = new SongDB() )
 					{
-						this._最小BPM = song.MinBPM ?? 120.0;
-						this._最大BPM = song.MaxBPM ?? 120.0;
+						var song = songdb.Songs.Where( ( r ) => ( r.Path == this._現在表示しているノード.曲ファイルパス.変数なしパス ) ).SingleOrDefault();
+
+						if( null != song )
+						{
+							this._最小BPM = song.MinBPM ?? 120.0;
+							this._最大BPM = song.MaxBPM ?? 120.0;
+						}
 					}
-				}
-				else
-				{
-					this._最小BPM = 120.0;
-					this._最大BPM = 120.0;
 				}
 			}
 			//----------------
 			#endregion
 
+			bool 表示可能ノードである = ( this._現在表示しているノード is MusicNode );
+
 			this._BPMパネル.描画する( gd, 領域.X - 5f, 領域.Y - 4f );
 
-			if( 10.0 >= Math.Abs( this._最大BPM - this._最小BPM ) )
+			if( 表示可能ノードである )
 			{
-				// (A) 「最小値」だけ描画。差が10以下なら同一値とみなす。
-				this._パラメータ文字.描画する( gd, 領域.X + 120f, 領域.Y, this._最小BPM.ToString( "0" ).PadLeft( 3 ) );
-			}
-			else
-			{
-				// (B) 「最小～最大」を描画。
-				this._パラメータ文字.描画する( gd, 領域.X + 80f, 領域.Y, this._最小BPM.ToString( "0" ) + "~" + this._最大BPM.ToString("0") );
+				if( 10.0 >= Math.Abs( this._最大BPM - this._最小BPM ) )
+				{
+					// (A) 「最小値」だけ描画。差が10以下なら同一値とみなす。
+					this._パラメータ文字.描画する( gd, 領域.X + 120f, 領域.Y, this._最小BPM.ToString( "0" ).PadLeft( 3 ) );
+				}
+				else
+				{
+					// (B) 「最小～最大」を描画。
+					this._パラメータ文字.描画する( gd, 領域.X + 80f, 領域.Y, this._最小BPM.ToString( "0" ) + "~" + this._最大BPM.ToString( "0" ) );
+				}
 			}
 		}
 
 		private 画像 _BPMパネル = null;
 		private 画像フォント _パラメータ文字 = null;
 
-		private Node _現在表示しているノード = null;
+		private MusicNode _現在表示しているノード = null;
 		private double _最小BPM;
 		private double _最大BPM;
 	}

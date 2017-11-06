@@ -7,7 +7,8 @@ using System.Security.Cryptography;
 using System.Text;
 using FDK;
 using SSTFormatCurrent = SSTFormat.v3;
-using DTXmatixx.設定.DB;
+using DTXmatixx.データベース.ユーザ;
+using DTXmatixx.データベース.曲;
 using DTXmatixx.ステージ.演奏;
 
 namespace DTXmatixx.設定
@@ -28,230 +29,210 @@ namespace DTXmatixx.設定
 		///		指定した曲ファイルに対応するレコードがデータベースになければレコードを追加し、
 		///		あればそのレコードを更新する。
 		/// </summary>
-		public static void 曲を追加または更新する( string 曲ファイルパス, ユーザ設定 ユーザ設定 )
+		public static void 曲を追加または更新する( VariablePath 曲ファイルパス, ユーザ設定 ユーザ設定 )
 		{
-			string 調べる曲のパス = Folder.絶対パスに含まれるフォルダ変数を展開して返す( 曲ファイルパス );
-
-			using( var songdb = new SongDB() )
+			try
 			{
-				var 同一パス検索クエリ = songdb.Songs.Where( 
-					( song ) => ( song.Path == 調べる曲のパス ) );
-
-				if( 0 == 同一パス検索クエリ.Count() )
+				using( var songdb = new SongDB() )
 				{
-					// (A) 同一パスを持つレコードがDBになかった
+					var 同一パス検索クエリ = songdb.Songs.Where( ( song ) => ( song.Path == 曲ファイルパス.変数なしパス ) );
 
-					var 調べる曲のハッシュ = _ファイルのハッシュを算出して返す( 調べる曲のパス );
-
-					var 同一ハッシュ検索クエリ = songdb.Songs.Where(
-						( song ) => ( song.HashId == 調べる曲のハッシュ ) );
-
-					if( 0 == 同一ハッシュ検索クエリ.Count() )
+					if( 0 == 同一パス検索クエリ.Count() )
 					{
-						#region " (A-a) 同一ハッシュを持つレコードがDBになかった → 新規追加 "
-						//----------------
-						var 拡張子名 = Path.GetExtension( 調べる曲のパス );
-						var score = (SSTFormatCurrent.スコア) null;
+						// (A) 同一パスを持つレコードがDBになかった
 
-						if( ".sstf" == 拡張子名 )
-						{
-							score = new SSTFormatCurrent.スコア( 調べる曲のパス );
-						}
-						else if( ".dtx" == 拡張子名 )
-						{
-							score = SSTFormatCurrent.DTXReader.ReadFromFile( 調べる曲のパス );
-						}
-						else
-						{
-							throw new Exception( $"未対応のフォーマットファイルです。[{曲ファイルパス}]" );
-						}
+						var 調べる曲のハッシュ = _ファイルのハッシュを算出して返す( 曲ファイルパス );
 
-						using( score )
-						{
-							var ノーツ数 = _ノーツ数を算出して返す( score, ユーザ設定 );
-							var BPMs = _最小最大BPMを調べて返す( score );
+						var 同一ハッシュレコード = songdb.Songs.Where( ( song ) => ( song.HashId == 調べる曲のハッシュ ) ).SingleOrDefault();
 
-							songdb.Songs.InsertOnSubmit(
-								new Song() {
-									Id = null,
-									HashId = _ファイルのハッシュを算出して返す( 調べる曲のパス ),
-									Title = score.曲名,
-									Path = 調べる曲のパス,
-									LastWriteTime = File.GetLastWriteTime( 調べる曲のパス ).ToString( "G" ),
-									LeftCymbalNotes = ノーツ数[ 表示レーン種別.LeftCrash ],
-									HiHatNotes = ノーツ数[ 表示レーン種別.HiHat ],
-									LeftPedalNotes = ノーツ数[ 表示レーン種別.Foot ],
-									SnareNotes = ノーツ数[ 表示レーン種別.Snare ],
-									BassNotes = ノーツ数[ 表示レーン種別.Bass ],
-									HighTomNotes = ノーツ数[ 表示レーン種別.Tom1 ],
-									LowTomNotes = ノーツ数[ 表示レーン種別.Tom2 ],
-									FloorTomNotes = ノーツ数[ 表示レーン種別.Tom3 ],
-									RightCymbalNotes = ノーツ数[ 表示レーン種別.RightCrash ],
-									Level = score.難易度,
-									MinBPM = BPMs.最小BPM,
-									MaxBPM = BPMs.最大BPM,
-								} );
+						if( null == 同一ハッシュレコード )
+						{
+							#region " (A-a) 同一ハッシュを持つレコードがDBになかった → 新規追加 "
+							//----------------
+							var 拡張子名 = Path.GetExtension( 曲ファイルパス.変数なしパス );
+							var score = (SSTFormatCurrent.スコア) null;
+
+							#region " スコアを読み込む "
+							//----------------
+							if( ".sstf" == 拡張子名 )
+							{
+								score = new SSTFormatCurrent.スコア( 曲ファイルパス.変数なしパス );
+							}
+							else if( ".dtx" == 拡張子名 )
+							{
+								score = SSTFormatCurrent.DTXReader.ReadFromFile( 曲ファイルパス.変数なしパス );
+							}
+							else
+							{
+								throw new Exception( $"未対応のフォーマットファイルです。[{曲ファイルパス.変数付きパス}]" );
+							}
+							//----------------
+							#endregion
+
+							using( score )
+							{
+								// Songs レコード新規追加。
+								var ノーツ数 = _ノーツ数を算出して返す( score, ユーザ設定 );
+								var BPMs = _最小最大BPMを調べて返す( score );
+
+								songdb.Songs.InsertOnSubmit(
+									new Song() {
+										HashId = _ファイルのハッシュを算出して返す( 曲ファイルパス ),
+										Title = score.曲名,
+										Path = 曲ファイルパス.変数なしパス,
+										LastWriteTime = File.GetLastWriteTime( 曲ファイルパス.変数なしパス ).ToString( "G" ),
+										Level = score.難易度,
+										MinBPM = BPMs.最小BPM,
+										MaxBPM = BPMs.最大BPM,
+										TotalNotes_LeftCymbal = ノーツ数[ 表示レーン種別.LeftCrash ],
+										TotalNotes_HiHat = ノーツ数[ 表示レーン種別.HiHat ],
+										TotalNotes_LeftPedal = ノーツ数[ 表示レーン種別.Foot ],
+										TotalNotes_Snare = ノーツ数[ 表示レーン種別.Snare ],
+										TotalNotes_Bass = ノーツ数[ 表示レーン種別.Bass ],
+										TotalNotes_HighTom = ノーツ数[ 表示レーン種別.Tom1 ],
+										TotalNotes_LowTom = ノーツ数[ 表示レーン種別.Tom2 ],
+										TotalNotes_FloorTom = ノーツ数[ 表示レーン種別.Tom3 ],
+										TotalNotes_RightCymbal = ノーツ数[ 表示レーン種別.RightCrash ],
+									} );
+							}
+
 							songdb.DataContext.SubmitChanges();
-						}
 
-						Log.Info( $"DBに曲を追加しました。{曲ファイルパス}" );
-						//----------------
-						#endregion
-					}
-					else
-					{
-						#region " (A-b) 同一ハッシュを持つレコードがDBにあった → 更新 "
-						//----------------
-						var record = 同一ハッシュ検索クエリ.Single();
-
-						var 拡張子名 = Path.GetExtension( 調べる曲のパス );
-						var score = (SSTFormatCurrent.スコア) null;
-
-						if( ".sstf" == 拡張子名 )
-						{
-							score = new SSTFormatCurrent.スコア( 調べる曲のパス );
-						}
-						else if( ".dtx" == 拡張子名 )
-						{
-							score = SSTFormatCurrent.DTXReader.ReadFromFile( 調べる曲のパス );
+							Log.Info( $"DBに曲を追加しました。{曲ファイルパス.変数付きパス}" );
+							//----------------
+							#endregion
 						}
 						else
 						{
-							throw new Exception( $"未対応のフォーマットファイルです。[{曲ファイルパス}]" );
+							#region " (A-b) 同一ハッシュを持つレコードがDBにあった → 更新 "
+							//----------------
+							var 拡張子名 = Path.GetExtension( 曲ファイルパス.変数なしパス );
+							var score = (SSTFormatCurrent.スコア) null;
+
+							#region " スコアを読み込む "
+							//----------------
+							if( ".sstf" == 拡張子名 )
+							{
+								score = new SSTFormatCurrent.スコア( 曲ファイルパス.変数なしパス );
+							}
+							else if( ".dtx" == 拡張子名 )
+							{
+								score = SSTFormatCurrent.DTXReader.ReadFromFile( 曲ファイルパス.変数なしパス );
+							}
+							else
+							{
+								throw new Exception( $"未対応のフォーマットファイルです。[{曲ファイルパス.変数付きパス}]" );
+							}
+							//----------------
+							#endregion
+
+							using( score )
+							{
+								// Songs レコード更新。
+								var ノーツ数 = _ノーツ数を算出して返す( score, ユーザ設定 );
+								var BPMs = _最小最大BPMを調べて返す( score );
+								var song = 同一ハッシュレコード;
+
+								song.Title = score.曲名;
+								song.Path = 曲ファイルパス.変数なしパス;
+								song.LastWriteTime = File.GetLastWriteTime( 曲ファイルパス.変数なしパス ).ToString( "G" );
+								song.Level = score.難易度;
+								song.MinBPM = BPMs.最小BPM;
+								song.MaxBPM = BPMs.最大BPM;
+								song.TotalNotes_LeftCymbal = ノーツ数[ 表示レーン種別.LeftCrash ];
+								song.TotalNotes_HiHat = ノーツ数[ 表示レーン種別.HiHat ];
+								song.TotalNotes_LeftPedal = ノーツ数[ 表示レーン種別.Foot ];
+								song.TotalNotes_Snare = ノーツ数[ 表示レーン種別.Snare ];
+								song.TotalNotes_Bass = ノーツ数[ 表示レーン種別.Bass ];
+								song.TotalNotes_HighTom = ノーツ数[ 表示レーン種別.Tom1 ];
+								song.TotalNotes_LowTom = ノーツ数[ 表示レーン種別.Tom2 ];
+								song.TotalNotes_FloorTom = ノーツ数[ 表示レーン種別.Tom3 ];
+								song.TotalNotes_RightCymbal = ノーツ数[ 表示レーン種別.RightCrash ];
+							}
+
+							songdb.DataContext.SubmitChanges();
+
+							Log.Info( $"パスが異なりハッシュが同一であるレコードが検出されたため、曲の情報を更新しました。{曲ファイルパス.変数付きパス}" );
+							//----------------
+							#endregion
 						}
-
-						using( score )
-						{
-							var ノーツ数 = _ノーツ数を算出して返す( score, ユーザ設定 );
-							var BPMs = _最小最大BPMを調べて返す( score );
-
-							record.Title = score.曲名;
-							record.Path = 調べる曲のパス;
-							record.LastWriteTime = File.GetLastWriteTime( 調べる曲のパス ).ToString( "G" );
-							record.LeftCymbalNotes = ノーツ数[ 表示レーン種別.LeftCrash ];
-							record.HiHatNotes = ノーツ数[ 表示レーン種別.HiHat ];
-							record.LeftPedalNotes = ノーツ数[ 表示レーン種別.Foot ];
-							record.SnareNotes = ノーツ数[ 表示レーン種別.Snare ];
-							record.BassNotes = ノーツ数[ 表示レーン種別.Bass ];
-							record.HighTomNotes = ノーツ数[ 表示レーン種別.Tom1 ];
-							record.LowTomNotes = ノーツ数[ 表示レーン種別.Tom2 ];
-							record.FloorTomNotes = ノーツ数[ 表示レーン種別.Tom3 ];
-							record.RightCymbalNotes = ノーツ数[ 表示レーン種別.RightCrash ];
-							record.Level = score.難易度;
-							record.MinBPM = BPMs.最小BPM;
-							record.MaxBPM = BPMs.最大BPM;
-						}
-						songdb.DataContext.SubmitChanges();
-
-						Log.Info( $"パスが異なりハッシュが同一であるレコードが検出されたため、曲の情報を更新しました。{曲ファイルパス}" );
-						//----------------
-						#endregion
-					}
-				}
-				else
-				{
-					// (B) 同一パスを持つレコードがDBにあった
-
-					var record = 同一パス検索クエリ.Single();
-
-					string レコードの最終更新日時 = record.LastWriteTime;
-					string 調べる曲の最終更新日時 = File.GetLastWriteTime( 調べる曲のパス ).ToString( "G" );
-
-					if( レコードの最終更新日時 != 調べる曲の最終更新日時 )
-					{
-						#region " (B-a) 最終更新日時が変更されている → 更新 "
-						//----------------
-						var 拡張子名 = Path.GetExtension( 調べる曲のパス );
-						var score = (SSTFormatCurrent.スコア) null;
-
-						if( ".sstf" == 拡張子名 )
-						{
-							score = new SSTFormatCurrent.スコア( 調べる曲のパス );
-						}
-						else if( ".dtx" == 拡張子名 )
-						{
-							score = SSTFormatCurrent.DTXReader.ReadFromFile( 調べる曲のパス );
-						}
-						else
-						{
-							throw new Exception( $"未対応のフォーマットファイルです。[{曲ファイルパス}]" );
-						}
-
-						using( score )
-						{
-							var ノーツ数 = _ノーツ数を算出して返す( score, ユーザ設定 );
-							var BPMs = _最小最大BPMを調べて返す( score );
-
-							record.HashId = _ファイルのハッシュを算出して返す( 調べる曲のパス );
-							record.Title = score.曲名;
-							record.LastWriteTime = 調べる曲の最終更新日時;
-							record.LeftCymbalNotes = ノーツ数[ 表示レーン種別.LeftCrash ];
-							record.HiHatNotes = ノーツ数[ 表示レーン種別.HiHat ];
-							record.LeftPedalNotes = ノーツ数[ 表示レーン種別.Foot ];
-							record.SnareNotes = ノーツ数[ 表示レーン種別.Snare ];
-							record.BassNotes = ノーツ数[ 表示レーン種別.Bass ];
-							record.HighTomNotes = ノーツ数[ 表示レーン種別.Tom1 ];
-							record.LowTomNotes = ノーツ数[ 表示レーン種別.Tom2 ];
-							record.FloorTomNotes = ノーツ数[ 表示レーン種別.Tom3 ];
-							record.RightCymbalNotes = ノーツ数[ 表示レーン種別.RightCrash ];
-							record.Level = score.難易度;
-							record.MinBPM = BPMs.最小BPM;
-							record.MaxBPM = BPMs.最大BPM;
-						}
-						songdb.DataContext.SubmitChanges();
-
-						Log.Info( $"最終更新日時が変更されているため、曲の情報を更新しました。{曲ファイルパス}" );
-						//----------------
-						#endregion
 					}
 					else
 					{
-						#region " (B-b) それ以外 → 何もしない "
-						//----------------
-						//----------------
-						#endregion
+						// (B) 同一パスを持つレコードがDBにあった
+
+						var record = 同一パス検索クエリ.Single();
+
+						string レコードの最終更新日時 = record.LastWriteTime;
+						string 調べる曲の最終更新日時 = File.GetLastWriteTime( 曲ファイルパス.変数なしパス ).ToString( "G" );
+
+						if( レコードの最終更新日時 != 調べる曲の最終更新日時 )
+						{
+							#region " (B-a) 最終更新日時が変更されている → 更新 "
+							//----------------
+							var 拡張子名 = Path.GetExtension( 曲ファイルパス.変数なしパス );
+							var score = (SSTFormatCurrent.スコア) null;
+
+							#region " スコアを読み込む "
+							//----------------
+							if( ".sstf" == 拡張子名 )
+							{
+								score = new SSTFormatCurrent.スコア( 曲ファイルパス.変数なしパス );
+							}
+							else if( ".dtx" == 拡張子名 )
+							{
+								score = SSTFormatCurrent.DTXReader.ReadFromFile( 曲ファイルパス.変数なしパス );
+							}
+							else
+							{
+								throw new Exception( $"未対応のフォーマットファイルです。[{曲ファイルパス.変数付きパス}]" );
+							}
+							//----------------
+							#endregion
+
+							using( score )
+							{
+								// Songsレコード更新。
+								var ノーツ数 = _ノーツ数を算出して返す( score, ユーザ設定 );
+								var BPMs = _最小最大BPMを調べて返す( score );
+
+								record.HashId = _ファイルのハッシュを算出して返す( 曲ファイルパス );
+								record.Title = score.曲名;
+								record.LastWriteTime = 調べる曲の最終更新日時;
+								record.Level = score.難易度;
+								record.MinBPM = BPMs.最小BPM;
+								record.MaxBPM = BPMs.最大BPM;
+								record.TotalNotes_LeftCymbal = ノーツ数[ 表示レーン種別.LeftCrash ];
+								record.TotalNotes_HiHat = ノーツ数[ 表示レーン種別.HiHat ];
+								record.TotalNotes_LeftPedal = ノーツ数[ 表示レーン種別.Foot ];
+								record.TotalNotes_Snare = ノーツ数[ 表示レーン種別.Snare ];
+								record.TotalNotes_Bass = ノーツ数[ 表示レーン種別.Bass ];
+								record.TotalNotes_HighTom = ノーツ数[ 表示レーン種別.Tom1 ];
+								record.TotalNotes_LowTom = ノーツ数[ 表示レーン種別.Tom2 ];
+								record.TotalNotes_FloorTom = ノーツ数[ 表示レーン種別.Tom3 ];
+								record.TotalNotes_RightCymbal = ノーツ数[ 表示レーン種別.RightCrash ];
+							}
+
+							songdb.DataContext.SubmitChanges();
+
+							Log.Info( $"最終更新日時が変更されているため、曲の情報を更新しました。{曲ファイルパス.変数付きパス}" );
+							//----------------
+							#endregion
+						}
+						else
+						{
+							#region " (B-b) それ以外 → 何もしない "
+							//----------------
+							//----------------
+							#endregion
+						}
 					}
 				}
 			}
-		}
-
-		/// <summary>
-		///		指定されたパスに対応する曲を曲データベースから取得して返す。
-		///		見つからなければ null 。
-		/// </summary>
-		public static Song 曲を取得する( string 曲ファイルパス )
-		{
-			string filePath = Folder.絶対パスに含まれるフォルダ変数を展開して返す( 曲ファイルパス );
-
-			using( var songdb = new SongDB() )
+			catch
 			{
-				return songdb.Songs.Where(
-					( song ) => ( song.Path == filePath )
-					).SingleOrDefault();
-			}
-		}
-
-		/// <summary>
-		///		指定されたユーザIDと曲（パスで指定）に対応する成績をデータベースから取得して返す。
-		///		見つからなければ null。
-		/// </summary>
-		public static Record ユーザと曲ファイルのパスから成績を取得する( string ユーザID, string 曲ファイルパス )
-		{
-			var song = 曲を取得する( 曲ファイルパス );
-			return ( null != song ) ? ユーザと曲ファイルのハッシュから成績を取得する( ユーザID, song.HashId ) : null;
-		}
-		
-		/// <summary>
-		///		指定されたユーザIDと曲（ハッシュで指定）に対応する成績をデータベースから取得して返す。
-		///		見つからなければ null。
-		/// </summary>
-		public static Record ユーザと曲ファイルのハッシュから成績を取得する( string ユーザID, string 曲ファイルハッシュ )
-		{
-			using( var userdb = new UserDB() )
-			{
-				return userdb.Records.Where( 
-					( record ) => ( record.UserId == ユーザID && record.SongHashId == 曲ファイルハッシュ )
-					).SingleOrDefault();
+				Log.ERROR( $"曲DBへの曲の追加に失敗しました。[{曲ファイルパス.変数付きパス}]" );
+				throw;
 			}
 		}
 
@@ -259,44 +240,38 @@ namespace DTXmatixx.設定
 		///		指定したユーザID＆曲ファイルハッシュに対応するレコードがデータベースになければレコードを追加し、
 		///		あればそのレコードを（最高記録であれば）更新する。
 		/// </summary>
-		public static void 成績を追加または更新する( 成績 record, string ユーザID, string 曲ファイルハッシュ )
+		public static void 成績を追加または更新する( 成績 今回の成績, string ユーザID, string 曲ファイルハッシュ )
 		{
 			using( var userdb = new UserDB() )
 			{
-				var query = userdb.Records.Where(
-					( r ) => ( r.UserId == ユーザID && r.SongHashId == 曲ファイルハッシュ )
-					).SingleOrDefault();
-
-				if( null != query )
+				var record = userdb.Records.Where( ( r ) => ( r.UserId == ユーザID && r.SongHashId == 曲ファイルハッシュ ) ).SingleOrDefault();
+				if( null == record )
 				{
-					// (A) レコードがすでに存在するなら、更新する。
-					if( query.Score < record.Score )
-						query.Score = record.Score; // 記録更新
-
-					// todo: CountMap を成績クラスに保存する。
-					//query.CountMap = record.CountMap;
-
-					if( query.Skill < record.Skill )
-						query.Skill = record.Skill; // 記録更新
-
-					if( query.Achievement < record.Achievement )
-						query.Achievement = record.Achievement;	// 記録更新
+					// (A) レコードが存在しないので、追加する。
+					userdb.Records.InsertOnSubmit( new Record() {
+						UserId = ユーザID,
+						SongHashId = 曲ファイルハッシュ,
+						Score = 今回の成績.Score,
+						// todo: CountMap を成績クラスに保存する。
+						CountMap = "",
+						Skill = 今回の成績.Skill,
+						Achievement = 今回の成績.Achievement,
+					} );
 				}
 				else
 				{
-					// (B) レコードが存在しないなら、追加する。
-					userdb.Records.InsertOnSubmit( new Record() {
-						Id = null,
-						UserId = ユーザID,
-						SongHashId = 曲ファイルハッシュ,
-						Score = record.Score,
+					// (B) レコードがすでに存在するので、更新する。（記録更新したレコードのみ）
 
-						// todo: CountMap を成績クラスに保存する。
-						CountMap = "",
+					if( record.Score < 今回の成績.Score )
+						record.Score = 今回の成績.Score;
 
-						Skill = record.Skill,
-						Achievement = record.Achievement,
-					} );
+					// todo: CountMap を成績クラスに保存する。
+
+					if( record.Skill < 今回の成績.Skill )
+						record.Skill = 今回の成績.Skill;
+
+					if( record.Achievement < 今回の成績.Achievement )
+						record.Achievement = 今回の成績.Achievement;
 				}
 
 				userdb.DataContext.SubmitChanges();
@@ -330,14 +305,13 @@ namespace DTXmatixx.設定
 
 			return ノーツ数;
 		}
-		private static string _ファイルのハッシュを算出して返す( string 曲ファイルパス )
-		{
-			var filePath = Folder.絶対パスに含まれるフォルダ変数を展開して返す( 曲ファイルパス );
 
+		private static string _ファイルのハッシュを算出して返す( VariablePath 曲ファイルパス )
+		{
 			var sha512 = new SHA512CryptoServiceProvider();
 			byte[] hash = null;
 
-			using( var fs = new FileStream( filePath, FileMode.Open ) )
+			using( var fs = new FileStream( 曲ファイルパス.変数なしパス, FileMode.Open ) )
 				hash = sha512.ComputeHash( fs );
 
 			var hashString = new StringBuilder();
@@ -346,6 +320,7 @@ namespace DTXmatixx.設定
 
 			return hashString.ToString();
 		}
+
 		private static (double 最小BPM, double 最大BPM) _最小最大BPMを調べて返す( SSTFormatCurrent.スコア score )
 		{
 			var result = (最小BPM: double.MaxValue, 最大BPM: double.MinValue);

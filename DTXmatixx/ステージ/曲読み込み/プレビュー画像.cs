@@ -30,7 +30,7 @@ namespace DTXmatixx.ステージ.曲読み込み
 
 		public void 描画する( グラフィックデバイス gd )
 		{
-			var 選択曲 = App.曲ツリー.フォーカスノード as MusicNode;
+			var 選択曲 = App.曲ツリー.フォーカス曲ノード;
 			Debug.Assert( null != 選択曲 );
 
 			var プレビュー画像 = 選択曲.ノード画像 ?? Node.既定のノード画像;
