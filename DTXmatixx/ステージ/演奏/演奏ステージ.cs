@@ -452,12 +452,15 @@ namespace DTXmatixx.ステージ.演奏
 							if( input.InputEvent.離された )
 								continue;   // 押下イベントじゃないなら無視。
 
-							var column = ( from col in App.ユーザ管理.ログオン中のユーザ.ドラムとチップと入力の対応表.対応表
-										   where ( col.Value.ドラム入力種別 == input.Type )
-										   select col.Value ).First();
+							var columns = from col in App.ユーザ管理.ログオン中のユーザ.ドラムとチップと入力の対応表.対応表
+										 where ( col.Value.ドラム入力種別 == input.Type )
+										 select col.Value;
 
-							this._ドラムパッド.ヒットする( column.表示レーン種別 );
-							this._レーンフラッシュ.開始する( column.表示レーン種別 );
+							if( 0 < columns.Count() )
+							{
+								this._ドラムパッド.ヒットする( columns.First().表示レーン種別 );
+								this._レーンフラッシュ.開始する( columns.First().表示レーン種別 );
+							}
 						}
 						//----------------
 						#endregion
