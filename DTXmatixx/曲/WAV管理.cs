@@ -136,6 +136,11 @@ namespace DTXmatixx.曲
 			this._WavContexts[ WAV番号 ].発声する( chipType, 音量 );
 		}
 
+		public void すべての発声を停止する()
+		{
+			foreach( var kvp in this._WavContexts )
+				kvp.Value.Dispose();
+		}
 
 		/// <summary>
 		///		１つの WAV に相当する管理情報。

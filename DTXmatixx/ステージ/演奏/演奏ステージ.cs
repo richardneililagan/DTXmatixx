@@ -380,7 +380,9 @@ namespace DTXmatixx.ステージ.演奏
 								return;
 							}
 
-							// chip にヒットできる入力を探す。
+							// ここに来た時点で、この chip はヒット可能状態である。
+
+							// この chip にヒットできる入力を探す。
 							チップにヒットしている入力 = App.入力管理.ポーリング結果.FirstOrDefault( ( 入力 ) => {
 
 								#region " chip にヒットする入力があれば true を返す。"
@@ -414,8 +416,49 @@ namespace DTXmatixx.ステージ.演奏
 									return false;
 								}
 
-								// chip に対応する入力なら true。
-								return ( 対応表.ドラム入力種別 == 入力.Type );
+								// 以下、現状はすべて同系列フリーであり、打ち分けはできない。
+								switch( chip.チップ種別 )
+								{
+									case チップ種別.LeftCrash:
+									case チップ種別.China:
+									case チップ種別.Splash:
+									case チップ種別.RightCrash:
+										return false;   // これらはシンバルフリーとして処理済みのはずなので、ここには来ないはずだが念のため。
+
+									case チップ種別.Ride:
+									case チップ種別.Ride_Cup:
+										return ( 入力.Type == ドラム入力種別.Ride );
+
+									case チップ種別.HiHat_Close:
+									//case チップ種別.HiHat_Foot:	--> 現状、ヒット判定なし。
+									case チップ種別.HiHat_HalfOpen:
+									case チップ種別.HiHat_Open:
+										return ( 入力.Type == ドラム入力種別.HiHat_Close || 入力.Type == ドラム入力種別.HiHat_Open );
+
+									case チップ種別.Snare:
+									case チップ種別.Snare_ClosedRim:
+									case チップ種別.Snare_Ghost:
+									case チップ種別.Snare_OpenRim:
+										return ( 入力.Type == ドラム入力種別.Snare || 入力.Type == ドラム入力種別.Snare_ClosedRim || 入力.Type == ドラム入力種別.Snare_OpenRim );
+
+									case チップ種別.Bass:
+										return ( 入力.Type == ドラム入力種別.Bass );
+
+									case チップ種別.Tom1:
+									case チップ種別.Tom1_Rim:
+										return ( 入力.Type == ドラム入力種別.Tom1 || 入力.Type == ドラム入力種別.Tom1_Rim );
+
+									case チップ種別.Tom2:
+									case チップ種別.Tom2_Rim:
+										return ( 入力.Type == ドラム入力種別.Tom2 || 入力.Type == ドラム入力種別.Tom2_Rim );
+
+									case チップ種別.Tom3:
+									case チップ種別.Tom3_Rim:
+										return ( 入力.Type == ドラム入力種別.Tom3 || 入力.Type == ドラム入力種別.Tom3_Rim );
+
+									default:
+										return ( 対応表.ドラム入力種別 == 入力.Type );		// 1種類のみが一致すればヒット。
+								}
 								//----------------
 								#endregion
 
@@ -506,7 +549,10 @@ namespace DTXmatixx.ステージ.演奏
 						#region " ESC → 演奏中断 "
 						//----------------
 						Log.Info( "演奏を中断します。" );
+
 						this.BGMを停止する();
+						App.WAV管理.すべての発声を停止する();    // DTXでのBGMサウンドはこっちに含まれる。
+
 						this.現在のフェーズ = フェーズ.キャンセル通知;	// 通知
 						//----------------
 						#endregion
