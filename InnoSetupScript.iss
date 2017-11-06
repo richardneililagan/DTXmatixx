@@ -6,7 +6,7 @@
 
 #define MyAppName "DTXMania matixx"
 #define MyAppFolderName "DTXManiaMatixx"
-#define MyAppVersion "1.0"
+#define MyAppVersion "001"
 #define MyAppPublisher "ＦＲＯＭ"
 #define MyAppExeName "DTXManiaMatixx.exe"
 #define MyAppBin "DTXmatixx\bin\Release"
@@ -22,7 +22,7 @@ SourceDir=.
 ; ビルドしたインストーラ(exe)の出力先。SourceDir からの相対パス。
 OutputDir=インストーラ
 ; setup ファイル名。
-OutputBaseFilename=dtxmatixx_setup-{#MyAppVersion}
+OutputBaseFilename=dtxmatixx{#MyAppVersion}_setup
 ; アプリ名。
 AppName={#MyAppName}
 ; アプリのバージョン。（コントロールパネル用）
