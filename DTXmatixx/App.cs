@@ -87,7 +87,7 @@ namespace DTXmatixx
 		} = null;
 
 		public App()
-			: base( 設計画面サイズ: new SizeF( 1920f, 1080f ), 物理画面サイズ: new SizeF( 1920f, 1080f ), 深度ステンシルを使う: false )
+			: base( 設計画面サイズ: new SizeF( 1920f, 1080f ), 物理画面サイズ: new SizeF( 1280f, 720f ), 深度ステンシルを使う: false )
 		{
 			this.Text = $"{Application.ProductName} {Application.ProductVersion}";
 
