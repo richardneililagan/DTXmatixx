@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using FDK;
 using DTXmatixx.データベース.曲;
+using FDK.メディア;
 
 namespace DTXmatixx.曲
 {
@@ -48,6 +49,27 @@ namespace DTXmatixx.曲
 					}
 				}
 			}
+		}
+
+		protected override void On活性化( グラフィックデバイス gd )
+		{
+			foreach( var node in this.MusicNodes )
+			{
+				if( null != node )
+					node.活性化する( gd );
+			}
+
+			base.On活性化( gd );
+		}
+		protected override void On非活性化( グラフィックデバイス gd )
+		{
+			foreach( var node in this.MusicNodes )
+			{
+				if( null != node )
+					node.非活性化する( gd );
+			}
+
+			base.On非活性化( gd );
 		}
 	}
 }
