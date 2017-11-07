@@ -35,8 +35,8 @@ namespace DTXmatixx.データベース.ユーザ
 					try
 					{
 						// テーブルを作成する。
-						this.DataContext.ExecuteCommand( User.CreateTableSQL );
-						this.DataContext.ExecuteCommand( Record.CreateTableSQL );
+						this.DataContext.ExecuteCommand( $"CREATE TABLE IF NOT EXISTS Users {User.ColumnList};" );
+						this.DataContext.ExecuteCommand( $"CREATE TABLE IF NOT EXISTS Records {Record.ColumnList};" );
 						this.DataContext.SubmitChanges();
 
 						// 成功。

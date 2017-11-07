@@ -93,6 +93,7 @@ namespace DTXmatixx.設定
 										TotalNotes_LowTom = ノーツ数[ 表示レーン種別.Tom2 ],
 										TotalNotes_FloorTom = ノーツ数[ 表示レーン種別.Tom3 ],
 										TotalNotes_RightCymbal = ノーツ数[ 表示レーン種別.RightCrash ],
+										PreImage = score.プレビュー画像,
 									} );
 							}
 
@@ -148,6 +149,7 @@ namespace DTXmatixx.設定
 								song.TotalNotes_LowTom = ノーツ数[ 表示レーン種別.Tom2 ];
 								song.TotalNotes_FloorTom = ノーツ数[ 表示レーン種別.Tom3 ];
 								song.TotalNotes_RightCymbal = ノーツ数[ 表示レーン種別.RightCrash ];
+								song.PreImage = score.プレビュー画像;
 							}
 
 							songdb.DataContext.SubmitChanges();
@@ -192,11 +194,11 @@ namespace DTXmatixx.設定
 
 							using( score )
 							{
-								// Songsレコード更新。
+								var hash = _ファイルのハッシュを算出して返す( 曲ファイルパス );
 								var ノーツ数 = _ノーツ数を算出して返す( score, ユーザ設定 );
 								var BPMs = _最小最大BPMを調べて返す( score );
 
-								record.HashId = _ファイルのハッシュを算出して返す( 曲ファイルパス );
+								// HashId 以外のカラムを更新する。
 								record.Title = score.曲名;
 								record.LastWriteTime = 調べる曲の最終更新日時;
 								record.Level = score.難易度;
@@ -211,9 +213,21 @@ namespace DTXmatixx.設定
 								record.TotalNotes_LowTom = ノーツ数[ 表示レーン種別.Tom2 ];
 								record.TotalNotes_FloorTom = ノーツ数[ 表示レーン種別.Tom3 ];
 								record.TotalNotes_RightCymbal = ノーツ数[ 表示レーン種別.RightCrash ];
-							}
+								record.PreImage = score.プレビュー画像;
 
-							songdb.DataContext.SubmitChanges();
+								if( hash != record.HashId )
+								{
+									// ハッシュはキーなので、これが変わったら、古いレコードを削除して、新しいレコードを追加する。
+									var newRecord = record.Clone();
+									songdb.Songs.DeleteOnSubmit( record );
+									songdb.DataContext.SubmitChanges();	// 一度Submitして先にレコード削除を確定しないと、次のInsertがエラーになる。（PathカラムはUnique属性なので）
+
+									newRecord.HashId = hash;
+									songdb.Songs.InsertOnSubmit( newRecord );
+								}
+
+								songdb.DataContext.SubmitChanges();
+							}
 
 							Log.Info( $"最終更新日時が変更されているため、曲の情報を更新しました。{曲ファイルパス.変数付きパス}" );
 							//----------------

@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using FDK;
 using DTXmatixx.データベース.曲;
+using FDK.メディア;
 
 namespace DTXmatixx.曲
 {
@@ -48,6 +49,40 @@ namespace DTXmatixx.曲
 					}
 				}
 			}
+
+			// 基点フォルダパス（set.def ファイルと同じ場所）に画像ファイルがあるなら、それをノード画像として採用する。
+			var サムネイル画像ファイルパス =
+				( from ファイル名 in Directory.GetFiles( 基点フォルダパス.変数なしパス )
+				  where _対応するサムネイル画像名.Any( thumbファイル名 => ( Path.GetFileName( ファイル名 ).ToLower() == thumbファイル名 ) )
+				  select ファイル名 ).FirstOrDefault();
+
+			if( null != サムネイル画像ファイルパス )
+			{
+				this.子リスト.Add( this.ノード画像 = new テクスチャ( サムネイル画像ファイルパス ) );
+			}
 		}
+
+		protected override void On活性化( グラフィックデバイス gd )
+		{
+			foreach( var node in this.MusicNodes )
+			{
+				if( null != node )
+					node.活性化する( gd );
+			}
+
+			base.On活性化( gd );
+		}
+		protected override void On非活性化( グラフィックデバイス gd )
+		{
+			foreach( var node in this.MusicNodes )
+			{
+				if( null != node )
+					node.非活性化する( gd );
+			}
+
+			base.On非活性化( gd );
+		}
+
+		private readonly string[] _対応するサムネイル画像名 = { "thumb.png", "thumb.bmp", "thumb.jpg", "thumb.jpeg" };
 	}
 }

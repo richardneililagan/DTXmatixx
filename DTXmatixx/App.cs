@@ -155,14 +155,14 @@ namespace DTXmatixx
 				App.ドラムサウンド?.Dispose();
 				App.ドラムサウンド = null;
 
+				App.WAV管理?.Dispose();	// サウンドデバイスより先に開放すること
+				App.WAV管理 = null;
+
 				App.サウンドタイマ?.Dispose();
 				App.サウンドタイマ = null;
 
 				App.サウンドデバイス?.Dispose();
 				App.サウンドデバイス = null;
-
-				App.WAV管理?.Dispose();
-				App.WAV管理 = null;
 
 				App.演奏スコア?.Dispose();
 				App.演奏スコア = null;

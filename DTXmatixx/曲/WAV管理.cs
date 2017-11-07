@@ -40,9 +40,12 @@ namespace DTXmatixx.曲
 				var context = kvp.Value;
 
 				// Sound[] を解放。
-				foreach( var sd in context.Sounds )
-					sd.Stop();
-				context.Sounds = null;
+				if( null != context.Sounds )
+				{
+					foreach( var sd in context.Sounds )
+						sd.Stop();
+					context.Sounds = null;
+				}
 
 				// Source を解放。
 				context.SampleSource?.Dispose();
