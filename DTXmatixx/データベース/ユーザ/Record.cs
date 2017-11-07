@@ -79,17 +79,16 @@ namespace DTXmatixx.データベース.ユーザ
 		///////////////////////////
 
 		/// <summary>
-		///		テーブル作成用のSQL。
+		///		テーブルのカラム部分を列挙したSQL。
 		/// </summary>
-		public static readonly string CreateTableSQL =
-			@"CREATE TABLE IF NOT EXISTS Records " +
+		public static readonly string ColumnList =
 			@"( UserId NVARCHAR NOT NULL" +
 			@", SongHashId NVARCHAR NOT NULL" +
 			@", Score INTEGER NOT NULL" +
 			@", CountMap NVARCHAR NOT NULL" +
-			@", Skill REAL NOT NULL"+
+			@", Skill REAL NOT NULL" +
 			@", Achievement REAL NOT NULL" +
 			@", PRIMARY KEY(`UserId`,`SongHashId`)" +
-			@");";
+			@")";
 	}
 }

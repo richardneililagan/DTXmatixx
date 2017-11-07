@@ -116,6 +116,13 @@ namespace DTXmatixx.データベース.曲
 		//----------------
 		#endregion
 
+		/// <summary>
+		///		曲のプレビュー画像。
+		/// </summary>
+		[Column( DbType = "NVARCHAR" )]
+		public string PreImage { get; set; }
+
+
 		///////////////////////////
 
 		/// <summary>
@@ -139,6 +146,7 @@ namespace DTXmatixx.データベース.曲
 			this.TotalNotes_LowTom = 0;
 			this.TotalNotes_FloorTom = 0;
 			this.TotalNotes_RightCymbal = 0;
+			this.PreImage = "";
 		}
 
 		// ICloneable 実装
@@ -154,10 +162,9 @@ namespace DTXmatixx.データベース.曲
 		///////////////////////////
 
 		/// <summary>
-		///		テーブル作成用のSQL。
+		///		テーブルのカラム部分を列挙したSQL。
 		/// </summary>
-		public static readonly string CreateTableSQL =
-			@"CREATE TABLE IF NOT EXISTS Songs " +
+		public static readonly string ColumsList =
 			@"( HashId NVARCHAR NOT NULL PRIMARY KEY" +
 			@", Title NVARCHAR NOT NULL" +
 			@", Path NVARCHAR NOT NULL UNIQUE" +
@@ -174,6 +181,7 @@ namespace DTXmatixx.データベース.曲
 			@", TotalNotes_LowTom INTEGER NOT NULL" +
 			@", TotalNotes_FloorTom INTEGER NOT NULL" +
 			@", TotalNotes_RightCymbal INTEGER NOT NULL" +
-			@");";
+			@", PreImage NVARCHAR" +
+			@")";
 	}
 }

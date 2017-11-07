@@ -195,10 +195,9 @@ namespace DTXmatixx.データベース.ユーザ
 		///////////////////////////
 
 		/// <summary>
-		///		テーブル作成用のSQL。
+		///		テーブルのカラム部分を列挙したSQL。
 		/// </summary>
-		public static readonly string CreateTableSQL =
-			@"CREATE TABLE IF NOT EXISTS Users " +
+		public static readonly string ColumnList =
 			@"( Id NVARCHAR NOT NULL PRIMARY KEY" +
 			@", Name NVARCHAR NOT NULL" +
 			@", ScrollSpeed REAL NOT NULL" +
@@ -218,6 +217,6 @@ namespace DTXmatixx.データベース.ユーザ
 			@", MaxRange_Ok REAL NOT NULL" +
 			@", SongFolders NVARCHAR NOT NULL" +
 			@", CymbalFree INTEGER NOT NULL" +
-			@");";
+			@")";
 	}
 }
