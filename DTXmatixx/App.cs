@@ -6,6 +6,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.ServiceModel;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -21,10 +22,12 @@ using DTXmatixx.ステージ;
 using DTXmatixx.曲;
 using DTXmatixx.設定;
 using DTXmatixx.入力;
+using DTXmatixx.Viewer;
 
 namespace DTXmatixx
 {
-	class App : ApplicationForm, IDisposable
+	[ServiceBehavior( InstanceContextMode = InstanceContextMode.Single )]   // サービスインターフェースをシングルスレッドで呼び出す。
+	class App : ApplicationForm, IDTXManiaService, IDisposable
 	{
 		/// <remarks>
 		///		SharpDX.Mathematics パッケージを参照し、かつ SharpDX 名前空間を using しておくと、
@@ -237,6 +240,44 @@ namespace DTXmatixx
 				App.ユーザ管理.ログオン中のユーザ.全画面モードである = this.全画面モード;
 			}
 		}
+
+		#region " IDTXManiaService の実装 "
+		//----------------
+		// このアセンブリ（exe）は、WCF で IDTXManiaService を公開する。
+		// ・このサービスインターフェースは、シングルスレッド（GUIスレッド）で同期実行される。（Appクラスの ServiceBehavior属性を参照。）
+		// ・このサービスホストはシングルトンであり、すべてのクライアントセッションは同一（単一）のサービスインスタンスへ接続される。（Program.Main() を参照。）
+
+		/// <summary>
+		///		曲を読み込み、演奏を開始する。
+		///		ビュアーモードのときのみ有効。
+		/// </summary>
+		/// <param name="path">曲ファイルパス</param>
+		/// <param name="startPart">演奏開始小節番号(0～)</param>
+		/// <param name="drumsSound">ドラムチップ音を発声させるなら true。</param>
+		public void ViewerPlay( string path, int startPart = 0, bool drumsSound = true )
+		{
+			// todo: ViewerPlay メソッドを実装する。
+			throw new NotImplementedException();
+		}
+
+		/// <summary>
+		///		現在の演奏を停止する。
+		///		ビュアーモードのときのみ有効。
+		/// </summary>
+		public void ViewerStop()
+		{
+			// todo: ViewerStop メソッドを実装する。
+			throw new NotImplementedException();
+		}
+
+		/// <summary>
+		///		サウンドデバイスの発声遅延[ms]を返す。
+		/// </summary>
+		/// <returns>遅延量[ms]</returns>
+		public float GetSoundDelay()
+			=> (float) ( App.サウンドデバイス?.再生遅延sec ?? 0.0 ) * 1000.0f;
+		//----------------
+		#endregion
 
 		// ※ Form イベントの override メソッドは描画スレッドで実行されるため、処理中に進行タスクが呼び出されると困る場合には、進行タスクとの lock を忘れないこと。
 		private readonly object _高速進行と描画の同期 = new object();
