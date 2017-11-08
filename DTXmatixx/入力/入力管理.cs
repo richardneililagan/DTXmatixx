@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using FDK;
 using FDK.入力;
+using SSTFormat.v3;
 using DTXmatixx.設定;
 
 namespace DTXmatixx.入力
@@ -283,7 +284,100 @@ namespace DTXmatixx.入力
 
 			return true;
 		}
+		/// <summary>
+		///		現在の履歴において、指定したシーケンスが成立しているかを確認する。
+		/// </summary>
+		/// <param name="シーケンス">確認したいシーケンス。</param>
+		/// <returns>シーケンスが成立しているなら true。</returns>
+		/// <remarks>
+		///		指定したシーケンスが現在の履歴の一部に見られれば、成立しているとみなす。
+		///		履歴内に複数存在している場合は、一番 古 い シーケンスが対象となる。
+		///		成立した場合、そのシーケンスと、それより古い履歴はすべて削除される。
+		/// </remarks>
+		public bool シーケンスが入力された( IEnumerable<ドラム入力種別> シーケンス )
+		{
+			int シーケンスのストローク数 = シーケンス.Count();       // ストローク ＝ ドラム入力イベント（シーケンスの構成単位）
 
+			if( 0 == シーケンスのストローク数 )
+				return false;   // 空シーケンスは常に不成立。
+
+			if( this._入力履歴.Count < シーケンスのストローク数 )
+				return false;   // 履歴数が足りない。
+
+			int 履歴の検索開始位置 = this._入力履歴.FindIndex( ( e ) => ( e.Type == シーケンス.ElementAt( 0 ) ) );
+			if( -1 == 履歴の検索開始位置 )
+				return false;   // 最初のストロークが見つからない。
+
+			if( ( this._入力履歴.Count - 履歴の検索開始位置 ) < シーケンスのストローク数 )
+				return false;   // 履歴数が足りない。
+
+			// 検索開始位置から末尾へ、すべてのストロークが一致するか確認する。
+			for( int i = 1; i < シーケンスのストローク数; i++ )
+			{
+				if( this._入力履歴[ 履歴の検索開始位置 + i ].Type != シーケンス.ElementAt( i ) )
+					return false;   // 一致しなかった。
+			}
+
+			// 見つけたシーケンスならびにそれより古い履歴を削除する。
+			this._入力履歴.RemoveRange( 0, ( 履歴の検索開始位置 + シーケンスのストローク数 ) );
+
+			return true;
+		}
+		/// <summary>
+		///		現在の履歴において、指定したシーケンスが成立しているかを確認する。
+		/// </summary>
+		/// <param name="シーケンス">確認したいシーケンス。</param>
+		/// <returns>シーケンスが成立しているなら true。</returns>
+		/// <remarks>
+		///		指定したシーケンスが現在の履歴の一部に見られれば、成立しているとみなす。
+		///		履歴内に複数存在している場合は、一番 古 い シーケンスが対象となる。
+		///		成立した場合、そのシーケンスと、それより古い履歴はすべて削除される。
+		/// </remarks>
+		public bool シーケンスが入力された( IEnumerable<レーン種別> シーケンス, ドラムとチップと入力の対応表 対応表 )
+		{
+			int シーケンスのストローク数 = シーケンス.Count();       // ストローク ＝ ドラム入力イベント（シーケンスの構成単位）
+
+			if( 0 == シーケンスのストローク数 )
+				return false;   // 空シーケンスは常に不成立。
+
+			if( this._入力履歴.Count < シーケンスのストローク数 )
+				return false;   // 履歴数が足りない。
+
+			var columns = 対応表.対応表.Where( ( kvp ) => ( kvp.Value.レーン種別 == シーケンス.ElementAt( 0 ) ) );
+			if( 0 == columns.Count() )
+				return false;   // 最初のシーケンスが対応表に存在しない。
+
+			int 履歴の検索開始位置 = this._入力履歴.FindIndex( ( e ) => {
+				foreach( var column in columns )
+				{
+					if( e.Type == column.Value.ドラム入力種別 )
+						return true;
+				}
+				return false;
+			} );
+			if( -1 == 履歴の検索開始位置 )
+				return false;   // 最初のストロークが見つからない。
+
+			if( ( this._入力履歴.Count - 履歴の検索開始位置 ) < シーケンスのストローク数 )
+				return false;   // 履歴数が足りない。
+
+			// 検索開始位置から末尾へ、すべてのストロークが一致するか確認する。
+			for( int i = 1; i < シーケンスのストローク数; i++ )
+			{
+				columns = 対応表.対応表.Where( ( kvp ) => ( kvp.Value.レーン種別 == シーケンス.ElementAt( i ) ) );
+
+				if( 0 == columns.Count() )
+					return false;	// 一致しなかった。
+
+				if( 0 == columns.Where( (kvp) => ( kvp.Value.ドラム入力種別 == this._入力履歴[ 履歴の検索開始位置 + i ].Type ) ).Count() )
+					return false;   // 一致しなかった。
+			}
+
+			// 見つけたシーケンスならびにそれより古い履歴を削除する。
+			this._入力履歴.RemoveRange( 0, ( 履歴の検索開始位置 + シーケンスのストローク数 ) );
+
+			return true;
+		}
 
 		/// <summary>
 		///		これまでにポーリングで取得された入力の履歴。
