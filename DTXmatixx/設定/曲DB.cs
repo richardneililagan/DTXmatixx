@@ -93,7 +93,8 @@ namespace DTXmatixx.設定
 										TotalNotes_LowTom = ノーツ数[ 表示レーン種別.Tom2 ],
 										TotalNotes_FloorTom = ノーツ数[ 表示レーン種別.Tom3 ],
 										TotalNotes_RightCymbal = ノーツ数[ 表示レーン種別.RightCrash ],
-										PreImage = score.プレビュー画像,
+										// プレビュー画像は、曲ファイルからの相対パス。
+										PreImage = Path.Combine( Path.GetDirectoryName( 曲ファイルパス.変数なしパス ), score.プレビュー画像 ),
 									} );
 							}
 
@@ -149,7 +150,8 @@ namespace DTXmatixx.設定
 								song.TotalNotes_LowTom = ノーツ数[ 表示レーン種別.Tom2 ];
 								song.TotalNotes_FloorTom = ノーツ数[ 表示レーン種別.Tom3 ];
 								song.TotalNotes_RightCymbal = ノーツ数[ 表示レーン種別.RightCrash ];
-								song.PreImage = score.プレビュー画像;
+								// プレビュー画像は、曲ファイルからの相対パス。
+								song.PreImage = Path.Combine( Path.GetDirectoryName( 曲ファイルパス.変数なしパス ), score.プレビュー画像 );
 							}
 
 							songdb.DataContext.SubmitChanges();
@@ -213,7 +215,8 @@ namespace DTXmatixx.設定
 								record.TotalNotes_LowTom = ノーツ数[ 表示レーン種別.Tom2 ];
 								record.TotalNotes_FloorTom = ノーツ数[ 表示レーン種別.Tom3 ];
 								record.TotalNotes_RightCymbal = ノーツ数[ 表示レーン種別.RightCrash ];
-								record.PreImage = score.プレビュー画像;
+								// プレビュー画像は、曲ファイルからの相対パス。
+								record.PreImage = Path.Combine( Path.GetDirectoryName( 曲ファイルパス.変数なしパス ), score.プレビュー画像 );
 
 								if( hash != record.HashId )
 								{
