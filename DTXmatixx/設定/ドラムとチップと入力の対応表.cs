@@ -437,7 +437,7 @@ namespace DTXmatixx.設定
 							自動ヒット時処理 = new Column.Columnヒット処理() {
 								再生 = true,
 								非表示 = true,
-								判定 = false,
+								判定 = true,
 							},
 							MISS判定 = false,
 						},
