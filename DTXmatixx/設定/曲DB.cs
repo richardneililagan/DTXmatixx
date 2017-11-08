@@ -259,9 +259,9 @@ namespace DTXmatixx.設定
 					}
 				}
 			}
-			catch
+			catch( Exception e )
 			{
-				Log.ERROR( $"曲DBへの曲の追加に失敗しました。[{曲ファイルパス.変数付きパス}]" );
+				Log.ERROR( $"曲DBへの曲の追加に失敗しました。({e.Message})[{曲ファイルパス.変数付きパス}]" );
 				throw;
 			}
 		}
