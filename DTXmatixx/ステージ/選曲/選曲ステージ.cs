@@ -8,6 +8,7 @@ using SharpDX.Direct2D1;
 using SharpDX.DirectInput;
 using FDK;
 using FDK.メディア;
+using SSTFormat.v3;
 using DTXmatixx.アイキャッチ;
 using DTXmatixx.曲;
 
@@ -52,8 +53,6 @@ namespace DTXmatixx.ステージ.選曲
 		{
 			using( Log.Block( FDKUtilities.現在のメソッド名 ) )
 			{
-				//this.難易度アンカ = 3;		--> 初期化せず、前回の値からスタートする。
-
 				this._白 = new SolidColorBrush( gd.D2DDeviceContext, Color4.White );
 				this._黒 = new SolidColorBrush( gd.D2DDeviceContext, Color4.Black );
 				this._黒透過 = new SolidColorBrush( gd.D2DDeviceContext, new Color4( Color3.Black, 0.5f ) );
@@ -171,6 +170,11 @@ namespace DTXmatixx.ステージ.選曲
 							this._曲リスト.次のノードを選択する( gd );
 							this._導線アニメをリセットする( gd );
 						}
+					}
+					else if( App.入力管理.シーケンスが入力された( new[] { レーン種別.HiHat, レーン種別.HiHat }, App.ユーザ管理.ログオン中のユーザ.ドラムとチップと入力の対応表 ) )
+					{
+						//App.曲ツリー.難易度アンカをひとつ増やす();	--> 曲リストへ委譲
+						this._曲リスト.難易度アンカをひとつ増やす();
 					}
 					break;
 

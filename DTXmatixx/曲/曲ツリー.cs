@@ -249,6 +249,24 @@ namespace DTXmatixx.曲
 			this.ルートノード.子ノードリスト.Clear();
 		}
 
+		// 難易度
+
+		public void 難易度アンカをひとつ増やす()
+		{
+			for( int i = 0; i < 5; i++ )   // 最大でも5回まで
+			{
+				this._難易度アンカ = ( this._難易度アンカ + 1 ) % 5;
+
+				if( this.フォーカスノード is SetNode setnode )
+				{
+					if( null != setnode.MusicNodes[ this._難易度アンカ ] )
+						return;	// その難易度に対応する曲ノードがあればOK。
+				}
+
+				// なければ次のアンカへ。
+			}
+		}
+
 		// フォーカス
 
 		/// <summary>

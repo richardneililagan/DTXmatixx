@@ -93,7 +93,8 @@ namespace DTXmatixx.設定
 										TotalNotes_LowTom = ノーツ数[ 表示レーン種別.Tom2 ],
 										TotalNotes_FloorTom = ノーツ数[ 表示レーン種別.Tom3 ],
 										TotalNotes_RightCymbal = ノーツ数[ 表示レーン種別.RightCrash ],
-										PreImage = score.プレビュー画像,
+										// プレビュー画像は、曲ファイルからの相対パス。
+										PreImage = ( score.プレビュー画像.Nullでも空でもない() ) ? Path.Combine( Path.GetDirectoryName( 曲ファイルパス.変数なしパス ), score.プレビュー画像 ) : "",
 									} );
 							}
 
@@ -149,7 +150,8 @@ namespace DTXmatixx.設定
 								song.TotalNotes_LowTom = ノーツ数[ 表示レーン種別.Tom2 ];
 								song.TotalNotes_FloorTom = ノーツ数[ 表示レーン種別.Tom3 ];
 								song.TotalNotes_RightCymbal = ノーツ数[ 表示レーン種別.RightCrash ];
-								song.PreImage = score.プレビュー画像;
+								// プレビュー画像は、曲ファイルからの相対パス。
+								song.PreImage = ( score.プレビュー画像.Nullでも空でもない() ) ? Path.Combine( Path.GetDirectoryName( 曲ファイルパス.変数なしパス ), score.プレビュー画像 ) : "";
 							}
 
 							songdb.DataContext.SubmitChanges();
@@ -213,7 +215,8 @@ namespace DTXmatixx.設定
 								record.TotalNotes_LowTom = ノーツ数[ 表示レーン種別.Tom2 ];
 								record.TotalNotes_FloorTom = ノーツ数[ 表示レーン種別.Tom3 ];
 								record.TotalNotes_RightCymbal = ノーツ数[ 表示レーン種別.RightCrash ];
-								record.PreImage = score.プレビュー画像;
+								// プレビュー画像は、曲ファイルからの相対パス。
+								record.PreImage = ( score.プレビュー画像.Nullでも空でもない() ) ? Path.Combine( Path.GetDirectoryName( 曲ファイルパス.変数なしパス ), score.プレビュー画像 ) : "";
 
 								if( hash != record.HashId )
 								{
@@ -235,17 +238,30 @@ namespace DTXmatixx.設定
 						}
 						else
 						{
-							#region " (B-b) それ以外 → 何もしない "
+							#region " (B-b) それ以外 "
 							//----------------
+							if( 4 == App.リリース番号 )
+							{
+								// Rel004だけの復旧コード; 003 には PreImage に相対パスを格納してしまうバグがあるので、それに対する対処。
+								if( record.PreImage.Nullでも空でもない() && !( File.Exists( record.PreImage ) ) )
+								{
+									var 絶対パス = Path.Combine( Path.GetDirectoryName( record.Path ), record.PreImage );
+									if( File.Exists( 絶対パス ) )
+									{
+										record.PreImage = 絶対パス; // 相対パスでは存在せず、絶対パスにすると存在するなら、そちらに更新する。
+										songdb.DataContext.SubmitChanges();
+									}
+								}
+							}
 							//----------------
 							#endregion
 						}
 					}
 				}
 			}
-			catch
+			catch( Exception e )
 			{
-				Log.ERROR( $"曲DBへの曲の追加に失敗しました。[{曲ファイルパス.変数付きパス}]" );
+				Log.ERROR( $"曲DBへの曲の追加に失敗しました。({e.Message})[{曲ファイルパス.変数付きパス}]" );
 				throw;
 			}
 		}

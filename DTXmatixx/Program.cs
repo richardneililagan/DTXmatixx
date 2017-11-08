@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Reflection;
+using System.ServiceModel;
 using System.Text;
 using System.Windows.Forms;
 using FDK;
+using DTXmatixx.Viewer;
 
 namespace DTXmatixx
 {
@@ -51,7 +52,41 @@ namespace DTXmatixx
 
 			using( var app = new App() )
 			{
-				app.Run();
+				string serviceUri = "net.pipe://localhost/DTXMania";
+				string endPointName = "Viewer";
+				string endPointUri = $"{serviceUri}/{endPointName}";
+
+				// アプリのWCFサービスホストを生成する。
+				var serviceHost = new ServiceHost( app, new Uri( serviceUri ) );
+
+				// 名前付きパイプにバインドしたエンドポイントをサービスホストへ追加する。
+				serviceHost.AddServiceEndpoint(
+					typeof( IDTXManiaService ),
+					new NetNamedPipeBinding( NetNamedPipeSecurityMode.None ),
+					endPointName );
+
+				// サービスの受付を開始する。
+				try
+				{
+					serviceHost.Open();
+				}
+				catch( AddressAlreadyInUseException )
+				{
+					MessageBox.Show( "DTXMania はすでに起動しています。多重起動はできません。", "DTXMania Runtime Error", MessageBoxButtons.OK, MessageBoxIcon.Error );
+					return;
+				}
+
+				// アプリを実行する。
+				try
+				{
+					app.Run();
+				}
+				finally
+				{
+					// サービスの受付を終了する。
+					serviceHost.Close( new TimeSpan( 0, 0, 2 ) );   // 最大2sec待つ
+				}
+
 				Log.Header( "アプリケーションを終了します。" );
 			}
 			Log.Header( "アプリケーションを終了しました。" );

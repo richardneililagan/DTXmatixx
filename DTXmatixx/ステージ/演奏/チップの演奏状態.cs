@@ -35,6 +35,7 @@ namespace DTXmatixx.ステージ.演奏
 		public チップの演奏状態( チップ chip )
 		{
 			this._chip = chip;
+			this.ヒット前の状態にする();
 		}
 		public void Dispose()
 		{
