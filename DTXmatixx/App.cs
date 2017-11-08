@@ -29,6 +29,12 @@ namespace DTXmatixx
 	[ServiceBehavior( InstanceContextMode = InstanceContextMode.Single )]   // サービスインターフェースをシングルスレッドで呼び出す。
 	class App : ApplicationForm, IDTXManiaService, IDisposable
 	{
+		public static int リリース番号
+		{
+			get;
+			protected set;
+		}
+
 		/// <remarks>
 		///		SharpDX.Mathematics パッケージを参照し、かつ SharpDX 名前空間を using しておくと、
 		///		SharpDX で定義する追加の拡張メソッド（NextFloatなど）を使えるようになる。
@@ -92,6 +98,19 @@ namespace DTXmatixx
 		public App()
 			: base( 設計画面サイズ: new SizeF( 1920f, 1080f ), 物理画面サイズ: new SizeF( 1280f, 720f ), 深度ステンシルを使う: false )
 		{
+			#region " プロダクトバージョンのメジャー番号をリリース番号として取得する。"
+			//----------------
+			if( int.TryParse( Application.ProductVersion.Split( '.' ).ElementAt( 0 ), out int release ) )
+			{
+				App.リリース番号 = release;
+			}
+			else
+			{
+				throw new Exception( "アセンブリのプロダクトバージョンに記載ミスがあります。" );
+			}
+			//----------------
+			#endregion
+
 			this.Text = $"{Application.ProductName} {Application.ProductVersion}";
 
 			var exePath = Path.GetDirectoryName( Assembly.GetExecutingAssembly().Location );
