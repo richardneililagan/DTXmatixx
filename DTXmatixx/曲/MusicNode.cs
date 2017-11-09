@@ -66,9 +66,9 @@ namespace DTXmatixx.曲
 
 				// サムネイル画像を決定する。
 				string サムネイル画像ファイルパス = null;
-				if( song.PreImage.Nullでも空でもない() )
+				if( song.PreImage.Nullでも空でもない() && File.Exists( song.PreImage ) )
 				{
-					// (A) DB に保存されている値があれば、それを使う。
+					// (A) DB に保存されている値があり、そのファイルが存在するなら、それを使う。
 					サムネイル画像ファイルパス = song.PreImage;
 				}
 				else
