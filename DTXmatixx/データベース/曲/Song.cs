@@ -122,6 +122,11 @@ namespace DTXmatixx.データベース.曲
 		[Column( DbType = "NVARCHAR" )]
 		public string PreImage { get; set; }
 
+		/// <summary>
+		///		曲のアーティスト名。
+		/// </summary>
+		[Column( DbType = "NVARCHAR" )]
+		public string Artist { get; set; }
 
 		///////////////////////////
 
@@ -147,6 +152,7 @@ namespace DTXmatixx.データベース.曲
 			this.TotalNotes_FloorTom = 0;
 			this.TotalNotes_RightCymbal = 0;
 			this.PreImage = "";
+			this.Artist = "";
 		}
 
 		// ICloneable 実装
@@ -182,6 +188,7 @@ namespace DTXmatixx.データベース.曲
 			@", TotalNotes_FloorTom INTEGER NOT NULL" +
 			@", TotalNotes_RightCymbal INTEGER NOT NULL" +
 			@", PreImage NVARCHAR" +
+			@", Artist NVARCHAR" +
 			@")";
 	}
 }

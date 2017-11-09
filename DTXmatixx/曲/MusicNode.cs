@@ -53,13 +53,14 @@ namespace DTXmatixx.曲
 			// （まだ存在してなければ）曲DBに追加する。
 			曲DB.曲を追加または更新する( this.曲ファイルパス, App.ユーザ管理.ログオン中のユーザ );
 
-			// 曲DBから情報を取得する。
+			// 追加後、改めて曲DBから情報を取得する。
 			using( var songdb = new SongDB() )
 			{
 				var song = songdb.Songs.Where( ( r ) => ( r.Path == this.曲ファイルパス.変数なしパス ) ).SingleOrDefault();
 				if( null != song )
 				{
 					this.タイトル = song.Title;
+					this.サブタイトル = song.Artist;
 					this.曲ファイルハッシュ = song.HashId;
 					this.難易度[ 3 ] = ("FREE", (float) song.Level);       // [3]:MASTER相当。set.def 内にある MusicNode でも同じ。
 				}
