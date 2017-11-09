@@ -31,7 +31,7 @@ namespace DTXmatixx.データベース.曲
 				try
 				{
 					// テーブルを作成する。
-					this.DataContext.ExecuteCommand( $"CREATE TABLE IF NOT EXISTS Songs {Song.ColumsList};" );
+					this.DataContext.ExecuteCommand( $"CREATE TABLE IF NOT EXISTS Songs {Song.ColumnsList};" );
 					this.DataContext.SubmitChanges();
 
 					// 成功。
@@ -60,8 +60,7 @@ namespace DTXmatixx.データベース.曲
 						try
 						{
 							// テータベースをアップデートしてデータを移行する。
-							this.DataContext.ExecuteCommand( "PRAGMA foreign_keys = OFF" );
-							this.DataContext.ExecuteCommand( $"CREATE TABLE new_Songs {Song.ColumsList}" );
+							this.DataContext.ExecuteCommand( $"CREATE TABLE new_Songs {Song.ColumnsList}" );
 							this.DataContext.ExecuteCommand( $"INSERT INTO new_Songs SELECT *,null FROM Songs" );	// 追加されたカラムは null
 							this.DataContext.ExecuteCommand( $"DROP TABLE Songs" );
 							this.DataContext.ExecuteCommand( $"ALTER TABLE new_Songs RENAME TO Songs" );
@@ -133,8 +132,7 @@ namespace DTXmatixx.データベース.曲
 						try
 						{
 							// テータベースをアップデートしてデータを移行する。
-							this.DataContext.ExecuteCommand( "PRAGMA foreign_keys = OFF" );
-							this.DataContext.ExecuteCommand( $"CREATE TABLE new_Songs {Song.ColumsList}" );
+							this.DataContext.ExecuteCommand( $"CREATE TABLE new_Songs {Song.ColumnsList}" );
 							this.DataContext.ExecuteCommand( $"INSERT INTO new_Songs SELECT *,null FROM Songs" );   // 追加されたカラムは null
 							this.DataContext.ExecuteCommand( $"DROP TABLE Songs" );
 							this.DataContext.ExecuteCommand( $"ALTER TABLE new_Songs RENAME TO Songs" );

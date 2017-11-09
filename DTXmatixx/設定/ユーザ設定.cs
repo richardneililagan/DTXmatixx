@@ -81,11 +81,6 @@ namespace DTXmatixx.設定
 			get;
 			protected set;
 		} = null;
-		public List<VariablePath> 曲検索フォルダ
-		{
-			get;
-			protected set;
-		} = null;
 
 		public ユーザ設定()
 		{
@@ -272,17 +267,6 @@ namespace DTXmatixx.設定
 						break;
 				}
 			};
-			//----------------
-			#endregion
-			#region " 曲検索フォルダ "
-			//----------------
-			this.曲検索フォルダ = new List<VariablePath>();
-
-			var paths = this._User.SongFolders.Split( ';' );
-			foreach( var path in paths )
-			{
-				this.曲検索フォルダ.Add( path.ToVariablePath() );
-			}
 			//----------------
 			#endregion
 		}

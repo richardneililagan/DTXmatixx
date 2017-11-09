@@ -170,7 +170,7 @@ namespace DTXmatixx.データベース.曲
 		/// <summary>
 		///		テーブルのカラム部分を列挙したSQL。
 		/// </summary>
-		public static readonly string ColumsList =
+		public static readonly string ColumnsList =
 			@"( HashId NVARCHAR NOT NULL PRIMARY KEY" +
 			@", Title NVARCHAR NOT NULL" +
 			@", Path NVARCHAR NOT NULL UNIQUE" +

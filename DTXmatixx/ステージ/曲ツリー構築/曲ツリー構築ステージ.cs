@@ -59,7 +59,7 @@ namespace DTXmatixx.ステージ.曲ツリー構築
 				case フェーズ.構築中:
 					App.曲ツリー.非活性化する( gd );
 
-					foreach( var varpath in App.ユーザ管理.ログオン中のユーザ.曲検索フォルダ )
+					foreach( var varpath in App.システム設定.曲検索フォルダ )
 						App.曲ツリー.曲を検索して親ノードに追加する( App.曲ツリー.ルートノード, varpath );
 
 					App.曲ツリー.活性化する( gd );

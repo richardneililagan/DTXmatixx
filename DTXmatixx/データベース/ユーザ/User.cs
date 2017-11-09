@@ -137,13 +137,6 @@ namespace DTXmatixx.データベース.ユーザ
 		#endregion
 
 		/// <summary>
-		///		曲ファイル検索フォルダのリスト。
-		///		各フォルダ（相対or絶対パス；フォルダ変数なし）は、";" で区切られている。末尾が \ である必要はない。
-		/// </summary>
-		[Column( DbType = "NVARCHAR", CanBeNull = false )]
-		public string SongFolders { get; set; }
-
-		/// <summary>
 		///		シンバルフリーモード。
 		///		0: OFF, その他: ON
 		/// </summary>
@@ -178,7 +171,6 @@ namespace DTXmatixx.データベース.ユーザ
 			this.MaxRange_Great = 0.067;
 			this.MaxRange_Good = 0.084;
 			this.MaxRange_Ok = 0.117;
-			this.SongFolders = VariablePath.フォルダ変数の内容を返す( "Exe" ) ?? "";
 			this.CymbalFree = 1;
 		}
 
@@ -197,7 +189,7 @@ namespace DTXmatixx.データベース.ユーザ
 		/// <summary>
 		///		テーブルのカラム部分を列挙したSQL。
 		/// </summary>
-		public static readonly string ColumnList =
+		public static readonly string ColumnsList =
 			@"( Id NVARCHAR NOT NULL PRIMARY KEY" +
 			@", Name NVARCHAR NOT NULL" +
 			@", ScrollSpeed REAL NOT NULL" +
@@ -215,7 +207,6 @@ namespace DTXmatixx.データベース.ユーザ
 			@", MaxRange_Great REAL NOT NULL" +
 			@", MaxRange_Good REAL NOT NULL" +
 			@", MaxRange_Ok REAL NOT NULL" +
-			@", SongFolders NVARCHAR NOT NULL" +
 			@", CymbalFree INTEGER NOT NULL" +
 			@")";
 	}

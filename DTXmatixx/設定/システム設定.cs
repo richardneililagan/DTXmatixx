@@ -31,6 +31,18 @@ namespace DTXmatixx.設定
 			protected set;
 		} = null;
 
+		/// <summary>
+		///		曲ファイルを検索するフォルダのリスト。
+		/// </summary>
+		/// <remarks>
+		///		シリアライゼーションでは、これを直接使わずに、<see cref="_曲検索フォルダProxy"/> を仲介する。
+		/// </remarks>
+		public List<VariablePath> 曲検索フォルダ
+		{
+			get;
+			protected set;
+		} = null;
+
 
 		public システム設定()
 		{
@@ -48,6 +60,12 @@ namespace DTXmatixx.設定
 
 		private static readonly string _ファイルパス = @"$(AppData)Configuration.json";
 
+		/// <summary>
+		///		<see cref="曲検索フォルダ"/> のシリアライゼーションのための仲介役。
+		/// </summary>
+		[DataMember( Name = "SongPaths" )]
+		private List<string> _曲検索フォルダProxy = null;
+
 
 		/// <summary>
 		///		コンストラクタまたは逆シリアル化前（復元前）に呼び出される。
@@ -58,6 +76,8 @@ namespace DTXmatixx.設定
 		private void OnDeserializing( StreamingContext sc )
 		{
 			this.キーバインディング = new キーバインディング();
+			this.曲検索フォルダ = new List<VariablePath>();
+			this._曲検索フォルダProxy = new List<string>();
 		}
 
 		/// <summary>
@@ -68,6 +88,13 @@ namespace DTXmatixx.設定
 		[OnDeserialized]
 		private void OnDeserialized( StreamingContext sc )
 		{
+			// Proxy から曲検索フォルダを復元。
+			foreach( var path in this._曲検索フォルダProxy )
+				this.曲検索フォルダ.Add( path.ToVariablePath() );
+
+			// パスの指定がなければ、とりあえず exe のあるフォルダを検索対象にする。
+			if( 0 == this.曲検索フォルダ.Count )
+				this.曲検索フォルダ.Add( @"$(Exe)".ToVariablePath() );
 		}
 
 		/// <summary>
@@ -78,6 +105,10 @@ namespace DTXmatixx.設定
 		[OnSerializing]
 		private void OnSerializing( StreamingContext sc )
 		{
+			// 曲検索フォルダの内容をProxyへ転載。
+			this._曲検索フォルダProxy = new List<string>();
+			foreach( var varpath in this.曲検索フォルダ )
+				this._曲検索フォルダProxy.Add( varpath.変数付きパス );
 		}
 
 		/// <summary>
