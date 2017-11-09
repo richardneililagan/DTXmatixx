@@ -25,6 +25,16 @@ namespace DTXmatixx.ステージ.演奏
 				前景色 = Color4.Black,
 				背景色 = Color4.White,
 			} );
+			this.子リスト.Add( this._サブタイトル画像 = new 文字列画像() {
+				フォント名 = "HGMaruGothicMPRO",
+				フォントサイズpt = 18f,
+				フォント幅 = FontWeight.Regular,
+				フォントスタイル = FontStyle.Normal,
+				描画効果 = 文字列画像.効果.縁取り,
+				縁のサイズdpx = 3f,
+				前景色 = Color4.Black,
+				背景色 = Color4.White,
+			} );
 		}
 
 		protected override void On活性化( グラフィックデバイス gd )
@@ -35,6 +45,7 @@ namespace DTXmatixx.ステージ.演奏
 				Debug.Assert( null != 選択曲 );
 
 				this._曲名画像.表示文字列 = 選択曲.タイトル;
+				this._サブタイトル画像.表示文字列 = 選択曲.サブタイトル;
 			}
 		}
 		protected override void On非活性化( グラフィックデバイス gd )
@@ -49,10 +60,12 @@ namespace DTXmatixx.ステージ.演奏
 			this._パネル.描画する( gd, 1458f, 3f );
 			this._サムネイルを描画する( gd );
 			this._曲名を描画する( gd );
+			this._サブタイトルを描画する( gd );
 		}
 
 		private 画像 _パネル = null;
 		private 文字列画像 _曲名画像 = null;
+		private 文字列画像 _サブタイトル画像 = null;
 
 		private readonly Vector3 _サムネイル画像表示位置dpx = new Vector3( 1477f, 19f, 0f );
 		private readonly Vector3 _サムネイル画像表示サイズdpx = new Vector3( 91f, 91f, 0f );
@@ -92,6 +105,16 @@ namespace DTXmatixx.ステージ.演奏
 				this._曲名表示位置dpx.X,
 				this._曲名表示位置dpx.Y,
 				X方向拡大率: ( this._曲名画像.サイズ.Width <= this._曲名表示サイズdpx.X ) ? 1f : this._曲名表示サイズdpx.X / this._曲名画像.サイズ.Width );
+		}
+		private void _サブタイトルを描画する( グラフィックデバイス gd )
+		{
+			// 拡大率を計算して描画する。
+
+			this._サブタイトル画像.描画する(
+				gd,
+				this._曲名表示位置dpx.X,
+				this._曲名表示位置dpx.Y + 30f,
+				X方向拡大率: ( this._サブタイトル画像.サイズ.Width <= this._曲名表示サイズdpx.X ) ? 1f : this._曲名表示サイズdpx.X / this._サブタイトル画像.サイズ.Width );
 		}
 	}
 }
