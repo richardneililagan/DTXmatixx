@@ -399,6 +399,12 @@ namespace DTXmatixx.ステージ.選曲
 			{
 				var サブタイトル画像 = (文字列画像) null;
 
+				// ノードが SetNode なら難易度アンカに応じた MusicNode が対象。
+				if( ノード is SetNode setnode )
+				{
+					ノード = App.曲ツリー.現在の難易度に応じた曲ノードを返す( setnode );
+				}
+
 				// サブタイトル画像を取得する。未生成かつ指定があるなら生成する。
 				if( !( this._ノードtoサブタイトル画像.ContainsKey( ノード ) ) )
 				{
@@ -411,7 +417,7 @@ namespace DTXmatixx.ステージ.選曲
 							フォントスタイル = FontStyle.Normal,
 							フォントサイズpt = 20f,
 							描画効果 = 文字列画像.効果.縁取り,
-							縁のサイズdpx = 6f,
+							縁のサイズdpx = 4f,
 							前景色 = Color4.Black,
 							背景色 = Color4.White,
 						};
