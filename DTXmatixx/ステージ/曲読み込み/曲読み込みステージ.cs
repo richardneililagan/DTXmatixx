@@ -42,6 +42,16 @@ namespace DTXmatixx.ステージ.曲読み込み
 				前景色 = Color4.Black,
 				背景色 = Color4.White,
 			} );
+			this.子リスト.Add( this._サブタイトル画像 = new 文字列画像() {
+				フォント名 = "HGMaruGothicMPRO",
+				フォントサイズpt = 45f,
+				フォント幅 = FontWeight.Regular,
+				フォントスタイル = FontStyle.Normal,
+				描画効果 = 文字列画像.効果.縁取り,
+				縁のサイズdpx = 10f,
+				前景色 = Color4.Black,
+				背景色 = Color4.White,
+			} );
 			this.子リスト.Add( this._プレビュー画像 = new プレビュー画像() );
 			this.子リスト.Add( this._難易度 = new 難易度() );
 		}
@@ -54,6 +64,7 @@ namespace DTXmatixx.ステージ.曲読み込み
 				Debug.Assert( null != 選択曲 );
 
 				this._曲名画像.表示文字列 = 選択曲.タイトル;
+				this._サブタイトル画像.表示文字列 = 選択曲.サブタイトル;
 
 				this.現在のフェーズ = フェーズ.フェードイン;
 				this._初めての進行描画 = true;
@@ -80,6 +91,7 @@ namespace DTXmatixx.ステージ.曲読み込み
 			this._プレビュー画像.描画する( gd );
 			this._難易度.描画する( gd );
 			this._曲名を描画する( gd );
+			this._サブタイトルを描画する( gd );
 
 			switch( this.現在のフェーズ )
 			{
@@ -108,6 +120,7 @@ namespace DTXmatixx.ステージ.曲読み込み
 		private 舞台画像 _舞台画像 = null;
 		private 画像 _注意文 = null;
 		private 文字列画像 _曲名画像 = null;
+		private 文字列画像 _サブタイトル画像 = null;
 		private プレビュー画像 _プレビュー画像 = null;
 		private 難易度 _難易度 = null;
 
@@ -123,6 +136,19 @@ namespace DTXmatixx.ステージ.曲読み込み
 				表示位置dpx.X,
 				表示位置dpx.Y,
 				X方向拡大率: ( this._曲名画像.サイズ.Width <= 最大幅dpx ) ? 1f : 最大幅dpx / this._曲名画像.サイズ.Width );
+		}
+		private void _サブタイトルを描画する( グラフィックデバイス gd )
+		{
+			var 表示位置dpx = new Vector2( 782f, 520f );
+
+			// 拡大率を計算して描画する。
+			float 最大幅dpx = gd.設計画面サイズ.Width - 表示位置dpx.X;
+
+			this._サブタイトル画像.描画する(
+				gd,
+				表示位置dpx.X,
+				表示位置dpx.Y,
+				X方向拡大率: ( this._サブタイトル画像.サイズ.Width <= 最大幅dpx ) ? 1f : 最大幅dpx / this._サブタイトル画像.サイズ.Width );
 		}
 		private void _スコアを読み込む()
 		{
