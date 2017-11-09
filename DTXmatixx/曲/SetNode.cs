@@ -6,6 +6,7 @@ using System.Linq;
 using FDK;
 using DTXmatixx.データベース.曲;
 using FDK.メディア;
+using SharpDX;
 
 namespace DTXmatixx.曲
 {
@@ -15,6 +16,35 @@ namespace DTXmatixx.曲
 		///		このset.defブロックに登録される、最大５つの曲ノード。
 		/// </summary>
 		public MusicNode[] MusicNodes = new MusicNode[ 5 ];
+
+		/// <summary>
+		///		ノードを表す画像の SetNode 用オーバーライド。
+		/// </summary>
+		/// <remarks>
+		///		このプロパティで返す値には、現在フォーカス中の<see cref="SetNode.MusicNodes"/>のノード画像が優先的に使用される。
+		///		<see cref="SetNode.MusicNodes"/>のノード画像が無効（または null）なら、このプロパティで返す値には、set.def と同じ場所にあるthumb画像（または null）が使用される。
+		/// </remarks>
+		public override テクスチャ ノード画像
+		{
+			get
+			{
+				// (1) 現在選択されている MusicNode のノード画像が有効ならそれを返す。
+				var 現在の難易度のMusicNode = this.MusicNodes[ App.曲ツリー.フォーカス難易度 ];
+				if( null != 現在の難易度のMusicNode?.ノード画像 )
+				{
+					return 現在の難易度のMusicNode.ノード画像;
+				}
+				// (2) MusicNode のノード画像が無効なら、SetNode の持つノード画像を返す。
+				else
+				{
+					return this._ノード画像;
+				}
+			}
+			protected set
+			{
+				this._ノード画像 = value;
+			}
+		}
 
 		public SetNode()
 		{
@@ -58,7 +88,7 @@ namespace DTXmatixx.曲
 
 			if( null != サムネイル画像ファイルパス )
 			{
-				this.子リスト.Add( this.ノード画像 = new テクスチャ( サムネイル画像ファイルパス ) );
+				this.子リスト.Add( this._ノード画像 = new テクスチャ( サムネイル画像ファイルパス ) );
 			}
 		}
 
@@ -83,6 +113,7 @@ namespace DTXmatixx.曲
 			base.On非活性化( gd );
 		}
 
+		private テクスチャ _ノード画像 = null;
 		private readonly string[] _対応するサムネイル画像名 = { "thumb.png", "thumb.bmp", "thumb.jpg", "thumb.jpeg" };
 	}
 }

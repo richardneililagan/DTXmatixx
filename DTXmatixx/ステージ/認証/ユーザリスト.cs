@@ -52,9 +52,15 @@ namespace DTXmatixx.ステージ.認証
 		}
 
 		public void 前のユーザを選択する()
-			=> this.選択中のユーザ = ( this.選択中のユーザ - 1 + App.ユーザ管理.ユーザリスト.Count ) % App.ユーザ管理.ユーザリスト.Count;
+		{
+			this.選択中のユーザ = ( this.選択中のユーザ - 1 + App.ユーザ管理.ユーザリスト.Count ) % App.ユーザ管理.ユーザリスト.Count;
+			this._光彩アニメカウンタ = new LoopCounter( 0, 200, 5 );
+		}
 		public void 次のユーザを選択する()
-			=> this.選択中のユーザ = ( this.選択中のユーザ + 1 ) % App.ユーザ管理.ユーザリスト.Count;
+		{
+			this.選択中のユーザ = ( this.選択中のユーザ + 1 ) % App.ユーザ管理.ユーザリスト.Count;
+			this._光彩アニメカウンタ = new LoopCounter( 0, 200, 5 );
+		}
 
 		public void 進行描画する( グラフィックデバイス gd )
 		{
@@ -66,11 +72,11 @@ namespace DTXmatixx.ステージ.認証
 			var 割合 = this._光彩アニメカウンタ.現在値の割合;
 			if( 0.5f > 割合 )
 			{
-				不透明度 = ( 割合 * 2.0f );		// 0→1
+				不透明度 = 1.0f - ( 割合 * 2.0f );     // 1→0
 			}
 			else
 			{
-				不透明度 = 1.0f - ( 割合 - 0.5f ) * 2.0f;		// 1→0
+				不透明度 = ( 割合 - 0.5f ) * 2.0f;		// 0→1
 			}
 
 			// ユーザリストを描画する。

@@ -149,10 +149,14 @@ namespace DTXmatixx.曲
 
 		/// <summary>
 		///		ノードを表す画像。
-		///		派生クラスで、適切な画像を割り当てること。
 		///		null にすると、既定のノード画像が使用される。
+		///		派生クラスで、適切な画像を割り当てること。
 		/// </summary>
-		public テクスチャ ノード画像
+		/// <remarks>
+		///		<see cref="SetNode"/> の場合のみ、扱いが異なる。
+		///		詳細は<see cref="SetNode.ノード画像"/>を参照のこと。
+		/// </remarks>
+		public virtual テクスチャ ノード画像
 		{
 			get;
 			protected set;

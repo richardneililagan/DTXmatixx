@@ -95,6 +95,7 @@ namespace DTXmatixx.設定
 										TotalNotes_RightCymbal = ノーツ数[ 表示レーン種別.RightCrash ],
 										// プレビュー画像は、曲ファイルからの相対パス。
 										PreImage = ( score.プレビュー画像.Nullでも空でもない() ) ? Path.Combine( Path.GetDirectoryName( 曲ファイルパス.変数なしパス ), score.プレビュー画像 ) : "",
+										Artist = score.アーティスト名,
 									} );
 							}
 
@@ -152,6 +153,7 @@ namespace DTXmatixx.設定
 								song.TotalNotes_RightCymbal = ノーツ数[ 表示レーン種別.RightCrash ];
 								// プレビュー画像は、曲ファイルからの相対パス。
 								song.PreImage = ( score.プレビュー画像.Nullでも空でもない() ) ? Path.Combine( Path.GetDirectoryName( 曲ファイルパス.変数なしパス ), score.プレビュー画像 ) : "";
+								song.Artist = score.アーティスト名;
 							}
 
 							songdb.DataContext.SubmitChanges();
@@ -217,6 +219,7 @@ namespace DTXmatixx.設定
 								record.TotalNotes_RightCymbal = ノーツ数[ 表示レーン種別.RightCrash ];
 								// プレビュー画像は、曲ファイルからの相対パス。
 								record.PreImage = ( score.プレビュー画像.Nullでも空でもない() ) ? Path.Combine( Path.GetDirectoryName( 曲ファイルパス.変数なしパス ), score.プレビュー画像 ) : "";
+								record.Artist = score.アーティスト名;
 
 								if( hash != record.HashId )
 								{

@@ -59,7 +59,7 @@ namespace DTXmatixx.曲
 				}
 				if( this.フォーカスノード is SetNode setnode )
 				{
-					return setnode.MusicNodes[ this._現在の難易度アンカに最も近い難易度レベルを返す( setnode ) ];
+					return this.現在の難易度に応じた曲ノードを返す( setnode );
 				}
 				else
 				{
@@ -267,6 +267,18 @@ namespace DTXmatixx.曲
 			}
 		}
 
+		/// <summary>
+		///		指定された SetNode が保持する、現在の難易度アンカに一番近い難易度（0:BASIC～4:ULTIMATE）の MusicNode を返す。
+		/// </summary>
+		/// <remarks>
+		///		難易度アンカはどのノードを選択しても不変である。
+		///		<see cref="フォーカスノード"/>が<see cref="SetNode"/>型である場合は、それが保有する難易度（最大５つ）の中で、
+		///		現在の難易度アンカに一番近い難易度の <see cref="MusicNode"/> が返される。
+		///		それ以外の場合は常に null が返される。
+		/// </remarks>
+		public MusicNode 現在の難易度に応じた曲ノードを返す( SetNode setNode )
+			=> setNode.MusicNodes[ this._現在の難易度アンカに最も近い難易度レベルを返す( setNode ) ];
+		
 		// フォーカス
 
 		/// <summary>

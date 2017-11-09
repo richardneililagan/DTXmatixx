@@ -73,6 +73,10 @@ namespace DTXmatixx.ステージ.選曲
 					kvp.Value.非活性化する( gd );
 				this._ノードto曲名画像.Clear();
 
+				foreach( var kvp in this._ノードtoサブタイトル画像 )
+					kvp.Value.非活性化する( gd );
+				this._ノードtoサブタイトル画像.Clear();
+
 				this._選択ノードの表示オフセットのストーリーボード?.Abandon();
 				FDKUtilities.解放する( ref this._選択ノードの表示オフセットdpx );
 				FDKUtilities.解放する( ref this._選択ノードの表示オフセットのストーリーボード );
@@ -208,8 +212,8 @@ namespace DTXmatixx.ステージ.選曲
 			var ノード画像 = ノード.ノード画像 ?? Node.既定のノード画像;
 			bool 選択ノードである = ( 4 == 行番号 );
 
-			Debug.Assert( null != ノード画像 );
-			Debug.Assert( ( 0.0f != ノード画像.サイズ.Width ) && ( 0.0f != ノード画像.サイズ.Height ) );    // 面積がゼロでないこと。
+			if( null == ノード画像 )
+				return;
 
 			// テクスチャは画面中央が (0,0,0) で、Xは右がプラス方向, Yは上がプラス方向, Zは奥がプラス方向+。
 
@@ -224,7 +228,6 @@ namespace DTXmatixx.ステージ.選曲
 				this._曲リストの基準左上隅座標dpx.X + ( ( 選択ノードである ) ? (float) this._選択ノードの表示オフセットdpx.Value : 0f ),
 				this._曲リストの基準左上隅座標dpx.Y + ( 実数行番号 * _ノードの高さdpx ),
 				0f );
-
 
 			#region " 背景 "
 			//----------------
@@ -358,7 +361,7 @@ namespace DTXmatixx.ステージ.選曲
 			{
 				var 曲名画像 = (文字列画像) null;
 
-				// 曲名画像が未生成なら生成する。
+				// 曲名画像を取得する。未生成なら生成する。
 				if( !( this._ノードto曲名画像.ContainsKey( ノード ) ) )
 				{
 					曲名画像 = new 文字列画像() {
@@ -391,6 +394,63 @@ namespace DTXmatixx.ステージ.選曲
 			}
 			//----------------
 			#endregion
+			#region " サブタイトル文字列 "
+			//----------------
+			if( ノード == App.曲ツリー.フォーカスノード )	// フォーカスノードのみ表示する。
+			{
+				var サブタイトル画像 = (文字列画像) null;
+
+				// ノードが SetNode なら難易度アンカに応じた MusicNode が対象。
+				if( ノード is SetNode setnode )
+				{
+					ノード = App.曲ツリー.現在の難易度に応じた曲ノードを返す( setnode );
+				}
+
+				// サブタイトル画像を取得する。未生成かつ指定があるなら生成する。
+				if( !( this._ノードtoサブタイトル画像.ContainsKey( ノード ) ) )
+				{
+					if( ノード.サブタイトル.Nullでも空でもない() )
+					{
+						サブタイトル画像 = new 文字列画像() {
+							表示文字列 = ノード.サブタイトル,
+							フォント名 = "HGMaruGothicMPRO", // "メイリオ",
+							フォント幅 = FontWeight.Regular,
+							フォントスタイル = FontStyle.Normal,
+							フォントサイズpt = 20f,
+							描画効果 = 文字列画像.効果.縁取り,
+							縁のサイズdpx = 4f,
+							前景色 = Color4.Black,
+							背景色 = Color4.White,
+						};
+						サブタイトル画像.活性化する( gd );
+
+						this._ノードtoサブタイトル画像.Add( ノード, サブタイトル画像 );
+					}
+					else
+					{
+						// 指定がない
+						サブタイトル画像 = null;
+					}
+				}
+				else
+				{
+					サブタイトル画像 = this._ノードtoサブタイトル画像[ ノード ];
+				}
+
+				// 拡大率を計算して描画する。
+				if( null != サブタイトル画像 )
+				{
+					float 最大幅dpx = gd.設計画面サイズ.Width - ノード左上dpx.X - 170f;
+
+					サブタイトル画像.描画する(
+						gd,
+						ノード左上dpx.X + 190f,
+						ノード左上dpx.Y + 80f,
+						X方向拡大率: ( サブタイトル画像.サイズ.Width <= 最大幅dpx ) ? 1f : 最大幅dpx / サブタイトル画像.サイズ.Width );
+				}
+			}
+			//----------------
+			#endregion
 		}
 
 		private bool _初めての進行描画 = true;
@@ -404,6 +464,7 @@ namespace DTXmatixx.ステージ.選曲
 		private const float _ノードの高さdpx = ( 913f / 8f );
 
 		private Dictionary<Node, 文字列画像> _ノードto曲名画像 = new Dictionary<Node, 文字列画像>();
+		private Dictionary<Node, 文字列画像> _ノードtoサブタイトル画像 = new Dictionary<Node, 文字列画像>();
 
 		/// <summary>
 		///		静止時は 4 。曲リストがスクロールしているときは、4より大きい整数（下から上にスクロール中）か、
