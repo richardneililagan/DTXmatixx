@@ -132,7 +132,7 @@ namespace DTXmatixx.ステージ.選曲
 					break;
 
 				case フェーズ.表示:
-					if( App.入力管理.シンバルが入力された() || App.入力管理.Keyboard.キーが押された( 0, Key.Return ) )
+					if( App.入力管理.シンバルが入力された() )//|| App.入力管理.Keyboard.キーが押された( 0, Key.Return ) )	--> Return は既定でLeftCrashに割り当ててある。
 					{
 						if( App.曲ツリー.フォーカスノード is BoxNode boxNode )
 						{
