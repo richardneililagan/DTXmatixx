@@ -47,6 +47,10 @@ namespace DTXmatixx.設定
 		public システム設定()
 		{
 			this.OnDeserializing( new StreamingContext() );
+
+			// パスの指定がなければ、とりあえず exe のあるフォルダを検索対象にする。
+			if( 0 == this.曲検索フォルダ.Count )
+				this.曲検索フォルダ.Add( @"$(Exe)".ToVariablePath() );
 		}
 
 		public static システム設定 復元する()
